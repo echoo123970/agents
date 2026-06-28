@@ -15,10 +15,10 @@ controlled by you in the environment settings, not from inside the session:
 
 In your Claude Code (web) environment configuration, set:
 
-| Variable                | Value                                              |
-| ----------------------- | -------------------------------------------------- |
-| `SHOPIFY_STORE_DOMAIN`  | `your-store.myshopify.com` (no `https://`, no path) |
-| `SHOPIFY_ACCESS_TOKEN`  | Your Admin API access token (`shpat_…`)            |
+| Variable                | Value                                              | Required? |
+| ----------------------- | -------------------------------------------------- | --------- |
+| `SHOPIFY_ACCESS_TOKEN`  | Your Admin API access token (`shpat_…`)            | **Yes**   |
+| `SHOPIFY_STORE_DOMAIN`  | `your-store.myshopify.com` (no `https://`, no path) | Optional — defaults to `imosaicart.myshopify.com` (set this only to point at a different store) |
 
 > Getting an Admin API token: in Shopify admin go to **Settings → Apps and
 > sales channels → Develop apps → Create an app**, then under **API
