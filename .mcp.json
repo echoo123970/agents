@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "Shopify": {
+      "type": "http",
+      "url": "https://${SHOPIFY_STORE_DOMAIN:-imosaicart.myshopify.com}/api/mcp",
+      "headers": {
+        "X-Shopify-Access-Token": "${SHOPIFY_ACCESS_TOKEN}"
+      }
+    }
+  }
+}

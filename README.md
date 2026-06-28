@@ -12,7 +12,9 @@ them against the Shopify Admin API's requirements, and creates the product —
 defaulting to **DRAFT** status so nothing goes live by accident.
 
 **Requires:** the Shopify MCP server to be connected (it uses the
-`mcp__Shopify__*` tools).
+`mcp__Shopify__*` tools). The server is wired up in [`.mcp.json`](.mcp.json);
+see [`SHOPIFY_SETUP.md`](SHOPIFY_SETUP.md) for the credentials and network
+access you need to provide to make the connection live.
 
 **Use it by asking the main assistant things like:**
 
