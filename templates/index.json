@@ -22,17 +22,18 @@
     "quote-banner": { "type": "quote-banner", "settings": {} },
     "category-grid": {
       "type": "category-grid",
+      "settings": { "button_link": "shopify://collections" },
       "blocks": {
-        "c1": { "type": "category", "settings": { "title": "Portrait" } },
-        "c2": { "type": "category", "settings": { "title": "Nautical" } },
-        "c3": { "type": "category", "settings": { "title": "Flower" } },
-        "c4": { "type": "category", "settings": { "title": "Landscape" } },
-        "c5": { "type": "category", "settings": { "title": "Food" } },
-        "c6": { "type": "category", "settings": { "title": "Geometric" } },
-        "c7": { "type": "category", "settings": { "title": "Animal" } },
-        "c8": { "type": "category", "settings": { "title": "Bird" } },
-        "c9": { "type": "category", "settings": { "title": "Pattern" } },
-        "c10": { "type": "category", "settings": { "title": "Tree" } }
+        "c1": { "type": "category", "settings": { "collection": "portrait-mosaics", "title": "Portrait" } },
+        "c2": { "type": "category", "settings": { "collection": "nautical-mosaics", "title": "Nautical" } },
+        "c3": { "type": "category", "settings": { "collection": "flower-mosaics", "title": "Flower" } },
+        "c4": { "type": "category", "settings": { "collection": "landscape-mosaics", "title": "Landscape" } },
+        "c5": { "type": "category", "settings": { "collection": "food-mosaics", "title": "Food" } },
+        "c6": { "type": "category", "settings": { "collection": "geometric-mosaics", "title": "Geometric" } },
+        "c7": { "type": "category", "settings": { "collection": "animal-mosaics", "title": "Animal" } },
+        "c8": { "type": "category", "settings": { "collection": "bird-mosaics", "title": "Bird" } },
+        "c9": { "type": "category", "settings": { "collection": "patterns-mosaics", "title": "Pattern" } },
+        "c10": { "type": "category", "settings": { "collection": "tree-mosaics", "title": "Tree" } }
       },
       "block_order": ["c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9", "c10"]
     },
@@ -40,14 +41,17 @@
     "collection-showcase": {
       "type": "collection-showcase",
       "blocks": {
-        "k1": { "type": "showcase", "settings": { "title": "Mosaic Kitchen Backsplash", "description": "Stylish. Durable. Handcrafted.", "cta": "Explore Collection" } },
-        "k2": { "type": "showcase", "settings": { "title": "Mosaic Tabletops", "description": "Artfully crafted for everyday elegance.", "cta": "Shop Now" } },
-        "k3": { "type": "showcase", "settings": { "title": "The Van Gogh Collection", "description": "Mosaic art inspired by timeless genius.", "cta": "Shop Now" } },
-        "k4": { "type": "showcase", "settings": { "title": "Glass Mosaic Art", "description": "Light, color and craftsmanship in every piece.", "cta": "Explore Collection" } }
+        "k1": { "type": "showcase", "settings": { "collection": "mosaic-tile-backsplash", "title": "Mosaic Kitchen Backsplash", "description": "Stylish. Durable. Handcrafted.", "cta": "Explore Collection" } },
+        "k2": { "type": "showcase", "settings": { "collection": "table-countertop-mosaics", "title": "Mosaic Tabletops", "description": "Artfully crafted for everyday elegance.", "cta": "Shop Now" } },
+        "k3": { "type": "showcase", "settings": { "collection": "van-gogh-mosaics", "title": "The Van Gogh Collection", "description": "Mosaic art inspired by timeless genius.", "cta": "Shop Now" } },
+        "k4": { "type": "showcase", "settings": { "collection": "glass-mosaic-art", "title": "Glass Mosaic Art", "description": "Light, color and craftsmanship in every piece.", "cta": "Explore Collection" } }
       },
       "block_order": ["k1", "k2", "k3", "k4"]
     },
-    "featured-products": { "type": "featured-products", "settings": {} },
+    "featured-products": {
+      "type": "featured-products",
+      "settings": { "collection": "van-gogh-mosaics", "button_link": "shopify://collections/all" }
+    },
     "custom-process": {
       "type": "custom-process",
       "blocks": {
@@ -81,7 +85,7 @@
       },
       "block_order": ["r1", "r2", "r3", "r4", "r5", "r6"]
     },
-    "blog-posts": { "type": "blog-posts", "settings": {} },
+    "blog-posts": { "type": "blog-posts", "settings": { "blog": "news" } },
     "instagram-grid": {
       "type": "instagram-grid",
       "blocks": {
