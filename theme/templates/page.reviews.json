@@ -1,0 +1,23 @@
+{
+  "sections": {
+    "main": {
+      "type": "page-reviews",
+      "blocks": {
+        "s1": { "type": "stat", "settings": { "value": "4.9", "label": "Average Rating" } },
+        "s2": { "type": "stat", "settings": { "value": "2,400+", "label": "Happy Collectors" } },
+        "s3": { "type": "stat", "settings": { "value": "100%", "label": "Handcrafted" } },
+        "r1": { "type": "review", "settings": { "quote": "Absolutely love my mosaic! The details and craftsmanship are truly outstanding.", "name": "Anita Miller", "place": "United States" } },
+        "r2": { "type": "review", "settings": { "quote": "Stunning craftsmanship, quick delivery, and always gets compliments!", "name": "Travis Raynor", "place": "United States" } },
+        "r3": { "type": "review", "settings": { "quote": "Beautiful mosaic design and excellent quality. It looks amazing in my home!", "name": "Luna P.", "place": "United States" } },
+        "r4": { "type": "review", "settings": { "quote": "The attention to detail is incredible. I could not be happier with my purchase.", "name": "Alexander Ball", "place": "New York" } },
+        "r5": { "type": "review", "settings": { "quote": "This is my third purchase, and I am always impressed by the quality and service.", "name": "Emily Parker", "place": "United States" } },
+        "r6": { "type": "review", "settings": { "quote": "I am truly impressed. The craftsmanship and color bring the sacred scene to life!", "name": "James Mitchell", "place": "United States" } },
+        "r7": { "type": "review", "settings": { "quote": "A breathtaking centerpiece for our living room. Worth every penny.", "name": "Sophia Nguyen", "place": "Canada" } },
+        "r8": { "type": "review", "settings": { "quote": "From quote to delivery, the team was wonderful. The mosaic is stunning.", "name": "Daniel Cohen", "place": "United Kingdom" } },
+        "r9": { "type": "review", "settings": { "quote": "Our custom piece exceeded every expectation. True artists.", "name": "Maria Rossi", "place": "Italy" } }
+      },
+      "block_order": ["s1","s2","s3","r1","r2","r3","r4","r5","r6","r7","r8","r9"]
+    }
+  },
+  "order": ["main"]
+}

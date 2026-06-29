@@ -1,0 +1,235 @@
+<!-- COLLECTION HERO -->
+<section class="coll-hero">
+  <div class="page-width coll-hero__crumb-wrap">
+    <div class="coll-hero__crumb">
+      <a href="{{ routes.root_url }}" class="nav-link">Home</a>
+      <span class="coll-hero__crumb-sep">/</span>
+      <span class="coll-hero__crumb-current">{{ collection.title }}</span>
+    </div>
+  </div>
+  <div class="coll-hero__inner">
+    <div class="coll-hero__eyebrow">
+      <span class="coll-hero__rule"></span>
+      <span class="coll-hero__eyebrow-text">{{ section.settings.eyebrow }}</span>
+      <span class="coll-hero__rule"></span>
+    </div>
+    <h1 class="coll-hero__title">{{ collection.title }}</h1>
+    {%- if collection.description != blank -%}
+      <div class="coll-hero__desc rte">{{ collection.description }}</div>
+    {%- endif -%}
+    {%- if section.settings.show_trust -%}
+      <div class="coll-hero__trust">
+        <span class="coll-hero__trust-item">✦ Hand-cut Stone &amp; Glass</span>
+        <span class="coll-hero__trust-dot">·</span>
+        <span class="coll-hero__trust-item">♦ Lifetime Warranty</span>
+        <span class="coll-hero__trust-dot">·</span>
+        <span class="coll-hero__trust-item">⏱ Made to Order</span>
+        <span class="coll-hero__trust-dot">·</span>
+        <span class="coll-hero__trust-item">✈ Free Worldwide Shipping</span>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<!-- CATEGORY CHIPS -->
+{%- if section.settings.chips_menu != blank -%}
+<section class="coll-chips">
+  <div class="page-width coll-chips__row">
+    {%- for link in section.settings.chips_menu.links -%}
+      <a href="{{ link.url }}" class="coll-chip{% if link.active %} is-active{% endif %}">{{ link.title }}</a>
+    {%- endfor -%}
+  </div>
+</section>
+{%- endif -%}
+
+<!-- MAIN -->
+<section class="coll page-width">
+  {%- paginate collection.products by section.settings.products_per_page -%}
+    <form data-collection-filter>
+      <div class="coll__toolbar">
+        <div class="coll__count">Showing <strong>{{ collection.products_count }}</strong> artworks</div>
+        <div class="coll__sort">
+          <span class="coll__sort-label">Sort</span>
+          <select name="sort_by" class="coll__sort-select" data-auto-submit>
+            {%- for option in collection.sort_options -%}
+              <option value="{{ option.value }}" {% if option.value == collection.sort_by %}selected{% endif %}>{{ option.name }}</option>
+            {%- endfor -%}
+          </select>
+        </div>
+      </div>
+
+      <div class="coll__layout">
+        <!-- SIDEBAR -->
+        <aside class="coll__sidebar">
+          <div class="coll__filter-head">
+            <span class="coll__filter-title">Filter</span>
+            <a href="{{ collection.url }}" class="coll__filter-reset">Reset</a>
+          </div>
+          {%- for filter in collection.filters -%}
+            <div class="coll-facet" data-accordion data-open>
+              <button type="button" class="coll-facet__head" data-accordion-toggle>
+                <span>{{ filter.label }}</span>
+                <span class="coll-facet__icon">+</span>
+              </button>
+              <div class="coll-facet__body">
+                <div class="coll-facet__body-inner">
+                  {%- case filter.type -%}
+                    {%- when 'price_range' -%}
+                      <div class="coll-facet__price">
+                        <input type="number" name="{{ filter.min_value.param_name }}" value="{{ filter.min_value.value }}" placeholder="${{ 0 }}" min="0" max="{{ filter.range_max | money_without_currency | replace: ',', '' }}">
+                        <span>–</span>
+                        <input type="number" name="{{ filter.max_value.param_name }}" value="{{ filter.max_value.value }}" placeholder="${{ filter.range_max | money_without_currency }}" min="0" max="{{ filter.range_max | money_without_currency | replace: ',', '' }}">
+                      </div>
+                    {%- else -%}
+                      {%- for value in filter.values -%}
+                        <label class="coll-facet__row">
+                          <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}" {% if value.active %}checked{% endif %} data-auto-submit>
+                          <span class="coll-facet__row-label">{{ value.label }}</span>
+                          <span class="coll-facet__row-count">{{ value.count }}</span>
+                        </label>
+                      {%- endfor -%}
+                  {%- endcase -%}
+                </div>
+              </div>
+            </div>
+          {%- endfor -%}
+          <noscript><button type="submit" class="btn btn--dark" style="margin-top:16px;width:100%;">Apply</button></noscript>
+        </aside>
+
+        <!-- GRID -->
+        <div class="coll__main">
+          {%- if collection.products.size > 0 -%}
+            <div class="coll__grid" style="grid-template-columns: repeat({{ section.settings.columns }}, 1fr);">
+              {%- for product in collection.products -%}
+                {% render 'card-collection', product: product %}
+              {%- endfor -%}
+            </div>
+            {%- if paginate.pages > 1 -%}
+              <div class="coll__pagination">
+                {%- for part in paginate.parts -%}
+                  {%- if part.is_link -%}
+                    <a href="{{ part.url }}" class="coll__page">{{ part.title }}</a>
+                  {%- elsif part.title == paginate.current_page -%}
+                    <span class="coll__page is-active">{{ part.title }}</span>
+                  {%- else -%}
+                    <span class="coll__page">{{ part.title }}</span>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+          {%- else -%}
+            <div class="coll__empty">
+              <div class="coll__empty-title">This collection is coming online soon.</div>
+              <p class="coll__empty-text">We're still photographing these pieces. Check back shortly or browse our other collections.</p>
+              <a href="{{ routes.all_products_collection_url }}" class="btn btn--ghost">View All Products</a>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </form>
+  {%- endpaginate -%}
+</section>
+
+<!-- CUSTOM CTA BAND -->
+{%- if section.settings.cta_heading != blank -%}
+<section class="coll-cta">
+  <div class="page-width coll-cta__inner">
+    <div class="coll-cta__text">
+      <div class="coll-cta__eyebrow">{{ section.settings.cta_eyebrow }}</div>
+      <h2 class="coll-cta__heading">{{ section.settings.cta_heading }}</h2>
+      {%- if section.settings.cta_text != blank -%}<p class="coll-cta__sub">{{ section.settings.cta_text }}</p>{%- endif -%}
+    </div>
+    {%- if section.settings.cta_button_label != blank -%}
+      <a href="{{ section.settings.cta_button_link }}" class="btn btn--blue">{{ section.settings.cta_button_label }}</a>
+    {%- endif -%}
+  </div>
+</section>
+{%- endif -%}
+
+<style>
+  .coll-hero { background: var(--color-panel); border-bottom: 1px solid rgba(22,51,94,.08); }
+  .coll-hero__crumb-wrap { padding-top: 30px; }
+  .coll-hero__crumb { display: flex; align-items: center; gap: 9px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-soft); }
+  .coll-hero__crumb-sep { color: #B7C0D2; }
+  .coll-hero__crumb-current { color: var(--color-navy); }
+  .coll-hero__inner { max-width: 880px; margin: 0 auto; padding: 48px 40px 60px; text-align: center; }
+  .coll-hero__eyebrow { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 22px; }
+  .coll-hero__rule { width: 38px; height: 1px; background: var(--color-blue); }
+  .coll-hero__eyebrow-text { font-family: var(--font-accent); font-size: 13px; letter-spacing: .36em; text-transform: uppercase; color: var(--color-navy); }
+  .coll-hero__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(44px,5.4vw,72px); line-height: 1.02; letter-spacing: -.01em; margin-bottom: 22px; color: var(--color-navy); }
+  .coll-hero__desc { font-size: 17px; line-height: 1.7; color: var(--color-text-muted); max-width: 620px; margin: 0 auto 30px; }
+  .coll-hero__trust { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; font-size: 12.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-soft); }
+  .coll-hero__trust-item { color: var(--color-text-soft); }
+  .coll-hero__trust-dot { color: #C4CDDC; }
+
+  .coll-chips { border-bottom: 1px solid rgba(22,51,94,.08); background: rgba(255,255,255,.5); }
+  .coll-chips__row { padding-top: 18px; padding-bottom: 18px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .coll-chip { white-space: nowrap; font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase; padding: 10px 20px; border: 1px solid rgba(22,51,94,.18); transition: all .2s ease; color: #46546E; }
+  .coll-chip:hover { border-color: var(--color-blue); color: var(--color-navy); }
+  .coll-chip.is-active { background: var(--color-navy); color: #fff; border-color: var(--color-navy); }
+
+  .coll { padding-top: 36px; padding-bottom: 90px; }
+  .coll__toolbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; padding-bottom: 24px; margin-bottom: 34px; border-bottom: 1px solid rgba(22,51,94,.1); }
+  .coll__count { font-size: 13px; color: var(--color-text-muted); }
+  .coll__count strong { color: var(--color-navy); }
+  .coll__sort { display: flex; align-items: center; gap: 14px; }
+  .coll__sort-label { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--color-text-soft); }
+  .coll__sort-select { font-family: var(--font-body); font-size: 13px; color: var(--color-navy); background: #fff; border: 1px solid rgba(22,51,94,.22); padding: 11px 16px; cursor: pointer; outline: none; }
+  .coll__layout { display: grid; grid-template-columns: 248px 1fr; gap: 48px; align-items: start; }
+  .coll__sidebar { position: sticky; top: 100px; }
+  .coll__filter-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; padding-bottom: 18px; border-bottom: 1px solid var(--color-line); }
+  .coll__filter-title { font-family: var(--font-accent); font-size: 16px; color: var(--color-navy); }
+  .coll__filter-reset { font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-blue); }
+  .coll-facet { border-bottom: 1px solid rgba(22,51,94,.1); }
+  .coll-facet__head { width: 100%; background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 18px 0; font-family: var(--font-body); font-size: 13px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--color-navy); }
+  .coll-facet__icon { font-size: 18px; font-weight: 300; color: var(--color-text-soft); transition: transform .25s ease; }
+  .coll-facet[data-open] .coll-facet__icon { transform: rotate(45deg); }
+  .coll-facet__body { overflow: hidden; max-height: 0; opacity: 0; transition: max-height .4s ease, opacity .3s ease; }
+  .coll-facet[data-open] .coll-facet__body { max-height: 500px; opacity: 1; overflow-y: auto; }
+  .coll-facet__body-inner { padding: 0 0 20px; }
+  .coll-facet__row { display: flex; align-items: center; gap: 11px; padding: 8px 0; cursor: pointer; font-size: 14px; color: #46546E; }
+  .coll-facet__row-label { flex: 1; }
+  .coll-facet__row-count { font-size: 12px; color: var(--color-text-faint); }
+  .coll-facet__price { display: flex; gap: 10px; align-items: center; }
+  .coll-facet__price input { flex: 1; border: 1px solid rgba(22,51,94,.2); padding: 9px 12px; font-size: 13px; color: var(--color-text-muted); width: 100%; }
+
+  .coll__grid { display: grid; gap: 38px 26px; }
+  .coll__pagination { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 64px; }
+  .coll__page { min-width: 42px; height: 42px; padding: 0 14px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(22,51,94,.25); color: var(--color-navy); font-size: 14px; }
+  .coll__page.is-active { background: var(--color-navy); color: #fff; border-color: var(--color-navy); }
+  .coll__empty { text-align: center; padding: 70px 20px; }
+  .coll__empty-title { font-family: var(--font-display); font-style: italic; font-size: 28px; color: var(--color-navy); margin-bottom: 14px; }
+  .coll__empty-text { font-size: 15px; color: var(--color-text-muted); margin-bottom: 26px; }
+
+  .coll-cta { background: var(--color-navy); color: var(--color-light-text); }
+  .coll-cta__inner { padding-top: 84px; padding-bottom: 84px; display: flex; align-items: center; justify-content: space-between; gap: 48px; flex-wrap: wrap; }
+  .coll-cta__text { max-width: 620px; }
+  .coll-cta__eyebrow { font-family: var(--font-accent); font-size: 13px; letter-spacing: .36em; text-transform: uppercase; color: var(--color-blue-light); margin-bottom: 18px; }
+  .coll-cta__heading { font-family: var(--font-display); font-weight: 500; font-size: clamp(32px,3.8vw,50px); line-height: 1.08; margin-bottom: 16px; color: #fff; }
+  .coll-cta__sub { font-size: 16px; line-height: 1.7; color: var(--color-text-faint); }
+
+  @media (max-width: 990px) {
+    .coll__layout { grid-template-columns: 1fr; gap: 28px; }
+    .coll__sidebar { position: static; }
+    .coll__grid { grid-template-columns: repeat(2, 1fr) !important; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Collection",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Home of Mosaics" },
+    { "type": "checkbox", "id": "show_trust", "label": "Show trust row", "default": true },
+    { "type": "link_list", "id": "chips_menu", "label": "Category chips menu" },
+    { "type": "range", "id": "products_per_page", "min": 12, "max": 36, "step": 4, "label": "Products per page", "default": 24 },
+    { "type": "range", "id": "columns", "min": 2, "max": 4, "step": 1, "label": "Columns", "default": 3 },
+    { "type": "header", "content": "Custom CTA band" },
+    { "type": "text", "id": "cta_eyebrow", "label": "Eyebrow", "default": "Bespoke Commissions" },
+    { "type": "text", "id": "cta_heading", "label": "Heading", "default": "Don't see your vision? We'll hand-cut it in stone." },
+    { "type": "textarea", "id": "cta_text", "label": "Text", "default": "Share a photo, sketch or idea and our artisans will craft a one-of-a-kind mosaic in any subject — tailored to your exact dimensions, palette and space." },
+    { "type": "text", "id": "cta_button_label", "label": "Button label", "default": "Start a Custom Mosaic Piece" },
+    { "type": "url", "id": "cta_button_link", "label": "Button link" }
+  ]
+}
+{% endschema %}

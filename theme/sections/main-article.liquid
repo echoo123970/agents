@@ -1,0 +1,27 @@
+<article class="article page-width">
+  <div class="article__head">
+    <div class="article__date">{{ article.published_at | date: '%b %d, %Y' }}</div>
+    <h1 class="article__title">{{ article.title }}</h1>
+    {%- if article.author != blank -%}<div class="article__author">By {{ article.author }}</div>{%- endif -%}
+  </div>
+  {%- if article.image != blank -%}
+    <img src="{{ article.image | image_url: width: 1400 }}" alt="{{ article.title | escape }}" width="1400" height="788" class="article__image">
+  {%- endif -%}
+  <div class="article__body rte">{{ article.content }}</div>
+</article>
+
+<style>
+  .article { padding-top: 64px; padding-bottom: 96px; max-width: 860px; }
+  .article__head { text-align: center; margin-bottom: 40px; }
+  .article__date { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--color-text-faint); margin-bottom: 14px; }
+  .article__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(34px, 4.5vw, 56px); line-height: 1.08; color: var(--color-navy); margin-bottom: 14px; }
+  .article__author { font-size: 14px; color: var(--color-text-soft); }
+  .article__image { width: 100%; aspect-ratio: 16/9; object-fit: cover; margin-bottom: 40px; }
+  .article__body { font-size: 17px; line-height: 1.8; color: var(--color-text-muted); }
+  .article__body :is(h2,h3) { font-family: var(--font-display); color: var(--color-navy); margin: 32px 0 12px; }
+  .article__body img { margin: 24px 0; }
+</style>
+
+{% schema %}
+{ "name": "Article", "settings": [] }
+{% endschema %}

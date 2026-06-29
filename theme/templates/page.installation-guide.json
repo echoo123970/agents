@@ -1,0 +1,31 @@
+{
+  "sections": {
+    "main": {
+      "type": "page-installation",
+      "blocks": {
+        "t1": { "type": "tool", "settings": { "name": "Safety Gear", "desc": "Gloves, safety glasses and a dust mask to protect yourself." } },
+        "t2": { "type": "tool", "settings": { "name": "Adhesive", "desc": "A high-quality mosaic adhesive suited to your surface." } },
+        "t3": { "type": "tool", "settings": { "name": "Trowel", "desc": "For spreading the adhesive evenly." } },
+        "t4": { "type": "tool", "settings": { "name": "Notched Trowel", "desc": "Creates ridges in the adhesive for better tile grip." } },
+        "t5": { "type": "tool", "settings": { "name": "Grout", "desc": "A color that complements your mosaic and space." } },
+        "t6": { "type": "tool", "settings": { "name": "Grout Float", "desc": "To apply and smooth grout between the tiles." } },
+        "t7": { "type": "tool", "settings": { "name": "Bucket & Sponge", "desc": "For mixing grout and cleaning as you go." } },
+        "t8": { "type": "tool", "settings": { "name": "Level", "desc": "Ensures your mosaic is perfectly aligned." } },
+        "t9": { "type": "tool", "settings": { "name": "Utility Knife", "desc": "For any necessary cuts to the mesh backing." } },
+        "t10": { "type": "tool", "settings": { "name": "Rubber Mallet", "desc": "Gently taps tiles firmly into place." } },
+        "s1": { "type": "step", "settings": { "number": "1", "title": "Prepare Your Surface", "body": "Give your chosen surface a thorough cleaning with a damp sponge and soapy water. Remove any dust, dirt or grime to ensure the adhesive bonds optimally.", "tip_label": "Pro Tip", "tip": "For uneven surfaces, apply a leveling compound first to create a smooth, even base." } },
+        "s1b": { "type": "step", "settings": { "number": "↳", "title": "Prepare Your Mosaic for Application", "body": "Your mosaic arrives rolled like a rug — large designs come as numbered sections you assemble like a puzzle. Unroll it flat (design side down), peel off the backing plastic and any leftover glue, then flip it over and clean the tile surface before installing. If any tiles are missing, use the spare tiles included in the package — trim the long spares to size and add them as you install." } },
+        "s2": { "type": "step", "settings": { "number": "2", "title": "Spread the Adhesive", "body": "Using your trowel, spread a thin, even layer of adhesive onto the prepared surface. Follow the manufacturer's instructions for drying time before moving on." } },
+        "s3": { "type": "step", "settings": { "number": "3", "title": "Embrace the Mosaic Magic", "body": "Now the fun part. Starting from the center or a corner, gently press your mosaic into the adhesive, keeping proper alignment and spacing. Check with your level regularly to maintain a flawless finish." } },
+        "s4": { "type": "step", "settings": { "number": "4", "title": "Let the Art Settle", "body": "Once your mosaic is in place, allow the adhesive to cure completely according to the manufacturer's recommendations — this typically takes 24 to 48 hours." } },
+        "s5": { "type": "step", "settings": { "number": "5", "title": "Grout Your Masterpiece", "body": "Mix your grout per the package instructions and apply it with the grout float, working diagonally across the mosaic, then wipe away any excess with a damp sponge. Once it dries, seal the grout to protect it from moisture — unless you used epoxy grout, which is already non-porous.", "tip_label": "Important", "tip": "Grout is optional for indoor, dry installations — but essential for exterior, pool and wet areas. Choose a light grout for light-toned designs and a dark grout for darker ones, so the joints blend naturally." } },
+        "s6": { "type": "step", "settings": { "number": "6", "title": "Reveal Your Creation", "body": "After the grout dries completely (usually 24 to 72 hours), buff the surface with a soft cloth to bring out its shine and reveal your stunning finished masterpiece." } },
+        "tl1": { "type": "timeline", "settings": { "phase": "Hands-on Work", "time": "2–4 hrs", "bar_percent": 35 } },
+        "tl2": { "type": "timeline", "settings": { "phase": "Adhesive Cure", "time": "24–48 hrs", "bar_percent": 70 } },
+        "tl3": { "type": "timeline", "settings": { "phase": "Grout Dry", "time": "24–72 hrs", "bar_percent": 90 } }
+      },
+      "block_order": ["t1","t2","t3","t4","t5","t6","t7","t8","t9","t10","s1","s1b","s2","s3","s4","s5","s6","tl1","tl2","tl3"]
+    }
+  },
+  "order": ["main"]
+}

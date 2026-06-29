@@ -1,0 +1,83 @@
+<section id="categories" class="cat-grid page-width">
+  <div class="cat-grid__head">
+    <div>
+      {%- if section.settings.eyebrow != blank -%}<div class="eyebrow">{{ section.settings.eyebrow }}</div>{%- endif -%}
+      {%- if section.settings.heading != blank -%}<h2 class="section-title cat-grid__title">{{ section.settings.heading }}</h2>{%- endif -%}
+    </div>
+    {%- if section.settings.button_label != blank -%}
+      <a href="{{ section.settings.button_link }}" class="btn btn--ghost">{{ section.settings.button_label }}</a>
+    {%- endif -%}
+  </div>
+  <div class="cat-grid__grid" style="grid-template-columns: repeat({{ section.settings.columns }}, 1fr);">
+    {%- for block in section.blocks -%}
+      {%- assign coll = block.settings.collection -%}
+      {%- if coll != blank -%}
+        {%- assign card_url = coll.url -%}
+        {%- assign card_name = block.settings.title | default: coll.title -%}
+        {%- assign card_image = block.settings.image | default: coll.featured_image -%}
+      {%- else -%}
+        {%- assign card_url = block.settings.link -%}
+        {%- assign card_name = block.settings.title -%}
+        {%- assign card_image = block.settings.image -%}
+      {%- endif -%}
+      <a href="{{ card_url | default: '#' }}" class="cat-card" {{ block.shopify_attributes }}>
+        {%- if card_image != blank -%}
+          <img src="{{ card_image | image_url: width: 600 }}" alt="{{ card_name | escape }}" width="600" height="800" class="cat-img cover-img" loading="lazy">
+        {%- else -%}
+          {{ 'collection-1' | placeholder_svg_tag: 'cat-img cover-img' }}
+        {%- endif -%}
+        <span class="cat-grid__scrim"></span>
+        <span class="cat-veil"></span>
+        <span class="cat-frame"></span>
+        <span class="cat-label">{{ card_name }}</span>
+        <span class="cat-cta">View Collection</span>
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+
+<style>
+  .cat-grid { padding-top: 128px; padding-bottom: 90px; }
+  .cat-grid__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 48px; flex-wrap: wrap; }
+  .cat-grid__title { max-width: 640px; }
+  .cat-grid__grid { display: grid; gap: 18px; }
+  .cat-card { position: relative; display: block; overflow: hidden; aspect-ratio: 3/4; background: var(--color-light-text); }
+  .cat-grid__scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(11,28,53,.72), rgba(11,28,53,0) 55%); }
+  .cat-label { position: absolute; left: 16px; bottom: 14px; right: 16px; color: var(--color-bg); font-family: var(--font-accent); font-size: 15px; letter-spacing: .04em; }
+  @media (max-width: 990px) { .cat-grid { padding-top: 80px; } .cat-grid__grid { grid-template-columns: repeat(3, 1fr) !important; } }
+  @media (max-width: 600px) { .cat-grid__grid { grid-template-columns: repeat(2, 1fr) !important; } }
+</style>
+
+{% schema %}
+{
+  "name": "Category grid",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Shop by Subject" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Artisanal Mosaic Designs In Natural Marble & Glass" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "View All Subjects" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "range", "id": "columns", "min": 3, "max": 6, "step": 1, "label": "Columns", "default": 5 }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "text", "id": "title", "label": "Title override" },
+        { "type": "image_picker", "id": "image", "label": "Image override" },
+        { "type": "url", "id": "link", "label": "Link (if no collection)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Category grid",
+      "blocks": [
+        { "type": "category" }, { "type": "category" }, { "type": "category" }, { "type": "category" }, { "type": "category" },
+        { "type": "category" }, { "type": "category" }, { "type": "category" }, { "type": "category" }, { "type": "category" }
+      ]
+    }
+  ]
+}
+{% endschema %}

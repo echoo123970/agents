@@ -1,0 +1,31 @@
+{%- comment -%}
+  Renders a product card.
+  Accepts: product (object), badge (optional string)
+{%- endcomment -%}
+<a href="{{ product.url }}" class="prod-card">
+  <div class="prod-card__media">
+    {%- if product.featured_media != blank -%}
+      <img src="{{ product.featured_media | image_url: width: 700 }}" alt="{{ product.title | escape }}" width="700" height="875" class="prod-img cover-img" loading="lazy">
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'prod-img cover-img' }}
+    {%- endif -%}
+    {%- if badge != blank -%}
+      <span class="prod-card__badge">{{ badge }}</span>
+    {%- elsif product.compare_at_price > product.price -%}
+      <span class="prod-card__badge">Sale</span>
+    {%- endif -%}
+  </div>
+  {%- if product.type != blank -%}
+    <div class="prod-card__sub">{{ product.type }}</div>
+  {%- elsif product.vendor != blank -%}
+    <div class="prod-card__sub">{{ product.vendor }}</div>
+  {%- endif -%}
+  <div class="prod-title prod-card__title">{{ product.title }}</div>
+  <div class="prod-card__price">
+    {%- if product.price_varies -%}
+      {{ 'products.product.from_price_html' | t: price: product.price_min | money }}
+    {%- else -%}
+      {{ product.price | money }}
+    {%- endif -%}
+  </div>
+</a>

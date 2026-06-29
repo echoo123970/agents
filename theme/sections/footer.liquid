@@ -1,0 +1,170 @@
+<footer class="site-footer" role="contentinfo">
+  <div class="page-width site-footer__top">
+    <div class="site-footer__brand">
+      <div class="site-footer__logo">
+        {%- if settings.logo_light != blank -%}
+          <img src="{{ settings.logo_light | image_url: width: 200 }}" alt="{{ shop.name | escape }}" width="40" height="40">
+        {%- else -%}
+          <img src="{{ 'mark-white.png' | asset_url }}" alt="{{ shop.name | escape }}" width="40" height="40">
+        {%- endif -%}
+        <span class="site-footer__name">iMosaic<span class="site-footer__name-accent">Art</span></span>
+      </div>
+      {%- if section.settings.about_text != blank -%}
+        <p class="site-footer__about">{{ section.settings.about_text }}</p>
+      {%- endif -%}
+      <div class="site-footer__contact">
+        {%- if section.settings.phone != blank -%}
+          <div class="site-footer__contact-row">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-blue)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.7a2 2 0 0 1-.5 2.1L8.1 9.6a16 16 0 0 0 6 6l1.1-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.7.6a2 2 0 0 1 1.7 2z"/></svg>
+            <a href="tel:{{ section.settings.phone | replace: ' ', '' | replace: '(', '' | replace: ')', '' | replace: '-', '' }}" class="footer-link">{{ section.settings.phone }}</a>
+          </div>
+        {%- endif -%}
+        {%- if section.settings.email != blank -%}
+          <div class="site-footer__contact-row">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-blue)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m3 6 9 7 9-7"/></svg>
+            <a href="mailto:{{ section.settings.email }}" class="footer-link">{{ section.settings.email }}</a>
+          </div>
+        {%- endif -%}
+        {%- if section.settings.address != blank -%}
+          <div class="site-footer__contact-row site-footer__contact-row--top">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-blue)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px;"><path d="M20 10c0 5.5-8 12-8 12s-8-6.5-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>{{ section.settings.address }}</span>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'menu_column' -%}
+        <div class="site-footer__col" {{ block.shopify_attributes }}>
+          <div class="site-footer__col-title">{{ block.settings.heading }}</div>
+          <div class="site-footer__col-links">
+            {%- for link in block.settings.menu.links -%}
+              <a href="{{ link.url }}" class="footer-link">{{ link.title }}</a>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+
+  <div class="page-width site-footer__bottom">
+    <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</span>
+    <div class="site-footer__social">
+      {%- if settings.social_instagram_link != blank -%}<a href="{{ settings.social_instagram_link }}" class="footer-link">Instagram</a>{%- endif -%}
+      {%- if settings.social_pinterest_link != blank -%}<a href="{{ settings.social_pinterest_link }}" class="footer-link">Pinterest</a>{%- endif -%}
+      {%- if settings.social_facebook_link != blank -%}<a href="{{ settings.social_facebook_link }}" class="footer-link">Facebook</a>{%- endif -%}
+      {%- if settings.social_youtube_link != blank -%}<a href="{{ settings.social_youtube_link }}" class="footer-link">YouTube</a>{%- endif -%}
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer { background: var(--color-navy-deep); color: var(--color-text-faint); }
+  .site-footer__top {
+    padding-top: 72px;
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1fr;
+    gap: 48px;
+  }
+  .site-footer__logo { display: flex; align-items: center; gap: 13px; margin-bottom: 20px; }
+  .site-footer__name { font-family: var(--font-display); font-weight: 600; font-size: 26px; color: #fff; line-height: 1; }
+  .site-footer__name-accent { font-style: italic; color: var(--color-blue-lighter); }
+  .site-footer__about { font-size: 14px; line-height: 1.7; max-width: 320px; margin-bottom: 22px; }
+  .site-footer__contact { font-size: 14px; color: var(--color-text-soft); display: flex; flex-direction: column; gap: 13px; }
+  .site-footer__contact-row { display: flex; align-items: center; gap: 12px; }
+  .site-footer__contact-row--top { align-items: flex-start; }
+  .site-footer__contact-row span { max-width: 240px; }
+  .site-footer__col-title {
+    font-family: var(--font-accent);
+    font-size: 13px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--color-bg);
+    margin-bottom: 20px;
+  }
+  .site-footer__col-links { display: flex; flex-direction: column; gap: 12px; font-size: 14px; }
+  .site-footer__bottom {
+    margin-top: 40px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    border-top: 1px solid rgba(220,230,245,.12);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: #6B7790;
+  }
+  .site-footer__social { display: flex; gap: 20px; }
+  @media (max-width: 990px) {
+    .site-footer__top { grid-template-columns: 1fr 1fr; gap: 36px; }
+  }
+  @media (max-width: 600px) {
+    .site-footer__top { grid-template-columns: 1fr; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Footer",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "about_text",
+      "label": "About text",
+      "default": "Step into a world where art meets elegance — handcrafted mosaics woven into every space."
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone",
+      "default": "(315) 217-5538"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email",
+      "default": "info@imosaicart.com"
+    },
+    {
+      "type": "text",
+      "id": "address",
+      "label": "Address",
+      "default": "28 Liberty St, New York, NY 10005, United States"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu_column",
+      "name": "Menu column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Explore"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu",
+          "default": "footer"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer",
+      "blocks": [
+        { "type": "menu_column", "settings": { "heading": "Explore" } },
+        { "type": "menu_column", "settings": { "heading": "Support" } },
+        { "type": "menu_column", "settings": { "heading": "Company" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,29 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "description": { "type": "description", "settings": { "heading": "Description" } },
+        "materials": { "type": "collapsible", "settings": { "heading": "Materials & Craft", "content": "<p>Hand-cut from natural stone and glass tesserae, assembled tile by tile by master artisans. Mounted on a fiber-mesh backing for easy installation. Each piece is unique; slight variation in color and texture is part of its handmade character.</p>" } },
+        "shipping": { "type": "collapsible", "settings": { "heading": "Shipping & Returns", "content": "<p>Made to order with a 4–5 week handling time, then shipped free worldwide via DHL, UPS or FedEx with full tracking (transit around 10 days). Carefully packed in thick paper and heavy-duty film. Covered by our 30-day returns policy and lifetime warranty.</p>" } },
+        "t1": { "type": "trust", "settings": { "icon": "✈", "label": "Free worldwide shipping" } },
+        "t2": { "type": "trust", "settings": { "icon": "↺", "label": "30-day returns policy" } },
+        "t3": { "type": "trust", "settings": { "icon": "♦", "label": "Lifetime warranty" } },
+        "t4": { "type": "trust", "settings": { "icon": "✦", "label": "Hand-cut by master artisans" } }
+      },
+      "block_order": ["description", "materials", "shipping", "t1", "t2", "t3", "t4"]
+    },
+    "quote-form": { "type": "custom-quote-form", "settings": {} },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "f1": { "type": "faq", "settings": { "question": "Are your mosaics weatherproof and waterproof?", "answer": "Yes — every mosaic is fully weatherproof and waterproof, made from durable natural stone and glass. They're suitable for indoor and outdoor spaces, including pools, bathrooms and kitchens." } },
+        "f2": { "type": "faq", "settings": { "question": "What is the production and shipping time?", "answer": "Each mosaic is handcrafted to order with a 4–5 week handling time, then transit typically takes around 10 days, shipped free worldwide with full tracking." } },
+        "f3": { "type": "faq", "settings": { "question": "Can I order a custom size or design?", "answer": "Absolutely. Use the Request a Quote form to share your dimensions or your own image, and our artisans will hand-cut a one-of-a-kind piece tailored to your space." } }
+      },
+      "block_order": ["f1", "f2", "f3"]
+    },
+    "related": { "type": "related-products", "settings": {} }
+  },
+  "order": ["main", "quote-form", "faq", "related"]
+}

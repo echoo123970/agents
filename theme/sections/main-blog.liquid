@@ -1,0 +1,39 @@
+<section class="journal page-width" style="padding-top:64px;">
+  <div class="collection__head" style="text-align:center;margin-bottom:56px;">
+    <div class="eyebrow" style="margin-bottom:14px;">The Journal</div>
+    <h1 class="section-title">{{ blog.title }}</h1>
+  </div>
+  <div class="journal__grid">
+    {%- for article in blog.articles -%}
+      <a href="{{ article.url }}" class="journal__card">
+        <div class="journal__media">
+          {%- if article.image != blank -%}
+            <img src="{{ article.image | image_url: width: 700 }}" alt="{{ article.title | escape }}" width="700" height="770" class="cover-img" loading="lazy">
+          {%- else -%}
+            {{ 'image' | placeholder_svg_tag: 'cover-img' }}
+          {%- endif -%}
+        </div>
+        <div class="journal__date">{{ article.published_at | date: '%b %d, %Y' }}</div>
+        <h3 class="journal__title">{{ article.title }}</h3>
+        <p class="journal__excerpt">{{ article.excerpt_or_content | strip_html | truncate: 110 }}</p>
+        <span class="journal__more">{{ 'blogs.article.read_more' | t }}</span>
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+
+<style>
+  .journal__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  .journal__card { display: block; transition: opacity .3s ease; }
+  .journal__card:hover { opacity: .86; }
+  .journal__media { overflow: hidden; aspect-ratio: 4/4.4; background: var(--color-light-text); margin-bottom: 18px; }
+  .journal__date { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--color-text-faint); margin-bottom: 10px; }
+  .journal__title { font-family: var(--font-display); font-weight: 500; font-size: 24px; line-height: 1.2; margin-bottom: 10px; color: var(--color-navy); }
+  .journal__excerpt { font-size: 14px; line-height: 1.6; color: var(--color-text-muted); margin-bottom: 16px; }
+  .journal__more { display: inline-block; font-size: 11.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--color-navy); border-bottom: 1px solid var(--color-blue); padding-bottom: 4px; }
+  @media (max-width: 990px) { .journal__grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; } }
+</style>
+
+{% schema %}
+{ "name": "Blog", "settings": [] }
+{% endschema %}

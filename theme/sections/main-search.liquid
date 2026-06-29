@@ -1,0 +1,105 @@
+<section class="srch-hero">
+  <div class="page-width srch-hero__crumb-wrap">
+    <div class="srch-hero__crumb">
+      <a href="{{ routes.root_url }}" class="nav-link">Home</a>
+      <span class="srch-hero__crumb-sep">/</span>
+      <span class="srch-hero__crumb-current">Search</span>
+    </div>
+  </div>
+  <div class="srch-hero__inner">
+    <h1 class="srch-hero__title">What are you <em>looking for?</em></h1>
+    <form action="{{ routes.search_url }}" method="get" class="srch-hero__form">
+      <svg class="srch-hero__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7E8AA0" stroke-width="1.7"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+      <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search mosaics by name, subject or style…" class="srch-hero__input">
+    </form>
+  </div>
+</section>
+
+<section class="srch page-width">
+  {%- if search.performed -%}
+    <div class="srch__count">{{ 'general.search.results_with_count' | t: count: search.results_count }} for “{{ search.terms }}”</div>
+    {%- if search.results_count > 0 -%}
+      <div class="srch__grid">
+        {%- for item in search.results -%}
+          {%- if item.object_type == 'product' -%}
+            {% render 'card-collection', product: item %}
+          {%- else -%}
+            <a href="{{ item.url }}" class="srch__page-result">
+              <div class="cardc__sku">{{ item.object_type }}</div>
+              <div class="prod-title cardc__title">{{ item.title }}</div>
+            </a>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <div class="srch__empty">
+        <div class="srch__empty-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2B7BE8" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></div>
+        <h2 class="srch__empty-title">No mosaics found for “{{ search.terms }}”</h2>
+        <p class="srch__empty-text">Try a different name, subject or style — or browse the full collection.</p>
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn--dark">Browse All Mosaics</a>
+      </div>
+    {%- endif -%}
+  {%- else -%}
+    {%- if section.settings.popular != blank -%}
+      <div class="srch__suggest">
+        <div class="srch__suggest-label">Popular Searches</div>
+        <div class="srch__chips">
+          {%- assign terms = section.settings.popular | split: ',' -%}
+          {%- for term in terms -%}
+            {%- assign t = term | strip -%}
+            <a href="{{ routes.search_url }}?q={{ t | url_encode }}" class="srch__chip">{{ t }}</a>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+    {%- if section.settings.featured_collection != blank -%}
+      <div class="srch__suggest-label srch__suggest-label--mt">Featured Mosaics</div>
+      <div class="srch__grid">
+        {%- for product in section.settings.featured_collection.products limit: 8 -%}
+          {% render 'card-collection', product: product %}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+</section>
+
+<style>
+  .srch-hero { background: var(--color-panel); border-bottom: 1px solid rgba(22,51,94,.08); }
+  .srch-hero__crumb-wrap { padding-top: 30px; }
+  .srch-hero__crumb { display: flex; align-items: center; gap: 9px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-soft); }
+  .srch-hero__crumb-sep { color: #B7C0D2; }
+  .srch-hero__crumb-current { color: var(--color-navy); }
+  .srch-hero__inner { max-width: 780px; margin: 0 auto; padding: 44px 40px 50px; text-align: center; }
+  .srch-hero__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(36px,4.4vw,56px); line-height: 1.04; margin-bottom: 26px; color: var(--color-navy); }
+  .srch-hero__title em { font-style: italic; color: var(--color-blue); }
+  .srch-hero__form { position: relative; }
+  .srch-hero__icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); }
+  .srch-hero__input { width: 100%; background: #fff; border: 1px solid rgba(22,51,94,.18); outline: none; color: var(--color-navy); font-family: var(--font-body); font-size: 16px; padding: 18px 52px; }
+  .srch-hero__input:focus { border-color: var(--color-blue); }
+
+  .srch { padding-top: 50px; padding-bottom: 100px; }
+  .srch__count { margin-bottom: 30px; font-size: 14px; color: var(--color-text-muted); }
+  .srch__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px 24px; }
+  .srch__suggest { max-width: 780px; margin: 0 auto 48px; }
+  .srch__suggest-label { font-family: var(--font-accent); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--color-text-faint); margin-bottom: 18px; }
+  .srch__suggest-label--mt { margin-top: 10px; }
+  .srch__chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .srch__chip { background: #fff; border: 1px solid rgba(22,51,94,.18); color: #46546E; font-size: 13px; padding: 10px 20px; transition: all .2s ease; }
+  .srch__chip:hover { border-color: var(--color-blue); color: var(--color-navy); }
+  .srch__empty { text-align: center; padding: 60px 20px 80px; }
+  .srch__empty-icon { width: 78px; height: 78px; border-radius: 50%; background: var(--color-panel); display: flex; align-items: center; justify-content: center; margin: 0 auto 26px; }
+  .srch__empty-title { font-family: var(--font-display); font-weight: 500; font-size: 30px; margin-bottom: 10px; color: var(--color-navy); }
+  .srch__empty-text { font-size: 15.5px; line-height: 1.6; color: var(--color-text-muted); margin-bottom: 26px; }
+
+  @media (max-width: 990px) { .srch__grid { grid-template-columns: repeat(2, 1fr); } }
+</style>
+
+{% schema %}
+{
+  "name": "Search",
+  "settings": [
+    { "type": "text", "id": "popular", "label": "Popular searches (comma separated)", "default": "Portrait, Nautical, Flower, Geometric, Van Gogh, Religious" },
+    { "type": "collection", "id": "featured_collection", "label": "Featured collection (shown before searching)" }
+  ]
+}
+{% endschema %}
