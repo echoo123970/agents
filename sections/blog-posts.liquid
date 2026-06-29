@@ -1,4 +1,13 @@
+{%- comment -%} Auto-pick: chosen blog, else 'news', else the first blog that has articles {%- endcomment -%}
 {%- assign blog_obj = blogs[section.settings.blog] -%}
+{%- if blog_obj == blank or blog_obj.articles_count == 0 -%}
+  {%- assign blog_obj = blogs.news -%}
+{%- endif -%}
+{%- if blog_obj == blank or blog_obj.articles_count == 0 -%}
+  {%- for b in blogs -%}
+    {%- if b.articles_count > 0 -%}{%- assign blog_obj = b -%}{%- break -%}{%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
 <section id="journal" class="journal page-width">
   <div class="journal__head">
     <div>

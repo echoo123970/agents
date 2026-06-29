@@ -1,4 +1,6 @@
+{%- comment -%} Bestsellers grid: hand-picked Product blocks, else a live collection. {%- endcomment -%}
 {%- assign manual = section.blocks | where: 'type', 'product' -%}
+{%- assign manual_count = manual | size -%}
 <section class="bestsellers page-width">
   <div class="bestsellers__head">
     <div>
@@ -10,7 +12,7 @@
     {%- endif -%}
   </div>
   <div class="bestsellers__grid" style="grid-template-columns: repeat({{ section.settings.columns }}, 1fr);">
-    {%- if manual.size > 0 -%}
+    {%- if manual_count > 0 -%}
       {%- for block in manual -%}
         <a href="{{ block.settings.link | default: '#' }}" class="prod-card" {{ block.shopify_attributes }}>
           <div class="prod-card__media">
