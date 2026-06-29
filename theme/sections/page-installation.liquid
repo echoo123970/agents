@@ -25,7 +25,7 @@
     <div class="cm-zoom ig-hero__media">
       {%- if section.settings.image != blank -%}
         <img src="{{ section.settings.image | image_url: width: 900 }}" alt="" width="900" height="765" class="cover-img">
-      {%- else -%}{{ 'image' | placeholder_svg_tag: 'cover-img' }}{%- endif -%}
+      {%- else -%}<img src="{{ 'install-hero-tree.png' | asset_url }}" alt="" width="900" height="765" class="cover-img">{%- endif -%}
     </div>
   </div>
 </section>

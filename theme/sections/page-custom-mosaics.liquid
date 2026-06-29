@@ -20,7 +20,7 @@
       <div class="cm-zoom cm-hero__frame">
         {%- if section.settings.hero_image != blank -%}
           <img src="{{ section.settings.hero_image | image_url: width: 1100 }}" alt="{{ section.settings.heading | strip_html | escape }}" width="1100" height="1320" class="cover-img">
-        {%- else -%}{{ 'image' | placeholder_svg_tag: 'cover-img' }}{%- endif -%}
+        {%- else -%}<img src="{{ 'custom-flower-vase-room.jpg' | asset_url }}" alt="{{ section.settings.heading | strip_html | escape }}" width="1100" height="1320" class="cover-img">{%- endif -%}
       </div>
       {%- if section.settings.card_title != blank -%}
         <div class="cm-hero__card">
@@ -80,7 +80,7 @@
     <div class="cm-zoom cm-designer__media">
       {%- if section.settings.designer_image != blank -%}
         <img src="{{ section.settings.designer_image | image_url: width: 900 }}" alt="" width="900" height="1125" class="cover-img">
-      {%- else -%}{{ 'image' | placeholder_svg_tag: 'cover-img' }}{%- endif -%}
+      {%- else -%}<img src="{{ 'install-finish-hands.jpg' | asset_url }}" alt="" width="900" height="1125" class="cover-img">{%- endif -%}
     </div>
     <div class="cm-designer__content">
       {%- if section.settings.designer_eyebrow != blank -%}<div class="eyebrow">{{ section.settings.designer_eyebrow }}</div>{%- endif -%}

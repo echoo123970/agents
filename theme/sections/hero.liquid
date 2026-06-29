@@ -38,7 +38,7 @@
         {%- if section.settings.image != blank -%}
           <img src="{{ section.settings.image | image_url: width: 1200 }}" alt="{{ section.settings.heading | strip_html | escape }}" width="1200" height="1400" class="cover-img">
         {%- else -%}
-          <div class="hero__placeholder">{{ 'image' | placeholder_svg_tag: 'cover-img' }}</div>
+          <img src="{{ 'bird-peacock.jpg' | asset_url }}" alt="{{ section.settings.heading | strip_html | escape }}" width="1200" height="1400" class="cover-img">
         {%- endif -%}
       </div>
       {%- if section.settings.card_title != blank -%}

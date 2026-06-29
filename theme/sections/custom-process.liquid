@@ -25,7 +25,7 @@
       {%- if section.settings.image != blank -%}
         <img src="{{ section.settings.image | image_url: width: 1000 }}" alt="{{ section.settings.heading | escape }}" width="1000" height="1250" class="cover-img">
       {%- else -%}
-        {{ 'image' | placeholder_svg_tag: 'cover-img' }}
+        <img src="{{ 'about-hands-tesserae.png' | asset_url }}" alt="{{ section.settings.heading | escape }}" width="1000" height="1250" class="cover-img">
       {%- endif -%}
       <span class="process__media-veil"></span>
       {%- if section.settings.image_caption != blank -%}

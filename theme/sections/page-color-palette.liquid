@@ -16,31 +16,40 @@
   </div>
 </section>
 
-{%- if marble.size > 0 -%}
+{%- assign marble_count = section.settings.marble_count -%}
+{%- assign engineered_count = section.settings.engineered_count -%}
 <section class="cp-group page-width cp-group--first">
   <div class="cp-group__head">
     <span class="cp-group__title">{{ section.settings.marble_label }}</span>
     <span class="cp-group__rule"></span>
-    <span class="cp-group__count">{{ marble.size }} tones</span>
+    <span class="cp-group__count">{{ marble_count }} tones</span>
   </div>
   <div class="cp-grid">
-    {%- for block in marble -%}
-      {% render 'swatch-card', block: block, index: forloop.index %}
+    {%- for i in (1..marble_count) -%}
+      {%- assign n = i | prepend: '0' | slice: -2, 2 -%}
+      <div class="sw-card">
+        <div class="sw-mosaic"><img src="{{ 'sw-' | append: n | append: '.png' | asset_url }}" alt="Mosaic swatch {{ n }}" width="400" height="400" loading="lazy"></div>
+        <div class="sw-meta"><div class="sw-num">{{ n }}</div><div class="sw-name">Marble Tone {{ n }}</div></div>
+      </div>
     {%- endfor -%}
   </div>
 </section>
-{%- endif -%}
 
-{%- if engineered.size > 0 -%}
+{%- if engineered_count > 0 -%}
 <section class="cp-group page-width">
   <div class="cp-group__head">
     <span class="cp-group__title">{{ section.settings.engineered_label }}</span>
     <span class="cp-group__rule"></span>
-    <span class="cp-group__count">{{ engineered.size }} tones</span>
+    <span class="cp-group__count">{{ engineered_count }} tones</span>
   </div>
   <div class="cp-grid">
-    {%- for block in engineered -%}
-      {% render 'swatch-card', block: block, index: forloop.index %}
+    {%- for i in (1..engineered_count) -%}
+      {%- assign idx = marble_count | plus: i -%}
+      {%- assign n = idx | prepend: '0' | slice: -2, 2 -%}
+      <div class="sw-card">
+        <div class="sw-mosaic"><img src="{{ 'sw-' | append: n | append: '.png' | asset_url }}" alt="Engineered swatch {{ n }}" width="400" height="400" loading="lazy"></div>
+        <div class="sw-meta"><div class="sw-num">{{ n }}</div><div class="sw-name">Engineered Tone {{ n }}</div></div>
+      </div>
     {%- endfor -%}
   </div>
 </section>
@@ -104,7 +113,9 @@
     { "type": "richtext", "id": "heading", "label": "Heading", "default": "<p>Natural Marble & <em>Engineered Stones</em></p>" },
     { "type": "textarea", "id": "text", "label": "Text", "default": "Every mosaic is hand-cut from this curated palette of natural marble and engineered stone. Choose your tones — or combine them — to compose a piece entirely your own." },
     { "type": "text", "id": "marble_label", "label": "Group 1 label", "default": "Natural Marble Group" },
+    { "type": "range", "id": "marble_count", "min": 6, "max": 42, "step": 1, "label": "Marble swatches", "default": 42 },
     { "type": "text", "id": "engineered_label", "label": "Group 2 label", "default": "Engineered Stones Group" },
+    { "type": "range", "id": "engineered_count", "min": 0, "max": 6, "step": 1, "label": "Engineered swatches", "default": 6 },
     { "type": "header", "content": "CTA band" },
     { "type": "text", "id": "cta_eyebrow", "label": "Eyebrow", "default": "Compose Your Own" },
     { "type": "text", "id": "cta_heading", "label": "Heading", "default": "Bring Your Palette to Life" },

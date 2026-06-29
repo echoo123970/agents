@@ -1,20 +1,4 @@
 {
-  "sections": {
-    "main": {
-      "type": "page-color-palette",
-      "blocks": {
-        "m1": { "type": "marble", "settings": { "name": "Carrara White" } },
-        "m2": { "type": "marble", "settings": { "name": "Crema Marfil" } },
-        "m3": { "type": "marble", "settings": { "name": "Emperador Dark" } },
-        "m4": { "type": "marble", "settings": { "name": "Rosso Verona" } },
-        "m5": { "type": "marble", "settings": { "name": "Verde Alpi" } },
-        "m6": { "type": "marble", "settings": { "name": "Nero Marquina" } },
-        "e1": { "type": "engineered", "settings": { "name": "Onyx Blue" } },
-        "e2": { "type": "engineered", "settings": { "name": "Glass Gold" } },
-        "e3": { "type": "engineered", "settings": { "name": "Mirror Silver" } }
-      },
-      "block_order": ["m1","m2","m3","m4","m5","m6","e1","e2","e3"]
-    }
-  },
+  "sections": { "main": { "type": "page-color-palette", "settings": { "marble_count": 42, "engineered_count": 6 } } },
   "order": ["main"]
 }

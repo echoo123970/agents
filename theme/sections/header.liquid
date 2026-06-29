@@ -4,7 +4,7 @@
       {%- if settings.logo != blank -%}
         <img src="{{ settings.logo | image_url: width: 200 }}" alt="{{ shop.name | escape }}" width="44" height="44" class="site-header__logo-img">
       {%- else -%}
-        <span class="site-header__mark">✦</span>
+        <img src="{{ 'mark-color.png' | asset_url }}" alt="{{ shop.name | escape }}" width="44" height="44" class="site-header__logo-img">
       {%- endif -%}
       <span class="site-header__name">iMosaic<span class="site-header__name-accent">Art</span></span>
     </a>
