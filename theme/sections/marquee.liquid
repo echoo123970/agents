@@ -1,0 +1,34 @@
+{%- assign words = section.settings.words | split: ',' -%}
+<section class="marquee">
+  <div class="marquee__track">
+    {%- for i in (1..2) -%}
+      <div class="marquee__run">
+        {%- for word in words -%}
+          <span class="marquee__item">
+            <span class="marquee__word">{{ word | strip }}</span>
+            <span class="marquee__star">✦</span>
+          </span>
+        {%- endfor -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+<style>
+  .marquee { background: var(--color-panel); border-top: 1px solid rgba(22,51,94,.08); border-bottom: 1px solid rgba(22,51,94,.08); overflow: hidden; padding: 22px 0; }
+  .marquee__track { display: flex; width: max-content; animation: mosaicMarquee 38s linear infinite; }
+  .marquee__run { display: flex; align-items: center; }
+  .marquee__item { display: inline-flex; align-items: center; }
+  .marquee__word { font-family: var(--font-display); font-size: 21px; font-style: italic; color: var(--color-text-muted); padding: 0 28px; white-space: nowrap; }
+  .marquee__star { color: var(--color-blue); font-size: 14px; }
+</style>
+
+{% schema %}
+{
+  "name": "Marquee",
+  "settings": [
+    { "type": "textarea", "id": "words", "label": "Words (comma separated)", "default": "iMosaicArt, Home of Mosaics, Where Tradition Meets Modern Design, Every Tile Tells a Story, Handmade Beauty in Every Tile, Crafted to Inspire Built to Last" }
+  ],
+  "presets": [{ "name": "Marquee" }]
+}
+{% endschema %}
