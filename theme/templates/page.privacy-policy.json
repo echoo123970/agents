@@ -1,4 +1,1 @@
-{
-  "sections": { "main": { "type": "main-page" } },
-  "order": ["main"]
-}
+{ "sections": { "main": { "type": "page-legal", "settings": { "eyebrow": "Your Privacy", "subtitle": "How we collect, use and protect your personal information." } } }, "order": ["main"] }
