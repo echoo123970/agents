@@ -93,6 +93,31 @@
     }
   });
 
+  /* Collection: auto-submit sort/filter form on change */
+  document.querySelectorAll('[data-collection-filter]').forEach(function (form) {
+    form.addEventListener('change', function (e) {
+      if (e.target.closest('[data-auto-submit]') || e.target.hasAttribute('data-auto-submit')) {
+        form.submit();
+      }
+    });
+  });
+
+  /* Collection card favorite hearts (localStorage wishlist) */
+  var readWish = function () { try { return JSON.parse(localStorage.getItem('ima_wishlist') || '[]'); } catch (e) { return []; } };
+  document.querySelectorAll('[data-wish-add]').forEach(function (btn) {
+    var handle = btn.dataset.productHandle;
+    var sync = function () { btn.classList.toggle('is-saved', readWish().indexOf(handle) !== -1); };
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      var list = readWish();
+      var i = list.indexOf(handle);
+      if (i === -1) list.push(handle); else list.splice(i, 1);
+      localStorage.setItem('ima_wishlist', JSON.stringify(list));
+      sync();
+    });
+    sync();
+  });
+
   /* Hero magnifier lens — replicates the design's zoom-on-hover */
   document.querySelectorAll('[data-hero-zoom]').forEach(function (frame) {
     var img = frame.querySelector('img');
