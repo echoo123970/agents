@@ -1,0 +1,20 @@
+{
+  "current": {
+    "color_background": "#F4F6FA",
+    "color_navy": "#16335E",
+    "color_accent": "#2B7BE8",
+    "page_width": 1320,
+    "social_instagram_link": "https://www.instagram.com/i.mosaicart/",
+    "social_pinterest_link": "https://www.pinterest.com/iMosaicArt/",
+    "social_facebook_link": "https://www.facebook.com/profile.php?id=100094048131287",
+    "social_youtube_link": "https://www.youtube.com/@iMosaicArt"
+  },
+  "presets": {
+    "iMosaicArt": {
+      "color_background": "#F4F6FA",
+      "color_navy": "#16335E",
+      "color_accent": "#2B7BE8",
+      "page_width": 1320
+    }
+  }
+}
