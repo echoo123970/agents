@@ -37,8 +37,12 @@
       <div class="hero__frame" data-hero-zoom>
         {%- if section.settings.image != blank -%}
           <img src="{{ section.settings.image | image_url: width: 1200 }}" alt="{{ section.settings.heading | strip_html | escape }}" width="1200" height="1400" class="cover-img">
+        {%- elsif section.settings.image_url != blank -%}
+          <img src="{{ section.settings.image_url }}" alt="{{ section.settings.heading | strip_html | escape }}" width="1200" height="1400" class="cover-img" referrerpolicy="no-referrer">
+        {%- elsif section.settings.image_file != blank -%}
+          <img src="{{ section.settings.image_file | asset_url }}" alt="{{ section.settings.heading | strip_html | escape }}" width="1200" height="1400" class="cover-img">
         {%- else -%}
-          <img src="{{ 'bird-peacock.jpg' | asset_url }}" alt="{{ section.settings.heading | strip_html | escape }}" width="1200" height="1400" class="cover-img">
+          <img src="{{ 'hero-horse.jpg' | asset_url }}" alt="{{ section.settings.heading | strip_html | escape }}" width="1200" height="1400" class="cover-img" onerror="this.onerror=null;this.src='{{ 'bird-peacock.jpg' | asset_url }}'">
         {%- endif -%}
       </div>
       {%- if section.settings.card_title != blank -%}
@@ -102,7 +106,9 @@
     { "type": "url", "id": "button_link_1", "label": "Button 1 link", "default": "/collections/all" },
     { "type": "text", "id": "button_label_2", "label": "Button 2 label", "default": "Request a Custom Quote" },
     { "type": "url", "id": "button_link_2", "label": "Button 2 link", "default": "/pages/custom-mosaics" },
-    { "type": "image_picker", "id": "image", "label": "Hero image" },
+    { "type": "image_picker", "id": "image", "label": "Hero image (upload — best quality)" },
+    { "type": "text", "id": "image_url", "label": "Hero image URL (paste a horse mosaic link)" },
+    { "type": "text", "id": "image_file", "label": "Bundled image filename (e.g. hero-horse.jpg)" },
     { "type": "header", "content": "Floating card" },
     { "type": "text", "id": "card_eyebrow", "label": "Card eyebrow", "default": "The Detail" },
     { "type": "text", "id": "card_title", "label": "Card title", "default": "Thousands of tesserae, placed by hand." }
