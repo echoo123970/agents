@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="{{ request.locale.iso_code }}">
   <head>
+{% include 'limespot' %}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -60,6 +61,7 @@
 
     <main id="MainContent" class="content-for-layout" role="main">
       {{ content_for_layout }}
+<limespot></limespot>
     </main>
 
     {% sections 'footer-group' %}
