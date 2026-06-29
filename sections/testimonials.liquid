@@ -12,6 +12,8 @@
           <div class="testimonials__author">
             {%- if block.settings.avatar != blank -%}
               <img src="{{ block.settings.avatar | image_url: width: 92 }}" alt="{{ block.settings.name | escape }}" width="46" height="46" class="testimonials__avatar">
+            {%- elsif block.settings.avatar_file != blank -%}
+              <img src="{{ block.settings.avatar_file | asset_url }}" alt="{{ block.settings.name | escape }}" width="46" height="46" class="testimonials__avatar">
             {%- endif -%}
             <div>
               <div class="testimonials__name">{{ block.settings.name }}</div>
@@ -55,7 +57,8 @@
       "name": "Testimonial",
       "settings": [
         { "type": "textarea", "id": "quote", "label": "Quote", "default": "Absolutely love my mosaic! The details and craftsmanship are truly outstanding." },
-        { "type": "image_picker", "id": "avatar", "label": "Avatar" },
+        { "type": "image_picker", "id": "avatar", "label": "Avatar (upload)" },
+        { "type": "text", "id": "avatar_file", "label": "Bundled avatar filename" },
         { "type": "text", "id": "name", "label": "Name", "default": "Anita Miller" },
         { "type": "text", "id": "place", "label": "Place", "default": "United States" }
       ]
@@ -65,12 +68,12 @@
     {
       "name": "Testimonials",
       "blocks": [
-        { "type": "testimonial", "settings": { "quote": "Absolutely love my mosaic! The details and craftsmanship are truly outstanding.", "name": "Anita Miller", "place": "United States" } },
-        { "type": "testimonial", "settings": { "quote": "Stunning craftsmanship, quick delivery, and always gets compliments!", "name": "Travis Raynor", "place": "United States" } },
-        { "type": "testimonial", "settings": { "quote": "Beautiful mosaic design and excellent quality. It looks amazing in my home!", "name": "Luna P.", "place": "United States" } },
-        { "type": "testimonial", "settings": { "quote": "The attention to detail is incredible. I could not be happier with my purchase.", "name": "Alexander Ball", "place": "New York" } },
-        { "type": "testimonial", "settings": { "quote": "This is my third purchase, and I am always impressed by the quality and service.", "name": "Emily Parker", "place": "United States" } },
-        { "type": "testimonial", "settings": { "quote": "I am truly impressed. The craftsmanship and color bring the sacred scene to life!", "name": "James Mitchell", "place": "United States" } }
+        { "type": "testimonial", "settings": { "quote": "Absolutely love my mosaic! The details and craftsmanship are truly outstanding.", "avatar_file": "rev-anita.png", "name": "Anita Miller", "place": "United States" } },
+        { "type": "testimonial", "settings": { "quote": "Stunning craftsmanship, quick delivery, and always gets compliments!", "avatar_file": "rev-travis.png", "name": "Travis Raynor", "place": "United States" } },
+        { "type": "testimonial", "settings": { "quote": "Beautiful mosaic design and excellent quality. It looks amazing in my home!", "avatar_file": "rev-luna.png", "name": "Luna P.", "place": "United States" } },
+        { "type": "testimonial", "settings": { "quote": "The attention to detail is incredible. I could not be happier with my purchase.", "avatar_file": "rev-alex.png", "name": "Alexander Ball", "place": "New York" } },
+        { "type": "testimonial", "settings": { "quote": "This is my third purchase, and I am always impressed by the quality and service.", "avatar_file": "rev-emily.png", "name": "Emily Parker", "place": "United States" } },
+        { "type": "testimonial", "settings": { "quote": "I am truly impressed. The craftsmanship and color bring the sacred scene to life!", "avatar_file": "rev-james.png", "name": "James Mitchell", "place": "United States" } }
       ]
     }
   ]
