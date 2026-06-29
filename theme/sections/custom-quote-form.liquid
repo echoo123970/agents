@@ -1,0 +1,91 @@
+<section id="quote-form" class="quote-section">
+  <div class="quote-section__inner">
+    <div class="quote-section__head">
+      {%- if section.settings.eyebrow != blank -%}<div class="quote-section__eyebrow">{{ section.settings.eyebrow }}</div>{%- endif -%}
+      {%- if section.settings.heading != blank -%}<h2 class="quote-section__title">{{ section.settings.heading }}</h2>{%- endif -%}
+      {%- if section.settings.text != blank -%}<p class="quote-section__text">{{ section.settings.text }}</p>{%- endif -%}
+    </div>
+
+    {%- form 'contact', class: 'quote-form' -%}
+      {%- if form.posted_successfully? -%}
+        <div class="quote-form__success">
+          <div class="quote-form__success-icon">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#7BB0F4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h3 class="quote-form__success-title">Quote Request Sent</h3>
+          <p class="quote-form__success-text">Thank you — our studio will reply with a tailored quote within one business day.</p>
+        </div>
+      {%- else -%}
+        {%- if form.errors -%}
+          <div class="quote-form__error">{{ form.errors | default_errors }}</div>
+        {%- endif -%}
+        <div class="quote-form__field">
+          <label class="quote-form__label" for="QuoteName">Name</label>
+          <input type="text" id="QuoteName" name="contact[name]" placeholder="Enter your full name" class="quote-form__input">
+        </div>
+        <div class="quote-form__field">
+          <label class="quote-form__label" for="QuoteEmail">Email <span class="quote-form__req">*</span></label>
+          <input type="email" id="QuoteEmail" name="contact[email]" required placeholder="Enter your email address" class="quote-form__input">
+        </div>
+        <div class="quote-form__field">
+          <label class="quote-form__label" for="QuotePhone">Phone Number</label>
+          <input type="tel" id="QuotePhone" name="contact[phone]" placeholder="Enter your phone number" class="quote-form__input">
+        </div>
+        <div class="quote-form__row">
+          <div class="quote-form__field">
+            <label class="quote-form__label" for="QuoteWidth">Width In Inches</label>
+            <input type="number" id="QuoteWidth" name="contact[Width (in)]" placeholder="Enter width" class="quote-form__input">
+          </div>
+          <div class="quote-form__field">
+            <label class="quote-form__label" for="QuoteHeight">Height In Inches</label>
+            <input type="number" id="QuoteHeight" name="contact[Height (in)]" placeholder="Enter height" class="quote-form__input">
+          </div>
+        </div>
+        <div class="quote-form__field">
+          <label class="quote-form__label" for="QuoteMsg">Customize Your Own Mosaic Design</label>
+          <textarea id="QuoteMsg" name="contact[body]" rows="4" placeholder="Give us details about color, size, shape or design" class="quote-form__input quote-form__textarea"></textarea>
+        </div>
+        {%- if product -%}
+          <input type="hidden" name="contact[Product]" value="{{ product.title }}">
+        {%- endif -%}
+        <button type="submit" class="quote-form__submit">Submit Request</button>
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</section>
+
+<style>
+  .quote-section { background: var(--color-navy); color: #EAE1D2; scroll-margin-top: 90px; }
+  .quote-section__inner { max-width: 760px; margin: 0 auto; padding: 80px 40px; }
+  .quote-section__head { text-align: center; margin-bottom: 42px; }
+  .quote-section__eyebrow { font-family: var(--font-accent); font-size: 12px; letter-spacing: .3em; text-transform: uppercase; color: var(--color-blue-light); margin-bottom: 14px; }
+  .quote-section__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(30px, 3.4vw, 46px); line-height: 1.1; margin-bottom: 14px; color: #fff; }
+  .quote-section__text { font-size: 16px; line-height: 1.7; color: var(--color-text-faint); margin: 0 auto; max-width: 520px; }
+  .quote-form__field { margin-bottom: 20px; }
+  .quote-form__row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .quote-form__label { display: block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--color-text-faint); margin-bottom: 9px; }
+  .quote-form__req { color: var(--color-blue-light); }
+  .quote-form__input { width: 100%; background: rgba(255,255,255,.06); border: 1px solid rgba(220,230,245,.22); outline: none; color: #fff; font-family: var(--font-body); font-size: 15px; padding: 14px 16px; }
+  .quote-form__input::placeholder { color: var(--color-text-faint); }
+  .quote-form__textarea { resize: vertical; }
+  .quote-form__submit { background: var(--color-blue); color: #fff; border: none; font-family: var(--font-body); font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding: 16px 44px; cursor: pointer; transition: background .25s ease; margin-top: 6px; }
+  .quote-form__submit:hover { background: #1E63C4; }
+  .quote-form__error { font-size: 13px; color: #F2B8B8; margin-bottom: 18px; }
+  .quote-form__success { text-align: center; padding: 24px 0 10px; }
+  .quote-form__success-icon { width: 68px; height: 68px; border-radius: 50%; background: rgba(43,123,232,.18); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; }
+  .quote-form__success-title { font-family: var(--font-display); font-weight: 500; font-size: 30px; margin-bottom: 12px; color: #fff; }
+  .quote-form__success-text { font-size: 16px; line-height: 1.65; color: var(--color-text-faint); max-width: 380px; margin: 0 auto; }
+  @media (max-width: 600px) { .quote-form__row { grid-template-columns: 1fr; } }
+</style>
+
+{% schema %}
+{
+  "name": "Custom quote form",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Make It Yours" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Request a Custom Quote" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Share your dimensions or your own image and our artisans will hand-cut a one-of-a-kind mosaic, tailored to your space." }
+  ],
+  "presets": [{ "name": "Custom quote form" }]
+}
+{% endschema %}
