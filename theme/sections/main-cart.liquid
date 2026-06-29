@@ -1,0 +1,65 @@
+<section class="cart page-width">
+  <h1 class="section-title cart__title">{{ 'cart.general.title' | t }}</h1>
+  {%- if cart.item_count > 0 -%}
+    <form action="{{ routes.cart_url }}" method="post" class="cart__form">
+      {%- for item in cart.items -%}
+        <div class="cart__row">
+          <div class="cart__row-media">
+            {%- if item.image != blank -%}
+              <img src="{{ item.image | image_url: width: 160 }}" alt="{{ item.title | escape }}" width="120" height="120">
+            {%- endif -%}
+          </div>
+          <div class="cart__row-info">
+            <a href="{{ item.url }}" class="cart__row-title">{{ item.product.title }}</a>
+            {%- unless item.product.has_only_default_variant -%}
+              <div class="cart__row-variant">{{ item.variant.title }}</div>
+            {%- endunless -%}
+            <div class="cart__row-price">{{ item.final_line_price | money }}</div>
+          </div>
+          <div class="cart__row-qty">
+            <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" aria-label="{{ 'products.product.quantity' | t }}">
+            <a href="{{ item.url_to_remove }}" class="cart__remove">{{ 'cart.general.remove' | t }}</a>
+          </div>
+        </div>
+      {%- endfor -%}
+      <div class="cart__footer">
+        <button type="submit" name="update" class="btn btn--ghost">Update</button>
+        <div class="cart__totals">
+          <span class="cart__subtotal-label">{{ 'cart.general.subtotal' | t }}</span>
+          <span class="cart__subtotal">{{ cart.total_price | money }}</span>
+        </div>
+        <button type="submit" name="checkout" class="btn btn--dark cart__checkout">{{ 'cart.general.checkout' | t }}</button>
+        <p class="cart__note">{{ 'cart.general.taxes_and_shipping_at_checkout' | t }}</p>
+      </div>
+    </form>
+  {%- else -%}
+    <div class="cart__empty">
+      <p>{{ 'cart.general.empty' | t }}</p>
+      <a href="{{ routes.all_products_collection_url }}" class="btn btn--dark">{{ 'cart.general.continue_shopping' | t }}</a>
+    </div>
+  {%- endif -%}
+</section>
+
+<style>
+  .cart { padding-top: 64px; padding-bottom: 96px; max-width: 900px; }
+  .cart__title { text-align: center; margin-bottom: 48px; }
+  .cart__row { display: grid; grid-template-columns: 120px 1fr auto; gap: 24px; padding: 24px 0; border-bottom: 1px solid var(--color-line); align-items: center; }
+  .cart__row-media img { width: 120px; height: 120px; object-fit: cover; }
+  .cart__row-title { font-family: var(--font-display); font-size: 22px; color: var(--color-navy); }
+  .cart__row-variant { font-size: 13px; color: var(--color-text-soft); margin-top: 4px; }
+  .cart__row-price { font-size: 15px; color: var(--color-text-muted); margin-top: 8px; }
+  .cart__row-qty { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+  .cart__row-qty input { width: 70px; padding: 10px; border: 1px solid var(--color-line); text-align: center; }
+  .cart__remove { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-soft); }
+  .cart__footer { margin-top: 32px; display: flex; flex-direction: column; align-items: flex-end; gap: 16px; }
+  .cart__totals { display: flex; align-items: baseline; gap: 16px; }
+  .cart__subtotal-label { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--color-text-soft); }
+  .cart__subtotal { font-family: var(--font-display); font-size: 28px; color: var(--color-navy); }
+  .cart__checkout { min-width: 240px; }
+  .cart__note { font-size: 12px; color: var(--color-text-soft); }
+  .cart__empty { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 24px; padding: 60px 0; }
+</style>
+
+{% schema %}
+{ "name": "Cart", "settings": [] }
+{% endschema %}

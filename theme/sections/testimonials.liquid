@@ -11,7 +11,7 @@
           <p class="testimonials__quote">“{{ block.settings.quote }}”</p>
           <div class="testimonials__author">
             {%- if block.settings.avatar != blank -%}
-              <img src="{{ block.settings.avatar | image_url: width: 92 }}" alt="{{ block.settings.name | escape }}" class="testimonials__avatar">
+              <img src="{{ block.settings.avatar | image_url: width: 92 }}" alt="{{ block.settings.name | escape }}" width="46" height="46" class="testimonials__avatar">
             {%- endif -%}
             <div>
               <div class="testimonials__name">{{ block.settings.name }}</div>

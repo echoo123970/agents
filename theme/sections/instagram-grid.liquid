@@ -9,7 +9,7 @@
     {%- for block in section.blocks -%}
       <a href="{{ block.settings.link | default: settings.social_instagram_link }}" target="_blank" rel="noopener" class="ig-tile" {{ block.shopify_attributes }}>
         {%- if block.settings.image != blank -%}
-          <img src="{{ block.settings.image | image_url: width: 400 }}" alt="" class="cover-img" loading="lazy">
+          <img src="{{ block.settings.image | image_url: width: 400 }}" alt="" width="400" height="400" class="cover-img" loading="lazy">
         {%- else -%}
           {{ 'image' | placeholder_svg_tag: 'cover-img' }}
         {%- endif -%}

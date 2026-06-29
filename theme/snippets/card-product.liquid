@@ -5,7 +5,7 @@
 <a href="{{ product.url }}" class="prod-card">
   <div class="prod-card__media">
     {%- if product.featured_media != blank -%}
-      <img src="{{ product.featured_media | image_url: width: 700 }}" alt="{{ product.title | escape }}" class="prod-img cover-img" loading="lazy">
+      <img src="{{ product.featured_media | image_url: width: 700 }}" alt="{{ product.title | escape }}" width="700" height="875" class="prod-img cover-img" loading="lazy">
     {%- else -%}
       {{ 'product-1' | placeholder_svg_tag: 'prod-img cover-img' }}
     {%- endif -%}

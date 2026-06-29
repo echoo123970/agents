@@ -36,7 +36,7 @@
     <div class="hero__media">
       <div class="hero__frame" data-hero-zoom>
         {%- if section.settings.image != blank -%}
-          <img src="{{ section.settings.image | image_url: width: 1200 }}" alt="{{ section.settings.heading | strip_html | escape }}" class="cover-img">
+          <img src="{{ section.settings.image | image_url: width: 1200 }}" alt="{{ section.settings.heading | strip_html | escape }}" width="1200" height="1400" class="cover-img">
         {%- else -%}
           <div class="hero__placeholder">{{ 'image' | placeholder_svg_tag: 'cover-img' }}</div>
         {%- endif -%}

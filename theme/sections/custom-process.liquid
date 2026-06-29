@@ -23,7 +23,7 @@
     </div>
     <div class="process__media cm-zoom">
       {%- if section.settings.image != blank -%}
-        <img src="{{ section.settings.image | image_url: width: 1000 }}" alt="{{ section.settings.heading | escape }}" class="cover-img">
+        <img src="{{ section.settings.image | image_url: width: 1000 }}" alt="{{ section.settings.heading | escape }}" width="1000" height="1250" class="cover-img">
       {%- else -%}
         {{ 'image' | placeholder_svg_tag: 'cover-img' }}
       {%- endif -%}

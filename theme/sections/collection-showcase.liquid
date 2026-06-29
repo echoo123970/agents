@@ -18,7 +18,7 @@
       {%- endif -%}
       <a href="{{ card_url | default: '#' }}" class="col-card" {{ block.shopify_attributes }}>
         {%- if card_image != blank -%}
-          <img src="{{ card_image | image_url: width: 900 }}" alt="{{ card_name | escape }}" class="col-zoom cover-img" loading="lazy">
+          <img src="{{ card_image | image_url: width: 900 }}" alt="{{ card_name | escape }}" width="900" height="600" class="col-zoom cover-img" loading="lazy">
         {%- else -%}
           {{ 'collection-2' | placeholder_svg_tag: 'col-zoom cover-img' }}
         {%- endif -%}

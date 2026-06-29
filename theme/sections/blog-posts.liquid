@@ -14,7 +14,7 @@
       <a href="{{ article.url }}" class="journal__card">
         <div class="journal__media">
           {%- if article.image != blank -%}
-            <img src="{{ article.image | image_url: width: 700 }}" alt="{{ article.title | escape }}" class="cover-img" loading="lazy">
+            <img src="{{ article.image | image_url: width: 700 }}" alt="{{ article.title | escape }}" width="700" height="770" class="cover-img" loading="lazy">
           {%- else -%}
             {{ 'image' | placeholder_svg_tag: 'cover-img' }}
           {%- endif -%}
