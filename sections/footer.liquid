@@ -34,8 +34,9 @@
       </div>
     </div>
 
-    {%- for block in section.blocks -%}
-      {%- if block.type == 'menu_column' -%}
+    {%- assign menu_cols = section.blocks | where: 'type', 'menu_column' -%}
+    {%- if menu_cols.size > 0 -%}
+      {%- for block in menu_cols -%}
         <div class="site-footer__col" {{ block.shopify_attributes }}>
           <div class="site-footer__col-title">{{ block.settings.heading }}</div>
           <div class="site-footer__col-links">
@@ -44,8 +45,40 @@
             {%- endfor -%}
           </div>
         </div>
-      {%- endif -%}
-    {%- endfor -%}
+      {%- endfor -%}
+    {%- else -%}
+      <div class="site-footer__col">
+        <div class="site-footer__col-title">Explore</div>
+        <div class="site-footer__col-links">
+          <a href="{{ routes.all_products_collection_url }}" class="footer-link">Mosaics</a>
+          <a href="/pages/portfolio" class="footer-link">Portfolio</a>
+          <a href="/pages/custom-mosaics" class="footer-link">Custom Mosaics</a>
+          <a href="/pages/color-palette" class="footer-link">Color Palette</a>
+          <a href="/pages/reviews" class="footer-link">Testimonials</a>
+          <a href="/pages/rewards" class="footer-link">Rewards Program</a>
+          <a href="{{ blogs.news.url | default: '/blogs/news' }}" class="footer-link">Journal</a>
+        </div>
+      </div>
+      <div class="site-footer__col">
+        <div class="site-footer__col-title">Support</div>
+        <div class="site-footer__col-links">
+          <a href="/pages/installation-guide" class="footer-link">Installation Guide</a>
+          <a href="/pages/faq" class="footer-link">FAQ</a>
+          <a href="/pages/shipping-policy" class="footer-link">Shipping Policy</a>
+          <a href="/pages/returns-refunds" class="footer-link">Returns &amp; Refunds</a>
+          <a href="/pages/contact-us" class="footer-link">Contact Us</a>
+        </div>
+      </div>
+      <div class="site-footer__col">
+        <div class="site-footer__col-title">Company</div>
+        <div class="site-footer__col-links">
+          <a href="/pages/about-us" class="footer-link">About Us</a>
+          <a href="/pages/privacy-policy" class="footer-link">Privacy Policy</a>
+          <a href="/pages/terms-conditions" class="footer-link">Terms of Service</a>
+          <a href="/pages/billing-terms" class="footer-link">Billing Terms</a>
+        </div>
+      </div>
+    {%- endif -%}
   </div>
 
   <div class="page-width site-footer__bottom">

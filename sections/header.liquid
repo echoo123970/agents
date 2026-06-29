@@ -10,9 +10,16 @@
     </a>
 
     <nav class="site-header__nav" role="navigation">
-      {%- for link in section.settings.menu.links -%}
-        <a href="{{ link.url }}" class="nav-link">{{ link.title }}</a>
-      {%- endfor -%}
+      {%- if section.settings.menu != blank and section.settings.menu.links.size > 0 -%}
+        {%- for link in section.settings.menu.links -%}
+          <a href="{{ link.url }}" class="nav-link">{{ link.title }}</a>
+        {%- endfor -%}
+      {%- else -%}
+        <a href="{{ routes.all_products_collection_url }}" class="nav-link">Mosaics</a>
+        <a href="/pages/custom-mosaics" class="nav-link">Custom Mosaics</a>
+        <a href="/pages/about-us" class="nav-link">About</a>
+        <a href="{{ blogs.news.url | default: '/blogs/news' }}" class="nav-link">Journal</a>
+      {%- endif -%}
     </nav>
 
     <div class="site-header__icons">
@@ -34,9 +41,16 @@
 
   <div class="mobile-nav" id="MobileNav">
     <button type="button" class="mobile-nav__close" data-menu-close aria-label="Close">&times;</button>
-    {%- for link in section.settings.menu.links -%}
-      <a href="{{ link.url }}" class="mobile-nav__link">{{ link.title }}</a>
-    {%- endfor -%}
+    {%- if section.settings.menu != blank and section.settings.menu.links.size > 0 -%}
+      {%- for link in section.settings.menu.links -%}
+        <a href="{{ link.url }}" class="mobile-nav__link">{{ link.title }}</a>
+      {%- endfor -%}
+    {%- else -%}
+      <a href="{{ routes.all_products_collection_url }}" class="mobile-nav__link">Mosaics</a>
+      <a href="/pages/custom-mosaics" class="mobile-nav__link">Custom Mosaics</a>
+      <a href="/pages/about-us" class="mobile-nav__link">About</a>
+      <a href="{{ blogs.news.url | default: '/blogs/news' }}" class="mobile-nav__link">Journal</a>
+    {%- endif -%}
   </div>
 </header>
 
