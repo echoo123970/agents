@@ -8,7 +8,7 @@
         {{ 'product-1' | placeholder_svg_tag: 'prod-img cover-img' }}
       {%- endif -%}
     </a>
-    <button type="button" class="cardc__fav" data-wish-add data-product-handle="{{ product.handle }}" aria-label="Add to wishlist">
+    <button type="button" class="cardc__fav" data-wish-add data-product-handle="{{ product.handle }}" data-wish-title="{{ product.title | escape }}" data-wish-url="{{ product.url }}" data-wish-image="{% if product.featured_media %}{{ product.featured_media | image_url: width: 600 }}{% endif %}" data-wish-price="{% if product.price_varies %}From {{ product.price_min | money }}{% else %}{{ product.price | money }}{% endif %}" data-wish-sub="{{ product.type | default: product.vendor | escape }}" aria-label="Add to wishlist">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#16335E" stroke-width="1.6"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>
     </button>
     {%- if product.variants.size == 1 and product.selected_or_first_available_variant.available -%}

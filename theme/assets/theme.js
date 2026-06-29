@@ -2,6 +2,20 @@
 (function () {
   'use strict';
 
+  /* Wishlist store (localStorage). Items are objects keyed by handle. */
+  window.imaWishlist = {
+    read: function () { try { return JSON.parse(localStorage.getItem('ima_wishlist') || '[]'); } catch (e) { return []; } },
+    write: function (list) { localStorage.setItem('ima_wishlist', JSON.stringify(list)); },
+    has: function (handle) { return this.read().some(function (x) { return (x.handle || x) === handle; }); },
+    toggle: function (item) {
+      var list = this.read();
+      var i = list.findIndex(function (x) { return (x.handle || x) === item.handle; });
+      if (i === -1) list.push(item); else list.splice(i, 1);
+      this.write(list);
+      return i === -1;
+    }
+  };
+
   /* Mobile nav toggle */
   document.addEventListener('click', function (e) {
     var toggle = e.target.closest('[data-menu-toggle]');
@@ -73,22 +87,16 @@
 
     /* Wishlist (localStorage) */
     var wishBtn = root.querySelector('[data-wishlist]');
-    if (wishBtn) {
-      var handle = wishBtn.dataset.productHandle;
+    if (wishBtn && window.imaWishlist) {
+      var d = wishBtn.dataset;
+      var item = { handle: d.productHandle, title: d.wishTitle, url: d.wishUrl, image: d.wishImage, price: d.wishPrice, sub: d.wishSub };
       var label = wishBtn.querySelector('[data-wishlist-label]');
-      var read = function () { try { return JSON.parse(localStorage.getItem('ima_wishlist') || '[]'); } catch (e) { return []; } };
       var sync = function () {
-        var saved = read().indexOf(handle) !== -1;
+        var saved = window.imaWishlist.has(item.handle);
         wishBtn.classList.toggle('is-saved', saved);
         if (label) label.textContent = saved ? 'Saved to Wishlist' : 'Add to Wishlist';
       };
-      wishBtn.addEventListener('click', function () {
-        var list = read();
-        var i = list.indexOf(handle);
-        if (i === -1) list.push(handle); else list.splice(i, 1);
-        localStorage.setItem('ima_wishlist', JSON.stringify(list));
-        sync();
-      });
+      wishBtn.addEventListener('click', function () { window.imaWishlist.toggle(item); sync(); });
       sync();
     }
   });
@@ -102,19 +110,12 @@
     });
   });
 
-  /* Collection card favorite hearts (localStorage wishlist) */
-  var readWish = function () { try { return JSON.parse(localStorage.getItem('ima_wishlist') || '[]'); } catch (e) { return []; } };
+  /* Collection/search card favorite hearts */
   document.querySelectorAll('[data-wish-add]').forEach(function (btn) {
-    var handle = btn.dataset.productHandle;
-    var sync = function () { btn.classList.toggle('is-saved', readWish().indexOf(handle) !== -1); };
-    btn.addEventListener('click', function (e) {
-      e.preventDefault();
-      var list = readWish();
-      var i = list.indexOf(handle);
-      if (i === -1) list.push(handle); else list.splice(i, 1);
-      localStorage.setItem('ima_wishlist', JSON.stringify(list));
-      sync();
-    });
+    var d = btn.dataset;
+    var item = { handle: d.productHandle, title: d.wishTitle, url: d.wishUrl, image: d.wishImage, price: d.wishPrice, sub: d.wishSub };
+    var sync = function () { btn.classList.toggle('is-saved', window.imaWishlist.has(item.handle)); };
+    btn.addEventListener('click', function (e) { e.preventDefault(); window.imaWishlist.toggle(item); sync(); });
     sync();
   });
 
