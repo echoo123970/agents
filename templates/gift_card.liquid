@@ -1,6 +1,7 @@
 <div class="page-width" style="padding:80px 40px;text-align:center;">
-  <h1 class="section-title">{{ 'gift_cards.issued.title' | t: value: gift_card.balance | money }}</h1>
-  <p style="margin-top:16px;">{{ 'gift_cards.issued.subtext' | t }}</p>
+  <h1 class="section-title">Your gift card</h1>
+  <p style="margin-top:16px;color:var(--color-text-muted);">Here is your iMosaicArt gift card.</p>
   <div style="font-family:var(--font-display);font-size:40px;color:var(--color-navy);margin:24px 0;">{{ gift_card.code | format_code }}</div>
-  <p>{{ 'gift_cards.issued.remaining_html' | t: balance: gift_card.balance | money }}</p>
+  <p style="font-size:18px;">Balance: <strong>{{ gift_card.balance | money }}</strong></p>
+  <a href="{{ shop.url }}" class="btn btn--dark" style="margin-top:28px;">Start shopping</a>
 </div>
