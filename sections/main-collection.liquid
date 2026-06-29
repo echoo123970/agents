@@ -32,15 +32,25 @@
 </section>
 
 <!-- CATEGORY CHIPS -->
-{%- if section.settings.chips_menu != blank -%}
 <section class="coll-chips">
   <div class="page-width coll-chips__row">
-    {%- for link in section.settings.chips_menu.links -%}
-      <a href="{{ link.url }}" class="coll-chip{% if link.active %} is-active{% endif %}">{{ link.title }}</a>
-    {%- endfor -%}
+    {%- if section.settings.chips_menu != blank -%}
+      {%- for link in section.settings.chips_menu.links -%}
+        <a href="{{ link.url }}" class="coll-chip{% if link.active %} is-active{% endif %}">{{ link.title }}</a>
+      {%- endfor -%}
+    {%- else -%}
+      {%- assign cat_handles = section.settings.default_categories | split: ',' -%}
+      <a href="{{ routes.all_products_collection_url }}" class="coll-chip{% if collection.handle == 'all' or collection.handle == blank %} is-active{% endif %}">All Mosaics</a>
+      {%- for handle in cat_handles -%}
+        {%- assign h = handle | strip -%}
+        {%- assign c = collections[h] -%}
+        {%- if c != empty and c.products_count > 0 -%}
+          <a href="{{ c.url }}" class="coll-chip{% if collection.handle == c.handle %} is-active{% endif %}">{{ c.title }}</a>
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
   </div>
 </section>
-{%- endif -%}
 
 <!-- MAIN -->
 <section class="coll page-width">
@@ -221,7 +231,8 @@
   "settings": [
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Home of Mosaics" },
     { "type": "checkbox", "id": "show_trust", "label": "Show trust row", "default": true },
-    { "type": "link_list", "id": "chips_menu", "label": "Category chips menu" },
+    { "type": "link_list", "id": "chips_menu", "label": "Category chips menu (optional — overrides the default list below)" },
+    { "type": "textarea", "id": "default_categories", "label": "Default category handles (comma-separated, shown when no menu set)", "default": "portrait-mosaics, nautical-mosaics, flower-mosaics, landscape-mosaics, food-mosaics, geometric-mosaics, animal-mosaics, bird-mosaics, tree-mosaics, religious-mosaics, abstract-mosaics, van-gogh-mosaics" },
     { "type": "range", "id": "products_per_page", "min": 12, "max": 36, "step": 4, "label": "Products per page", "default": 24 },
     { "type": "range", "id": "columns", "min": 2, "max": 4, "step": 1, "label": "Columns", "default": 3 },
     { "type": "header", "content": "Custom CTA band" },
