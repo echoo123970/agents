@@ -22,14 +22,35 @@
         {%- endif -%}
       </div>
       <div class="hero__stats">
-        {%- for block in section.blocks -%}
-          {%- if block.type == 'stat' -%}
+        {%- assign stat_blocks = section.blocks | where: 'type', 'stat' -%}
+        {%- assign stat_count = stat_blocks | size -%}
+        {%- if stat_count > 0 -%}
+          {%- for block in stat_blocks -%}
             <div class="hero__stat" {{ block.shopify_attributes }}>
               <div class="hero__stat-value">{{ block.settings.value }}</div>
               <div class="hero__stat-label">{{ block.settings.label }}</div>
             </div>
+          {%- endfor -%}
+        {%- else -%}
+          {%- if section.settings.stat1_value != blank -%}
+            <div class="hero__stat">
+              <div class="hero__stat-value">{{ section.settings.stat1_value }}</div>
+              <div class="hero__stat-label">{{ section.settings.stat1_label }}</div>
+            </div>
           {%- endif -%}
-        {%- endfor -%}
+          {%- if section.settings.stat2_value != blank -%}
+            <div class="hero__stat">
+              <div class="hero__stat-value">{{ section.settings.stat2_value }}</div>
+              <div class="hero__stat-label">{{ section.settings.stat2_label }}</div>
+            </div>
+          {%- endif -%}
+          {%- if section.settings.stat3_value != blank -%}
+            <div class="hero__stat">
+              <div class="hero__stat-value">{{ section.settings.stat3_value }}</div>
+              <div class="hero__stat-label">{{ section.settings.stat3_label }}</div>
+            </div>
+          {%- endif -%}
+        {%- endif -%}
       </div>
     </div>
 
@@ -109,6 +130,13 @@
     { "type": "image_picker", "id": "image", "label": "Hero image (upload — best quality)" },
     { "type": "text", "id": "image_url", "label": "Hero image URL (paste a horse mosaic link)" },
     { "type": "text", "id": "image_file", "label": "Bundled image filename (e.g. hero-horse.jpg)" },
+    { "type": "header", "content": "Stats row (under the buttons)" },
+    { "type": "text", "id": "stat1_value", "label": "Stat 1 value", "default": "15+" },
+    { "type": "text", "id": "stat1_label", "label": "Stat 1 label", "default": "Years of Experience" },
+    { "type": "text", "id": "stat2_value", "label": "Stat 2 value", "default": "100%" },
+    { "type": "text", "id": "stat2_label", "label": "Stat 2 label", "default": "Hand-cut Stone" },
+    { "type": "text", "id": "stat3_value", "label": "Stat 3 value", "default": "Worldwide" },
+    { "type": "text", "id": "stat3_label", "label": "Stat 3 label", "default": "Free Shipping" },
     { "type": "header", "content": "Floating card" },
     { "type": "text", "id": "card_eyebrow", "label": "Card eyebrow", "default": "The Detail" },
     { "type": "text", "id": "card_title", "label": "Card title", "default": "Thousands of tesserae, placed by hand." }
