@@ -15,10 +15,10 @@
       {%- endif -%}
       <div class="hero__ctas">
         {%- if section.settings.button_label_1 != blank -%}
-          <a href="{{ section.settings.button_link_1 }}" class="btn btn--dark hero__btn">{{ section.settings.button_label_1 }}</a>
+          <a href="{{ section.settings.button_link_1 | default: routes.all_products_collection_url }}" class="btn btn--dark hero__btn">{{ section.settings.button_label_1 }}</a>
         {%- endif -%}
         {%- if section.settings.button_label_2 != blank -%}
-          <a href="{{ section.settings.button_link_2 }}" class="btn btn--outline hero__btn">{{ section.settings.button_label_2 }}</a>
+          <a href="{{ section.settings.button_link_2 | default: '/pages/custom-mosaics' }}" class="btn btn--outline hero__btn">{{ section.settings.button_label_2 }}</a>
         {%- endif -%}
       </div>
       <div class="hero__stats">
@@ -124,9 +124,9 @@
     { "type": "richtext", "id": "heading", "label": "Heading", "default": "<p>Handcrafted Natural Marble & Glass Mosaics for <em>Luxury Interiors.</em></p>" },
     { "type": "textarea", "id": "text", "label": "Text", "default": "Timeless, artisanal tile art hand-cut by master artisans — bespoke designs, tailored to your space, delivered worldwide with complimentary shipping." },
     { "type": "text", "id": "button_label_1", "label": "Button 1 label", "default": "Shop All Mosaics" },
-    { "type": "url", "id": "button_link_1", "label": "Button 1 link", "default": "/collections/all" },
+    { "type": "url", "id": "button_link_1", "label": "Button 1 link" },
     { "type": "text", "id": "button_label_2", "label": "Button 2 label", "default": "Request a Custom Quote" },
-    { "type": "url", "id": "button_link_2", "label": "Button 2 link", "default": "/pages/custom-mosaics" },
+    { "type": "url", "id": "button_link_2", "label": "Button 2 link" },
     { "type": "image_picker", "id": "image", "label": "Hero image (upload — best quality)" },
     { "type": "text", "id": "image_url", "label": "Hero image URL (paste a horse mosaic link)" },
     { "type": "text", "id": "image_file", "label": "Bundled image filename (e.g. hero-horse.jpg)" },
