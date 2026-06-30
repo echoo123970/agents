@@ -2,34 +2,27 @@
   <div class="page-width instagram__head">
     {%- if section.settings.heading != blank -%}<h2 class="section-title">{{ section.settings.heading }}</h2>{%- endif -%}
     {%- if section.settings.handle != blank -%}
-      <a href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener" class="instagram__handle nav-link">{{ section.settings.handle }}</a>
+      <a href="{{ settings.social_instagram_link | default: 'https://instagram.com/imosaicart' }}" target="_blank" rel="noopener" class="instagram__handle nav-link">{{ section.settings.handle }}</a>
     {%- endif -%}
   </div>
   <div class="instagram__grid">
-    {%- capture ig_svg -%}<span class="ig-overlay"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="#fff" stroke="none"/></svg></span>{%- endcapture -%}
     {%- if section.blocks.size > 0 -%}
       {%- for block in section.blocks -%}
-        <a href="{{ block.settings.link | default: settings.social_instagram_link }}" target="_blank" rel="noopener" class="ig-tile" {{ block.shopify_attributes }}>
+        <a href="{{ block.settings.link | default: settings.social_instagram_link | default: '#' }}" target="_blank" rel="noopener" class="ig-tile" {{ block.shopify_attributes }}>
           {%- if block.settings.image != blank -%}
             <img src="{{ block.settings.image | image_url: width: 400 }}" alt="" width="400" height="400" class="cover-img" loading="lazy">
           {%- else -%}
             {{ 'image' | placeholder_svg_tag: 'cover-img' }}
           {%- endif -%}
-          {{ ig_svg }}
+          <span class="ig-overlay"></span>
         </a>
       {%- endfor -%}
     {%- else -%}
-      {%- assign ig_files = section.settings.default_images | split: ',' -%}
       {%- assign ig_link = settings.social_instagram_link | default: 'https://instagram.com/imosaicart' -%}
       {%- for n in (1..8) -%}
-        {%- assign f = ig_files[forloop.index0] | strip -%}
         <a href="{{ ig_link }}" target="_blank" rel="noopener" class="ig-tile">
-          {%- if f != blank -%}
-            <img src="{{ f | asset_url }}" alt="" width="400" height="400" class="cover-img" loading="lazy">
-          {%- else -%}
-            {{ 'image' | placeholder_svg_tag: 'cover-img' }}
-          {%- endif -%}
-          {{ ig_svg }}
+          {{ 'image' | placeholder_svg_tag: 'cover-img' }}
+          <span class="ig-overlay"></span>
         </a>
       {%- endfor -%}
     {%- endif -%}
@@ -43,7 +36,7 @@
   .instagram__handle { display: inline-block; font-family: var(--font-accent); font-size: 13px; letter-spacing: .36em; text-transform: uppercase; color: var(--color-navy); }
   .instagram__grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
   .ig-tile { position: relative; display: block; aspect-ratio: 1/1; overflow: hidden; background: var(--color-light-text); }
-  .ig-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(11,28,53,.42); }
+  .ig-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(11,28,53,.30); }
   @media (max-width: 990px) { .instagram__grid { grid-template-columns: repeat(4, 1fr); } }
   @media (max-width: 600px) { .instagram__grid { grid-template-columns: repeat(3, 1fr); } }
 </style>
@@ -54,9 +47,7 @@
   "max_blocks": 16,
   "settings": [
     { "type": "text", "id": "heading", "label": "Heading", "default": "Follow The Mosaic Studio" },
-    { "type": "text", "id": "handle", "label": "Handle", "default": "@i.mosaicart" },
-    { "type": "paragraph", "content": "Shown when no Post blocks are added. Comma-separated asset filenames (8)." },
-    { "type": "textarea", "id": "default_images", "label": "Default image filenames", "default": "" }
+    { "type": "text", "id": "handle", "label": "Handle", "default": "@i.mosaicart" }
   ],
   "blocks": [
     {
@@ -68,14 +59,6 @@
       ]
     }
   ],
-  "presets": [
-    {
-      "name": "Instagram grid",
-      "blocks": [
-        { "type": "post" }, { "type": "post" }, { "type": "post" }, { "type": "post" },
-        { "type": "post" }, { "type": "post" }, { "type": "post" }, { "type": "post" }
-      ]
-    }
-  ]
+  "presets": [{ "name": "Instagram grid" }]
 }
 {% endschema %}

@@ -1,6 +1,4 @@
-{%- comment -%} Bestsellers grid: hand-picked Product blocks, else a live collection. {%- endcomment -%}
-{%- assign manual = section.blocks | where: 'type', 'product' -%}
-{%- assign manual_count = manual | size -%}
+{%- comment -%} Collector's Favorites: hand-picked Product blocks → a chosen collection → curated defaults. {%- endcomment -%}
 <section class="bestsellers page-width">
   <div class="bestsellers__head">
     <div>
@@ -8,11 +6,13 @@
       {%- if section.settings.heading != blank -%}<h2 class="section-title">{{ section.settings.heading }}</h2>{%- endif -%}
     </div>
     {%- if section.settings.button_label != blank -%}
-      <a href="{{ section.settings.button_link | default: section.settings.collection.url | default: routes.all_products_collection_url }}" class="btn btn--ghost">{{ section.settings.button_label }}</a>
+      <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="btn btn--ghost">{{ section.settings.button_label }}</a>
     {%- endif -%}
   </div>
+
+  {%- assign manual = section.blocks | where: 'type', 'product' -%}
   <div class="bestsellers__grid" style="grid-template-columns: repeat({{ section.settings.columns }}, 1fr);">
-    {%- if manual_count > 0 -%}
+    {%- if manual.size > 0 -%}
       {%- for block in manual -%}
         <a href="{{ block.settings.link | default: '#' }}" class="prod-card" {{ block.shopify_attributes }}>
           <div class="prod-card__media">
@@ -31,38 +31,41 @@
           {%- if block.settings.price != blank -%}<div class="prod-card__price">{{ block.settings.price }}</div>{%- endif -%}
         </a>
       {%- endfor -%}
-    {%- elsif section.settings.collection != blank and section.settings.collection.products.size > 0 -%}
+    {%- elsif section.settings.collection.products.size > 0 -%}
       {%- for product in section.settings.collection.products limit: section.settings.product_limit -%}
-        {% render 'card-product', product: product %}
-      {%- endfor -%}
-    {%- elsif section.settings.default_titles != blank -%}
-      {%- assign d_images = section.settings.default_images | split: '|' -%}
-      {%- assign d_subs = section.settings.default_subs | split: '|' -%}
-      {%- assign d_titles = section.settings.default_titles | split: '|' -%}
-      {%- assign d_prices = section.settings.default_prices | split: '|' -%}
-      {%- assign d_links = section.settings.default_links | split: '|' -%}
-      {%- for t in d_titles -%}
-        {%- assign im = d_images[forloop.index0] | strip -%}
-        <a href="{{ d_links[forloop.index0] | strip | default: '#' }}" class="prod-card">
+        <a href="{{ product.url }}" class="prod-card">
           <div class="prod-card__media">
-            {%- if im contains '://' -%}
-              <img src="{{ im }}" alt="{{ t | strip | escape }}" width="600" height="750" class="prod-img cover-img" loading="lazy" referrerpolicy="no-referrer">
-            {%- elsif im != blank -%}
-              <img src="{{ im | asset_url }}" alt="{{ t | strip | escape }}" width="600" height="750" class="prod-img cover-img" loading="lazy">
+            {%- if product.featured_media != blank -%}
+              <img src="{{ product.featured_media | image_url: width: 600 }}" alt="{{ product.title | escape }}" width="600" height="750" class="prod-img cover-img" loading="lazy">
             {%- else -%}
               {{ 'product-1' | placeholder_svg_tag: 'prod-img cover-img' }}
             {%- endif -%}
           </div>
-          {%- assign sb = d_subs[forloop.index0] | strip -%}
-          {%- if sb != blank -%}<div class="prod-card__sub">{{ sb }}</div>{%- endif -%}
-          <div class="prod-title prod-card__title">{{ t | strip }}</div>
-          {%- assign pr = d_prices[forloop.index0] | strip -%}
-          {%- if pr != blank -%}<div class="prod-card__price">{{ pr }}</div>{%- endif -%}
+          {%- if product.type != blank -%}<div class="prod-card__sub">{{ product.type }}</div>{%- endif -%}
+          <div class="prod-title prod-card__title">{{ product.title }}</div>
+          <div class="prod-card__price">{{ product.price | money }}</div>
         </a>
       {%- endfor -%}
     {%- else -%}
-      {%- for product in collections.all.products limit: section.settings.product_limit -%}
-        {% render 'card-product', product: product %}
+      {%- assign d_images = 'nautical-sunset.jpg~flower-vase.jpg~https://www.imosaicart.com/cdn/shop/files/MAS081_b2d557a7-36fa-418b-b736-ec6f27f75af3.jpg?width=600~bird-peacock.jpg~https://www.imosaicart.com/cdn/shop/files/MAT053_-_60cm_x_85cm_8343d742-e897-4c91-b648-f7480e0e8ee5.jpg?width=600~religious-lady-jesus.png~https://www.imosaicart.com/cdn/shop/files/MAA034_55b3da2e-eb16-4125-9de5-fcd9a5899e57.jpg?width=600~portrait-pearl.png' | split: '~' -%}
+      {%- assign d_subs = 'Nautical Mosaic~Floral Mosaic~Landscape Mosaic~Bird Mosaic~Tree Mosaic~Religious Mosaic~Animal Mosaic~Portrait Mosaic' | split: '~' -%}
+      {%- assign d_titles = 'Sunset Solitude~Luxury Flower Vase~Coastal Horizon~Vivid Peacock~Olive Grove~Our Lady and Baby Jesus~The Lioness~Girl with a Pearl Earring' | split: '~' -%}
+      {%- assign d_prices = 'From $1,680~From $1,150~From $2,200~From $980~From $1,260~From $1,320~From $1,890~From $1,640' | split: '~' -%}
+      {%- assign d_links = '/products/nautical-mosaics-sunset-solitude-handmade-sailboat-mosaic-nautical-landscape-wall-art~/products/flower-mosaics-luxury-mosaic-flowers-vase~/collections/landscape-mosaics~/products/bird-mosaics-vivid-colorful-mosaic-mosaic-wall-art~/collections/tree-mosaics~/products/religious-mosaics-religious-mosaic-art-our-lady-baby-jesus~/collections/animal-mosaics~/products/portrait-mosaics-elegance-in-mosaic-girl-with-a-pearl-earring-reproduction-johannes-vermeer' | split: '~' -%}
+      {%- for t in d_titles -%}
+        {%- assign im = d_images[forloop.index0] -%}
+        <a href="{{ d_links[forloop.index0] }}" class="prod-card">
+          <div class="prod-card__media">
+            {%- if im contains '://' -%}
+              <img src="{{ im }}" alt="{{ t | escape }}" width="600" height="750" class="prod-img cover-img" loading="lazy" referrerpolicy="no-referrer">
+            {%- else -%}
+              <img src="{{ im | asset_url }}" alt="{{ t | escape }}" width="600" height="750" class="prod-img cover-img" loading="lazy">
+            {%- endif -%}
+          </div>
+          <div class="prod-card__sub">{{ d_subs[forloop.index0] }}</div>
+          <div class="prod-title prod-card__title">{{ t }}</div>
+          <div class="prod-card__price">{{ d_prices[forloop.index0] }}</div>
+        </a>
       {%- endfor -%}
     {%- endif -%}
   </div>
@@ -74,7 +77,6 @@
   .bestsellers__grid { display: grid; gap: 28px 22px; }
   .prod-card { display: block; }
   .prod-card__media { position: relative; overflow: hidden; aspect-ratio: 4/5; background: var(--color-light-text); margin-bottom: 16px; }
-  .prod-card__badge { position: absolute; top: 14px; left: 14px; background: #fff; color: var(--color-blue); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; padding: 6px 11px; }
   .prod-card__sub { font-family: var(--font-accent); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--color-text-faint); margin-bottom: 6px; }
   .prod-card__title { font-family: var(--font-display); font-size: 23px; line-height: 1.15; color: var(--color-navy); margin-bottom: 8px; }
   .prod-card__price { font-size: 14px; color: var(--color-text-muted); letter-spacing: .02em; }
@@ -84,29 +86,23 @@
 
 {% schema %}
 {
-  "name": "Featured products",
+  "name": "Collector's Favorites",
   "settings": [
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Collector's Favorites" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Our Iconic Mosaic Masterpieces" },
-    { "type": "paragraph", "content": "Add Product blocks for a hand-picked grid, or leave empty and pick a Collection to show live products." },
-    { "type": "collection", "id": "collection", "label": "Collection (used if no Product blocks)" },
+    { "type": "paragraph", "content": "Add Product blocks for a hand-picked grid, or pick a Collection. With neither, a curated default set shows." },
+    { "type": "collection", "id": "collection", "label": "Collection" },
     { "type": "range", "id": "product_limit", "min": 4, "max": 12, "step": 1, "label": "Products to show", "default": 8 },
     { "type": "range", "id": "columns", "min": 3, "max": 4, "step": 1, "label": "Columns", "default": 4 },
     { "type": "text", "id": "button_label", "label": "Button label", "default": "View All Mosaics" },
-    { "type": "url", "id": "button_link", "label": "Button link" },
-    { "type": "paragraph", "content": "Shown when no Product blocks AND no collection are set. Pipe-separated (|), in matching order. Images can be asset filenames or full URLs." },
-    { "type": "textarea", "id": "default_images", "label": "Images", "default": "nautical-sunset.jpg|flower-vase.jpg|https://www.imosaicart.com/cdn/shop/files/MAS081_b2d557a7-36fa-418b-b736-ec6f27f75af3.jpg?width=600|bird-peacock.jpg|https://www.imosaicart.com/cdn/shop/files/MAT053_-_60cm_x_85cm_8343d742-e897-4c91-b648-f7480e0e8ee5.jpg?width=600|religious-lady-jesus.png|https://www.imosaicart.com/cdn/shop/files/MAA034_55b3da2e-eb16-4125-9de5-fcd9a5899e57.jpg?width=600|portrait-pearl.png" },
-    { "type": "textarea", "id": "default_subs", "label": "Subtitles", "default": "Nautical Mosaic|Floral Mosaic|Landscape Mosaic|Bird Mosaic|Tree Mosaic|Religious Mosaic|Animal Mosaic|Portrait Mosaic" },
-    { "type": "textarea", "id": "default_titles", "label": "Titles", "default": "Sunset Solitude|Luxury Flower Vase|Coastal Horizon|Vivid Peacock|Olive Grove|Our Lady & Baby Jesus|The Lioness|Girl with a Pearl Earring" },
-    { "type": "textarea", "id": "default_prices", "label": "Prices", "default": "From $1,680|From $1,150|From $2,200|From $980|From $1,260|From $1,320|From $1,890|From $1,640" },
-    { "type": "textarea", "id": "default_links", "label": "Links", "default": "/products/nautical-mosaics-sunset-solitude-handmade-sailboat-mosaic-nautical-landscape-wall-art|/products/flower-mosaics-luxury-mosaic-flowers-vase|/collections/landscape-mosaics|/products/bird-mosaics-vivid-colorful-mosaic-mosaic-wall-art|/collections/tree-mosaics|/products/religious-mosaics-religious-mosaic-art-our-lady-baby-jesus|/collections/animal-mosaics|/products/portrait-mosaics-elegance-in-mosaic-girl-with-a-pearl-earring-reproduction-johannes-vermeer" }
+    { "type": "url", "id": "button_link", "label": "Button link" }
   ],
   "blocks": [
     {
       "type": "product",
       "name": "Product",
       "settings": [
-        { "type": "image_picker", "id": "image", "label": "Image (upload — overrides below)" },
+        { "type": "image_picker", "id": "image", "label": "Image (upload)" },
         { "type": "text", "id": "image_file", "label": "Bundled image filename" },
         { "type": "text", "id": "image_url", "label": "Image URL" },
         { "type": "text", "id": "sub", "label": "Subtitle", "default": "Mosaic" },
@@ -116,20 +112,6 @@
       ]
     }
   ],
-  "presets": [
-    {
-      "name": "Featured products",
-      "blocks": [
-        { "type": "product", "settings": { "image_file": "nautical-sunset.jpg", "sub": "Nautical Mosaic", "title": "Sunset Solitude", "price": "From $1,680", "link": "/products/nautical-mosaics-sunset-solitude-handmade-sailboat-mosaic-nautical-landscape-wall-art" } },
-        { "type": "product", "settings": { "image_file": "flower-vase.jpg", "sub": "Floral Mosaic", "title": "Luxury Flower Vase", "price": "From $1,150", "link": "/products/flower-mosaics-luxury-mosaic-flowers-vase" } },
-        { "type": "product", "settings": { "image_url": "https://www.imosaicart.com/cdn/shop/files/MAS081_b2d557a7-36fa-418b-b736-ec6f27f75af3.jpg?width=600", "sub": "Landscape Mosaic", "title": "Coastal Horizon", "price": "From $2,200", "link": "/collections/landscape-mosaics" } },
-        { "type": "product", "settings": { "image_file": "bird-peacock.jpg", "sub": "Bird Mosaic", "title": "Vivid Peacock", "price": "From $980", "link": "/products/bird-mosaics-vivid-colorful-mosaic-mosaic-wall-art" } },
-        { "type": "product", "settings": { "image_url": "https://www.imosaicart.com/cdn/shop/files/MAT053_-_60cm_x_85cm_8343d742-e897-4c91-b648-f7480e0e8ee5.jpg?width=600", "sub": "Tree Mosaic", "title": "Olive Grove", "price": "From $1,260", "link": "/collections/tree-mosaics" } },
-        { "type": "product", "settings": { "image_file": "religious-lady-jesus.png", "sub": "Religious Mosaic", "title": "Our Lady & Baby Jesus", "price": "From $1,320", "link": "/products/religious-mosaics-religious-mosaic-art-our-lady-baby-jesus" } },
-        { "type": "product", "settings": { "image_url": "https://www.imosaicart.com/cdn/shop/files/MAA034_55b3da2e-eb16-4125-9de5-fcd9a5899e57.jpg?width=600", "sub": "Animal Mosaic", "title": "The Lioness", "price": "From $1,890", "link": "/collections/animal-mosaics" } },
-        { "type": "product", "settings": { "image_file": "portrait-pearl.png", "sub": "Portrait Mosaic", "title": "Girl with a Pearl Earring", "price": "From $1,640", "link": "/products/portrait-mosaics-elegance-in-mosaic-girl-with-a-pearl-earring-reproduction-johannes-vermeer" } }
-      ]
-    }
-  ]
+  "presets": [{ "name": "Collector's Favorites" }]
 }
 {% endschema %}
