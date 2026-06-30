@@ -4,13 +4,26 @@
     {%- if section.settings.heading != blank -%}<h2 class="section-title">{{ section.settings.heading }}</h2>{%- endif -%}
   </div>
   <div class="promises__grid">
-    {%- for block in section.blocks -%}
-      <div class="promises__item" {{ block.shopify_attributes }}>
-        <div class="promises__icon">{{ block.settings.icon }}</div>
-        <h3 class="promises__title">{{ block.settings.title }}</h3>
-        <p class="promises__desc">{{ block.settings.desc }}</p>
-      </div>
-    {%- endfor -%}
+    {%- if section.blocks.size > 0 -%}
+      {%- for block in section.blocks -%}
+        <div class="promises__item" {{ block.shopify_attributes }}>
+          <div class="promises__icon">{{ block.settings.icon }}</div>
+          <h3 class="promises__title">{{ block.settings.title }}</h3>
+          <p class="promises__desc">{{ block.settings.desc }}</p>
+        </div>
+      {%- endfor -%}
+    {%- else -%}
+      {%- assign p_icons = section.settings.default_icons | split: '|' -%}
+      {%- assign p_titles = section.settings.default_titles | split: '|' -%}
+      {%- assign p_descs = section.settings.default_descs | split: '|' -%}
+      {%- for t in p_titles -%}
+        <div class="promises__item">
+          <div class="promises__icon">{{ p_icons[forloop.index0] | strip }}</div>
+          <h3 class="promises__title">{{ t | strip }}</h3>
+          <p class="promises__desc">{{ p_descs[forloop.index0] | strip }}</p>
+        </div>
+      {%- endfor -%}
+    {%- endif -%}
   </div>
 </section>
 
@@ -39,7 +52,11 @@
   "name": "Promises",
   "settings": [
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Our Promise" },
-    { "type": "text", "id": "heading", "label": "Heading", "default": "Where Timeless Craft Meets Precision" }
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Where Timeless Craft Meets Precision" },
+    { "type": "paragraph", "content": "Shown when no Promise blocks are added. Pipe-separated (|), in matching order." },
+    { "type": "textarea", "id": "default_icons", "label": "Default icons", "default": "✦|↺|✈|◈|♦" },
+    { "type": "textarea", "id": "default_titles", "label": "Default titles", "default": "Premium Craft|Satisfaction Promise|Safe Worldwide Ship|Easy & Secure Pay|Lifetime Warranty" },
+    { "type": "textarea", "id": "default_descs", "label": "Default descriptions", "default": "Mosaics handcrafted from the finest stones and glass tiles for lasting beauty.|Love it or return it — 100% satisfaction or your money back.|Carefully packed to ensure your mosaic arrives in perfect condition.|Multiple payment options with a fast, secure checkout.|Every mosaic is backed by a lifetime warranty, protecting your investment for years to come." }
   ],
   "blocks": [
     {

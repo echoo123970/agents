@@ -5,8 +5,9 @@
       {%- if section.settings.heading != blank -%}<h2 class="process__heading">{{ section.settings.heading }}</h2>{%- endif -%}
       {%- if section.settings.text != blank -%}<p class="process__text">{{ section.settings.text }}</p>{%- endif -%}
       <div class="process__steps">
-        {%- for block in section.blocks -%}
-          {%- if block.type == 'step' -%}
+        {%- assign steps = section.blocks | where: 'type', 'step' -%}
+        {%- if steps.size > 0 -%}
+          {%- for block in steps -%}
             <div class="process__step" {{ block.shopify_attributes }}>
               <span class="process__step-n">{{ block.settings.number }}</span>
               <div>
@@ -14,11 +15,23 @@
                 <div class="process__step-desc">{{ block.settings.desc }}</div>
               </div>
             </div>
-          {%- endif -%}
-        {%- endfor -%}
+          {%- endfor -%}
+        {%- else -%}
+          {%- assign s_titles = section.settings.default_titles | split: '|' -%}
+          {%- assign s_descs = section.settings.default_descs | split: '|' -%}
+          {%- for t in s_titles -%}
+            <div class="process__step">
+              <span class="process__step-n">0{{ forloop.index }}</span>
+              <div>
+                <div class="process__step-title">{{ t | strip }}</div>
+                <div class="process__step-desc">{{ s_descs[forloop.index0] | strip }}</div>
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
       </div>
       {%- if section.settings.button_label != blank -%}
-        <a href="{{ section.settings.button_link }}" class="btn btn--blue process__btn">{{ section.settings.button_label }}</a>
+        <a href="{{ section.settings.button_link | default: '/pages/custom-mosaics' }}" class="btn btn--blue process__btn">{{ section.settings.button_label }}</a>
       {%- endif -%}
     </div>
     <div class="process__media cm-zoom">
@@ -64,7 +77,10 @@
     { "type": "text", "id": "button_label", "label": "Button label", "default": "Start Your Custom Mosaic Piece" },
     { "type": "url", "id": "button_link", "label": "Button link" },
     { "type": "image_picker", "id": "image", "label": "Image" },
-    { "type": "text", "id": "image_caption", "label": "Image caption", "default": "Artistry in motion." }
+    { "type": "text", "id": "image_caption", "label": "Image caption", "default": "Artistry in motion." },
+    { "type": "paragraph", "content": "Steps shown when no Step blocks are added. Pipe-separated (|), numbered automatically." },
+    { "type": "textarea", "id": "default_titles", "label": "Default step titles", "default": "Share Your Vision|Design & Quote|Hand-Cut In Stone|Delivered To You" },
+    { "type": "textarea", "id": "default_descs", "label": "Default step descriptions", "default": "Send a photo, sketch or idea and your desired dimensions.|Our artisans draft your piece and confirm materials & price.|Thousands of tesserae placed by hand in our studio.|Crated, insured and shipped free, anywhere in the world." }
   ],
   "blocks": [
     {

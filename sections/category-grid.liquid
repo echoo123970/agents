@@ -9,30 +9,53 @@
     {%- endif -%}
   </div>
   <div class="cat-grid__grid" style="grid-template-columns: repeat({{ section.settings.columns }}, 1fr);">
-    {%- for block in section.blocks -%}
-      {%- assign coll = block.settings.collection -%}
-      {%- if coll != blank -%}
-        {%- assign card_url = coll.url -%}
-        {%- assign card_name = block.settings.title | default: coll.title -%}
-        {%- assign card_image = block.settings.image | default: coll.featured_image -%}
-      {%- else -%}
-        {%- assign card_url = block.settings.link -%}
-        {%- assign card_name = block.settings.title -%}
-        {%- assign card_image = block.settings.image -%}
-      {%- endif -%}
-      <a href="{{ card_url | default: '#' }}" class="cat-card" {{ block.shopify_attributes }}>
-        {%- if card_image != blank -%}
-          <img src="{{ card_image | image_url: width: 600 }}" alt="{{ card_name | escape }}" width="600" height="800" class="cat-img cover-img" loading="lazy">
+    {%- if section.blocks.size > 0 -%}
+      {%- for block in section.blocks -%}
+        {%- assign coll = block.settings.collection -%}
+        {%- if coll != blank -%}
+          {%- assign card_url = coll.url -%}
+          {%- assign card_name = block.settings.title | default: coll.title -%}
+          {%- assign card_image = block.settings.image | default: coll.featured_image -%}
         {%- else -%}
-          {{ 'collection-1' | placeholder_svg_tag: 'cat-img cover-img' }}
+          {%- assign card_url = block.settings.link -%}
+          {%- assign card_name = block.settings.title -%}
+          {%- assign card_image = block.settings.image -%}
         {%- endif -%}
-        <span class="cat-grid__scrim"></span>
-        <span class="cat-veil"></span>
-        <span class="cat-frame"></span>
-        <span class="cat-label">{{ card_name }}</span>
-        <span class="cat-cta">View Collection</span>
-      </a>
-    {%- endfor -%}
+        <a href="{{ card_url | default: '#' }}" class="cat-card" {{ block.shopify_attributes }}>
+          {%- if card_image != blank -%}
+            <img src="{{ card_image | image_url: width: 600 }}" alt="{{ card_name | escape }}" width="600" height="800" class="cat-img cover-img" loading="lazy">
+          {%- else -%}
+            {{ 'collection-1' | placeholder_svg_tag: 'cat-img cover-img' }}
+          {%- endif -%}
+          <span class="cat-grid__scrim"></span>
+          <span class="cat-veil"></span>
+          <span class="cat-frame"></span>
+          <span class="cat-label">{{ card_name }}</span>
+          <span class="cat-cta">View Collection</span>
+        </a>
+      {%- endfor -%}
+    {%- else -%}
+      {%- assign d_handles = section.settings.default_handles | split: ',' -%}
+      {%- assign d_titles = section.settings.default_titles | split: ',' -%}
+      {%- for h in d_handles -%}
+        {%- assign hh = h | strip -%}
+        {%- assign coll = collections[hh] -%}
+        {%- assign card_name = d_titles[forloop.index0] | strip | default: coll.title -%}
+        {%- assign card_url = coll.url | default: '/collections/' | append: hh -%}
+        <a href="{{ card_url }}" class="cat-card">
+          {%- if coll.featured_image != blank -%}
+            <img src="{{ coll.featured_image | image_url: width: 600 }}" alt="{{ card_name | escape }}" width="600" height="800" class="cat-img cover-img" loading="lazy">
+          {%- else -%}
+            {{ 'collection-1' | placeholder_svg_tag: 'cat-img cover-img' }}
+          {%- endif -%}
+          <span class="cat-grid__scrim"></span>
+          <span class="cat-veil"></span>
+          <span class="cat-frame"></span>
+          <span class="cat-label">{{ card_name }}</span>
+          <span class="cat-cta">View Collection</span>
+        </a>
+      {%- endfor -%}
+    {%- endif -%}
   </div>
 </section>
 
@@ -56,7 +79,10 @@
     { "type": "text", "id": "heading", "label": "Heading", "default": "Artisanal Mosaic Designs In Natural Marble & Glass" },
     { "type": "text", "id": "button_label", "label": "Button label", "default": "View All Subjects" },
     { "type": "url", "id": "button_link", "label": "Button link" },
-    { "type": "range", "id": "columns", "min": 3, "max": 6, "step": 1, "label": "Columns", "default": 5 }
+    { "type": "range", "id": "columns", "min": 3, "max": 6, "step": 1, "label": "Columns", "default": 5 },
+    { "type": "paragraph", "content": "If no Category blocks are added, these defaults are shown (comma-separated, in matching order)." },
+    { "type": "textarea", "id": "default_handles", "label": "Default collection handles", "default": "portrait-mosaics, nautical-mosaics, flower-mosaics, landscape-mosaics, food-mosaics, geometric-mosaics, animal-mosaics, bird-mosaics, patterns-mosaics, tree-mosaics" },
+    { "type": "textarea", "id": "default_titles", "label": "Default titles", "default": "Portrait, Nautical, Flower, Landscape, Food, Geometric, Animal, Bird, Pattern, Tree" }
   ],
   "blocks": [
     {

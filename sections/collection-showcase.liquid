@@ -5,31 +5,57 @@
     {%- if section.settings.text != blank -%}<p class="showcase__intro">{{ section.settings.text }}</p>{%- endif -%}
   </div>
   <div class="showcase__grid">
-    {%- for block in section.blocks -%}
-      {%- assign coll = block.settings.collection -%}
-      {%- if coll != blank -%}
-        {%- assign card_url = coll.url -%}
-        {%- assign card_name = block.settings.title | default: coll.title -%}
-        {%- assign card_image = block.settings.image | default: coll.featured_image -%}
-      {%- else -%}
-        {%- assign card_url = block.settings.link -%}
-        {%- assign card_name = block.settings.title -%}
-        {%- assign card_image = block.settings.image -%}
-      {%- endif -%}
-      <a href="{{ card_url | default: '#' }}" class="col-card" {{ block.shopify_attributes }}>
-        {%- if card_image != blank -%}
-          <img src="{{ card_image | image_url: width: 900 }}" alt="{{ card_name | escape }}" width="900" height="600" class="col-zoom cover-img" loading="lazy">
+    {%- if section.blocks.size > 0 -%}
+      {%- for block in section.blocks -%}
+        {%- assign coll = block.settings.collection -%}
+        {%- if coll != blank -%}
+          {%- assign card_url = coll.url -%}
+          {%- assign card_name = block.settings.title | default: coll.title -%}
+          {%- assign card_image = block.settings.image | default: coll.featured_image -%}
         {%- else -%}
-          {{ 'collection-2' | placeholder_svg_tag: 'col-zoom cover-img' }}
+          {%- assign card_url = block.settings.link -%}
+          {%- assign card_name = block.settings.title -%}
+          {%- assign card_image = block.settings.image -%}
         {%- endif -%}
-        <span class="showcase__scrim"></span>
-        <span class="showcase__caption">
-          <span class="showcase__name">{{ card_name }}</span>
-          {%- if block.settings.description != blank -%}<span class="showcase__desc">{{ block.settings.description }}</span>{%- endif -%}
-          <span class="showcase__cta">{{ block.settings.cta | default: 'Explore Collection' }}</span>
-        </span>
-      </a>
-    {%- endfor -%}
+        <a href="{{ card_url | default: '#' }}" class="col-card" {{ block.shopify_attributes }}>
+          {%- if card_image != blank -%}
+            <img src="{{ card_image | image_url: width: 900 }}" alt="{{ card_name | escape }}" width="900" height="600" class="col-zoom cover-img" loading="lazy">
+          {%- else -%}
+            {{ 'collection-2' | placeholder_svg_tag: 'col-zoom cover-img' }}
+          {%- endif -%}
+          <span class="showcase__scrim"></span>
+          <span class="showcase__caption">
+            <span class="showcase__name">{{ card_name }}</span>
+            {%- if block.settings.description != blank -%}<span class="showcase__desc">{{ block.settings.description }}</span>{%- endif -%}
+            <span class="showcase__cta">{{ block.settings.cta | default: 'Explore Collection' }}</span>
+          </span>
+        </a>
+      {%- endfor -%}
+    {%- else -%}
+      {%- assign d_handles = section.settings.default_handles | split: ',' -%}
+      {%- assign d_titles = section.settings.default_titles | split: '|' -%}
+      {%- assign d_descs = section.settings.default_descs | split: '|' -%}
+      {%- for h in d_handles -%}
+        {%- assign hh = h | strip -%}
+        {%- assign coll = collections[hh] -%}
+        {%- assign card_name = d_titles[forloop.index0] | strip | default: coll.title -%}
+        {%- assign card_url = coll.url | default: '/collections/' | append: hh -%}
+        <a href="{{ card_url }}" class="col-card">
+          {%- if coll.featured_image != blank -%}
+            <img src="{{ coll.featured_image | image_url: width: 900 }}" alt="{{ card_name | escape }}" width="900" height="600" class="col-zoom cover-img" loading="lazy">
+          {%- else -%}
+            {{ 'collection-2' | placeholder_svg_tag: 'col-zoom cover-img' }}
+          {%- endif -%}
+          <span class="showcase__scrim"></span>
+          <span class="showcase__caption">
+            <span class="showcase__name">{{ card_name }}</span>
+            {%- assign cd = d_descs[forloop.index0] | strip -%}
+            {%- if cd != blank -%}<span class="showcase__desc">{{ cd }}</span>{%- endif -%}
+            <span class="showcase__cta">Explore Collection</span>
+          </span>
+        </a>
+      {%- endfor -%}
+    {%- endif -%}
   </div>
 </section>
 
@@ -56,7 +82,11 @@
   "settings": [
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Signature Collections" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Curated Worlds In Stone" },
-    { "type": "textarea", "id": "text", "label": "Intro text", "default": "Themed collections hand-assembled by master artisans — timeless investments designed to anchor a room for generations." }
+    { "type": "textarea", "id": "text", "label": "Intro text", "default": "Themed collections hand-assembled by master artisans — timeless investments designed to anchor a room for generations." },
+    { "type": "paragraph", "content": "Shown when no Collection blocks are added. Handles comma-separated; titles & descriptions pipe-separated (|), in matching order." },
+    { "type": "textarea", "id": "default_handles", "label": "Default collection handles", "default": "mosaic-tile-backsplash, table-countertop-mosaics, van-gogh-mosaics, glass-mosaic-art" },
+    { "type": "textarea", "id": "default_titles", "label": "Default titles", "default": "Mosaic Kitchen Backsplash|Mosaic Tabletops|The Van Gogh Collection|Glass Mosaic Art" },
+    { "type": "textarea", "id": "default_descs", "label": "Default descriptions", "default": "Stylish. Durable. Handcrafted.|Artfully crafted for everyday elegance.|Mosaic art inspired by timeless genius.|Light, color and craftsmanship in every piece." }
   ],
   "blocks": [
     {
