@@ -1,14 +1,36 @@
 <section class="trust-bar">
   <div class="page-width trust-bar__grid">
-    {%- for block in section.blocks -%}
-      <div class="trust-bar__item" {{ block.shopify_attributes }}>
-        <span class="trust-bar__icon">{{ block.settings.icon }}</span>
-        <div>
-          <div class="trust-bar__title">{{ block.settings.title }}</div>
-          <div class="trust-bar__sub">{{ block.settings.sub }}</div>
+    {%- assign items = section.blocks | where: 'type', 'item' -%}
+    {%- assign item_count = items | size -%}
+    {%- if item_count > 0 -%}
+      {%- for block in items -%}
+        <div class="trust-bar__item" {{ block.shopify_attributes }}>
+          <span class="trust-bar__icon">{{ block.settings.icon }}</span>
+          <div>
+            <div class="trust-bar__title">{{ block.settings.title }}</div>
+            <div class="trust-bar__sub">{{ block.settings.sub }}</div>
+          </div>
         </div>
-      </div>
-    {%- endfor -%}
+      {%- endfor -%}
+    {%- else -%}
+      {%- for n in (1..4) -%}
+        {%- case n -%}
+          {%- when 1 -%}{%- assign ic = section.settings.item1_icon -%}{%- assign ti = section.settings.item1_title -%}{%- assign su = section.settings.item1_sub -%}
+          {%- when 2 -%}{%- assign ic = section.settings.item2_icon -%}{%- assign ti = section.settings.item2_title -%}{%- assign su = section.settings.item2_sub -%}
+          {%- when 3 -%}{%- assign ic = section.settings.item3_icon -%}{%- assign ti = section.settings.item3_title -%}{%- assign su = section.settings.item3_sub -%}
+          {%- when 4 -%}{%- assign ic = section.settings.item4_icon -%}{%- assign ti = section.settings.item4_title -%}{%- assign su = section.settings.item4_sub -%}
+        {%- endcase -%}
+        {%- if ti != blank -%}
+          <div class="trust-bar__item">
+            <span class="trust-bar__icon">{{ ic }}</span>
+            <div>
+              <div class="trust-bar__title">{{ ti }}</div>
+              <div class="trust-bar__sub">{{ su }}</div>
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
   </div>
 </section>
 
@@ -16,15 +38,30 @@
   .trust-bar { background: var(--color-navy); color: var(--color-light-text); }
   .trust-bar__grid { padding-top: 30px; padding-bottom: 30px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
   .trust-bar__item { display: flex; align-items: center; gap: 14px; justify-content: center; }
-  .trust-bar__icon { color: var(--color-blue-light); font-size: 22px; }
+  .trust-bar__icon { color: var(--color-blue-light); font-size: 22px; line-height: 1; }
   .trust-bar__title { font-size: 13.5px; font-weight: 600; color: var(--color-bg); }
   .trust-bar__sub { font-size: 12px; color: var(--color-text-faint); margin-top: 2px; }
-  @media (max-width: 750px) { .trust-bar__grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 750px) { .trust-bar__grid { grid-template-columns: 1fr 1fr; gap: 20px 24px; } }
 </style>
 
 {% schema %}
 {
   "name": "Trust bar",
+  "settings": [
+    { "type": "paragraph", "content": "Leave the blocks empty to show these four defaults; add Item blocks to override." },
+    { "type": "text", "id": "item1_icon", "label": "Item 1 icon", "default": "✦" },
+    { "type": "text", "id": "item1_title", "label": "Item 1 title", "default": "Hand-cut Craftsmanship" },
+    { "type": "text", "id": "item1_sub", "label": "Item 1 subtitle", "default": "Finest natural stone & glass" },
+    { "type": "text", "id": "item2_icon", "label": "Item 2 icon", "default": "↺" },
+    { "type": "text", "id": "item2_title", "label": "Item 2 title", "default": "Satisfaction Guarantee" },
+    { "type": "text", "id": "item2_sub", "label": "Item 2 subtitle", "default": "100% love it or your money back" },
+    { "type": "text", "id": "item3_icon", "label": "Item 3 icon", "default": "✈" },
+    { "type": "text", "id": "item3_title", "label": "Item 3 title", "default": "Fast & Safe Delivery" },
+    { "type": "text", "id": "item3_sub", "label": "Item 3 subtitle", "default": "Carefully packed, worldwide" },
+    { "type": "text", "id": "item4_icon", "label": "Item 4 icon", "default": "🔒" },
+    { "type": "text", "id": "item4_title", "label": "Item 4 title", "default": "Secure Payments" },
+    { "type": "text", "id": "item4_sub", "label": "Item 4 subtitle", "default": "Trusted, encrypted checkout" }
+  ],
   "blocks": [
     {
       "type": "item",
