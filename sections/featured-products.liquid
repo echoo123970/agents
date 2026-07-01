@@ -1,4 +1,4 @@
-{%- comment -%} Collector's Favorites: hand-picked Product blocks → a chosen collection → curated defaults. {%- endcomment -%}
+{%- comment -%} Collector's Favorites: hand-picked Product blocks, else a curated default set. {%- endcomment -%}
 <section class="bestsellers page-width">
   <div class="bestsellers__head">
     <div>
@@ -10,10 +10,9 @@
     {%- endif -%}
   </div>
 
-  {%- assign manual = section.blocks | where: 'type', 'product' -%}
   <div class="bestsellers__grid" style="grid-template-columns: repeat({{ section.settings.columns }}, 1fr);">
-    {%- if manual.size > 0 -%}
-      {%- for block in manual -%}
+    {%- if section.blocks.size > 0 -%}
+      {%- for block in section.blocks -%}
         <a href="{{ block.settings.link | default: '#' }}" class="prod-card" {{ block.shopify_attributes }}>
           <div class="prod-card__media">
             {%- if block.settings.image != blank -%}
@@ -29,21 +28,6 @@
           {%- if block.settings.sub != blank -%}<div class="prod-card__sub">{{ block.settings.sub }}</div>{%- endif -%}
           <div class="prod-title prod-card__title">{{ block.settings.title }}</div>
           {%- if block.settings.price != blank -%}<div class="prod-card__price">{{ block.settings.price }}</div>{%- endif -%}
-        </a>
-      {%- endfor -%}
-    {%- elsif section.settings.collection.products.size > 0 -%}
-      {%- for product in section.settings.collection.products limit: section.settings.product_limit -%}
-        <a href="{{ product.url }}" class="prod-card">
-          <div class="prod-card__media">
-            {%- if product.featured_media != blank -%}
-              <img src="{{ product.featured_media | image_url: width: 600 }}" alt="{{ product.title | escape }}" width="600" height="750" class="prod-img cover-img" loading="lazy">
-            {%- else -%}
-              {{ 'product-1' | placeholder_svg_tag: 'prod-img cover-img' }}
-            {%- endif -%}
-          </div>
-          {%- if product.type != blank -%}<div class="prod-card__sub">{{ product.type }}</div>{%- endif -%}
-          <div class="prod-title prod-card__title">{{ product.title }}</div>
-          <div class="prod-card__price">{{ product.price | money }}</div>
         </a>
       {%- endfor -%}
     {%- else -%}
@@ -86,13 +70,10 @@
 
 {% schema %}
 {
-  "name": "Collector's Favorites",
+  "name": "Bestsellers",
   "settings": [
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Collector's Favorites" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Our Iconic Mosaic Masterpieces" },
-    { "type": "paragraph", "content": "Add Product blocks for a hand-picked grid, or pick a Collection. With neither, a curated default set shows." },
-    { "type": "collection", "id": "collection", "label": "Collection" },
-    { "type": "range", "id": "product_limit", "min": 4, "max": 12, "step": 1, "label": "Products to show", "default": 8 },
     { "type": "range", "id": "columns", "min": 3, "max": 4, "step": 1, "label": "Columns", "default": 4 },
     { "type": "text", "id": "button_label", "label": "Button label", "default": "View All Mosaics" },
     { "type": "url", "id": "button_link", "label": "Button link" }
@@ -112,6 +93,6 @@
       ]
     }
   ],
-  "presets": [{ "name": "Collector's Favorites" }]
+  "presets": [{ "name": "Bestsellers" }]
 }
 {% endschema %}

@@ -19,9 +19,10 @@
       {%- endfor -%}
     {%- else -%}
       {%- assign ig_link = settings.social_instagram_link | default: 'https://instagram.com/imosaicart' -%}
-      {%- for n in (1..8) -%}
+      {%- assign ig_files = 'nautical-sunset.jpg~flower-vase.jpg~bird-peacock.jpg~portrait-pearl.png~religious-lady-jesus.png~custom-flower-vase-room.jpg~about-hands-tesserae.png~install-hero-tree.png' | split: '~' -%}
+      {%- for f in ig_files -%}
         <a href="{{ ig_link }}" target="_blank" rel="noopener" class="ig-tile">
-          {{ 'image' | placeholder_svg_tag: 'cover-img' }}
+          <img src="{{ f | asset_url }}" alt="" width="400" height="400" class="cover-img" loading="lazy">
           <span class="ig-overlay"></span>
         </a>
       {%- endfor -%}
