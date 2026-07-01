@@ -51,36 +51,31 @@
         <div class="site-footer__col-title">Explore</div>
         <div class="site-footer__col-links">
           <a href="{{ routes.all_products_collection_url }}" class="footer-link">Mosaics</a>
-          {%- if pages['portfolio'] != empty and pages['portfolio'].handle -%}<a href="{{ pages['portfolio'].url }}" class="footer-link">Portfolio</a>{%- endif -%}
-          {%- if pages['custom-mosaics'] != empty and pages['custom-mosaics'].handle -%}<a href="{{ pages['custom-mosaics'].url }}" class="footer-link">Custom Mosaics</a>{%- endif -%}
-          {%- if pages['color-palette'] != empty and pages['color-palette'].handle -%}<a href="{{ pages['color-palette'].url }}" class="footer-link">Color Palette</a>{%- endif -%}
-          {%- if pages['reviews'] != empty and pages['reviews'].handle -%}<a href="{{ pages['reviews'].url }}" class="footer-link">Testimonials</a>{%- endif -%}
-          {%- if pages['rewards'] != empty and pages['rewards'].handle -%}<a href="{{ pages['rewards'].url }}" class="footer-link">Rewards Program</a>{%- endif -%}
+          <a href="/pages/portfolio" class="footer-link">Portfolio</a>
+          <a href="/pages/custom-mosaics" class="footer-link">Custom Mosaics</a>
+          <a href="/pages/color-palette" class="footer-link">Color Palette</a>
+          <a href="/pages/reviews" class="footer-link">Testimonials</a>
+          <a href="/pages/rewards" class="footer-link">Rewards Program</a>
           <a href="{{ blogs.news.url | default: '/blogs/news' }}" class="footer-link">Journal</a>
         </div>
       </div>
       <div class="site-footer__col">
         <div class="site-footer__col-title">Support</div>
         <div class="site-footer__col-links">
-          {%- comment -%} Link to each page only if its record exists, so no /pages/* link 404s. {%- endcomment -%}
-          {%- if pages['installation-guide'] != empty and pages['installation-guide'].handle -%}<a href="{{ pages['installation-guide'].url }}" class="footer-link">Installation Guide</a>{%- endif -%}
-          {%- if pages['faq'] != empty and pages['faq'].handle -%}<a href="{{ pages['faq'].url }}" class="footer-link">FAQ</a>{%- endif -%}
-          {%- if pages['shipping-policy'] != empty and pages['shipping-policy'].handle -%}<a href="{{ pages['shipping-policy'].url }}" class="footer-link">Shipping Policy</a>{%- endif -%}
-          {%- if pages['returns-refunds'] != empty and pages['returns-refunds'].handle -%}<a href="{{ pages['returns-refunds'].url }}" class="footer-link">Returns &amp; Refunds</a>{%- endif -%}
-          {%- assign contact_page = pages['contact'] -%}
-          {%- if contact_page == empty or contact_page.handle == blank -%}{%- assign contact_page = pages['contact-us'] -%}{%- endif -%}
-          {%- if contact_page != empty and contact_page.handle -%}<a href="{{ contact_page.url }}" class="footer-link">Contact Us</a>{%- endif -%}
+          <a href="/pages/installation-guide" class="footer-link">Installation Guide</a>
+          <a href="/pages/faq" class="footer-link">FAQ</a>
+          <a href="/pages/shipping-policy" class="footer-link">Shipping Policy</a>
+          <a href="/pages/returns-refunds" class="footer-link">Returns &amp; Refunds</a>
+          <a href="/pages/contact-us" class="footer-link">Contact Us</a>
         </div>
       </div>
       <div class="site-footer__col">
         <div class="site-footer__col-title">Company</div>
         <div class="site-footer__col-links">
-          {%- assign about_page = pages['about'] -%}
-          {%- if about_page == empty or about_page.handle == blank -%}{%- assign about_page = pages['about-us'] -%}{%- endif -%}
-          {%- if about_page != empty and about_page.handle -%}<a href="{{ about_page.url }}" class="footer-link">About Us</a>{%- endif -%}
-          {%- if pages['privacy-policy'] != empty and pages['privacy-policy'].handle -%}<a href="{{ pages['privacy-policy'].url }}" class="footer-link">Privacy Policy</a>{%- endif -%}
-          {%- if pages['terms-conditions'] != empty and pages['terms-conditions'].handle -%}<a href="{{ pages['terms-conditions'].url }}" class="footer-link">Terms of Service</a>{%- endif -%}
-          {%- if pages['billing-terms'] != empty and pages['billing-terms'].handle -%}<a href="{{ pages['billing-terms'].url }}" class="footer-link">Billing Terms</a>{%- endif -%}
+          <a href="/pages/about-us" class="footer-link">About Us</a>
+          <a href="/pages/privacy-policy" class="footer-link">Privacy Policy</a>
+          <a href="/pages/terms-conditions" class="footer-link">Terms of Service</a>
+          <a href="/pages/billing-terms" class="footer-link">Billing Terms</a>
         </div>
       </div>
     {%- endif -%}
