@@ -1,340 +1,221 @@
-{%- assign stats = section.blocks | where: 'type', 'stat' -%}
-{%- assign pillars = section.blocks | where: 'type', 'pillar' -%}
-{%- assign gallery = section.blocks | where: 'type', 'gallery_image' -%}
-{%- assign promises = section.blocks | where: 'type', 'promise' -%}
-
-<!-- HERO -->
-<section class="about-hero page-width">
-  <div class="about-hero__grid">
-    <div class="about-hero__content">
-      {%- if section.settings.eyebrow != blank -%}
-        <div class="about-hero__eyebrow"><span class="about-hero__rule"></span><span class="about-hero__eyebrow-text">{{ section.settings.eyebrow }}</span></div>
-      {%- endif -%}
-      {%- if section.settings.heading != blank -%}<h1 class="about-hero__heading">{{ section.settings.heading }}</h1>{%- endif -%}
-      {%- if section.settings.text != blank -%}<p class="about-hero__text">{{ section.settings.text }}</p>{%- endif -%}
-      <div class="about-hero__ctas">
-        {%- if section.settings.button_label_1 != blank -%}<a href="{{ section.settings.button_link_1 }}" class="btn btn--dark about-hero__btn">{{ section.settings.button_label_1 }}</a>{%- endif -%}
-        {%- if section.settings.button_label_2 != blank -%}<a href="{{ section.settings.button_link_2 }}" class="btn btn--outline about-hero__btn">{{ section.settings.button_label_2 }}</a>{%- endif -%}
-      </div>
-    </div>
-    <div class="about-hero__media">
-      <div class="about-hero__frame">
-        {%- if section.settings.hero_image != blank -%}
-          <img src="{{ section.settings.hero_image | image_url: width: 1100 }}" alt="{{ section.settings.heading | strip_html | escape }}" width="1100" height="1100" class="cover-img">
-        {%- else -%}<img src="{{ 'custom-flower-vase-room.jpg' | asset_url }}" alt="{{ section.settings.heading | strip_html | escape }}" width="1100" height="1100" class="cover-img">{%- endif -%}
-      </div>
-      {%- if section.settings.card_value != blank -%}
-        <div class="about-hero__card">
-          <div class="about-hero__card-value">{{ section.settings.card_value }}</div>
-          <div class="about-hero__card-label">{{ section.settings.card_label }}</div>
+  <div class="ab">
+    <!-- HERO -->
+    <section class="ab-hero"><div class="ab-container">
+      <div class="ab-hero__grid">
+        <div class="ab-hero__copy">
+          <div class="ab-eyebrow"><span class="ab-eyebrow__ln"></span>Our Story</div>
+          <h1 class="ab-hero__title">Where Every Tile<br>Tells a <span class="ab-i">Story.</span></h1>
+          <p class="ab-hero__text">For thousands of years, mosaic has turned humble fragments of stone and glass into art that outlives empires. iMosaicArt carries that ancient craft into your home — every piece cut, shaped and placed entirely by hand, made to order, and built to be treasured for generations.</p>
+          <div class="ab-hero__ctas">
+            <a href="{{ routes.all_products_collection_url }}" class="ab-btn ab-btn--dark">Explore the Collection</a>
+            <a href="/pages/custom-mosaics" class="ab-btn ab-btn--outline">Commission a Piece</a>
+          </div>
         </div>
-      {%- endif -%}
-    </div>
-  </div>
-</section>
-
-<!-- STATS -->
-{%- if stats.size > 0 -%}
-<section class="about-stats">
-  <div class="page-width about-stats__grid">
-    {%- for block in stats -%}
-      <div class="about-stats__item" {{ block.shopify_attributes }}>
-        <div class="about-stats__n">{{ block.settings.value }}</div>
-        <div class="about-stats__label">{{ block.settings.label }}</div>
-      </div>
-    {%- endfor -%}
-  </div>
-</section>
-{%- endif -%}
-
-<!-- STORY -->
-<section class="about-story page-width">
-  <div class="about-story__grid">
-    <div class="about-story__media">
-      {%- if section.settings.story_image != blank -%}
-        <img src="{{ section.settings.story_image | image_url: width: 900 }}" alt="" width="900" height="1125" class="cover-img">
-      {%- else -%}<img src="{{ 'about-hands-tesserae.png' | asset_url }}" alt="" width="900" height="1125" class="cover-img">{%- endif -%}
-    </div>
-    <div class="about-story__content">
-      {%- if section.settings.story_eyebrow != blank -%}<div class="eyebrow">{{ section.settings.story_eyebrow }}</div>{%- endif -%}
-      {%- if section.settings.story_heading != blank -%}<h2 class="section-title about-story__heading">{{ section.settings.story_heading }}</h2>{%- endif -%}
-      <div class="about-story__body rte">{{ section.settings.story_body }}</div>
-    </div>
-  </div>
-</section>
-
-<!-- CRAFT PILLARS -->
-{%- if pillars.size > 0 -%}
-<section class="about-pillars">
-  <div class="page-width about-pillars__inner">
-    <div class="about-pillars__head">
-      {%- if section.settings.pillars_eyebrow != blank -%}<div class="eyebrow">{{ section.settings.pillars_eyebrow }}</div>{%- endif -%}
-      {%- if section.settings.pillars_heading != blank -%}<h2 class="section-title">{{ section.settings.pillars_heading }}</h2>{%- endif -%}
-    </div>
-    <div class="about-pillars__grid">
-      {%- for block in pillars -%}
-        <div class="about-pillars__item" {{ block.shopify_attributes }}>
-          <div class="about-pillars__icon">{{ block.settings.icon }}</div>
-          <h3 class="about-pillars__title">{{ block.settings.title }}</h3>
-          <p class="about-pillars__desc">{{ block.settings.desc }}</p>
+        <div class="ab-hero__media">
+          <div class="ab-hero__img"><img src="https://www.imosaicart.com/cdn/shop/files/van-gogh_s-cafe-terrace-glass-mosaic-reproduction-mal014.jpg?width=900" alt="Handcrafted mosaic artwork" loading="eager"></div>
+          <div class="ab-hero__badge">
+            <div class="ab-hero__badge-n">100%</div>
+            <div class="ab-hero__badge-l">Hand-cut by master artisans</div>
+          </div>
         </div>
-      {%- endfor -%}
-    </div>
-  </div>
-</section>
-{%- endif -%}
-
-<!-- GALLERY -->
-{%- if gallery.size > 0 -%}
-<section class="about-gallery page-width">
-  <div class="about-gallery__head">
-    {%- if section.settings.gallery_eyebrow != blank -%}<div class="eyebrow">{{ section.settings.gallery_eyebrow }}</div>{%- endif -%}
-    {%- if section.settings.gallery_heading != blank -%}<h2 class="section-title">{{ section.settings.gallery_heading }}</h2>{%- endif -%}
-  </div>
-  <div class="about-gallery__grid">
-    {%- for block in gallery -%}
-      <div class="g-tile about-gallery__tile" {{ block.shopify_attributes }}>
-        {%- if block.settings.image != blank -%}
-          <img src="{{ block.settings.image | image_url: width: 700 }}" alt="" width="700" height="875" class="cover-img" loading="lazy">
-        {%- else -%}{{ 'image' | placeholder_svg_tag: 'cover-img' }}{%- endif -%}
       </div>
-    {%- endfor -%}
-  </div>
-  {%- if section.settings.gallery_button_label != blank -%}
-    <div class="about-gallery__cta"><a href="{{ section.settings.gallery_button_link }}" class="btn btn--ghost">{{ section.settings.gallery_button_label }}</a></div>
-  {%- endif -%}
-</section>
-{%- endif -%}
+    </div></section>
 
-<!-- VALUES / PROMISES -->
-{%- if promises.size > 0 -%}
-<section class="about-values">
-  <div class="page-width about-values__inner">
-    <div class="about-values__head">
-      {%- if section.settings.values_eyebrow != blank -%}<div class="eyebrow">{{ section.settings.values_eyebrow }}</div>{%- endif -%}
-      {%- if section.settings.values_heading != blank -%}<h2 class="section-title">{{ section.settings.values_heading }}</h2>{%- endif -%}
-    </div>
-    <div class="about-values__grid">
-      {%- for block in promises -%}
-        <div class="about-values__item" {{ block.shopify_attributes }}>
-          <div class="about-values__icon">{{ block.settings.icon }}</div>
-          <h3 class="about-values__title">{{ block.settings.title }}</h3>
-          <p class="about-values__desc">{{ block.settings.desc }}</p>
+    <!-- STATS -->
+    <section class="ab-stats"><div class="ab-container">
+      <div class="ab-stats__grid">
+          <div class="ab-stat"><div class="ab-stat__n">15+</div><div class="ab-stat__l">Years of Experience</div></div>
+          <div class="ab-stat"><div class="ab-stat__n">100%</div><div class="ab-stat__l">Handmade</div></div>
+          <div class="ab-stat"><div class="ab-stat__n">1000s</div><div class="ab-stat__l">Tiles Per Piece</div></div>
+          <div class="ab-stat"><div class="ab-stat__n">Worldwide</div><div class="ab-stat__l">Free Shipping</div></div>
+      </div>
+    </div></section>
+
+    <!-- STORY -->
+    <section class="ab-story"><div class="ab-container">
+      <div class="ab-story__grid">
+        <div class="ab-story__img"><img src="https://www.imosaicart.com/cdn/shop/files/MAT053_-_60cm_x_85cm_8343d742-e897-4c91-b648-f7480e0e8ee5.jpg?width=800" alt="Artisan placing hand-cut tesserae" loading="lazy"></div>
+        <div class="ab-story__copy">
+          <div class="ab-kicker">How We Began</div>
+          <h2 class="ab-h2">A Passion for an Ancient Craft</h2>
+          <p class="ab-story__p">iMosaicArt was born from a simple belief: that the handmade still matters. In a world of mass production, we set out to revive the timeless art of mosaic — and to make it possible for anyone, anywhere, to own a true handcrafted original.</p>
+          <p class="ab-story__p">With over 15 years of experience, our studio brings together a team of dedicated mosaic artists who have spent decades mastering their craft. Working in the finest natural marble and hand-cut glass, they translate a photograph, a painting or a fleeting idea into thousands of carefully placed tesserae — each one chosen for its color, grain and character.</p>
+          <p class="ab-story__p">We marry traditional technique with modern precision, so every piece is not only breathtaking but built to last — a work of art for your walls, your floors and your story.</p>
         </div>
-      {%- endfor -%}
-    </div>
+      </div>
+    </div></section>
+
+    <!-- CRAFT PILLARS -->
+    <section class="ab-pillars"><div class="ab-container ab-pillars__inner">
+      <div class="ab-center">
+        <div class="ab-kicker">Our Craft</div>
+        <h2 class="ab-h2 ab-h2--c">The Difference Is in the Hands</h2>
+      </div>
+      <div class="ab-pillars__grid">
+          <div class="ab-pillar"><div class="ab-ico"><svg class="ab-ico__svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M11 3 8 9l4 12 4-12-3-6"/><path d="M2 9h20"/></svg></div><h3 class="ab-pillar__t">The Finest Materials</h3><p class="ab-pillar__d">Only natural marble and hand-cut glass — chosen for depth of color and a beauty that never fades.</p></div>
+          <div class="ab-pillar"><div class="ab-ico"><svg class="ab-ico__svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></div><h3 class="ab-pillar__t">Master Artisans</h3><p class="ab-pillar__d">Years of mastery in every cut. Each tessera is shaped and placed entirely by hand in our studio.</p></div>
+          <div class="ab-pillar"><div class="ab-ico"><svg class="ab-ico__svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v6l4 2"/><path d="M16 2l6 6"/></svg></div><h3 class="ab-pillar__t">Timeless Technique</h3><p class="ab-pillar__d">Ancient mosaic methods refined with modern precision — visually stunning and built to last generations.</p></div>
+      </div>
+    </div></section>
+
+    <!-- GALLERY -->
+    <section class="ab-gallery"><div class="ab-container">
+      <div class="ab-center">
+        <div class="ab-kicker">In Real Spaces</div>
+        <h2 class="ab-h2 ab-h2--c">Crafted Here, Treasured Everywhere</h2>
+      </div>
+      <div class="ab-gallery__grid">
+        <div class="ab-gtile"><img src="https://www.imosaicart.com/cdn/shop/files/MAS081_b2d557a7-36fa-418b-b736-ec6f27f75af3.jpg?width=700" alt="Mosaic in a real space" loading="lazy"></div>
+        <div class="ab-gtile"><img src="https://www.imosaicart.com/cdn/shop/files/MAA034_55b3da2e-eb16-4125-9de5-fcd9a5899e57.jpg?width=700" alt="Mosaic in a real space" loading="lazy"></div>
+        <div class="ab-gtile"><img src="https://www.imosaicart.com/cdn/shop/files/MAO027_d275e564-fa89-40cf-a59b-796939c8502b.webp?width=700" alt="Mosaic in a real space" loading="lazy"></div>
+      </div>
+      <div class="ab-gallery__cta"><a href="/pages/portfolio" class="ab-ghostbtn">View Our Portfolio</a></div>
+    </div></section>
+
+    <!-- PROMISE -->
+    <section class="ab-promise"><div class="ab-container ab-promise__inner">
+      <div class="ab-center">
+        <div class="ab-kicker">Our Promise</div>
+        <h2 class="ab-h2 ab-h2--c">What You Can Count On</h2>
+      </div>
+      <div class="ab-promise__grid">
+          <div class="ab-promise__col"><div class="ab-ico ab-ico--sm"><svg class="ab-ico__svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg></div><h3 class="ab-promise__t">Premium Craft</h3><p class="ab-promise__d">Handcrafted from the finest stone and glass for lasting beauty.</p></div>
+          <div class="ab-promise__col"><div class="ab-ico ab-ico--sm"><svg class="ab-ico__svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-2.4-5.9"/><path d="M20.7 3.6V9.1H15.2"/></svg></div><h3 class="ab-promise__t">Satisfaction Promise</h3><p class="ab-promise__d">Love it or return it — 100% satisfaction guaranteed.</p></div>
+          <div class="ab-promise__col"><div class="ab-ico ab-ico--sm"><svg class="ab-ico__svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg></div><h3 class="ab-promise__t">Safe Worldwide Shipping</h3><p class="ab-promise__d">Carefully crated and insured to arrive in perfect condition.</p></div>
+          <div class="ab-promise__col"><div class="ab-ico ab-ico--sm"><svg class="ab-ico__svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l8 3v5.5c0 5-3.4 8.6-8 10.5-4.6-1.9-8-5.5-8-10.5V5.5z"/><path d="M9 12l2 2 4-4.5"/></svg></div><h3 class="ab-promise__t">Secure &amp; Easy</h3><p class="ab-promise__d">Multiple payment options with a fast, encrypted checkout.</p></div>
+          <div class="ab-promise__col"><div class="ab-ico ab-ico--sm"><svg class="ab-ico__svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M8.5 12.5L7 22l5-3 5 3-1.5-9.5"/></svg></div><h3 class="ab-promise__t">Lifetime Warranty</h3><p class="ab-promise__d">Every mosaic is backed by a lifetime warranty, protecting your investment for years to come.</p></div>
+      </div>
+    </div></section>
+
+    <!-- QUOTE -->
+    <section class="ab-quote">
+      <div class="ab-quote__mark">&ldquo;</div>
+      <p class="ab-quote__t">We don't just make mosaics. We preserve a craft that has survived for millennia, one handcut tile at a time — so a piece of it can live in your home.</p>
+      <div class="ab-quote__by">The iMosaicArt Studio</div>
+    </section>
+
+    <!-- CTA BAND -->
+    <section class="ab-cta"><div class="ab-container ab-cta__inner">
+      <div class="ab-cta__copy">
+        <div class="ab-cta__eyebrow">Begin Your Piece</div>
+        <h2 class="ab-cta__title">Bring a timeless work of art into your space.</h2>
+        <p class="ab-cta__text">Browse our handcrafted collection or commission a one-of-a-kind mosaic designed around your vision — with free worldwide shipping on every order.</p>
+      </div>
+      <div class="ab-cta__actions">
+        <a href="{{ routes.all_products_collection_url }}" class="ab-cta__btn ab-cta__btn--blue">Shop Mosaics</a>
+        <a href="/pages/custom-mosaics" class="ab-cta__btn ab-cta__btn--ghost">Start a Commission</a>
+      </div>
+    </div></section>
   </div>
-</section>
-{%- endif -%}
 
-<!-- QUOTE -->
-{%- if section.settings.quote != blank -%}
-<section class="about-quote page-width">
-  <div class="about-quote__mark">“</div>
-  <p class="about-quote__text">{{ section.settings.quote }}</p>
-  <div class="about-quote__by">{{ section.settings.quote_author }}</div>
-</section>
-{%- endif -%}
+  <style>
+    .ab { background:#F4F6FA; color:#16335E; }
+    .ab-container { max-width:1320px; margin:0 auto; padding:0 40px; }
+    .ab-eyebrow { display:flex; align-items:center; gap:12px; margin-bottom:26px; font-family:'Marcellus',serif; font-size:13px; letter-spacing:.36em; text-transform:uppercase; color:#16335E; }
+    .ab-eyebrow__ln { width:42px; height:1px; background:#2B7BE8; }
+    .ab-i { font-style:italic; color:#2B7BE8; }
+    .ab-kicker { font-family:'Marcellus',serif; font-size:13px; letter-spacing:.36em; text-transform:uppercase; color:#16335E; margin-bottom:18px; }
+    .ab-h2 { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(32px,3.8vw,50px); line-height:1.08; margin:0 0 24px; color:#16335E; }
+    .ab-h2--c { margin:0; }
+    .ab-center { text-align:center; margin-bottom:56px; }
+    .ab-center .ab-kicker { margin-bottom:14px; }
+    .ab-ico { width:58px; height:58px; border-radius:50%; border:1px solid #2B7BE8; color:#2B7BE8; display:flex; align-items:center; justify-content:center; margin:0 auto 24px; }
+    .ab-ico--sm { width:54px; height:54px; margin-bottom:22px; }
 
-<!-- CTA BAND -->
-{%- if section.settings.cta_heading != blank -%}
-<section class="about-cta">
-  <div class="page-width about-cta__inner">
-    <div class="about-cta__text">
-      {%- if section.settings.cta_eyebrow != blank -%}<div class="about-cta__eyebrow">{{ section.settings.cta_eyebrow }}</div>{%- endif -%}
-      <h2 class="about-cta__heading">{{ section.settings.cta_heading }}</h2>
-      {%- if section.settings.cta_text != blank -%}<p class="about-cta__sub">{{ section.settings.cta_text }}</p>{%- endif -%}
-    </div>
-    <div class="about-cta__btns">
-      {%- if section.settings.cta_button_label_1 != blank -%}<a href="{{ section.settings.cta_button_link_1 }}" class="btn btn--blue">{{ section.settings.cta_button_label_1 }}</a>{%- endif -%}
-      {%- if section.settings.cta_button_label_2 != blank -%}<a href="{{ section.settings.cta_button_link_2 }}" class="btn about-cta__ghost">{{ section.settings.cta_button_label_2 }}</a>{%- endif -%}
-    </div>
-  </div>
-</section>
-{%- endif -%}
+    .ab-hero__grid { display:grid; grid-template-columns:1.02fr 1fr; gap:64px; align-items:center; padding:64px 0 76px; }
+    .ab-hero__title { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(44px,5vw,74px); line-height:1.02; letter-spacing:-.01em; margin:0 0 26px; color:#16335E; }
+    .ab-hero__text { font-size:17px; line-height:1.75; color:#5E6B85; max-width:520px; margin:0 0 36px; }
+    .ab-hero__ctas { display:flex; gap:16px; flex-wrap:wrap; }
+    .ab-btn { min-width:230px; justify-content:center; font-size:13px; letter-spacing:.14em; text-transform:uppercase; padding:17px 36px; display:inline-flex; align-items:center; transition:all .25s ease; }
+    .ab-btn--dark { background:#16335E; color:#F4F6FA; border:1px solid #16335E; }
+    .ab-btn--dark:hover { background:#22467E; border-color:#22467E; }
+    .ab-btn--outline { background:transparent; color:#16335E; border:1px solid rgba(22,51,94,.35); }
+    .ab-btn--outline:hover { background:#16335E; color:#F4F6FA; border-color:#16335E; }
+    .ab-hero__media { position:relative; align-self:stretch; min-height:500px; }
+    .ab-hero__img { position:absolute; inset:0; overflow:hidden; background:#DCE6F5; }
+    .ab-hero__img img { width:100%; height:100%; object-fit:cover; }
+    .ab-hero__badge { position:absolute; left:-30px; bottom:46px; background:#FFFFFF; padding:22px 26px; box-shadow:0 24px 60px rgba(22,51,94,.18); max-width:240px; }
+    .ab-hero__badge-n { font-family:'Cormorant Garamond',serif; font-size:38px; line-height:1; color:#16335E; }
+    .ab-hero__badge-l { font-size:12.5px; letter-spacing:.1em; text-transform:uppercase; color:#7E8AA0; margin-top:8px; }
 
-<style>
-  .about-hero__grid { display: grid; grid-template-columns: 1.02fr 1fr; gap: 64px; align-items: center; padding: 64px 0 76px; }
-  .about-hero__eyebrow { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; }
-  .about-hero__rule { width: 42px; height: 1px; background: var(--color-blue); }
-  .about-hero__eyebrow-text { font-family: var(--font-accent); font-size: 13px; letter-spacing: .36em; text-transform: uppercase; color: var(--color-navy); }
-  .about-hero__heading { font-family: var(--font-display); font-weight: 500; font-size: clamp(44px,5vw,74px); line-height: 1.02; letter-spacing: -.01em; margin-bottom: 26px; color: var(--color-navy); }
-  .about-hero__heading em, .about-hero__heading i { font-style: italic; color: var(--color-blue); }
-  .about-hero__text { font-size: 17px; line-height: 1.75; color: var(--color-text-muted); max-width: 520px; margin-bottom: 36px; }
-  .about-hero__ctas { display: flex; gap: 16px; flex-wrap: wrap; }
-  .about-hero__btn { min-width: 230px; }
-  .about-hero__media { position: relative; align-self: stretch; min-height: 500px; }
-  .about-hero__frame { position: absolute; inset: 0; overflow: hidden; background: var(--color-light-text); }
-  .about-hero__card { position: absolute; left: -30px; bottom: 46px; background: #fff; padding: 22px 26px; box-shadow: 0 24px 60px rgba(22,51,94,.18); max-width: 240px; }
-  .about-hero__card-value { font-family: var(--font-display); font-size: 38px; line-height: 1; color: var(--color-navy); }
-  .about-hero__card-label { font-size: 12.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-soft); margin-top: 8px; }
+    .ab-stats { background:#16335E; color:#DCE6F5; }
+    .ab-stats__grid { display:grid; grid-template-columns:repeat(4,1fr); gap:24px; padding:46px 0; }
+    .ab-stat { text-align:center; }
+    .ab-stat__n { font-family:'Cormorant Garamond',serif; font-size:clamp(34px,3.4vw,46px); line-height:1; color:#fff; }
+    .ab-stat__l { font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:#9AA4B8; margin-top:10px; }
 
-  .about-stats { background: var(--color-navy); color: var(--color-light-text); }
-  .about-stats__grid { padding-top: 46px; padding-bottom: 46px; display: grid; grid-template-columns: repeat(4,1fr); gap: 24px; }
-  .about-stats__item { text-align: center; }
-  .about-stats__n { font-family: var(--font-display); font-size: clamp(34px,3.4vw,46px); line-height: 1; color: #fff; }
-  .about-stats__label { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--color-text-faint); margin-top: 10px; }
+    .ab-story__grid { display:grid; grid-template-columns:1fr 1.05fr; gap:72px; align-items:center; padding:104px 0; }
+    .ab-story__img { position:relative; aspect-ratio:4/5; overflow:hidden; background:#DCE6F5; }
+    .ab-story__img img { width:100%; height:100%; object-fit:cover; }
+    .ab-story__p { font-size:16px; line-height:1.78; color:#5E6B85; margin:0 0 20px; }
+    .ab-story__p:last-child { margin-bottom:0; }
 
-  .about-story { padding-top: 104px; padding-bottom: 104px; }
-  .about-story__grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 72px; align-items: center; }
-  .about-story__media { position: relative; aspect-ratio: 4/5; overflow: hidden; background: var(--color-light-text); }
-  .about-story__heading { margin-bottom: 24px; }
-  .about-story__body { font-size: 16px; line-height: 1.78; color: var(--color-text-muted); }
-  .about-story__body p { margin-bottom: 20px; }
+    .ab-pillars { background:#fff; border-top:1px solid rgba(22,51,94,.08); border-bottom:1px solid rgba(22,51,94,.08); }
+    .ab-pillars__inner { padding-top:100px; padding-bottom:100px; }
+    .ab-pillars__grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0; }
+    .ab-pillar { padding:0 40px; text-align:center; border-left:1px solid rgba(22,51,94,.1); }
+    .ab-pillar:first-child { border-left:none; }
+    .ab-pillar__t { font-family:'Cormorant Garamond',serif; font-weight:600; font-size:24px; margin:0 0 14px; color:#16335E; }
+    .ab-pillar__d { font-size:14.5px; line-height:1.7; color:#5E6B85; margin:0; }
 
-  .about-pillars { background: #fff; border-top: 1px solid rgba(22,51,94,.08); border-bottom: 1px solid rgba(22,51,94,.08); }
-  .about-pillars__inner { padding-top: 100px; padding-bottom: 100px; }
-  .about-pillars__head { text-align: center; margin-bottom: 58px; }
-  .about-pillars__grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0; }
-  .about-pillars__item { padding: 0 40px; text-align: center; border-left: 1px solid rgba(22,51,94,.1); }
-  .about-pillars__item:first-child { border-left: none; }
-  .about-pillars__icon { width: 58px; height: 58px; border-radius: 50%; border: 1px solid var(--color-blue); color: var(--color-blue); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 24px; }
-  .about-pillars__title { font-family: var(--font-display); font-weight: 600; font-size: 24px; margin-bottom: 14px; color: var(--color-navy); }
-  .about-pillars__desc { font-size: 14.5px; line-height: 1.7; color: var(--color-text-muted); }
+    .ab-gallery { padding:100px 0 80px; }
+    .ab-gallery__grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+    .ab-gtile { position:relative; overflow:hidden; aspect-ratio:4/5; background:#DCE6F5; }
+    .ab-gtile img { width:100%; height:100%; object-fit:cover; transition:transform .65s cubic-bezier(.2,.7,.2,1); }
+    .ab-gtile:hover img { transform:scale(1.05); }
+    .ab-gallery__cta { text-align:center; margin-top:44px; }
+    .ab-ghostbtn { display:inline-block; font-size:12.5px; letter-spacing:.16em; text-transform:uppercase; color:#16335E; border:1px solid rgba(22,51,94,.3); padding:15px 34px; transition:all .25s ease; }
+    .ab-ghostbtn:hover { background:#2B7BE8; color:#fff; border-color:#2B7BE8; }
 
-  .about-gallery { padding-top: 100px; padding-bottom: 80px; }
-  .about-gallery__head { text-align: center; margin-bottom: 50px; }
-  .about-gallery__grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
-  .about-gallery__tile { position: relative; overflow: hidden; aspect-ratio: 4/5; background: var(--color-light-text); }
-  .about-gallery__cta { text-align: center; margin-top: 44px; }
+    .ab-promise { background:#EEF1F6; border-top:1px solid rgba(22,51,94,.08); }
+    .ab-promise__inner { padding-top:100px; padding-bottom:100px; }
+    .ab-promise__grid { display:grid; grid-template-columns:repeat(5,1fr); gap:0; }
+    .ab-promise__col { padding:0 32px; text-align:center; border-left:1px solid rgba(22,51,94,.12); }
+    .ab-promise__col:first-child { border-left:none; }
+    .ab-promise__t { font-family:'Cormorant Garamond',serif; font-weight:600; font-size:21px; margin:0 0 12px; color:#16335E; }
+    .ab-promise__d { font-size:14px; line-height:1.65; color:#5E6B85; margin:0; }
 
-  .about-values { background: var(--color-panel); border-top: 1px solid rgba(22,51,94,.08); }
-  .about-values__inner { padding-top: 100px; padding-bottom: 100px; }
-  .about-values__head { text-align: center; margin-bottom: 56px; }
-  .about-values__grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 0; }
-  .about-values__item { padding: 0 32px; text-align: center; border-left: 1px solid var(--color-line); }
-  .about-values__item:first-child { border-left: none; }
-  .about-values__icon { width: 54px; height: 54px; border-radius: 50%; border: 1px solid var(--color-blue); color: var(--color-blue); display: flex; align-items: center; justify-content: center; margin: 0 auto 22px; font-size: 22px; }
-  .about-values__title { font-family: var(--font-display); font-weight: 600; font-size: 21px; margin-bottom: 12px; color: var(--color-navy); }
-  .about-values__desc { font-size: 14px; line-height: 1.65; color: var(--color-text-muted); }
+    .ab-quote { max-width:920px; margin:0 auto; padding:100px 40px; text-align:center; }
+    .ab-quote__mark { color:#2B7BE8; font-size:46px; font-family:'Cormorant Garamond',serif; line-height:1; margin-bottom:18px; }
+    .ab-quote__t { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:500; font-size:clamp(26px,3.2vw,38px); line-height:1.35; color:#16335E; margin:0 0 28px; }
+    .ab-quote__by { font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:#7E8AA0; }
 
-  .about-quote { max-width: 920px; padding-top: 100px; padding-bottom: 100px; text-align: center; }
-  .about-quote__mark { color: var(--color-blue); font-size: 46px; font-family: var(--font-display); line-height: 1; margin-bottom: 18px; }
-  .about-quote__text { font-family: var(--font-display); font-style: italic; font-weight: 500; font-size: clamp(26px,3.2vw,38px); line-height: 1.35; color: var(--color-navy); margin-bottom: 28px; }
-  .about-quote__by { font-size: 13px; letter-spacing: .16em; text-transform: uppercase; color: var(--color-text-soft); }
+    .ab-cta { background:#16335E; color:#DCE6F5; }
+    .ab-cta__inner { display:flex; align-items:center; justify-content:space-between; gap:48px; flex-wrap:wrap; padding-top:84px; padding-bottom:84px; }
+    .ab-cta__copy { max-width:620px; }
+    .ab-cta__eyebrow { font-family:'Marcellus',serif; font-size:13px; letter-spacing:.36em; text-transform:uppercase; color:#7BB0F4; margin-bottom:18px; }
+    .ab-cta__title { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(32px,3.8vw,50px); line-height:1.08; margin:0 0 16px; color:#fff; }
+    .ab-cta__text { font-size:16px; line-height:1.7; color:#9AA4B8; margin:0; }
+    .ab-cta__actions { display:flex; gap:14px; flex-wrap:wrap; }
+    .ab-cta__btn { font-size:13px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; padding:18px 36px; white-space:nowrap; transition:all .25s ease; }
+    .ab-cta__btn--blue { background:#2B7BE8; color:#fff; }
+    .ab-cta__btn--blue:hover { background:#5C9AF0; }
+    .ab-cta__btn--ghost { background:transparent; color:#fff; border:1px solid rgba(220,230,245,.4); }
+    .ab-cta__btn--ghost:hover { background:rgba(255,255,255,.1); }
 
-  .about-cta { background: var(--color-navy); color: var(--color-light-text); }
-  .about-cta__inner { padding-top: 84px; padding-bottom: 84px; display: flex; align-items: center; justify-content: space-between; gap: 48px; flex-wrap: wrap; }
-  .about-cta__text { max-width: 620px; }
-  .about-cta__eyebrow { font-family: var(--font-accent); font-size: 13px; letter-spacing: .36em; text-transform: uppercase; color: var(--color-blue-light); margin-bottom: 18px; }
-  .about-cta__heading { font-family: var(--font-display); font-weight: 500; font-size: clamp(32px,3.8vw,50px); line-height: 1.08; margin-bottom: 16px; color: #fff; }
-  .about-cta__sub { font-size: 16px; line-height: 1.7; color: var(--color-text-faint); }
-  .about-cta__btns { display: flex; gap: 14px; flex-wrap: wrap; }
-  .about-cta__ghost { background: transparent; color: #fff; border: 1px solid rgba(220,230,245,.4); font-weight: 600; }
-  .about-cta__ghost:hover { background: rgba(255,255,255,.1); }
-
-  @media (max-width: 990px) {
-    .about-hero__grid, .about-story__grid { grid-template-columns: 1fr; gap: 40px; }
-    .about-hero__media { min-height: 420px; }
-    .about-stats__grid { grid-template-columns: 1fr 1fr; gap: 32px 24px; }
-    .about-pillars__grid { grid-template-columns: 1fr; gap: 48px; }
-    .about-pillars__item { border-left: none; }
-    .about-gallery__grid { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; }
-    .about-values__grid { grid-template-columns: 1fr 1fr; gap: 40px 0; }
-    .about-values__item:nth-child(odd) { border-left: none; }
-  }
-  @media (max-width: 600px) { .about-values__grid { grid-template-columns: 1fr; } .about-values__item { border-left: none; } }
-</style>
+    @media (max-width:990px) {
+      .ab-hero__grid, .ab-story__grid { grid-template-columns:1fr; gap:40px; }
+      .ab-story__grid { padding:70px 0; }
+      .ab-hero__media { min-height:420px; }
+      .ab-stats__grid { grid-template-columns:repeat(2,1fr); gap:34px 24px; }
+      .ab-pillars__grid { grid-template-columns:1fr; gap:48px; }
+      .ab-pillar { border-left:none; }
+      .ab-promise__grid { grid-template-columns:repeat(2,1fr); gap:44px 0; }
+      .ab-promise__col { border-left:none; }
+      .ab-gallery__grid { grid-template-columns:1fr; }
+      .ab-pillars__inner, .ab-promise__inner { padding-top:70px; padding-bottom:70px; }
+    }
+    @media (max-width:600px) {
+      .ab-container { padding:0 22px; }
+      .ab-hero__badge { left:16px; padding:18px 20px; }
+      .ab-hero__grid { padding:40px 0 54px; }
+    }
+  </style>
 
 {% schema %}
 {
   "name": "About page",
-  "settings": [
-    { "type": "header", "content": "Hero" },
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Our Story" },
-    { "type": "richtext", "id": "heading", "label": "Heading", "default": "<p>Where Every Tile Tells a <em>Story.</em></p>" },
-    { "type": "textarea", "id": "text", "label": "Text", "default": "For thousands of years, mosaic has turned humble fragments of stone and glass into art that outlives empires. iMosaicArt carries that ancient craft into your home — every piece cut, shaped and placed entirely by hand, made to order, and built to be treasured for generations." },
-    { "type": "text", "id": "button_label_1", "label": "Button 1", "default": "Explore the Collection" },
-    { "type": "url", "id": "button_link_1", "label": "Button 1 link" },
-    { "type": "text", "id": "button_label_2", "label": "Button 2", "default": "Commission a Piece" },
-    { "type": "url", "id": "button_link_2", "label": "Button 2 link" },
-    { "type": "image_picker", "id": "hero_image", "label": "Hero image" },
-    { "type": "text", "id": "card_value", "label": "Card value", "default": "100%" },
-    { "type": "text", "id": "card_label", "label": "Card label", "default": "Hand-cut by master artisans" },
-    { "type": "header", "content": "Story" },
-    { "type": "image_picker", "id": "story_image", "label": "Story image" },
-    { "type": "text", "id": "story_eyebrow", "label": "Eyebrow", "default": "How We Began" },
-    { "type": "text", "id": "story_heading", "label": "Heading", "default": "A Passion for an Ancient Craft" },
-    { "type": "richtext", "id": "story_body", "label": "Body", "default": "<p>iMosaicArt was born from a simple belief: that the handmade still matters. In a world of mass production, we set out to revive the timeless art of mosaic — and to make it possible for anyone, anywhere, to own a true handcrafted original.</p><p>With over 15 years of experience, our studio brings together a team of dedicated mosaic artists who have spent decades mastering their craft.</p><p>We marry traditional technique with modern precision, so every piece is not only breathtaking but built to last.</p>" },
-    { "type": "header", "content": "Craft pillars" },
-    { "type": "text", "id": "pillars_eyebrow", "label": "Eyebrow", "default": "Our Craft" },
-    { "type": "text", "id": "pillars_heading", "label": "Heading", "default": "The Difference Is in the Hands" },
-    { "type": "header", "content": "Gallery" },
-    { "type": "text", "id": "gallery_eyebrow", "label": "Eyebrow", "default": "In Real Spaces" },
-    { "type": "text", "id": "gallery_heading", "label": "Heading", "default": "Crafted Here, Treasured Everywhere" },
-    { "type": "text", "id": "gallery_button_label", "label": "Button label", "default": "View Our Portfolio" },
-    { "type": "url", "id": "gallery_button_link", "label": "Button link" },
-    { "type": "header", "content": "Values" },
-    { "type": "text", "id": "values_eyebrow", "label": "Eyebrow", "default": "Our Promise" },
-    { "type": "text", "id": "values_heading", "label": "Heading", "default": "What You Can Count On" },
-    { "type": "header", "content": "Quote" },
-    { "type": "textarea", "id": "quote", "label": "Quote", "default": "We don't just make mosaics. We preserve a craft that has survived for millennia, one handcut tile at a time — so a piece of it can live in your home." },
-    { "type": "text", "id": "quote_author", "label": "Attribution", "default": "The iMosaicArt Studio" },
-    { "type": "header", "content": "CTA band" },
-    { "type": "text", "id": "cta_eyebrow", "label": "Eyebrow", "default": "Begin Your Piece" },
-    { "type": "text", "id": "cta_heading", "label": "Heading", "default": "Bring a timeless work of art into your space." },
-    { "type": "textarea", "id": "cta_text", "label": "Text", "default": "Browse our handcrafted collection or commission a one-of-a-kind mosaic designed around your vision — with free worldwide shipping on every order." },
-    { "type": "text", "id": "cta_button_label_1", "label": "CTA button 1", "default": "Shop Mosaics" },
-    { "type": "url", "id": "cta_button_link_1", "label": "CTA button 1 link" },
-    { "type": "text", "id": "cta_button_label_2", "label": "CTA button 2", "default": "Start a Commission" },
-    { "type": "url", "id": "cta_button_link_2", "label": "CTA button 2 link" }
-  ],
-  "blocks": [
-    {
-      "type": "stat",
-      "name": "Stat",
-      "settings": [
-        { "type": "text", "id": "value", "label": "Value", "default": "15+" },
-        { "type": "text", "id": "label", "label": "Label", "default": "Years of Experience" }
-      ]
-    },
-    {
-      "type": "pillar",
-      "name": "Craft pillar",
-      "settings": [
-        { "type": "text", "id": "icon", "label": "Icon", "default": "✦" },
-        { "type": "text", "id": "title", "label": "Title", "default": "The Finest Materials" },
-        { "type": "textarea", "id": "desc", "label": "Description", "default": "Only natural marble and hand-cut glass — chosen for depth of color and a beauty that never fades." }
-      ]
-    },
-    {
-      "type": "gallery_image",
-      "name": "Gallery image",
-      "settings": [
-        { "type": "image_picker", "id": "image", "label": "Image" }
-      ]
-    },
-    {
-      "type": "promise",
-      "name": "Value",
-      "settings": [
-        { "type": "text", "id": "icon", "label": "Icon", "default": "✦" },
-        { "type": "text", "id": "title", "label": "Title", "default": "Premium Craft" },
-        { "type": "textarea", "id": "desc", "label": "Description", "default": "Handcrafted from the finest stone and glass for lasting beauty." }
-      ]
-    }
-  ],
-  "presets": [
-    {
-      "name": "About page",
-      "blocks": [
-        { "type": "stat", "settings": { "value": "15+", "label": "Years of Experience" } },
-        { "type": "stat", "settings": { "value": "100%", "label": "Handmade" } },
-        { "type": "stat", "settings": { "value": "1000s", "label": "Tiles Per Piece" } },
-        { "type": "stat", "settings": { "value": "Worldwide", "label": "Free Shipping" } },
-        { "type": "pillar", "settings": { "icon": "◆", "title": "The Finest Materials", "desc": "Only natural marble and hand-cut glass — chosen for depth of color and a beauty that never fades." } },
-        { "type": "pillar", "settings": { "icon": "✦", "title": "Master Artisans", "desc": "Years of mastery in every cut. Each tessera is shaped and placed entirely by hand in our studio." } },
-        { "type": "pillar", "settings": { "icon": "↻", "title": "Timeless Technique", "desc": "Ancient mosaic methods refined with modern precision — visually stunning and built to last generations." } },
-        { "type": "gallery_image" },
-        { "type": "gallery_image" },
-        { "type": "gallery_image" },
-        { "type": "promise", "settings": { "icon": "✦", "title": "Premium Craft", "desc": "Handcrafted from the finest stone and glass for lasting beauty." } },
-        { "type": "promise", "settings": { "icon": "↺", "title": "Satisfaction Promise", "desc": "Love it or return it — 100% satisfaction guaranteed." } },
-        { "type": "promise", "settings": { "icon": "✈", "title": "Safe Worldwide Shipping", "desc": "Carefully crated and insured to arrive in perfect condition." } },
-        { "type": "promise", "settings": { "icon": "◈", "title": "Secure & Easy", "desc": "Multiple payment options with a fast, encrypted checkout." } },
-        { "type": "promise", "settings": { "icon": "♦", "title": "Lifetime Warranty", "desc": "Every mosaic is backed by a lifetime warranty, protecting your investment for years to come." } }
-      ]
-    }
-  ]
+  "settings": [],
+  "presets": [{ "name": "About page" }]
 }
 {% endschema %}
