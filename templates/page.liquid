@@ -619,7 +619,7 @@
           </div>
         </div>
         <div class="ab-hero__media">
-          <div class="ab-hero__img"><img src="{{ 'install-hero-tree.png' | asset_url }}" alt="Master artisans crafting a mosaic" loading="eager" style="object-position:center top;"></div>
+          <div class="ab-hero__img"><img src="{{ 'install-hero-tree.png' | asset_url }}" alt="Master artisans crafting a mosaic" loading="eager"></div>
           <div class="ab-hero__badge">
             <div class="ab-hero__badge-n">100%</div>
             <div class="ab-hero__badge-l">Hand-cut by master artisans</div>
@@ -738,9 +738,9 @@
     .ab-btn--dark:hover { background:#22467E; border-color:#22467E; }
     .ab-btn--outline { background:transparent; color:#16335E; border:1px solid rgba(22,51,94,.35); }
     .ab-btn--outline:hover { background:#16335E; color:#F4F6FA; border-color:#16335E; }
-    .ab-hero__media { position:relative; align-self:stretch; min-height:500px; }
-    .ab-hero__img { position:absolute; inset:0; overflow:hidden; background:#DCE6F5; }
-    .ab-hero__img img { width:100%; height:100%; object-fit:cover; }
+    .ab-hero__media { position:relative; }
+    .ab-hero__img { position:relative; overflow:hidden; background:#DCE6F5; }
+    .ab-hero__img img { width:100%; height:auto; display:block; }
     .ab-hero__badge { position:absolute; left:-30px; top:50%; transform:translateY(-50%); background:#FFFFFF; padding:22px 26px; box-shadow:0 24px 60px rgba(22,51,94,.18); max-width:240px; }
     .ab-hero__badge-n { font-family:'Cormorant Garamond',serif; font-size:38px; line-height:1; color:#16335E; font-variant-numeric:lining-nums; font-feature-settings:"lnum" 1; }
     .ab-hero__badge-l { font-size:12.5px; letter-spacing:.1em; text-transform:uppercase; color:#7E8AA0; margin-top:8px; }
@@ -752,8 +752,8 @@
     .ab-stat__l { font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:#9AA4B8; margin-top:10px; }
 
     .ab-story__grid { display:grid; grid-template-columns:1fr 1.05fr; gap:72px; align-items:center; padding:104px 0; }
-    .ab-story__img { position:relative; aspect-ratio:4/5; overflow:hidden; background:#DCE6F5; }
-    .ab-story__img img { width:100%; height:100%; object-fit:cover; }
+    .ab-story__img { position:relative; overflow:hidden; background:#DCE6F5; }
+    .ab-story__img img { width:100%; height:auto; display:block; }
     .ab-story__p { font-size:16px; line-height:1.78; color:#5E6B85; margin:0 0 20px; }
     .ab-story__p:last-child { margin-bottom:0; }
 
@@ -808,7 +808,7 @@
     @media (max-width:990px) {
       .ab-hero__grid, .ab-story__grid { grid-template-columns:1fr; gap:40px; }
       .ab-story__grid { padding:70px 0; }
-      .ab-hero__media { min-height:440px; }
+      .ab-hero__media { min-height:0; }
       .ab-stats__grid { grid-template-columns:repeat(2,1fr); gap:34px 24px; }
       .ab-pillars__grid { grid-template-columns:1fr; gap:48px; }
       .ab-pillar { border-left:none; }
@@ -820,7 +820,7 @@
     @media (max-width:600px) {
       .ab-container { padding:0 22px; }
       .ab-hero__grid { padding:40px 0 52px; }
-      .ab-hero__media { min-height:340px; }
+      .ab-hero__media { min-height:0; }
       .ab-hero__badge { left:16px; top:auto; bottom:16px; transform:none; padding:15px 18px; max-width:200px; }
       .ab-hero__badge-n { font-size:32px; }
       .ab-hero__ctas { flex-direction:column; }
