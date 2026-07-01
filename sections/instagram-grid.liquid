@@ -2,7 +2,7 @@
   <div class="page-width instagram__head">
     {%- if section.settings.heading != blank -%}<h2 class="section-title">{{ section.settings.heading }}</h2>{%- endif -%}
     {%- if section.settings.handle != blank -%}
-      <a href="{{ settings.social_instagram_link | default: 'https://instagram.com/imosaicart' }}" target="_blank" rel="noopener" class="instagram__handle nav-link">{{ section.settings.handle }}</a>
+      <a href="{{ settings.social_instagram_link | default: 'https://www.instagram.com/i.mosaicart/' }}" target="_blank" rel="noopener" class="instagram__handle nav-link">{{ section.settings.handle }}</a>
     {%- endif -%}
   </div>
   <div class="instagram__grid">
@@ -18,11 +18,15 @@
         </a>
       {%- endfor -%}
     {%- else -%}
-      {%- assign ig_link = settings.social_instagram_link | default: 'https://instagram.com/imosaicart' -%}
-      {%- assign ig_files = 'nautical-sunset.jpg~flower-vase.jpg~bird-peacock.jpg~portrait-pearl.png~religious-lady-jesus.png~custom-flower-vase-room.jpg~about-hands-tesserae.png~install-hero-tree.png~bird-peacock.jpg~nautical-sunset.jpg~portrait-pearl.png~flower-vase.jpg~install-hero-tree.png~religious-lady-jesus.png~custom-flower-vase-room.jpg~about-hands-tesserae.png' | split: '~' -%}
+      {%- assign ig_link = settings.social_instagram_link | default: 'https://www.instagram.com/i.mosaicart/' -%}
+      {%- assign ig_files = 'https://www.imosaicart.com/cdn/shop/files/515501868_615409964937269_775212130695605232_n.jpg?width=400~https://www.imosaicart.com/cdn/shop/files/514882040_615540671590865_3345350083595333582_n.jpg?width=400~https://www.imosaicart.com/cdn/shop/files/516852109_615515628260036_3096541827106973933_n.jpg?width=400~https://www.imosaicart.com/cdn/shop/files/514400651_615567438254855_8814883425095282072_n.jpg?width=400~https://www.imosaicart.com/cdn/shop/files/514401429_615555868256012_7277352567540283300_n.jpg?width=400~https://www.imosaicart.com/cdn/shop/files/514411828_615527788258820_7592897271738552265_n.jpg?width=400~https://www.imosaicart.com/cdn/shop/files/MAS081_b2d557a7-36fa-418b-b736-ec6f27f75af3.jpg?width=400~https://www.imosaicart.com/cdn/shop/files/MAT053_-_60cm_x_85cm_8343d742-e897-4c91-b648-f7480e0e8ee5.jpg?width=400~https://www.imosaicart.com/cdn/shop/files/MAA034_55b3da2e-eb16-4125-9de5-fcd9a5899e57.jpg?width=400~nautical-sunset.jpg~flower-vase.jpg~bird-peacock.jpg~portrait-pearl.png~religious-lady-jesus.png~custom-flower-vase-room.jpg~install-hero-tree.png' | split: '~' -%}
       {%- for f in ig_files -%}
         <a href="{{ ig_link }}" target="_blank" rel="noopener" class="ig-tile">
-          <img src="{{ f | asset_url }}" alt="" width="400" height="400" class="cover-img" loading="lazy">
+          {%- if f contains '://' -%}
+            <img src="{{ f }}" alt="" width="400" height="400" class="cover-img" loading="lazy" referrerpolicy="no-referrer">
+          {%- else -%}
+            <img src="{{ f | asset_url }}" alt="" width="400" height="400" class="cover-img" loading="lazy">
+          {%- endif -%}
           <span class="ig-overlay"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="#fff" stroke="none"/></svg></span>
         </a>
       {%- endfor -%}
