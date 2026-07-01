@@ -8,7 +8,18 @@
     {%- assign shown = 0 -%}
     {%- for item in related -%}
       {%- if item.id != product.id and shown < section.settings.limit -%}
-        {% render 'card-product', product: item %}
+        <a href="{{ item.url }}" class="rel-card">
+          <div class="rel-card__media">
+            {%- if item.featured_media != blank -%}
+              <img src="{{ item.featured_media | image_url: width: 500 }}" alt="{{ item.title | escape }}" width="500" height="625" loading="lazy">
+            {%- else -%}
+              {{ 'product-1' | placeholder_svg_tag: '' }}
+            {%- endif -%}
+          </div>
+          {%- if item.type != blank -%}<div class="rel-card__sub">{{ item.type }}</div>{%- endif -%}
+          <div class="rel-card__title">{{ item.title }}</div>
+          <div class="rel-card__price">{%- if item.price > 0 -%}{% if item.price_varies %}From {% endif %}{{ item.price | money }}{%- else -%}Price on request{%- endif -%}</div>
+        </a>
         {%- assign shown = shown | plus: 1 -%}
       {%- endif -%}
     {%- endfor -%}
@@ -19,6 +30,13 @@
   .related { padding-top: 90px; padding-bottom: 100px; }
   .related__head { text-align: center; margin-bottom: 50px; }
   .related__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px 24px; }
+  .rel-card { display: block; }
+  .rel-card__media { overflow: hidden; aspect-ratio: 4/5; background: var(--color-light-text); margin-bottom: 16px; }
+  .rel-card__media img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+  .rel-card:hover .rel-card__media img { transform: scale(1.05); }
+  .rel-card__sub { font-family: var(--font-accent); font-size: 10.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--color-text-faint); margin-bottom: 6px; }
+  .rel-card__title { font-family: var(--font-display); font-size: 22px; line-height: 1.15; color: var(--color-navy); margin-bottom: 6px; }
+  .rel-card__price { font-size: 14px; color: var(--color-text-muted); }
   @media (max-width: 990px) { .related__grid { grid-template-columns: repeat(2, 1fr); } }
 </style>
 
