@@ -25,7 +25,11 @@
   {%- endif -%}
   <a href="{{ product.url }}" class="prod-title cardc__title">{{ product.title }}</a>
   <div class="cardc__price">
-    {%- if product.price_varies -%}{{ 'products.product.from_price_html' | t: price: product.price_min | money }}{%- else -%}{{ product.price | money }}{%- endif -%}
+    {%- if product.price > 0 -%}
+      {%- if product.price_varies -%}From {{ product.price_min | money }}{%- else -%}{{ product.price | money }}{%- endif -%}
+    {%- else -%}
+      Price on request
+    {%- endif -%}
   </div>
 </div>
 
