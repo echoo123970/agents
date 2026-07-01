@@ -177,4 +177,33 @@
       if (lens.parentNode) lens.parentNode.removeChild(lens);
     });
   });
+
+  /* Header elevation on scroll */
+  var siteHeader = document.querySelector('.site-header');
+  if (siteHeader) {
+    var onHeaderScroll = function () { siteHeader.classList.toggle('is-scrolled', window.scrollY > 8); };
+    window.addEventListener('scroll', onHeaderScroll, { passive: true });
+    onHeaderScroll();
+  }
+
+  /* Scroll reveal — safe: only hides below-the-fold blocks, no-op with reduced motion / no IO */
+  (function () {
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || !('IntersectionObserver' in window)) return;
+    var main = document.getElementById('MainContent');
+    if (!main) return;
+    var targets = main.querySelectorAll('.shopify-section, .bestsellers');
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    var pending = [];
+    targets.forEach(function (el) {
+      if (el.getBoundingClientRect().top > vh * 0.82) { el.classList.add('ima-reveal'); pending.push(el); }
+    });
+    if (!pending.length) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('ima-in'); io.unobserve(en.target); }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -7% 0px' });
+    pending.forEach(function (el) { io.observe(el); });
+  })();
 })();

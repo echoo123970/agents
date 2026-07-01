@@ -146,3 +146,38 @@ p { margin: 0; }
 @media (max-width: 750px) {
   .page-width { padding-left: 18px; padding-right: 18px; }
 }
+
+/* ============ CX polish (customer-experience layer) ============ */
+/* Keyboard-visible focus rings (accessibility) */
+:focus-visible { outline: 2px solid var(--color-blue); outline-offset: 3px; border-radius: 2px; }
+a:focus:not(:focus-visible), button:focus:not(:focus-visible), input:focus:not(:focus-visible), select:focus:not(:focus-visible), textarea:focus:not(:focus-visible) { outline: none; }
+
+/* Smooth in-page scrolling (respects reduced-motion) */
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+
+/* Header gains a soft elevation once scrolled */
+.site-header { transition: box-shadow .3s ease, background .3s ease; }
+.site-header.is-scrolled { box-shadow: 0 8px 30px rgba(22,51,94,.09); background: rgba(255,255,255,.97); }
+
+/* Scroll-reveal: JS only adds .ima-reveal to below-the-fold blocks, so nothing is hidden if JS is off */
+.ima-reveal { opacity: 0; transform: translateY(28px); will-change: opacity, transform; }
+.ima-reveal.ima-in { opacity: 1; transform: none; transition: opacity .75s ease, transform .75s cubic-bezier(.2,.7,.2,1); }
+
+/* Hero entrance — staggered, always ends visible */
+@media (prefers-reduced-motion: no-preference) {
+  .hero__content > * { animation: ima-rise .7s both; }
+  .hero__content > *:nth-child(1) { animation-delay: 0s; }
+  .hero__content > *:nth-child(2) { animation-delay: .06s; }
+  .hero__content > *:nth-child(3) { animation-delay: .12s; }
+  .hero__content > *:nth-child(4) { animation-delay: .18s; }
+  .hero__content > *:nth-child(5) { animation-delay: .24s; }
+  .hero__media { animation: ima-fade 1s both .1s; }
+}
+@keyframes ima-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes ima-fade { from { opacity: 0; } to { opacity: 1; } }
+
+/* Nicer product/card hover lift */
+.prod-card { transition: transform .4s cubic-bezier(.2,.7,.2,1); }
+.prod-card:hover { transform: translateY(-4px); }
+.prod-card__media .prod-img { transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+.prod-card:hover .prod-card__media .prod-img { transform: scale(1.05); }
