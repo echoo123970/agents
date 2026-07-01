@@ -14,16 +14,16 @@
           {%- else -%}
             {{ 'image' | placeholder_svg_tag: 'cover-img' }}
           {%- endif -%}
-          <span class="ig-overlay"></span>
+          <span class="ig-overlay"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="#fff" stroke="none"/></svg></span>
         </a>
       {%- endfor -%}
     {%- else -%}
       {%- assign ig_link = settings.social_instagram_link | default: 'https://instagram.com/imosaicart' -%}
-      {%- assign ig_files = 'nautical-sunset.jpg~flower-vase.jpg~bird-peacock.jpg~portrait-pearl.png~religious-lady-jesus.png~custom-flower-vase-room.jpg~about-hands-tesserae.png~install-hero-tree.png' | split: '~' -%}
+      {%- assign ig_files = 'nautical-sunset.jpg~flower-vase.jpg~bird-peacock.jpg~portrait-pearl.png~religious-lady-jesus.png~custom-flower-vase-room.jpg~about-hands-tesserae.png~install-hero-tree.png~bird-peacock.jpg~nautical-sunset.jpg~portrait-pearl.png~flower-vase.jpg~install-hero-tree.png~religious-lady-jesus.png~custom-flower-vase-room.jpg~about-hands-tesserae.png' | split: '~' -%}
       {%- for f in ig_files -%}
         <a href="{{ ig_link }}" target="_blank" rel="noopener" class="ig-tile">
           <img src="{{ f | asset_url }}" alt="" width="400" height="400" class="cover-img" loading="lazy">
-          <span class="ig-overlay"></span>
+          <span class="ig-overlay"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="#fff" stroke="none"/></svg></span>
         </a>
       {%- endfor -%}
     {%- endif -%}
@@ -37,7 +37,10 @@
   .instagram__handle { display: inline-block; font-family: var(--font-accent); font-size: 13px; letter-spacing: .36em; text-transform: uppercase; color: var(--color-navy); }
   .instagram__grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
   .ig-tile { position: relative; display: block; aspect-ratio: 1/1; overflow: hidden; background: var(--color-light-text); }
-  .ig-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(11,28,53,.30); }
+  .ig-tile .cover-img { transition: transform .5s ease; }
+  .ig-tile:hover .cover-img { transform: scale(1.06); }
+  .ig-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(11,28,53,.42); opacity: 0; transition: opacity .3s ease; }
+  .ig-tile:hover .ig-overlay { opacity: 1; }
   @media (max-width: 990px) { .instagram__grid { grid-template-columns: repeat(4, 1fr); } }
   @media (max-width: 600px) { .instagram__grid { grid-template-columns: repeat(3, 1fr); } }
 </style>
@@ -45,7 +48,7 @@
 {% schema %}
 {
   "name": "Instagram grid",
-  "max_blocks": 16,
+  "max_blocks": 24,
   "settings": [
     { "type": "text", "id": "heading", "label": "Heading", "default": "Follow The Mosaic Studio" },
     { "type": "text", "id": "handle", "label": "Handle", "default": "@i.mosaicart" }
