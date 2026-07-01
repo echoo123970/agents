@@ -1,7 +1,53 @@
 {% section 'hero' %}
 {% section 'trust-bar' %}
 {% section 'quote-banner' %}
-{% section 'category-grid' %}
+{%- comment -%} Shop by Subject inlined so the corrected collection links always render. {%- endcomment -%}
+<section id="categories" class="cat-grid page-width">
+  <div class="cat-grid__head">
+    <div>
+      <div class="eyebrow">Shop by Subject</div>
+      <h2 class="section-title cat-grid__title">Artisanal Mosaic Designs In Natural Marble &amp; Glass</h2>
+    </div>
+    <a href="{{ routes.all_products_collection_url }}" class="btn btn--ghost">View All Subjects</a>
+  </div>
+  <div class="cat-grid__grid" style="grid-template-columns: repeat(5, 1fr);">
+    {%- assign cat_handles = 'portrait-mosaics~nautical-mosaics~flower-mosaics~landscape-mosaics~food-mosaics~geometric-mosaics~animal-mosaics~bird-mosaics~patterns-mosaics~tree-mosaics' | split: '~' -%}
+    {%- assign cat_titles = 'Portrait~Nautical~Flower~Landscape~Food~Geometric~Animal~Bird~Pattern~Tree' | split: '~' -%}
+    {%- for h in cat_handles -%}
+      {%- assign coll = collections[h] -%}
+      {%- assign card_name = cat_titles[forloop.index0] -%}
+      {%- if coll != empty and coll.url != blank -%}
+        {%- assign card_url = coll.url -%}
+      {%- else -%}
+        {%- capture card_url -%}{{ routes.search_url }}?q={{ card_name | url_encode }}&type=product{%- endcapture -%}
+      {%- endif -%}
+      <a href="{{ card_url }}" class="cat-card">
+        {%- if coll.featured_image != blank -%}
+          <img src="{{ coll.featured_image | image_url: width: 900 }}" alt="{{ card_name | escape }}" width="900" height="1200" class="cat-img cover-img" loading="lazy">
+        {%- else -%}
+          {{ 'collection-1' | placeholder_svg_tag: 'cat-img cover-img' }}
+        {%- endif -%}
+        <span class="cat-grid__scrim"></span>
+        <span class="cat-label">{{ card_name }}</span>
+        <span class="cat-cta">View Collection</span>
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+<style>
+  .cat-grid { padding-top: 128px; padding-bottom: 90px; }
+  .cat-grid__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 48px; flex-wrap: wrap; }
+  .cat-grid__title { max-width: 640px; }
+  .cat-grid__grid { display: grid; gap: 18px; }
+  .cat-card { position: relative; display: block; overflow: hidden; aspect-ratio: 3/4; background: var(--color-light-text); }
+  .cat-grid__scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(11,28,53,.72), rgba(11,28,53,0) 55%); }
+  .cat-label { position: absolute; left: 16px; bottom: 14px; right: 16px; color: var(--color-bg); font-family: var(--font-accent); font-size: 15px; letter-spacing: .04em; z-index: 2; }
+  .cat-cta { position: absolute; left: 16px; bottom: -30px; color: var(--color-bg); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; opacity: 0; transition: all .4s ease; z-index: 2; }
+  .cat-card:hover .cat-label { transform: translateY(-22px); }
+  .cat-card:hover .cat-cta { opacity: 1; bottom: 16px; }
+  @media (max-width: 990px) { .cat-grid { padding-top: 80px; } .cat-grid__grid { grid-template-columns: repeat(3, 1fr) !important; } }
+  @media (max-width: 600px) { .cat-grid__grid { grid-template-columns: repeat(2, 1fr) !important; } }
+</style>
 {% section 'marquee' %}
 {% section 'collection-showcase' %}
 {%- comment -%} Bestsellers inlined here (not a separate section) so it renders even if the store's GitHub sync fails to create new section files. {%- endcomment -%}
