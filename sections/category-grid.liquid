@@ -42,7 +42,7 @@
         {%- assign hh = h | strip -%}
         {%- assign coll = collections[hh] -%}
         {%- assign card_name = d_titles[forloop.index0] | strip | default: coll.title -%}
-        {%- assign card_url = coll.url | default: '/collections/' | append: hh -%}
+        {%- if coll.url != blank -%}{%- assign card_url = coll.url -%}{%- else -%}{%- assign card_url = '/collections/' | append: hh -%}{%- endif -%}
         {%- assign ov = d_images[forloop.index0] | strip -%}
         <a href="{{ card_url }}" class="cat-card">
           {%- if ov contains '://' -%}
