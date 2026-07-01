@@ -39,7 +39,7 @@
         {%- assign hh = h | strip -%}
         {%- assign coll = collections[hh] -%}
         {%- assign card_name = d_titles[forloop.index0] | strip | default: coll.title -%}
-        {%- if coll.url != blank -%}{%- assign card_url = coll.url -%}{%- else -%}{%- assign card_url = '/collections/' | append: hh -%}{%- endif -%}
+        {%- if coll != empty and coll.url != blank -%}{%- assign card_url = coll.url -%}{%- else -%}{%- capture card_url -%}{{ routes.search_url }}?q={{ card_name | url_encode }}&type=product{%- endcapture -%}{%- endif -%}
         <a href="{{ card_url }}" class="col-card">
           {%- if coll.featured_image != blank -%}
             <img src="{{ coll.featured_image | image_url: width: 900 }}" alt="{{ card_name | escape }}" width="900" height="600" class="col-zoom cover-img" loading="lazy">
