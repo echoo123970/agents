@@ -37,13 +37,19 @@
     {%- else -%}
       {%- assign d_handles = section.settings.default_handles | split: ',' -%}
       {%- assign d_titles = section.settings.default_titles | split: ',' -%}
+      {%- assign d_images = section.settings.default_images | split: ',' -%}
       {%- for h in d_handles -%}
         {%- assign hh = h | strip -%}
         {%- assign coll = collections[hh] -%}
         {%- assign card_name = d_titles[forloop.index0] | strip | default: coll.title -%}
         {%- assign card_url = coll.url | default: '/collections/' | append: hh -%}
+        {%- assign ov = d_images[forloop.index0] | strip -%}
         <a href="{{ card_url }}" class="cat-card">
-          {%- if coll.featured_image != blank -%}
+          {%- if ov contains '://' -%}
+            <img src="{{ ov }}" alt="{{ card_name | escape }}" width="900" height="1200" class="cat-img cover-img" loading="lazy" referrerpolicy="no-referrer">
+          {%- elsif ov != blank -%}
+            <img src="{{ ov | asset_url }}" alt="{{ card_name | escape }}" width="900" height="1200" class="cat-img cover-img" loading="lazy">
+          {%- elsif coll.featured_image != blank -%}
             <img src="{{ coll.featured_image | image_url: width: 900 }}" alt="{{ card_name | escape }}" width="900" height="1200" class="cat-img cover-img" loading="lazy">
           {%- else -%}
             {{ 'collection-1' | placeholder_svg_tag: 'cat-img cover-img' }}
@@ -82,7 +88,8 @@
     { "type": "range", "id": "columns", "min": 3, "max": 6, "step": 1, "label": "Columns", "default": 5 },
     { "type": "paragraph", "content": "If no Category blocks are added, these defaults are shown (comma-separated, in matching order)." },
     { "type": "textarea", "id": "default_handles", "label": "Default collection handles", "default": "portrait-mosaics, nautical-mosaics, flower-mosaics, landscape-mosaics, food-mosaics, geometric-mosaics, animal-mosaics, bird-mosaics, patterns-mosaics, tree-mosaics" },
-    { "type": "textarea", "id": "default_titles", "label": "Default titles", "default": "Portrait, Nautical, Flower, Landscape, Food, Geometric, Animal, Bird, Pattern, Tree" }
+    { "type": "textarea", "id": "default_titles", "label": "Default titles", "default": "Portrait, Nautical, Flower, Landscape, Food, Geometric, Animal, Bird, Pattern, Tree" },
+    { "type": "textarea", "id": "default_images", "label": "Tile image overrides (comma-separated URLs or asset filenames, matching the order above)", "default": "" }
   ],
   "blocks": [
     {
