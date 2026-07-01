@@ -32,9 +32,16 @@
       {%- endfor -%}
     {%- endif -%}
   </div>
-  {%- if section.settings.button_label != blank -%}
+  {%- comment -%} Resolve the FAQ page only if it exists; never emit a dead /pages/faq link. {%- endcomment -%}
+  {%- assign faq_page = pages['faq'] -%}
+  {%- if section.settings.button_link != blank -%}
+    {%- assign faq_href = section.settings.button_link -%}
+  {%- elsif faq_page != empty and faq_page.handle -%}
+    {%- assign faq_href = faq_page.url -%}
+  {%- endif -%}
+  {%- if section.settings.button_label != blank and faq_href -%}
     <div class="faq__cta">
-      <a href="{{ section.settings.button_link | default: '/pages/faq' }}" class="btn btn--ghost">{{ section.settings.button_label }}</a>
+      <a href="{{ faq_href }}" class="btn btn--ghost">{{ section.settings.button_label }}</a>
     </div>
   {%- endif -%}
 </section>
