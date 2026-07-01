@@ -754,6 +754,8 @@
     .ab-story__grid { display:grid; grid-template-columns:1fr 1.05fr; gap:72px; align-items:center; padding:104px 0; }
     .ab-story__img { position:relative; overflow:hidden; background:#DCE6F5; }
     .ab-story__img img { width:100%; height:auto; display:block; }
+    .ab-hero__img img, .ab-story__img img { transition:transform .7s cubic-bezier(.2,.7,.2,1); }
+    .ab-hero__img:hover img, .ab-story__img:hover img { transform:scale(1.05); }
     .ab-story__p { font-size:16px; line-height:1.78; color:#5E6B85; margin:0 0 20px; }
     .ab-story__p:last-child { margin-bottom:0; }
 
