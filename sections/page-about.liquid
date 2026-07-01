@@ -197,22 +197,41 @@
     .ab-cta__btn--ghost { background:transparent; color:#fff; border:1px solid rgba(220,230,245,.4); }
     .ab-cta__btn--ghost:hover { background:rgba(255,255,255,.1); }
 
+    .ab { overflow-x: clip; }
+    @media (max-width:1100px) {
+      .ab-hero__grid { gap:44px; }
+      .ab-story__grid { gap:48px; }
+    }
     @media (max-width:990px) {
       .ab-hero__grid, .ab-story__grid { grid-template-columns:1fr; gap:40px; }
       .ab-story__grid { padding:70px 0; }
-      .ab-hero__media { min-height:420px; }
+      .ab-hero__media { min-height:440px; }
       .ab-stats__grid { grid-template-columns:repeat(2,1fr); gap:34px 24px; }
       .ab-pillars__grid { grid-template-columns:1fr; gap:48px; }
       .ab-pillar { border-left:none; }
-      .ab-promise__grid { grid-template-columns:repeat(2,1fr); gap:44px 0; }
+      .ab-promise__grid { grid-template-columns:repeat(3,1fr); gap:44px 24px; }
       .ab-promise__col { border-left:none; }
-      .ab-gallery__grid { grid-template-columns:1fr; }
+      .ab-gallery__grid { grid-template-columns:repeat(2,1fr); }
       .ab-pillars__inner, .ab-promise__inner { padding-top:70px; padding-bottom:70px; }
     }
     @media (max-width:600px) {
       .ab-container { padding:0 22px; }
-      .ab-hero__badge { left:16px; padding:18px 20px; }
-      .ab-hero__grid { padding:40px 0 54px; }
+      .ab-hero__grid { padding:40px 0 52px; }
+      .ab-hero__media { min-height:340px; }
+      .ab-hero__badge { left:16px; top:auto; bottom:16px; transform:none; padding:15px 18px; max-width:200px; }
+      .ab-hero__badge-n { font-size:32px; }
+      .ab-hero__ctas { flex-direction:column; }
+      .ab-btn { min-width:0; width:100%; }
+      .ab-stats__grid { grid-template-columns:repeat(2,1fr); gap:26px 16px; padding:36px 0; }
+      .ab-promise__grid { grid-template-columns:1fr 1fr; gap:34px 20px; }
+      .ab-gallery__grid { grid-template-columns:1fr; }
+      .ab-quote { padding:64px 22px; }
+      .ab-cta__inner { padding-top:56px; padding-bottom:56px; }
+      .ab-cta__actions { width:100%; }
+      .ab-cta__btn { flex:1; text-align:center; }
+    }
+    @media (max-width:400px) {
+      .ab-stats__grid, .ab-promise__grid { grid-template-columns:1fr; }
     }
   </style>
 
