@@ -818,6 +818,270 @@
       .ab-hero__grid { padding:40px 0 54px; }
     }
   </style>
+{%- elsif ph == 'custom-mosaics' or ph == 'custom-mosaic-art' or ph == 'custom-mosaic' -%}
+{%- comment -%} Custom Mosaics page — full static design (identical to Claude design). Uses Shopify contact form so submissions are delivered. {%- endcomment -%}
+<div class="cmx">
+  <!-- HERO -->
+  <section class="cmx-hero"><div class="cmx-wrap">
+    <div class="cmx-hero__grid">
+      <div class="cmx-hero__copy">
+        <div class="cmx-eyebrow"><span class="cmx-eyebrow__ln"></span>Bespoke Commissions</div>
+        <h1 class="cmx-hero__title">If You Can Imagine It,<br>We Can Hand-cut It<br><span class="cmx-i">in Stone.</span></h1>
+        <p class="cmx-hero__text">Personalize any design, reimagine a piece you love, or bring us a concept entirely your own. Our master artisans and in-house interior designers turn your vision into a one-of-a-kind marble and glass mosaic — tailored to your space, down to the last tessera.</p>
+        <div class="cmx-hero__ctas">
+          <a href="#cmx-form" class="cmx-btn cmx-btn--dark">Start Your Commission</a>
+          <a href="#cmx-process" class="cmx-btn cmx-btn--outline">See the Process</a>
+        </div>
+      </div>
+      <div class="cmx-hero__media">
+        <div class="cmx-hero__img cm-zoom"><img src="{{ 'custom-flower-vase-room.jpg' | asset_url }}" alt="Custom mosaic commission" loading="eager"></div>
+        <div class="cmx-hero__badge">
+          <div class="cmx-hero__badge-k">Designed With You</div>
+          <div class="cmx-hero__badge-t">Guided by our in-house interior designers.</div>
+        </div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- CAPABILITIES -->
+  <section class="cmx-cap"><div class="cmx-wrap cmx-cap__inner">
+    <div class="cmx-center"><div class="cmx-kicker">Endless Possibilities</div><h2 class="cmx-h2 cmx-h2--c">Customize Anything, Down To The Detail</h2></div>
+    <div class="cmx-cap__grid">
+          <div class="cmx-cap__col"><div class="cmx-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7"/><path d="M4 10V3"/><path d="M12 21v-9"/><path d="M12 8V3"/><path d="M20 21v-5"/><path d="M20 12V3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg></div><h3 class="cmx-cap__t">Personalize Any Design</h3><p class="cmx-cap__d">Start from any piece in our catalog and make it yours — your colors, your size, your finish.</p></div>
+          <div class="cmx-cap__col"><div class="cmx-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></div><h3 class="cmx-cap__t">Modify A Piece You Love</h3><p class="cmx-cap__d">Found a design that is almost perfect? Tell us the changes and we will adapt it to your taste.</p></div>
+          <div class="cmx-cap__col"><div class="cmx-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div><h3 class="cmx-cap__t">Bring Your Own Concept</h3><p class="cmx-cap__d">Send a photo, painting or sketch and our artists will transform it into stone and glass.</p></div>
+          <div class="cmx-cap__col"><div class="cmx-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></div><h3 class="cmx-cap__t">Guided By Designers</h3><p class="cmx-cap__d">Our in-house interior designers help with palette, scale and placement at no extra cost.</p></div>
+    </div>
+  </div></section>
+
+  <!-- PROCESS -->
+  <section id="cmx-process" class="cmx-proc"><div class="cmx-wrap cmx-proc__inner">
+    <div class="cmx-center"><div class="cmx-kicker cmx-kicker--light">How It Works</div><h2 class="cmx-h2 cmx-h2--c cmx-h2--light">From Your Idea To Your Wall</h2></div>
+    <div class="cmx-proc__grid">
+          <div class="cmx-step"><div class="cmx-step__n">01</div><div class="cmx-step__t">Share Your Vision</div><div class="cmx-step__d">Send a photo, sketch or idea with your desired dimensions through the form below.</div></div>
+          <div class="cmx-step"><div class="cmx-step__n">02</div><div class="cmx-step__t">Design &amp; Quote</div><div class="cmx-step__d">Our designers draft your piece, confirm materials and palette, and send a tailored quote.</div></div>
+          <div class="cmx-step"><div class="cmx-step__n">03</div><div class="cmx-step__t">Hand-Cut In Stone</div><div class="cmx-step__d">Once approved, master artisans place thousands of tesserae by hand in our studio.</div></div>
+          <div class="cmx-step"><div class="cmx-step__n">04</div><div class="cmx-step__t">Delivered To You</div><div class="cmx-step__d">Your finished mosaic is crated, insured and shipped free, anywhere in the world.</div></div>
+    </div>
+  </div></section>
+
+  <!-- INTERIOR DESIGNER -->
+  <section class="cmx-desg"><div class="cmx-wrap">
+    <div class="cmx-desg__grid">
+      <div class="cmx-desg__img cm-zoom"><img src="{{ 'about-hands-tesserae.png' | asset_url }}" alt="Custom mosaic in a designed interior" loading="lazy"></div>
+      <div class="cmx-desg__copy">
+        <div class="cmx-kicker">Design Consultation</div>
+        <h2 class="cmx-h2">Work Hand In Hand With Our Interior Designers</h2>
+        <p class="cmx-desg__p">Not sure where to start? Our in-house interior designers help you choose the right subject, palette, scale and placement so your mosaic feels made for the room — because it is. Every commission begins with a complimentary design consultation.</p>
+        <div class="cmx-desg__points">
+            <div class="cmx-point"><span class="cmx-point__ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><path d="M12 22a10 10 0 1 1 0-20 8 8 0 0 1 0 16h-1.5a1.5 1.5 0 0 0 0 4z"/></svg></span><div class="cmx-point__tx"><span class="cmx-point__t">Palette matching</span><span class="cmx-point__d"> — we tune the stone and glass tones to your room.</span></div></div>
+            <div class="cmx-point"><span class="cmx-point__ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3 3 21"/><path d="M21 3v6h-6"/><path d="M3 21v-6h6"/></svg></span><div class="cmx-point__tx"><span class="cmx-point__t">Perfect proportions</span><span class="cmx-point__d"> — sized precisely for your wall, floor or feature.</span></div></div>
+            <div class="cmx-point"><span class="cmx-point__ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.5-7-10a7 7 0 0 1 14 0c0 5.5-7 10-7 10z"/><circle cx="12" cy="10" r="2.5"/></svg></span><div class="cmx-point__tx"><span class="cmx-point__t">Placement advice</span><span class="cmx-point__d"> — lighting, framing and installation guidance.</span></div></div>
+            <div class="cmx-point"><span class="cmx-point__ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span><div class="cmx-point__tx"><span class="cmx-point__t">Free consultation</span><span class="cmx-point__d"> — every commission starts with expert guidance.</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- FORM -->
+  <section id="cmx-form" class="cmx-formsec"><div class="cmx-wrap cmx-formsec__inner">
+    <div class="cmx-center">
+      <div class="cmx-kicker">Start The Conversation</div>
+      <h2 class="cmx-h2 cmx-h2--c">Let's Create Your Dream Mosaic</h2>
+      <p class="cmx-formsec__sub">Share your vision below — a photo, a sketch or just an idea and your dimensions. Our team replies within one business day with a tailored design and quote.</p>
+    </div>
+
+    {%- form 'contact', id: 'CmxForm', class: 'cmx-form', enctype: 'multipart/form-data' -%}
+      {%- if form.posted_successfully? -%}
+        <div class="cmx-form__success">
+          <div class="cmx-form__success-ic">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7BB0F4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>
+          </div>
+          <h3 class="cmx-form__success-t">Thank you — your vision is on its way.</h3>
+          <p class="cmx-form__success-p">One of our designers will be in touch within one business day to begin shaping your custom mosaic.</p>
+        </div>
+      {%- else -%}
+        {%- if form.errors -%}<div class="cmx-form__err">{{ form.errors | default_errors }}</div>{%- endif -%}
+        <div class="cmx-form__row cmx-form__row--2">
+          <div class="cmx-field"><label class="cmx-label">Name <span class="cmx-req">*</span></label><input class="cm-input" name="contact[name]" type="text" required placeholder="Your full name"></div>
+          <div class="cmx-field"><label class="cmx-label">Email <span class="cmx-req">*</span></label><input class="cm-input" name="contact[email]" type="email" required placeholder="you@email.com"></div>
+        </div>
+        <div class="cmx-form__row cmx-form__row--3">
+          <div class="cmx-field"><label class="cmx-label">Phone <span class="cmx-req">*</span></label><input class="cm-input" name="contact[phone]" type="tel" required placeholder="(315) 000-0000"></div>
+          <div class="cmx-field"><label class="cmx-label">Width (in)</label><input class="cm-input" name="contact[Width (in)]" type="number" placeholder="e.g. 36"></div>
+          <div class="cmx-field"><label class="cmx-label">Height (in)</label><input class="cm-input" name="contact[Height (in)]" type="number" placeholder="e.g. 48"></div>
+        </div>
+        <div class="cmx-field cmx-field--full">
+          <label class="cmx-label">Artwork / Reference</label>
+          <label class="cmx-upload" data-cmx-upload>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2B7BE8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 9 12 4 17 9"/><line x1="12" y1="4" x2="12" y2="16"/></svg>
+            <span class="cmx-upload__label" data-file-label>Click to upload an image (JPG, PNG)</span>
+            <input type="file" accept="image/*" name="contact[Reference image]" data-file style="display:none;">
+          </label>
+        </div>
+        <div class="cmx-field cmx-field--full">
+          <label class="cmx-label">Tell us about your vision</label>
+          <textarea class="cm-input" name="contact[body]" placeholder="Subject, style, colors, where it will hang, timeline…"></textarea>
+        </div>
+        <div class="cmx-form__foot">
+          <div class="cmx-field cmx-field--cap">
+            <label class="cmx-label">Quick check: <span data-cap-q>4 + 3 =</span> <span class="cmx-req">*</span></label>
+            <input class="cm-input" type="text" required placeholder="Answer" data-cap-input>
+            <div class="cmx-cap-err" data-cap-err>That answer is not quite right — please re-check the quick math question.</div>
+          </div>
+          <button type="submit" class="cmx-submit">Submit Request</button>
+        </div>
+      {%- endif -%}
+    {%- endform -%}
+
+    <div class="cmx-contact">
+      <a href="tel:+13152175538" class="cmx-contact__l">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2B7BE8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.7a2 2 0 0 1-.5 2.1L8.1 9.6a16 16 0 0 0 6 6l1.1-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.7.6a2 2 0 0 1 1.7 2z"/></svg>
+        (315) 217-5538
+      </a>
+      <span class="cmx-contact__dot">·</span>
+      <a href="mailto:info@imosaicart.com" class="cmx-contact__l">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2B7BE8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m3 6 9 7 9-7"/></svg>
+        info@imosaicart.com
+      </a>
+    </div>
+  </div></section>
+</div>
+
+<style>
+  .cmx { background:#F4F6FA; color:#16335E; }
+  .cmx-wrap { max-width:1320px; margin:0 auto; padding:0 40px; }
+  .cmx-i { font-style:italic; color:#2B7BE8; }
+  .cmx-eyebrow { display:flex; align-items:center; gap:12px; margin-bottom:26px; font-family:'Marcellus',serif; font-size:13px; letter-spacing:.36em; text-transform:uppercase; color:#16335E; }
+  .cmx-eyebrow__ln { width:42px; height:1px; background:#2B7BE8; }
+  .cmx-kicker { font-family:'Marcellus',serif; font-size:13px; letter-spacing:.36em; text-transform:uppercase; color:#16335E; margin-bottom:14px; }
+  .cmx-kicker--light { color:#7BB0F4; }
+  .cmx-h2 { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(32px,4vw,52px); line-height:1.05; margin:0; color:#16335E; }
+  .cmx-h2--light { color:#fff; }
+  .cmx-center { text-align:center; margin-bottom:56px; }
+  .cmx-ico { width:56px; height:56px; border-radius:50%; border:1px solid #2B7BE8; color:#2B7BE8; display:flex; align-items:center; justify-content:center; margin:0 auto 22px; }
+  .cm-zoom { overflow:hidden; }
+  .cm-zoom img { transition:transform .8s cubic-bezier(.2,.7,.2,1); }
+  .cm-zoom:hover img { transform:scale(1.08); }
+
+  .cmx-hero__grid { display:grid; grid-template-columns:1.02fr 1fr; gap:64px; align-items:center; padding:64px 0 72px; }
+  .cmx-hero__title { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(44px,5vw,74px); line-height:1.02; letter-spacing:-.01em; margin:0 0 26px; color:#16335E; }
+  .cmx-hero__text { font-size:17px; line-height:1.7; color:#5E6B85; max-width:520px; margin:0 0 36px; }
+  .cmx-hero__ctas { display:flex; gap:16px; }
+  .cmx-btn { flex:1; justify-content:center; font-size:13px; letter-spacing:.14em; text-transform:uppercase; padding:17px 28px; display:inline-flex; align-items:center; white-space:nowrap; transition:all .25s ease; }
+  .cmx-btn--dark { background:#16335E; color:#F4F6FA; border:1px solid #16335E; }
+  .cmx-btn--dark:hover { background:#22467E; border-color:#22467E; }
+  .cmx-btn--outline { background:transparent; color:#16335E; border:1px solid rgba(22,51,94,.35); }
+  .cmx-btn--outline:hover { background:#16335E; color:#F4F6FA; border-color:#16335E; }
+  .cmx-hero__media { position:relative; align-self:stretch; min-height:620px; }
+  .cmx-hero__img { position:absolute; inset:0; background:#DCE6F5; }
+  .cmx-hero__img img { width:100%; height:100%; object-fit:cover; }
+  .cmx-hero__badge { position:absolute; left:-30px; bottom:46px; background:#fff; padding:22px 26px; box-shadow:0 24px 60px rgba(22,51,94,.18); max-width:248px; }
+  .cmx-hero__badge-k { font-family:'Marcellus',serif; font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:#2B7BE8; margin-bottom:9px; }
+  .cmx-hero__badge-t { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:22px; line-height:1.25; color:#16335E; }
+
+  .cmx-cap { background:#fff; border-top:1px solid rgba(22,51,94,.08); border-bottom:1px solid rgba(22,51,94,.08); }
+  .cmx-cap__inner { padding-top:96px; padding-bottom:96px; }
+  .cmx-cap__grid { display:grid; grid-template-columns:repeat(4,1fr); gap:0; }
+  .cmx-cap__col { padding:0 32px; text-align:center; border-left:1px solid rgba(22,51,94,.1); }
+  .cmx-cap__col:first-child { border-left:none; }
+  .cmx-cap__t { font-family:'Cormorant Garamond',serif; font-weight:600; font-size:22px; margin:0 0 12px; color:#16335E; }
+  .cmx-cap__d { font-size:14px; line-height:1.65; color:#5E6B85; margin:0; }
+
+  .cmx-proc { background:#16335E; color:#DCE6F5; }
+  .cmx-proc__inner { padding-top:100px; padding-bottom:100px; }
+  .cmx-proc__grid { display:grid; grid-template-columns:repeat(4,1fr); gap:28px; }
+  .cmx-step { border-top:1px solid rgba(220,230,245,.18); padding-top:26px; }
+  .cmx-step__n { font-family:'Cormorant Garamond',serif; font-size:42px; color:#7BB0F4; line-height:1; margin-bottom:18px; }
+  .cmx-step__t { font-size:17px; font-weight:600; color:#fff; margin-bottom:10px; }
+  .cmx-step__d { font-size:14px; line-height:1.65; color:#9AA4B8; }
+
+  .cmx-desg__grid { display:grid; grid-template-columns:1fr 1.05fr; gap:70px; align-items:center; padding:100px 0; }
+  .cmx-desg__img { position:relative; aspect-ratio:4/5; background:#DCE6F5; }
+  .cmx-desg__img img { width:100%; height:100%; object-fit:cover; }
+  .cmx-desg__p { font-size:16px; line-height:1.75; color:#5E6B85; max-width:500px; margin:22px 0 32px; }
+  .cmx-desg__points { display:flex; flex-direction:column; gap:18px; }
+  .cmx-point { display:flex; align-items:flex-start; gap:14px; }
+  .cmx-point__ico { color:#2B7BE8; margin-top:2px; flex-shrink:0; display:flex; }
+  .cmx-point__t { font-size:15.5px; font-weight:600; color:#16335E; }
+  .cmx-point__d { font-size:14.5px; color:#5E6B85; }
+
+  .cmx-formsec { background:#EEF1F6; border-top:1px solid rgba(22,51,94,.08); }
+  .cmx-formsec__inner { max-width:1080px; padding-top:96px; padding-bottom:96px; }
+  .cmx-formsec__sub { font-size:16px; line-height:1.7; color:#5E6B85; max-width:560px; margin:16px auto 0; }
+  .cmx-form { background:#fff; padding:48px; box-shadow:0 30px 70px rgba(22,51,94,.1); }
+  .cmx-form__row { display:grid; gap:22px; margin-bottom:22px; }
+  .cmx-form__row--2 { grid-template-columns:1fr 1fr; }
+  .cmx-form__row--3 { grid-template-columns:1fr 1fr 1fr; }
+  .cmx-field { margin-bottom:22px; }
+  .cmx-field--full { margin-bottom:22px; }
+  .cmx-form__row .cmx-field { margin-bottom:0; }
+  .cmx-label { display:block; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:#46546E; margin-bottom:9px; }
+  .cmx-req { color:#2B7BE8; }
+  .cm-input { width:100%; font-family:'Hanken Grotesk',sans-serif; font-size:15px; color:#16335E; background:#fff; border:1px solid rgba(22,51,94,.18); padding:14px 16px; outline:none; transition:border-color .2s ease; }
+  .cm-input:focus { border-color:#2B7BE8; }
+  .cm-input::placeholder { color:#9AA4B8; }
+  textarea.cm-input { resize:vertical; min-height:104px; }
+  .cmx-upload { display:flex; align-items:center; gap:14px; border:1px dashed rgba(22,51,94,.3); background:#F8FAFD; padding:18px 20px; cursor:pointer; transition:all .2s ease; }
+  .cmx-upload:hover { border-color:#2B7BE8; background:#F2F7FE; }
+  .cmx-upload__label { font-size:14px; color:#5E6B85; }
+  .cmx-form__foot { display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap; }
+  .cmx-field--cap { margin-bottom:0; }
+  .cmx-field--cap .cm-input { width:160px; }
+  .cmx-cap-err { display:none; margin-top:10px; font-size:13.5px; color:#C2724B; }
+  .cmx-submit { background:#2B7BE8; color:#fff; border:none; font-family:'Hanken Grotesk',sans-serif; font-size:13px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; padding:17px 44px; cursor:pointer; transition:background .25s ease; }
+  .cmx-submit:hover { background:#5C9AF0; }
+  .cmx-form__err { margin-bottom:20px; font-size:13.5px; color:#C2724B; }
+  .cmx-form__success { background:#fff; padding:64px 40px; text-align:center; box-shadow:0 30px 70px rgba(22,51,94,.1); }
+  .cmx-form__success-ic { width:64px; height:64px; border-radius:50%; background:#16335E; display:flex; align-items:center; justify-content:center; margin:0 auto 24px; }
+  .cmx-form__success-t { font-family:'Cormorant Garamond',serif; font-size:32px; margin:0 0 12px; color:#16335E; }
+  .cmx-form__success-p { font-size:15.5px; line-height:1.7; color:#5E6B85; max-width:460px; margin:0 auto; }
+  .cmx-contact { display:flex; align-items:center; justify-content:center; gap:30px; flex-wrap:wrap; margin-top:34px; font-size:13.5px; color:#5E6B85; }
+  .cmx-contact__l { display:inline-flex; align-items:center; gap:9px; color:inherit; }
+  .cmx-contact__l:hover { color:#2B7BE8; }
+  .cmx-contact__dot { color:#C4CDDC; }
+
+  @media (max-width:990px) {
+    .cmx-hero__grid, .cmx-desg__grid { grid-template-columns:1fr; gap:40px; }
+    .cmx-desg__grid { padding:70px 0; }
+    .cmx-hero__media { min-height:440px; }
+    .cmx-cap__grid { grid-template-columns:1fr 1fr; gap:44px 0; }
+    .cmx-proc__grid { grid-template-columns:1fr 1fr; gap:32px; }
+    .cmx-cap__inner, .cmx-proc__inner { padding-top:70px; padding-bottom:70px; }
+  }
+  @media (max-width:600px) {
+    .cmx-wrap { padding:0 22px; }
+    .cmx-hero__badge { left:16px; padding:18px 20px; }
+    .cmx-cap__grid, .cmx-proc__grid { grid-template-columns:1fr; }
+    .cmx-form { padding:30px 22px; }
+    .cmx-form__row--2, .cmx-form__row--3 { grid-template-columns:1fr; }
+  }
+</style>
+
+<script>
+  (function () {
+    var form = document.getElementById('CmxForm');
+    if (!form) return;
+    var qEl = form.querySelector('[data-cap-q]');
+    var capIn = form.querySelector('[data-cap-input]');
+    var errEl = form.querySelector('[data-cap-err]');
+    var a = 3 + Math.floor(Math.random() * 5);
+    var b = 2 + Math.floor(Math.random() * 5);
+    if (qEl) qEl.textContent = a + ' + ' + b + ' =';
+    form.addEventListener('submit', function (e) {
+      if (capIn && parseInt((capIn.value || '').trim(), 10) !== a + b) {
+        e.preventDefault();
+        if (errEl) errEl.style.display = 'block';
+        capIn.focus();
+      }
+    });
+    var file = form.querySelector('[data-file]');
+    var flabel = form.querySelector('[data-file-label]');
+    if (file) file.addEventListener('change', function () {
+      flabel.textContent = file.files && file.files[0] ? file.files[0].name : 'Click to upload an image (JPG, PNG)';
+    });
+  })();
+</script>
 {%- else -%}
   {% section 'main-page' %}
 {%- endif -%}
