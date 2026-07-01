@@ -1,36 +1,38 @@
 <section class="trust-bar">
   <div class="page-width trust-bar__grid">
     {%- assign items = section.blocks | where: 'type', 'item' -%}
-    {%- assign item_count = items | size -%}
-    {%- if item_count > 0 -%}
+    {%- if items.size > 0 -%}
+      {%- assign t_titles = '' -%}{%- assign t_subs = '' -%}
       {%- for block in items -%}
-        <div class="trust-bar__item" {{ block.shopify_attributes }}>
-          <span class="trust-bar__icon">{{ block.settings.icon }}</span>
+        {%- assign t_titles = t_titles | append: block.settings.title | append: '~' -%}
+        {%- assign t_subs = t_subs | append: block.settings.sub | append: '~' -%}
+      {%- endfor -%}
+      {%- assign titles = t_titles | split: '~' -%}
+      {%- assign subs = t_subs | split: '~' -%}
+    {%- else -%}
+      {%- capture t_titles -%}{{ section.settings.item1_title }}~{{ section.settings.item2_title }}~{{ section.settings.item3_title }}~{{ section.settings.item4_title }}{%- endcapture -%}
+      {%- capture t_subs -%}{{ section.settings.item1_sub }}~{{ section.settings.item2_sub }}~{{ section.settings.item3_sub }}~{{ section.settings.item4_sub }}{%- endcapture -%}
+      {%- assign titles = t_titles | split: '~' -%}
+      {%- assign subs = t_subs | split: '~' -%}
+    {%- endif -%}
+    {%- for ti in titles -%}
+      {%- if ti != blank -%}
+        <div class="trust-bar__item">
+          <span class="trust-bar__icon">
+            {%- case forloop.index -%}
+              {%- when 1 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l2.5 6.9 6.9 2.5-6.9 2.5L12 21.3l-2.5-6.9L2.6 11.9l6.9-2.5z"/></svg>
+              {%- when 2 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-2.4-5.9"/><path d="M20.7 3.6V9.1H15.2"/></svg>
+              {%- when 3 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2.5l-19 8.2 7.2 2.6 2.6 7.2z"/><path d="M21.5 2.5L10.3 13.3"/></svg>
+              {%- when 4 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>
+            {%- endcase -%}
+          </span>
           <div>
-            <div class="trust-bar__title">{{ block.settings.title }}</div>
-            <div class="trust-bar__sub">{{ block.settings.sub }}</div>
+            <div class="trust-bar__title">{{ ti }}</div>
+            <div class="trust-bar__sub">{{ subs[forloop.index0] }}</div>
           </div>
         </div>
-      {%- endfor -%}
-    {%- else -%}
-      {%- for n in (1..4) -%}
-        {%- case n -%}
-          {%- when 1 -%}{%- assign ic = section.settings.item1_icon -%}{%- assign ti = section.settings.item1_title -%}{%- assign su = section.settings.item1_sub -%}
-          {%- when 2 -%}{%- assign ic = section.settings.item2_icon -%}{%- assign ti = section.settings.item2_title -%}{%- assign su = section.settings.item2_sub -%}
-          {%- when 3 -%}{%- assign ic = section.settings.item3_icon -%}{%- assign ti = section.settings.item3_title -%}{%- assign su = section.settings.item3_sub -%}
-          {%- when 4 -%}{%- assign ic = section.settings.item4_icon -%}{%- assign ti = section.settings.item4_title -%}{%- assign su = section.settings.item4_sub -%}
-        {%- endcase -%}
-        {%- if ti != blank -%}
-          <div class="trust-bar__item">
-            <span class="trust-bar__icon">{{ ic }}</span>
-            <div>
-              <div class="trust-bar__title">{{ ti }}</div>
-              <div class="trust-bar__sub">{{ su }}</div>
-            </div>
-          </div>
-        {%- endif -%}
-      {%- endfor -%}
-    {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
   </div>
 </section>
 
@@ -38,7 +40,8 @@
   .trust-bar { background: var(--color-navy); color: var(--color-light-text); }
   .trust-bar__grid { padding-top: 30px; padding-bottom: 30px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
   .trust-bar__item { display: flex; align-items: center; gap: 14px; justify-content: center; }
-  .trust-bar__icon { color: var(--color-blue-light); font-size: 22px; line-height: 1; }
+  .trust-bar__icon { color: var(--color-blue-light); display: flex; flex-shrink: 0; }
+  .trust-bar__icon svg { width: 24px; height: 24px; }
   .trust-bar__title { font-size: 13.5px; font-weight: 600; color: var(--color-bg); }
   .trust-bar__sub { font-size: 12px; color: var(--color-text-faint); margin-top: 2px; }
   @media (max-width: 750px) { .trust-bar__grid { grid-template-columns: 1fr 1fr; gap: 20px 24px; } }
