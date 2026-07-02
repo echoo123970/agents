@@ -306,6 +306,12 @@
         var p = document.querySelector('[data-hsearch]'); if (p) p.hidden = true;
       }
     });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        var p = document.querySelector('[data-hsearch]');
+        if (p && !p.hidden) p.hidden = true;
+      }
+    });
   })();
 
 })();
