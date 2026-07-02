@@ -1,4 +1,4 @@
-{%- paginate blog.articles by 25 -%}
+{%- paginate blog.articles by 50 -%}
 <div class="bj">
   <!-- HERO -->
   <section class="bj-hero">
@@ -16,11 +16,11 @@
   {%- assign cats = section.settings.categories | default: 'Art Trends, Decor Tips, Mosaic Trends, Latest Updates' | split: ',' -%}
   <section class="bj-tabs">
     <div class="bj-tabs__row">
-      <a href="{{ blog.url }}" class="bj-tab{% if current_tags == blank %} is-active{% endif %}">All</a>
+      <button type="button" class="bj-tab is-active" data-bj-tab="all">All</button>
       {%- for c in cats -%}
         {%- assign ct = c | strip -%}
         {%- if ct != blank -%}
-          <a href="{{ blog.url }}/tagged/{{ ct | handleize }}" class="bj-tab{% if current_tags contains ct %} is-active{% endif %}">{{ ct }}</a>
+          <button type="button" class="bj-tab" data-bj-tab="{{ ct | handleize }}">{{ ct }}</button>
         {%- endif -%}
       {%- endfor -%}
     </div>
@@ -32,7 +32,7 @@
   <!-- FEATURED -->
   {%- if show_featured -%}
     {%- assign feat = blog.articles.first -%}
-    <section class="bj-featured">
+    <section class="bj-featured" data-bj-featured>
       <a class="bj-feat post-card" href="{{ feat.url }}">
         <div class="bj-feat__media">
           {%- if feat.image != blank -%}
@@ -56,8 +56,7 @@
   <section class="bj-gridsec">
     <div class="bj-grid">
       {%- for article in blog.articles -%}
-        {%- if show_featured and forloop.first -%}{%- continue -%}{%- endif -%}
-        <a class="bj-card post-card" href="{{ article.url }}">
+        <a class="bj-card post-card" data-bj-item data-bj-cat="{% for t in article.tags %}{{ t | handleize }}{% unless forloop.last %} {% endunless %}{% endfor %}"{% if show_featured and forloop.first %} data-bj-first style="display:none"{% endif %} href="{{ article.url }}">
           <div class="bj-card__media">
             {%- if article.image != blank -%}
               <img src="{{ article.image | image_url: width: 600 }}" alt="{{ article.title | escape }}" loading="lazy">
@@ -74,12 +73,10 @@
       {%- endfor -%}
     </div>
 
-    {%- if blog.articles.size == 0 -%}
-      <div class="bj-empty">No articles in this category yet — check back soon.</div>
-    {%- endif -%}
+    <div class="bj-empty" data-bj-empty{% if blog.articles.size > 0 %} style="display:none"{% endif %}>No articles in this category yet — check back soon.</div>
 
     {%- if paginate.pages > 1 -%}
-      <div class="bj-pagination">{{ paginate | default_pagination }}</div>
+      <div class="bj-pagination" data-bj-pagination>{{ paginate | default_pagination }}</div>
     {%- endif -%}
   </section>
 
@@ -117,7 +114,7 @@
 
   .bj-tabs { border-bottom: 1px solid rgba(22,51,94,.08); background: rgba(255,255,255,.5); }
   .bj-tabs__row { max-width: 1320px; margin: 0 auto; padding: 18px 40px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-  .bj-tab { font-size: 12.5px; letter-spacing: .06em; text-transform: uppercase; padding: 10px 20px; border: 1px solid rgba(22,51,94,.18); color: #46546E; transition: all .2s ease; }
+  .bj-tab { font-family: var(--font-body); font-size: 12.5px; letter-spacing: .06em; text-transform: uppercase; padding: 10px 20px; border: 1px solid rgba(22,51,94,.18); background: none; color: #46546E; cursor: pointer; transition: all .2s ease; }
   .bj-tab:hover { border-color: #2B7BE8; color: #16335E; }
   .bj-tab.is-active { background: #16335E; color: #fff; border-color: #16335E; }
 
@@ -176,6 +173,35 @@
     .bj-news__btn { padding: 15px; }
   }
 </style>
+
+<script>
+  (function () {
+    var root = document.querySelector('.bj');
+    if (!root) return;
+    var tabs = root.querySelectorAll('[data-bj-tab]');
+    var cards = root.querySelectorAll('[data-bj-item]');
+    var featured = root.querySelector('[data-bj-featured]');
+    var empty = root.querySelector('[data-bj-empty]');
+    var pag = root.querySelector('[data-bj-pagination]');
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        var cat = tab.getAttribute('data-bj-tab');
+        tabs.forEach(function (t) { t.classList.toggle('is-active', t === tab); });
+        var visible = 0;
+        cards.forEach(function (c) {
+          var isFirst = c.hasAttribute('data-bj-first');
+          var list = (c.getAttribute('data-bj-cat') || '').split(' ');
+          var show = (cat === 'all') ? !isFirst : (list.indexOf(cat) !== -1);
+          c.style.display = show ? '' : 'none';
+          if (show) visible++;
+        });
+        if (featured) featured.style.display = (cat === 'all') ? '' : 'none';
+        if (pag) pag.style.display = (cat === 'all') ? '' : 'none';
+        if (empty) empty.style.display = (cat !== 'all' && visible === 0) ? '' : 'none';
+      });
+    });
+  })();
+</script>
 {%- endpaginate -%}
 
 {% schema %}
