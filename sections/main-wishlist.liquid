@@ -30,7 +30,8 @@
 <script>
   (function () {
     var page = document.querySelector('[data-wishlist-page]');
-    if (!page || !window.imaWishlist) return;
+    if (!page) return;
+    function readWL(){ try { return JSON.parse(localStorage.getItem('ima_wishlist') || '[]') || []; } catch (e) { return []; } }
     var grid = page.querySelector('[data-wl-grid]');
     var empty = page.querySelector('[data-wl-empty]');
     var cont = page.querySelector('[data-wl-continue]');
@@ -39,7 +40,7 @@
     function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
 
     function render() {
-      var items = window.imaWishlist.read();
+      var items = readWL();
       countEl.textContent = items.length ? items.length + (items.length === 1 ? ' item' : ' items') : '';
       if (!items.length) { empty.hidden = false; grid.hidden = true; cont.hidden = true; return; }
       empty.hidden = true; grid.hidden = false; cont.hidden = false;
@@ -62,7 +63,9 @@
     grid.addEventListener('click', function (e) {
       var btn = e.target.closest('[data-wl-remove]');
       if (!btn) return;
-      window.imaWishlist.toggle({ handle: btn.getAttribute('data-wl-remove') });
+      var h = btn.getAttribute('data-wl-remove');
+      var l = readWL().filter(function (x) { return (x.handle || x) !== h; });
+      try { localStorage.setItem('ima_wishlist', JSON.stringify(l)); } catch (e) {}
       render();
     });
     render();
