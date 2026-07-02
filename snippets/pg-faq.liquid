@@ -12,7 +12,8 @@
         <p class="faqx-hero__sub">Everything you need to know about our materials, custom process, shipping and installation. Can’t find an answer? We’re a message away.</p>
         <div class="faqx-search">
           <svg class="faqx-search__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7E8AA0" stroke-width="1.7"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
-          <input type="text" class="faqx-search__input" placeholder="Search questions…" data-faq-search aria-label="Search questions">
+          <input type="text" class="faqx-search__input" placeholder="Search questions…" data-faq-search aria-label="Search questions" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="faqx-suggest" aria-autocomplete="list">
+          <div class="faqx-suggest" id="faqx-suggest" data-faq-suggest role="listbox" hidden></div>
         </div>
       </div>
     </section>
@@ -497,6 +498,16 @@
     .faqx-search__icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); }
     .faqx-search__input { width: 100%; background: #FFFFFF; border: 1px solid rgba(22,51,94,.18); outline: none; color: #16335E; font-family: 'Hanken Grotesk', sans-serif; font-size: 15px; padding: 16px 20px 16px 48px; }
     .faqx-search__input:focus { border-color: #2B7BE8; }
+    .faqx-suggest { position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: #FFFFFF; border: 1px solid rgba(22,51,94,.14); box-shadow: 0 24px 60px rgba(22,51,94,.16); z-index: 40; text-align: left; max-height: 60vh; overflow-y: auto; }
+    .faqx-suggest[hidden] { display: none; }
+    .faqx-suggest__label { font-family: 'Marcellus', serif; font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: #8A93A6; padding: 14px 18px 8px; }
+    .faqx-suggest__item { display: block; width: 100%; text-align: left; background: none; border: 0; border-top: 1px solid rgba(22,51,94,.06); padding: 13px 18px; cursor: pointer; }
+    .faqx-suggest__item:first-of-type { border-top: 0; }
+    .faqx-suggest__item.is-active, .faqx-suggest__item:hover { background: #F4F6FA; }
+    .faqx-suggest__q { display: block; font-size: 14.5px; color: #16335E; line-height: 1.4; }
+    .faqx-suggest__q mark { background: rgba(43,123,232,.16); color: #16335E; padding: 0 1px; border-radius: 2px; }
+    .faqx-suggest__cat { display: block; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: #2B7BE8; margin-top: 3px; }
+    .faqx-suggest__empty { padding: 18px; font-size: 14px; color: #8A93A6; }
 
     .faqx-pills { border-bottom: 1px solid rgba(22,51,94,.08); background: rgba(244,246,250,.94); }
     .faqx-pills__row { max-width: 1320px; margin: 0 auto; padding: 18px 40px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
@@ -553,10 +564,31 @@
       var items = [].slice.call(root.querySelectorAll('[data-faq-item]'));
       var pills = [].slice.call(root.querySelectorAll('[data-faq-cat]'));
       var search = root.querySelector('[data-faq-search]');
+      var suggest = root.querySelector('[data-faq-suggest]');
       var empty = root.querySelector('[data-faq-empty]');
       var emptyQ = root.querySelector('[data-faq-empty-q]');
       var activeCat = 'all';
 
+      // Build a lightweight index of the questions/answers for predictive search.
+      var index = items.map(function (it) {
+        var qEl = it.querySelector('.faqx-item__q');
+        var catEl = it.querySelector('.faqx-item__cat');
+        var aEl = it.querySelector('.faqx-item__a');
+        var q = qEl ? qEl.textContent.trim() : '';
+        var a = aEl ? aEl.textContent.trim() : '';
+        var cat = catEl ? catEl.textContent.trim() : '';
+        return { el: it, q: q, a: a, cat: cat, hay: (q + ' ' + a).toLowerCase() };
+      });
+
+      function esc(s) { return s.replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+      function highlight(text, q) {
+        if (!q) return esc(text);
+        var i = text.toLowerCase().indexOf(q);
+        if (i === -1) return esc(text);
+        return esc(text.slice(0, i)) + '<mark>' + esc(text.slice(i, i + q.length)) + '</mark>' + esc(text.slice(i + q.length));
+      }
+
+      // ---- inline accordion filtering (kept) ----
       function apply() {
         var q = (search.value || '').trim().toLowerCase();
         var visible = 0;
@@ -573,7 +605,91 @@
         }
       }
 
+      // ---- predictive suggestions dropdown ----
+      var activeIdx = -1;
+      function closeSuggest() {
+        if (!suggest) return;
+        suggest.hidden = true; suggest.innerHTML = ''; activeIdx = -1;
+        search.setAttribute('aria-expanded', 'false');
+      }
+      function openItem(entry) {
+        items.forEach(function (it) { it.classList.remove('is-open'); it.hidden = false; });
+        // reset filters so the target is guaranteed visible
+        activeCat = 'all';
+        pills.forEach(function (p) { p.classList.toggle('is-active', p.getAttribute('data-faq-cat') === 'all'); });
+        if (empty) empty.hidden = true;
+        entry.el.classList.add('is-open');
+        entry.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      function renderSuggest() {
+        if (!suggest) return;
+        var q = (search.value || '').trim().toLowerCase();
+        var matches;
+        var label;
+        if (!q) {
+          // popular: first question from each distinct category
+          var seen = {}; matches = [];
+          index.forEach(function (e) { if (!seen[e.cat]) { seen[e.cat] = 1; matches.push(e); } });
+          matches = matches.slice(0, 6);
+          label = 'Popular questions';
+        } else {
+          // rank: question-title hits first, then answer hits
+          var titleHits = index.filter(function (e) { return e.q.toLowerCase().indexOf(q) !== -1; });
+          var bodyHits = index.filter(function (e) { return e.q.toLowerCase().indexOf(q) === -1 && e.hay.indexOf(q) !== -1; });
+          matches = titleHits.concat(bodyHits).slice(0, 6);
+          label = matches.length ? 'Suggested answers' : '';
+        }
+        var html = '';
+        if (!matches.length) {
+          html = '<div class="faqx-suggest__empty">No matching questions. Try another keyword, or scroll the full list below.</div>';
+        } else {
+          html += '<div class="faqx-suggest__label">' + label + '</div>';
+          matches.forEach(function (e, i) {
+            html += '<button type="button" class="faqx-suggest__item" role="option" data-idx="' + i + '">' +
+                      '<span class="faqx-suggest__q">' + highlight(e.q, q) + '</span>' +
+                      '<span class="faqx-suggest__cat">' + esc(e.cat) + '</span>' +
+                    '</button>';
+          });
+        }
+        suggest._matches = matches;
+        suggest.innerHTML = html;
+        suggest.hidden = false;
+        activeIdx = -1;
+        search.setAttribute('aria-expanded', 'true');
+      }
+      function moveActive(dir) {
+        if (!suggest || suggest.hidden) return;
+        var opts = [].slice.call(suggest.querySelectorAll('.faqx-suggest__item'));
+        if (!opts.length) return;
+        activeIdx = (activeIdx + dir + opts.length) % opts.length;
+        opts.forEach(function (o, i) { o.classList.toggle('is-active', i === activeIdx); });
+        opts[activeIdx].scrollIntoView({ block: 'nearest' });
+      }
+      function chooseActive() {
+        if (!suggest || suggest.hidden || !suggest._matches) return false;
+        var idx = activeIdx >= 0 ? activeIdx : 0;
+        var entry = suggest._matches[idx];
+        if (!entry) return false;
+        openItem(entry);
+        closeSuggest();
+        return true;
+      }
+
+      // ---- events ----
+      var t;
+      function onInput() {
+        apply();
+        clearTimeout(t);
+        t = setTimeout(renderSuggest, 90);
+      }
       root.addEventListener('click', function (e) {
+        var sitem = e.target.closest('.faqx-suggest__item');
+        if (sitem) {
+          var idx = parseInt(sitem.getAttribute('data-idx'), 10);
+          var entry = suggest._matches && suggest._matches[idx];
+          if (entry) { openItem(entry); closeSuggest(); }
+          return;
+        }
         var toggle = e.target.closest('[data-faq-toggle]');
         if (toggle) {
           var item = toggle.closest('[data-faq-item]');
@@ -590,6 +706,18 @@
         }
       });
 
-      if (search) search.addEventListener('input', apply);
+      if (search) {
+        search.addEventListener('input', onInput);
+        search.addEventListener('focus', renderSuggest);
+        search.addEventListener('keydown', function (e) {
+          if (e.key === 'ArrowDown') { e.preventDefault(); moveActive(1); }
+          else if (e.key === 'ArrowUp') { e.preventDefault(); moveActive(-1); }
+          else if (e.key === 'Enter') { if (chooseActive()) e.preventDefault(); }
+          else if (e.key === 'Escape') { closeSuggest(); }
+        });
+        document.addEventListener('click', function (e) {
+          if (!e.target.closest('.faqx-search')) closeSuggest();
+        });
+      }
     })();
   </script>
