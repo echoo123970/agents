@@ -23,9 +23,9 @@
     </nav>
 
     <div class="site-header__icons">
-      <a href="{{ routes.search_url }}" aria-label="Search" class="site-header__icon">
+      <button type="button" aria-label="Search" class="site-header__icon" data-search-toggle>
         <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
-      </a>
+      </button>
       <a href="{{ routes.account_url }}" aria-label="Account" class="site-header__icon">
         <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
       </a>
@@ -40,6 +40,17 @@
       <button type="button" class="site-header__icon site-header__burger" data-menu-toggle aria-label="Menu">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
       </button>
+    </div>
+  </div>
+
+  <div class="hsearch" data-hsearch hidden>
+    <div class="page-width hsearch__inner">
+      <form action="{{ routes.search_url }}" method="get" class="hsearch__form" data-predictive data-money-format="{{ shop.money_format }}">
+        <svg class="hsearch__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7E8AA0" stroke-width="1.7"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+        <input type="search" name="q" placeholder="Search mosaics by name, subject or style…" class="hsearch__input" data-predictive-input>
+        <button type="button" class="hsearch__close" data-search-close aria-label="Close">&times;</button>
+        <div class="psg" data-predictive-results hidden></div>
+      </form>
     </div>
   </div>
 

@@ -8,9 +8,10 @@
   </div>
   <div class="srch-hero__inner">
     <h1 class="srch-hero__title">What are you <em>looking for?</em></h1>
-    <form action="{{ routes.search_url }}" method="get" class="srch-hero__form">
+    <form action="{{ routes.search_url }}" method="get" class="srch-hero__form" data-predictive data-money-format="{{ shop.money_format }}">
       <svg class="srch-hero__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7E8AA0" stroke-width="1.7"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
-      <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search mosaics by name, subject or style…" class="srch-hero__input">
+      <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search mosaics by name, subject or style…" class="srch-hero__input" data-predictive-input>
+      <div class="psg psg--page" data-predictive-results hidden></div>
     </form>
   </div>
 </section>

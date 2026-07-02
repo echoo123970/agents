@@ -206,4 +206,99 @@
     }, { threshold: 0.1, rootMargin: '0px 0px -7% 0px' });
     pending.forEach(function (el) { io.observe(el); });
   })();
+
+  /* Predictive (instant) search — native Shopify /search/suggest.json */
+  (function () {
+    var boxes = document.querySelectorAll('[data-predictive]');
+    if (!boxes.length) return;
+    boxes.forEach(function (box) {
+      var input = box.querySelector('[data-predictive-input]');
+      var panel = box.querySelector('[data-predictive-results]');
+      if (!input || !panel) return;
+      var mf = box.getAttribute('data-money-format') || '${{amount}}';
+      var timer, ctrl;
+      function esc(x) { var d = document.createElement('div'); d.textContent = x == null ? '' : x; return d.innerHTML; }
+      function money(v) { return mf.replace(/\{\{\s*amount[^}]*\}\}/, v); }
+      function close() { panel.hidden = true; panel.innerHTML = ''; box.classList.remove('is-open'); }
+      function run(q) {
+        if (ctrl) { try { ctrl.abort(); } catch (e) {} }
+        ctrl = (window.AbortController) ? new AbortController() : null;
+        var url = '/search/suggest.json?q=' + encodeURIComponent(q) +
+          '&resources[type]=product,collection,page&resources[limit]=6&resources[options][unavailable_products]=last';
+        fetch(url, ctrl ? { signal: ctrl.signal } : {})
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            var res = (data.resources && data.resources.results) || {};
+            var products = res.products || [], colls = res.collections || [], pages = res.pages || [];
+            var html = '';
+            if (colls.length) {
+              html += '<div class="psg__chips">';
+              colls.slice(0, 4).forEach(function (c) { html += '<a class="psg__chip" href="' + esc(c.url) + '">' + esc(c.title) + '</a>'; });
+              html += '</div>';
+            }
+            if (products.length) {
+              html += '<div class="psg__prods">';
+              products.forEach(function (p) {
+                var img = p.image ? '<img src="' + esc(p.image) + '" alt="" loading="lazy">' : '';
+                var sub = p.product_type ? '<span class="psg__sub">' + esc(p.product_type) + '</span>' : '';
+                var price = p.price ? '<span class="psg__price">' + money(p.price) + '</span>' : '';
+                html += '<a class="psg__item" href="' + esc(p.url) + '"><span class="psg__thumb">' + img + '</span>' +
+                        '<span class="psg__info">' + sub + '<span class="psg__ttl">' + esc(p.title) + '</span>' + price + '</span></a>';
+              });
+              html += '</div>';
+            }
+            if (pages.length) {
+              html += '<div class="psg__chips">';
+              pages.slice(0, 2).forEach(function (pg) { html += '<a class="psg__chip" href="' + esc(pg.url) + '">' + esc(pg.title) + '</a>'; });
+              html += '</div>';
+            }
+            if (!products.length && !colls.length && !pages.length) {
+              html = '<div class="psg__empty">No matches for \u201c' + esc(q) + '\u201d. <a href="/search?q=' + encodeURIComponent(q) + '">Browse all mosaics</a></div>';
+            } else {
+              html += '<a class="psg__all" href="/search?q=' + encodeURIComponent(q) + '">See all results for \u201c' + esc(q) + '\u201d \u2192</a>';
+            }
+            panel.innerHTML = html;
+            panel.hidden = false;
+            box.classList.add('is-open');
+          })
+          .catch(function () {});
+      }
+      input.setAttribute('autocomplete', 'off');
+      input.addEventListener('input', function () {
+        var q = input.value.trim();
+        clearTimeout(timer);
+        if (q.length < 2) { close(); return; }
+        timer = setTimeout(function () { run(q); }, 200);
+      });
+      input.addEventListener('focus', function () {
+        if (input.value.trim().length >= 2 && panel.innerHTML) { panel.hidden = false; box.classList.add('is-open'); }
+      });
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') { close(); return; }
+        var items = panel.querySelectorAll('a');
+        if (!items.length) return;
+        var idx = Array.prototype.indexOf.call(items, document.activeElement);
+        if (e.key === 'ArrowDown') { e.preventDefault(); (items[idx + 1] || items[0]).focus(); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); (items[idx - 1] || items[items.length - 1]).focus(); }
+      });
+      document.addEventListener('click', function (e) { if (!box.contains(e.target)) close(); });
+    });
+  })();
+
+  /* Header search toggle */
+  (function () {
+    document.addEventListener('click', function (e) {
+      if (e.target.closest('[data-search-toggle]')) {
+        var panel = document.querySelector('[data-hsearch]');
+        if (panel) {
+          panel.hidden = !panel.hidden;
+          if (!panel.hidden) { var i = panel.querySelector('[data-predictive-input]'); if (i) i.focus(); }
+        }
+      }
+      if (e.target.closest('[data-search-close]')) {
+        var p = document.querySelector('[data-hsearch]'); if (p) p.hidden = true;
+      }
+    });
+  })();
+
 })();
