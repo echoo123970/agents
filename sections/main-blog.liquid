@@ -13,16 +13,18 @@
   </section>
 
   <!-- CATEGORY TABS -->
-  {%- if blog.all_tags.size > 0 -%}
-    <section class="bj-tabs">
-      <div class="bj-tabs__row">
-        <a href="{{ blog.url }}" class="bj-tab{% if current_tags == blank %} is-active{% endif %}">All</a>
-        {%- for tag in blog.all_tags -%}
-          <a href="{{ blog.url }}/tagged/{{ tag | handleize }}" class="bj-tab{% if current_tags contains tag %} is-active{% endif %}">{{ tag }}</a>
-        {%- endfor -%}
-      </div>
-    </section>
-  {%- endif -%}
+  {%- assign cats = section.settings.categories | default: 'Art Trends, Decor Tips, Mosaic Trends, Latest Updates' | split: ',' -%}
+  <section class="bj-tabs">
+    <div class="bj-tabs__row">
+      <a href="{{ blog.url }}" class="bj-tab{% if current_tags == blank %} is-active{% endif %}">All</a>
+      {%- for c in cats -%}
+        {%- assign ct = c | strip -%}
+        {%- if ct != blank -%}
+          <a href="{{ blog.url }}/tagged/{{ ct | handleize }}" class="bj-tab{% if current_tags contains ct %} is-active{% endif %}">{{ ct }}</a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </section>
 
   {%- assign show_featured = false -%}
   {%- if paginate.current_page == 1 and current_tags == blank and blog.articles.size > 0 -%}{%- assign show_featured = true -%}{%- endif -%}
@@ -182,7 +184,8 @@
   "settings": [
     { "type": "text", "id": "heading", "label": "Heading", "default": "Beauty Insights" },
     { "type": "text", "id": "heading_accent", "label": "Heading accent (italic)", "default": "& Trends" },
-    { "type": "textarea", "id": "subtext", "label": "Subtext", "default": "Stories from the studio, mosaic care and technique, and the trends shaping how handcrafted art lives in modern interiors." }
+    { "type": "textarea", "id": "subtext", "label": "Subtext", "default": "Stories from the studio, mosaic care and technique, and the trends shaping how handcrafted art lives in modern interiors." },
+    { "type": "text", "id": "categories", "label": "Category tabs (comma-separated)", "default": "Art Trends, Decor Tips, Mosaic Trends, Latest Updates" }
   ]
 }
 {% endschema %}
