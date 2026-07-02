@@ -239,3 +239,4 @@ a:focus:not(:focus-visible), button:focus:not(:focus-visible), input:focus:not(:
 .psg__link { display: flex; align-items: center; gap: 10px; padding: 10px 12px; font-size: 14px; color: #46546E; transition: background .15s ease; }
 .psg__link:hover, .psg__link:focus { background: var(--color-panel); color: var(--color-navy); outline: none; }
 .psg__link-ic { color: var(--color-blue); font-weight: 700; }
+.psg__label { font-family: var(--font-accent); font-size: 10.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--color-text-faint); padding: 10px 12px 4px; }

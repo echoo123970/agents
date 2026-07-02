@@ -211,6 +211,27 @@
   (function () {
     var boxes = document.querySelectorAll('[data-predictive]');
     if (!boxes.length) return;
+    var QUICK = [
+      { kw: ['install', 'installation', 'mount', 'how to install', 'set up', 'setup', 'fit '], label: 'Installation Guide', url: '/pages/installation-guide' },
+      { kw: ['ship', 'shipping', 'delivery', 'deliver', 'arrive', 'how long', 'tracking', 'track', 'duties', 'customs'], label: 'Shipping & Delivery', url: '/pages/shipping-policy' },
+      { kw: ['return', 'refund', 'exchange', 'money back', 'send back'], label: 'Returns & Refunds', url: '/pages/refund-policy' },
+      { kw: ['custom', 'commission', 'bespoke', 'personalize', 'personalise', 'my own', 'own image', 'own design', 'make my'], label: 'Custom Mosaics', url: '/pages/custom-mosaics' },
+      { kw: ['faq', 'question', 'weatherproof', 'waterproof', 'warranty', 'outdoor', 'pool', 'bathroom', 'care', 'clean', 'maintain', 'material', 'marble', 'glass', 'stone'], label: 'FAQ', url: '/pages/frequently-asked-questions' },
+      { kw: ['reward', 'loyalty', 'points', 'earn'], label: 'Loyalty Program', url: '/pages/imosaicart-loyalty-program' },
+      { kw: ['payment', 'pay', 'secure', 'billing', 'checkout', 'card'], label: 'Billing Terms', url: '/pages/billing-terms-conditions' },
+      { kw: ['about', 'story', 'artisan', 'who are', 'history'], label: 'About Us', url: '/pages/about-us' },
+      { kw: ['contact', 'email', 'phone', 'call', 'reach', 'help', 'support'], label: 'Contact Us', url: '/pages/contact-us' },
+      { kw: ['portfolio', 'gallery', 'project', 'showcase', 'example'], label: 'Portfolio', url: '/pages/portfolio' }
+    ];
+    function quickLinks(q) {
+      var ql = q.toLowerCase(), out = [], seen = {};
+      QUICK.forEach(function (g) {
+        for (var i = 0; i < g.kw.length; i++) {
+          if (ql.indexOf(g.kw[i]) !== -1) { if (!seen[g.url]) { out.push(g); seen[g.url] = 1; } break; }
+        }
+      });
+      return out.slice(0, 3);
+    }
     boxes.forEach(function (box) {
       var input = box.querySelector('[data-predictive-input]');
       var panel = box.querySelector('[data-predictive-results]');
@@ -259,7 +280,14 @@
               });
               html += '</div>';
             }
-            if (!products.length && !colls.length && !pages.length && !articles.length) {
+            var quicks = quickLinks(q);
+            if (quicks.length) {
+              var qh = '<div class="psg__label">Helpful pages</div><div class="psg__links">';
+              quicks.forEach(function (g) { qh += '<a class="psg__link" href="' + g.url + '"><span class="psg__link-ic">\u203A</span>' + esc(g.label) + '</a>'; });
+              qh += '</div>';
+              html = qh + html;
+            }
+            if (!products.length && !colls.length && !pages.length && !articles.length && !quicks.length) {
               html = '<div class="psg__empty">No matches for \u201c' + esc(q) + '\u201d. <a href="/search?q=' + encodeURIComponent(q) + '">Browse all mosaics</a></div>';
             } else {
               html += '<a class="psg__all" href="/search?q=' + encodeURIComponent(q) + '">See all results for \u201c' + esc(q) + '\u201d \u2192</a>';
