@@ -224,12 +224,12 @@
         if (ctrl) { try { ctrl.abort(); } catch (e) {} }
         ctrl = (window.AbortController) ? new AbortController() : null;
         var url = '/search/suggest.json?q=' + encodeURIComponent(q) +
-          '&resources[type]=product,collection,page&resources[limit]=6&resources[options][unavailable_products]=last';
+          '&resources[type]=product,collection,page,article&resources[limit]=6&resources[options][unavailable_products]=last';
         fetch(url, ctrl ? { signal: ctrl.signal } : {})
           .then(function (r) { return r.json(); })
           .then(function (data) {
             var res = (data.resources && data.resources.results) || {};
-            var products = res.products || [], colls = res.collections || [], pages = res.pages || [];
+            var products = res.products || [], colls = res.collections || [], pages = res.pages || [], articles = res.articles || [];
             var html = '';
             if (colls.length) {
               html += '<div class="psg__chips">';
@@ -252,7 +252,14 @@
               pages.slice(0, 2).forEach(function (pg) { html += '<a class="psg__chip" href="' + esc(pg.url) + '">' + esc(pg.title) + '</a>'; });
               html += '</div>';
             }
-            if (!products.length && !colls.length && !pages.length) {
+            if (articles.length) {
+              html += '<div class="psg__links">';
+              articles.slice(0, 3).forEach(function (a) {
+                html += '<a class="psg__link" href="' + esc(a.url) + '"><span class="psg__link-ic">\u203A</span>' + esc(a.title) + '</a>';
+              });
+              html += '</div>';
+            }
+            if (!products.length && !colls.length && !pages.length && !articles.length) {
               html = '<div class="psg__empty">No matches for \u201c' + esc(q) + '\u201d. <a href="/search?q=' + encodeURIComponent(q) + '">Browse all mosaics</a></div>';
             } else {
               html += '<a class="psg__all" href="/search?q=' + encodeURIComponent(q) + '">See all results for \u201c' + esc(q) + '\u201d \u2192</a>';
@@ -274,7 +281,7 @@
         if (input.value.trim().length >= 2 && panel.innerHTML) { panel.hidden = false; box.classList.add('is-open'); }
       });
       input.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') { close(); return; }
+        if (e.key === 'Escape') { close(); var hs = box.closest('[data-hsearch]'); if (hs) hs.hidden = true; return; }
         var items = panel.querySelectorAll('a');
         if (!items.length) return;
         var idx = Array.prototype.indexOf.call(items, document.activeElement);

@@ -235,3 +235,7 @@ a:focus:not(:focus-visible), button:focus:not(:focus-visible), input:focus:not(:
 .psg__all:hover { color: var(--color-navy); }
 .psg__empty { padding: 26px 16px; text-align: center; font-size: 14px; color: var(--color-text-muted); }
 .psg__empty a { color: var(--color-blue); border-bottom: 1px solid var(--color-blue); }
+.psg__links { display: flex; flex-direction: column; padding: 4px 0; }
+.psg__link { display: flex; align-items: center; gap: 10px; padding: 10px 12px; font-size: 14px; color: #46546E; transition: background .15s ease; }
+.psg__link:hover, .psg__link:focus { background: var(--color-panel); color: var(--color-navy); outline: none; }
+.psg__link-ic { color: var(--color-blue); font-weight: 700; }
