@@ -2,6 +2,8 @@
   <div class="auth__panel">
     {%- if section.settings.image != blank -%}
       <img src="{{ section.settings.image | image_url: width: 1100 }}" alt="" width="1100" height="1100" class="auth__panel-img">
+    {%- else -%}
+      <img src="https://www.imosaicart.com/cdn/shop/files/MAS081_b2d557a7-36fa-418b-b736-ec6f27f75af3.jpg?width=1100" alt="Handcrafted mosaic" loading="lazy" class="auth__panel-img">
     {%- endif -%}
     <div class="auth__panel-veil"></div>
     <div class="auth__panel-content">
