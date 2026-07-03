@@ -24,6 +24,27 @@
     <h1 class="coll-hero__title">{{ hero_word }} <span class="coll-hero__title-i">Mosaics</span></h1>
     {%- if collection.description != blank -%}
       <div class="coll-hero__desc rte">{{ collection.description }}</div>
+    {%- else -%}
+      {%- assign hw_lower = hero_word | downcase -%}
+      {%- case hero_word -%}
+        {%- when 'All' -%}{%- assign hero_desc = 'Explore the complete iMosaicArt collection — handcrafted natural marble and glass mosaics spanning abstract art, portraits, florals, landscapes and more. Each piece is hand-cut by master artisans, made to order and shipped worldwide.' -%}
+        {%- when 'Abstract' -%}{%- assign hero_desc = 'Bold forms, intricate patterns and custom creations hand-cut in marble and glass. Our abstract mosaics bring color, texture and movement to any wall, floor or feature — original artworks made to order and built to last a lifetime.' -%}
+        {%- when 'Animal' -%}{%- assign hero_desc = 'Lifelike animal mosaics handcrafted from natural stone and glass — from majestic lions and horses to beloved pets. Each tessera is cut and placed by hand to capture every expression, ready to bring warmth and character to your space.' -%}
+        {%- when 'Bird' -%}{%- assign hero_desc = 'Handcrafted bird mosaics rendered in luminous marble and glass — peacocks, eagles, parrots and songbirds alive with color and detail. Made-to-order wall art that brings the beauty of flight indoors and out, shipped worldwide.' -%}
+        {%- when 'Flower' -%}{%- assign hero_desc = 'Floral mosaics hand-cut from natural marble and glass — roses, irises, lilies and blossoms in radiant, lasting color. Bespoke botanical artworks crafted tessera by tessera to bring the garden into your home, kitchen or bath.' -%}
+        {%- when 'Food' -%}{%- assign hero_desc = 'Hand-crafted food and wine mosaics in natural stone and glass — perfect for kitchens, dining rooms and tasting spaces. Made-to-order culinary artworks that celebrate flavor with timeless artisan detail.' -%}
+        {%- when 'Geometric' -%}{%- assign hero_desc = 'Precision geometric mosaics hand-cut in marble and glass — rosettes, medallions, stars and tessellated patterns. Timeless designs for floors, backsplashes and feature walls, custom-sized and built to endure.' -%}
+        {%- when 'Landmark' -%}{%- assign hero_desc = 'Iconic landmark and architectural mosaics handcrafted from natural stone and glass — cities, monuments and world wonders rendered in enduring tesserae. Bespoke commemorative artworks made to order and shipped worldwide.' -%}
+        {%- when 'Landscape' -%}{%- assign hero_desc = 'Sweeping landscape mosaics hand-cut from marble and glass — coastlines, mountains, sunsets and pastoral scenes. Made-to-order artworks that bring the serenity of nature to any wall, indoors or outdoors.' -%}
+        {%- when 'Nautical' -%}{%- assign hero_desc = 'Nautical mosaics crafted in weatherproof marble and glass — ships, waves, compass roses and sea life. Bespoke coastal artworks built for pools, patios and baths, hand-cut to bring the ocean home.' -%}
+        {%- when 'Portrait' -%}{%- assign hero_desc = 'Custom portrait mosaics handcrafted from natural stone and glass — loved ones, icons and masterpieces recreated tessera by tessera. A timeless, one-of-a-kind keepsake made to order from your photograph.' -%}
+        {%- when 'Pattern' -%}{%- assign hero_desc = 'Ornamental pattern mosaics hand-cut in marble and glass — arabesques, scrollwork and repeating motifs. Versatile, made-to-order designs for borders, floors and feature walls with lasting artisan beauty.' -%}
+        {%- when 'Roman' -%}{%- assign hero_desc = 'Classical Roman mosaics handcrafted from natural marble — acanthus borders, medallions and antiquity-inspired scenes. Bespoke heritage artworks hand-cut in the ancient tradition and made to order for any interior.' -%}
+        {%- when 'Religious' -%}{%- assign hero_desc = 'Devotional religious mosaics handcrafted from natural marble and glass — sacred figures, icons and chapel commissions rendered in radiant tesserae. Made-to-order spiritual artworks crafted with reverence and shipped worldwide.' -%}
+        {%- when 'Tree' -%}{%- assign hero_desc = 'Tree-of-life and botanical tree mosaics hand-cut from marble and glass — olive groves, blossoms and sweeping canopies. Bespoke nature-inspired artworks made to order to bring organic warmth to your space.' -%}
+        {%- else -%}{%- capture hero_desc -%}Discover our handcrafted {{ hw_lower }} mosaics — natural marble and glass artworks, hand-cut by master artisans and made to order for any space.{%- endcapture -%}
+      {%- endcase -%}
+      <p class="coll-hero__desc">{{ hero_desc }}</p>
     {%- endif -%}
     {%- if section.settings.show_trust -%}
       <div class="coll-hero__trust">
@@ -102,22 +123,22 @@
                 <div class="coll-facet__body-inner">
                   {%- case filter.type -%}
                     {%- when 'price_range' -%}
-                      {%- assign rmax = filter.range_max | plus: 0 -%}
+                      {%- comment -%} Normalise to whole dollars so the slider and inputs share one unit. {%- endcomment -%}
+                      {%- assign rmax = filter.range_max | money_without_currency | replace: ',', '' | replace: '.00', '' | plus: 0 -%}
                       {%- if rmax == 0 -%}{%- assign rmax = 1 -%}{%- endif -%}
-                      {%- assign vmin = filter.min_value.value | default: 0 -%}
-                      {%- assign vmax = filter.max_value.value | default: filter.range_max -%}
+                      {%- assign vmin = filter.min_value.value | default: 0 | plus: 0 -%}
+                      {%- assign vmax = filter.max_value.value | default: rmax | plus: 0 -%}
                       {%- assign lpct = vmin | times: 100 | divided_by: rmax -%}
                       {%- assign mpct = vmax | times: 100 | divided_by: rmax -%}
-                      {%- assign rpct = 100 | minus: mpct -%}
-                      <div class="coll-facet__pricetop">Highest price <strong>{{ filter.range_max | money_without_currency | replace: '.00', '' | prepend: '$' }}</strong></div>
-                      <div class="coll-facet__track">
-                        <span class="coll-facet__track-fill" style="left:{{ lpct }}%; right:{{ rpct }}%;"></span>
-                        <span class="coll-facet__track-dot" style="left:{{ lpct }}%;"></span>
-                        <span class="coll-facet__track-dot" style="left:{{ mpct }}%;"></span>
+                      <div class="coll-facet__pricetop">Highest price <strong>${{ rmax }}</strong></div>
+                      <div class="coll-facet__slider" data-price-slider data-max="{{ rmax }}">
+                        <div class="coll-facet__track"><span class="coll-facet__track-fill" data-price-fill style="left:{{ lpct }}%; right:{{ 100 | minus: mpct }}%;"></span></div>
+                        <input type="range" class="coll-facet__range coll-facet__range--min" min="0" max="{{ rmax }}" step="1" value="{{ vmin }}" data-price-range="min" aria-label="Minimum price">
+                        <input type="range" class="coll-facet__range coll-facet__range--max" min="0" max="{{ rmax }}" step="1" value="{{ vmax }}" data-price-range="max" aria-label="Maximum price">
                       </div>
                       <div class="coll-facet__price">
-                        <div class="coll-facet__price-box"><span class="coll-facet__price-cur">$</span><input type="number" name="{{ filter.min_value.param_name }}" value="{{ filter.min_value.value }}" placeholder="0" min="0" max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"></div>
-                        <div class="coll-facet__price-box"><span class="coll-facet__price-cur">$</span><input type="number" name="{{ filter.max_value.param_name }}" value="{{ filter.max_value.value }}" placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' | replace: '.00', '' }}" min="0" max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"></div>
+                        <div class="coll-facet__price-box"><span class="coll-facet__price-cur">$</span><input type="number" name="{{ filter.min_value.param_name }}" value="{{ filter.min_value.value }}" placeholder="0" min="0" max="{{ rmax }}" data-price-input="min"></div>
+                        <div class="coll-facet__price-box"><span class="coll-facet__price-cur">$</span><input type="number" name="{{ filter.max_value.param_name }}" value="{{ filter.max_value.value }}" placeholder="{{ rmax }}" min="0" max="{{ rmax }}" data-price-input="max"></div>
                       </div>
                     {%- else -%}
                       {%- for value in filter.values -%}
@@ -234,9 +255,15 @@
   .coll-facet__row-count { font-size: 12px; color: var(--color-text-faint); }
   .coll-facet__pricetop { font-size: 13px; color: #5E6B85; margin-bottom: 14px; }
   .coll-facet__pricetop strong { color: var(--color-navy); font-weight: 600; }
-  .coll-facet__track { position: relative; height: 3px; background: #DCE6F5; border-radius: 2px; margin: 0 6px 22px; }
+  .coll-facet__slider { position: relative; height: 22px; margin: 0 0 18px; }
+  .coll-facet__track { position: absolute; top: 9px; left: 7px; right: 7px; height: 3px; background: #DCE6F5; border-radius: 2px; }
   .coll-facet__track-fill { position: absolute; top: 0; bottom: 0; background: var(--color-blue); border-radius: 2px; }
-  .coll-facet__track-dot { position: absolute; top: -5px; width: 13px; height: 13px; border-radius: 50%; background: var(--color-navy); transform: translateX(-50%); }
+  .coll-facet__range { position: absolute; top: 4px; left: 0; width: 100%; height: 13px; margin: 0; background: none; pointer-events: none; -webkit-appearance: none; appearance: none; }
+  .coll-facet__range:focus { outline: none; }
+  .coll-facet__range::-webkit-slider-thumb { -webkit-appearance: none; pointer-events: auto; width: 15px; height: 15px; border-radius: 50%; background: var(--color-navy); border: 2px solid #fff; box-shadow: 0 1px 5px rgba(22,51,94,.4); cursor: pointer; }
+  .coll-facet__range::-moz-range-thumb { pointer-events: auto; width: 15px; height: 15px; border-radius: 50%; background: var(--color-navy); border: 2px solid #fff; box-shadow: 0 1px 5px rgba(22,51,94,.4); cursor: pointer; }
+  .coll-facet__range::-webkit-slider-runnable-track { background: transparent; border: none; }
+  .coll-facet__range::-moz-range-track { background: transparent; border: none; }
   .coll-facet__price { display: flex; gap: 10px; align-items: center; }
   .coll-facet__price-box { flex: 1; display: flex; align-items: center; gap: 4px; border: 1px solid rgba(22,51,94,.2); padding: 9px 12px; }
   .coll-facet__price-cur { font-size: 13px; color: #5E6B85; }
@@ -264,6 +291,49 @@
     .coll__grid { grid-template-columns: repeat(2, 1fr) !important; }
   }
 </style>
+
+<script>
+  (function () {
+    function initSlider(slider) {
+      var max = parseFloat(slider.getAttribute('data-max')) || 1;
+      var rMin = slider.querySelector('[data-price-range="min"]');
+      var rMax = slider.querySelector('[data-price-range="max"]');
+      var fill = slider.querySelector('[data-price-fill]');
+      var form = slider.closest('form');
+      var iMin = form ? form.querySelector('[data-price-input="min"]') : null;
+      var iMax = form ? form.querySelector('[data-price-input="max"]') : null;
+      if (!rMin || !rMax) return;
+
+      function pct(v) { return (v / max) * 100; }
+      function lohi() { return [Math.min(+rMin.value, +rMax.value), Math.max(+rMin.value, +rMax.value)]; }
+      function draw() {
+        var lh = lohi();
+        if (fill) { fill.style.left = pct(lh[0]) + '%'; fill.style.right = (100 - pct(lh[1])) + '%'; }
+      }
+      function syncInputs() {
+        var lh = lohi();
+        if (iMin) iMin.value = lh[0] > 0 ? lh[0] : '';
+        if (iMax) iMax.value = lh[1] < max ? lh[1] : '';
+      }
+      function apply() { if (form) { if (form.requestSubmit) { form.requestSubmit(); } else { form.submit(); } } }
+
+      rMin.addEventListener('input', function () { if (+rMin.value > +rMax.value) { rMin.value = rMax.value; } draw(); syncInputs(); });
+      rMax.addEventListener('input', function () { if (+rMax.value < +rMin.value) { rMax.value = rMin.value; } draw(); syncInputs(); });
+      rMin.addEventListener('change', apply);
+      rMax.addEventListener('change', apply);
+      if (iMin) {
+        iMin.addEventListener('input', function () { var v = parseFloat(iMin.value); rMin.value = isNaN(v) ? 0 : Math.min(v, max); draw(); });
+        iMin.addEventListener('change', apply);
+      }
+      if (iMax) {
+        iMax.addEventListener('input', function () { var v = parseFloat(iMax.value); rMax.value = isNaN(v) ? max : Math.min(v, max); draw(); });
+        iMax.addEventListener('change', apply);
+      }
+      draw();
+    }
+    document.querySelectorAll('[data-price-slider]').forEach(initSlider);
+  })();
+</script>
 
 {% schema %}
 {
