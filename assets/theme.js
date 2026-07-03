@@ -287,10 +287,11 @@
               qh += '</div>';
               html = qh + html;
             }
+            var allUrl = '/search?type=product&options%5Bprefix%5D=last&q=' + encodeURIComponent(q);
             if (!products.length && !colls.length && !pages.length && !articles.length && !quicks.length) {
-              html = '<div class="psg__empty">No matches for \u201c' + esc(q) + '\u201d. <a href="/search?q=' + encodeURIComponent(q) + '">Browse all mosaics</a></div>';
+              html = '<div class="psg__empty">No matches for \u201c' + esc(q) + '\u201d. <a href="' + allUrl + '">Browse all mosaics</a></div>';
             } else {
-              html += '<a class="psg__all" href="/search?q=' + encodeURIComponent(q) + '">See all results for \u201c' + esc(q) + '\u201d \u2192</a>';
+              html += '<a class="psg__all" href="' + allUrl + '">See all results for \u201c' + esc(q) + '\u201d \u2192</a>';
             }
             panel.innerHTML = html;
             panel.hidden = false;
