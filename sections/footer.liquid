@@ -81,9 +81,9 @@
     {%- endif -%}
   </div>
 
-  <div class="page-width site-footer__pay">
-    <span class="site-footer__pay-label">We Accept</span>
-    <div class="site-footer__pay-icons">
+  <div class="page-width site-footer__bottom">
+    <span class="site-footer__copy">&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</span>
+    <div class="site-footer__pay-icons" role="img" aria-label="Accepted payment methods">
       <span class="pay-ic" title="Visa"><svg viewBox="0 0 40 26" role="img" aria-label="Visa"><rect width="40" height="26" rx="4" fill="#fff"/><rect x=".5" y=".5" width="39" height="25" rx="3.5" fill="none" stroke="#E6E9EF"/><text x="20" y="17.5" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="10" font-style="italic" font-weight="700" fill="#1A1F71">VISA</text></svg></span>
       <span class="pay-ic" title="Mastercard"><svg viewBox="0 0 40 26" role="img" aria-label="Mastercard"><rect width="40" height="26" rx="4" fill="#fff"/><rect x=".5" y=".5" width="39" height="25" rx="3.5" fill="none" stroke="#E6E9EF"/><circle cx="16" cy="13" r="7" fill="#EB001B"/><circle cx="24" cy="13" r="7" fill="#F79E1B"/><path d="M20 7.7a7 7 0 0 0 0 10.6 7 7 0 0 0 0-10.6z" fill="#FF5F00"/></svg></span>
       <span class="pay-ic" title="American Express"><svg viewBox="0 0 40 26" role="img" aria-label="American Express"><rect width="40" height="26" rx="4" fill="#1F72CD"/><text x="20" y="16" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="7" font-weight="700" fill="#fff" letter-spacing=".3">AMEX</text></svg></span>
@@ -91,10 +91,6 @@
       <span class="pay-ic" title="Apple Pay"><svg viewBox="0 0 40 26" role="img" aria-label="Apple Pay"><rect width="40" height="26" rx="4" fill="#000"/><path d="M13.9 10.2c.3-.4.5-.9.4-1.5-.4 0-1 .3-1.3.7-.3.3-.5.9-.4 1.4.5 0 1-.3 1.3-.6zm.5.7c-.7 0-1.3.4-1.6.4-.4 0-.9-.4-1.4-.4-.7 0-1.4.4-1.7 1.1-.7 1.2-.2 3.1.5 4.1.3.5.7 1 1.2 1 .5 0 .7-.3 1.3-.3.6 0 .8.3 1.3.3.5 0 .9-.5 1.2-1 .2-.4.4-.7.4-.8-1-.4-1.2-1.9-.1-2.5-.3-.6-.9-1-1.8-1z" fill="#fff"/><text x="25" y="17" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="9" font-weight="600" fill="#fff">Pay</text></svg></span>
       <span class="pay-ic" title="Google Pay"><svg viewBox="0 0 40 26" role="img" aria-label="Google Pay"><rect width="40" height="26" rx="4" fill="#fff"/><rect x=".5" y=".5" width="39" height="25" rx="3.5" fill="none" stroke="#E6E9EF"/><text x="20" y="16.5" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="8" font-weight="700"><tspan fill="#4285F4">G</tspan><tspan fill="#EA4335">o</tspan><tspan fill="#FBBC04">o</tspan><tspan fill="#4285F4">g</tspan><tspan fill="#34A853">l</tspan><tspan fill="#EA4335">e</tspan><tspan fill="#5F6368"> Pay</tspan></text></svg></span>
     </div>
-  </div>
-
-  <div class="page-width site-footer__bottom">
-    <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</span>
     <div class="site-footer__social">
       <a href="{{ settings.social_instagram_link | default: 'https://www.instagram.com/i.mosaicart/' }}" class="social-btn social-btn--ig" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="3.8"/><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"/></svg>
@@ -115,7 +111,8 @@
 <style>
   .site-footer { background: var(--color-navy-deep); color: var(--color-text-faint); }
   .site-footer__top {
-    padding-top: 72px;
+    padding-top: 58px;
+    padding-bottom: 40px;
     display: grid;
     grid-template-columns: 1.6fr 1fr 1fr 1fr;
     gap: 48px;
@@ -138,49 +135,52 @@
   }
   .site-footer__col-links { display: flex; flex-direction: column; gap: 12px; font-size: 14px; }
   .site-footer__bottom {
-    margin-top: 40px;
-    padding-top: 40px;
-    padding-bottom: 40px;
+    padding-top: 24px;
+    padding-bottom: 30px;
     border-top: 1px solid rgba(220,230,245,.12);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
+    gap: 18px 28px;
     flex-wrap: wrap;
     font-size: 13px;
-    color: #6B7790;
   }
-  /* Accepted payment methods */
-  .site-footer__pay { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; padding-top: 30px; }
-  .site-footer__pay-label { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--color-text-faint); }
-  .site-footer__pay-icons { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
-  .pay-ic { display: inline-flex; }
-  .pay-ic svg { display: block; width: 40px; height: 26px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,.28); }
+  .site-footer__copy { color: #7B879F; letter-spacing: .01em; }
+
+  /* Accepted payment methods — sits in the centre of the bottom bar */
+  .site-footer__pay-icons { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .pay-ic { display: inline-flex; transition: transform .2s ease; }
+  .pay-ic:hover { transform: translateY(-2px); }
+  .pay-ic svg { display: block; width: 40px; height: 26px; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,.32); }
 
   /* Social — each logo in its own brand colour, hover fills with it */
-  .site-footer__social { display: flex; gap: 12px; }
+  .site-footer__social { display: flex; gap: 10px; }
   .social-btn {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     border: 1px solid rgba(220,230,245,.16);
+    background: rgba(255,255,255,.04);
     transition: color .25s ease, background .25s ease, border-color .25s ease, transform .25s ease;
   }
-  .social-btn svg { width: 18px; height: 18px; }
+  .social-btn svg { width: 17px; height: 17px; }
   .social-btn:hover { color: #fff; transform: translateY(-3px); }
-  .social-btn--ig { color: #E1306C; }
+  .social-btn--ig { color: #F06292; }
   .social-btn--ig:hover { background: linear-gradient(45deg,#F58529,#DD2A7B,#8134AF,#515BD4); border-color: transparent; }
-  .social-btn--fb { color: #1877F2; }
+  .social-btn--fb { color: #4C8DF5; }
   .social-btn--fb:hover { background: #1877F2; border-color: #1877F2; }
-  .social-btn--yt { color: #FF0000; }
+  .social-btn--yt { color: #FF4B4B; }
   .social-btn--yt:hover { background: #FF0000; border-color: #FF0000; }
-  .social-btn--pin { color: #E60023; }
+  .social-btn--pin { color: #F14B5E; }
   .social-btn--pin:hover { background: #E60023; border-color: #E60023; }
   @media (max-width: 990px) {
     .site-footer__top { grid-template-columns: 1fr 1fr; gap: 36px; }
+  }
+  @media (max-width: 700px) {
+    .site-footer__bottom { flex-direction: column; text-align: center; gap: 20px; padding-top: 26px; }
   }
   @media (max-width: 600px) {
     .site-footer__top { grid-template-columns: 1fr; }
