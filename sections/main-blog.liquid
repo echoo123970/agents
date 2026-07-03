@@ -76,7 +76,23 @@
     <div class="bj-empty" data-bj-empty{% if blog.articles.size > 0 %} style="display:none"{% endif %}>No articles in this category yet — check back soon.</div>
 
     {%- if paginate.pages > 1 -%}
-      <div class="bj-pagination" data-bj-pagination>{{ paginate | default_pagination }}</div>
+      <nav class="bj-pager" aria-label="Pagination">
+        {%- if paginate.previous.is_link -%}
+          <a href="{{ paginate.previous.url }}" class="bj-pager__btn" rel="prev">&larr; Prev</a>
+        {%- endif -%}
+        {%- for part in paginate.parts -%}
+          {%- if part.is_link -%}
+            <a href="{{ part.url }}" class="bj-pager__num" aria-label="Page {{ part.title }}">{{ part.title }}</a>
+          {%- elsif part.title == paginate.current_page -%}
+            <span class="bj-pager__num is-active" aria-current="page">{{ part.title }}</span>
+          {%- else -%}
+            <span class="bj-pager__gap">{{ part.title }}</span>
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if paginate.next.is_link -%}
+          <a href="{{ paginate.next.url }}" class="bj-pager__btn" rel="next">Next &rarr;</a>
+        {%- endif -%}
+      </nav>
     {%- endif -%}
   </section>
 
@@ -117,6 +133,14 @@
   .bj-tab { display: inline-block; font-family: var(--font-body); font-size: 12.5px; letter-spacing: .06em; text-transform: uppercase; padding: 10px 20px; border: 1px solid rgba(22,51,94,.18); background: none; color: #46546E; cursor: pointer; text-decoration: none; transition: all .2s ease; }
   .bj-tab:hover { border-color: #2B7BE8; color: #16335E; }
   .bj-tab.is-active { background: #16335E; color: #fff; border-color: #16335E; }
+
+  .bj-pager { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 56px; }
+  .bj-pager__num { display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border: 1px solid rgba(22,51,94,.18); color: #16335E; font-family: var(--font-body); font-size: 15px; text-decoration: none; transition: all .2s ease; }
+  .bj-pager__num:hover { border-color: #16335E; }
+  .bj-pager__num.is-active { background: #16335E; color: #fff; border-color: #16335E; }
+  .bj-pager__gap { display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; color: #9AA4B8; }
+  .bj-pager__btn { display: inline-flex; align-items: center; height: 46px; padding: 0 24px; border: 1px solid rgba(22,51,94,.18); color: #2B7BE8; font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase; text-decoration: none; transition: all .2s ease; }
+  .bj-pager__btn:hover { background: #2B7BE8; border-color: #2B7BE8; color: #fff; }
 
   .bj-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 13px; }
   .bj-cat, .bj-cat-pill { font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: #2B7BE8; }
