@@ -20,10 +20,10 @@
         <div class="trust-bar__item">
           <span class="trust-bar__icon">
             {%- case forloop.index -%}
-              {%- when 1 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l2.5 6.9 6.9 2.5-6.9 2.5L12 21.3l-2.5-6.9L2.6 11.9l6.9-2.5z"/></svg>
-              {%- when 2 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-2.4-5.9"/><path d="M20.7 3.6V9.1H15.2"/></svg>
-              {%- when 3 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2.5l-19 8.2 7.2 2.6 2.6 7.2z"/><path d="M21.5 2.5L10.3 13.3"/></svg>
-              {%- when 4 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>
+              {%- when 1 -%}✦
+              {%- when 2 -%}↺
+              {%- when 3 -%}✈
+              {%- when 4 -%}🔒
             {%- endcase -%}
           </span>
           <div>
@@ -40,7 +40,7 @@
   .trust-bar { background: var(--color-navy); color: var(--color-light-text); }
   .trust-bar__grid { padding-top: 30px; padding-bottom: 30px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
   .trust-bar__item { display: flex; align-items: center; gap: 14px; justify-content: center; }
-  .trust-bar__icon { color: var(--color-blue-light); display: flex; flex-shrink: 0; }
+  .trust-bar__icon { color: var(--color-blue-light); display: flex; align-items: center; flex-shrink: 0; font-size: 22px; line-height: 1; }
   .trust-bar__icon svg { width: 24px; height: 24px; }
   .trust-bar__title { font-size: 13.5px; font-weight: 600; color: var(--color-bg); }
   .trust-bar__sub { font-size: 12px; color: var(--color-text-faint); margin-top: 2px; }
