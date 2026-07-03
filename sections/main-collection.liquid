@@ -167,17 +167,32 @@
               {%- endfor -%}
             </div>
             {%- if paginate.pages > 1 -%}
-              <div class="coll__pagination">
+              <nav class="coll__pagination" aria-label="Pagination">
+                {%- if paginate.previous.is_link -%}
+                  <a href="{{ paginate.previous.url }}" class="coll__page coll__page--nav" rel="prev" aria-label="Previous page">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                  </a>
+                {%- else -%}
+                  <span class="coll__page coll__page--nav is-disabled" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></span>
+                {%- endif -%}
                 {%- for part in paginate.parts -%}
                   {%- if part.is_link -%}
-                    <a href="{{ part.url }}" class="coll__page">{{ part.title }}</a>
+                    <a href="{{ part.url }}" class="coll__page" aria-label="Page {{ part.title }}">{{ part.title }}</a>
                   {%- elsif part.title == paginate.current_page -%}
-                    <span class="coll__page is-active">{{ part.title }}</span>
+                    <span class="coll__page is-active" aria-current="page">{{ part.title }}</span>
                   {%- else -%}
-                    <span class="coll__page">{{ part.title }}</span>
+                    <span class="coll__page-gap">{{ part.title }}</span>
                   {%- endif -%}
                 {%- endfor -%}
-              </div>
+                {%- if paginate.next.is_link -%}
+                  <a href="{{ paginate.next.url }}" class="coll__page coll__page--nav" rel="next" aria-label="Next page">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                  </a>
+                {%- else -%}
+                  <span class="coll__page coll__page--nav is-disabled" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+                {%- endif -%}
+              </nav>
+              <div class="coll__pagination-info">Page {{ paginate.current_page }} of {{ paginate.pages }}</div>
             {%- endif -%}
           {%- else -%}
             <div class="coll__empty">
@@ -276,9 +291,17 @@
   .coll-facet__price-box input::-webkit-outer-spin-button, .coll-facet__price-box input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
   .coll__grid { display: grid; gap: 38px 26px; }
-  .coll__pagination { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 64px; }
-  .coll__page { min-width: 42px; height: 42px; padding: 0 14px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(22,51,94,.25); color: var(--color-navy); font-size: 14px; }
-  .coll__page.is-active { background: var(--color-navy); color: #fff; border-color: var(--color-navy); }
+  .coll__pagination { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 64px; flex-wrap: wrap; }
+  .coll__page { min-width: 44px; height: 44px; padding: 0 14px; display: inline-flex; align-items: center; justify-content: center; background: #fff; border: 1px solid rgba(22,51,94,.18); color: var(--color-navy); font-size: 14px; transition: background .2s ease, border-color .2s ease, color .2s ease, transform .2s ease; }
+  .coll__page:hover { border-color: var(--color-blue); color: var(--color-blue); transform: translateY(-2px); }
+  .coll__page.is-active { background: var(--color-navy); color: #fff; border-color: var(--color-navy); font-weight: 600; transform: none; cursor: default; }
+  .coll__page--nav { color: var(--color-navy); }
+  .coll__page--nav svg { width: 16px; height: 16px; display: block; }
+  .coll__page--nav:hover { background: var(--color-navy); color: #fff; border-color: var(--color-navy); }
+  .coll__page.is-disabled { opacity: .3; pointer-events: none; }
+  .coll__page-gap { min-width: 26px; height: 44px; display: inline-flex; align-items: flex-end; justify-content: center; padding-bottom: 6px; color: var(--color-text-faint); font-size: 15px; letter-spacing: 2px; }
+  .coll__pagination-info { text-align: center; margin-top: 16px; font-size: 12.5px; letter-spacing: .04em; color: var(--color-text-muted); }
+  @media (max-width: 600px) { .coll__page { min-width: 40px; height: 40px; } .coll__pagination { gap: 6px; } }
   .coll__empty { text-align: center; padding: 70px 20px; }
   .coll__empty-title { font-family: var(--font-display); font-style: italic; font-size: 28px; color: var(--color-navy); margin-bottom: 14px; }
   .coll__empty-text { font-size: 15px; color: var(--color-text-muted); margin-bottom: 26px; }
