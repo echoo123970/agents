@@ -177,9 +177,10 @@
     // screen each CSS px is devicePixelRatio device px, so we must fetch that
     // many source pixels or the zoom looks blurry. Cap at Shopify's max.
     var dpr = Math.min(window.devicePixelRatio || 1, 3);
-    var fw = frame.getBoundingClientRect().width || img.clientWidth || 700;
-    var reqW = Math.min(5000, Math.max(1600, Math.round(fw * ZOOM * dpr)));
-    var SRC = atWidth(RAW, reqW);
+    // Always load the full-resolution master for the lens. If the URL already
+    // carries a width= param (e.g. an uploaded image rendered at 1200), bump it
+    // to the max; if it has none it is already the original master, so leave it.
+    var SRC = /[?&]width=\d+/.test(RAW) ? atWidth(RAW, 4096) : RAW;
     var natW = 0, natH = 0;
     var pre = new Image();               // preload + learn the master's real size
     pre.onload = function () { natW = pre.naturalWidth; natH = pre.naturalHeight; };
