@@ -160,10 +160,11 @@
     if (!img) return;
     var lens = document.createElement('div');
     lens.className = 'hero-lens';
-    var LENS = 112, ZOOM = 2.4;
-    // Load a high-resolution source for the lens so magnified detail stays crisp.
+    var LENS = 112, ZOOM = 2.2;
     var RAW = img.currentSrc || img.src;
-    function hiRes(url, w) {
+
+    // Request a Shopify CDN render at an explicit pixel width.
+    function atWidth(url, w) {
       if (!url) return url;
       if (/cdn\.shopify\.com|\/cdn\//.test(url)) {
         if (/[?&]width=\d+/.test(url)) return url.replace(/([?&])width=\d+/, '$1width=' + w);
@@ -171,9 +172,15 @@
       }
       return url;
     }
-    var SRC = hiRes(RAW, 2400);
-    // Preload so the first hover is already sharp.
-    var pre = new Image(); pre.src = SRC;
+
+    // The magnified image is drawn at (frameWidth * ZOOM) CSS px. On a Retina
+    // screen each CSS px is devicePixelRatio device px, so we must fetch that
+    // many source pixels or the zoom looks blurry. Cap at Shopify's max.
+    var dpr = Math.min(window.devicePixelRatio || 1, 3);
+    var fw = frame.getBoundingClientRect().width || img.clientWidth || 700;
+    var reqW = Math.min(5000, Math.max(1600, Math.round(fw * ZOOM * dpr)));
+    var SRC = atWidth(RAW, reqW);
+    var pre = new Image(); pre.src = SRC; // preload so first hover is sharp
     lens.style.backgroundImage = 'url(' + SRC + ')';
 
     frame.addEventListener('mousemove', function (ev) {
