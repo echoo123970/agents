@@ -30,6 +30,8 @@
   {% render 'pg-color-palette' %}
 {%- elsif ph == 'all-reviews' or ph == 'reviews' or ph == 'testimonials' or ph == 'all-review' or ph == 'imosaicart-testimonials' -%}
   {% render 'pg-reviews' %}
+{%- elsif ph == 'portfolio-mosaics' or ph == 'portfolio' or ph == 'our-portfolio' -%}
+  {% render 'pg-portfolio' %}
 {%- else -%}
   {% section 'main-page' %}
 {%- endif -%}
