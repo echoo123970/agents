@@ -12,7 +12,10 @@
     <nav class="site-header__nav" role="navigation">
       {%- if section.settings.menu != blank and section.settings.menu.links.size > 0 -%}
         {%- for link in section.settings.menu.links -%}
-          <a href="{{ link.url }}" class="nav-link">{{ link.title }}</a>
+          {%- assign lt = link.title | downcase | strip -%}
+          {%- unless lt == 'mosaic tile art' -%}
+            <a href="{{ link.url }}" class="nav-link">{{ link.title }}</a>
+          {%- endunless -%}
         {%- endfor -%}
       {%- else -%}
         <a href="{{ routes.all_products_collection_url }}" class="nav-link">Mosaics</a>
@@ -58,7 +61,10 @@
     <button type="button" class="mobile-nav__close" data-menu-close aria-label="Close">&times;</button>
     {%- if section.settings.menu != blank and section.settings.menu.links.size > 0 -%}
       {%- for link in section.settings.menu.links -%}
-        <a href="{{ link.url }}" class="mobile-nav__link">{{ link.title }}</a>
+        {%- assign lt = link.title | downcase | strip -%}
+        {%- unless lt == 'mosaic tile art' -%}
+          <a href="{{ link.url }}" class="mobile-nav__link">{{ link.title }}</a>
+        {%- endunless -%}
       {%- endfor -%}
     {%- else -%}
       <a href="{{ routes.all_products_collection_url }}" class="mobile-nav__link">Mosaics</a>
