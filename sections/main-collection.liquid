@@ -167,11 +167,25 @@
               {%- endfor -%}
             </div>
             {%- if paginate.pages > 1 -%}
-              <nav class="coll__pagination" aria-label="Pagination">
+              {%- comment -%} Load More + infinite scroll (JS reveals this and hides the numbered pager). {%- endcomment -%}
+              {%- if paginate.next.is_link -%}
+                <div class="coll__loadmore" data-load-more-wrap data-total="{{ collection.products_count }}" hidden>
+                  <div class="coll__loadmore-bar"><span class="coll__loadmore-bar-fill" data-load-more-fill></span></div>
+                  <div class="coll__loadmore-progress" data-load-more-progress></div>
+                  <button type="button" class="btn btn--dark coll__loadmore-btn" data-load-more data-next="{{ paginate.next.url }}">Load More Mosaics</button>
+                </div>
+              {%- endif -%}
+              {%- comment -%} Numbered pager — no-JS fallback, now with first/last jumps. {%- endcomment -%}
+              {%- assign first_part = paginate.parts | first -%}
+              {%- assign last_part = paginate.parts | last -%}
+              <nav class="coll__pagination" data-numbered-pager aria-label="Pagination">
+                {%- if first_part.is_link -%}
+                  <a href="{{ first_part.url }}" class="coll__page coll__page--nav" aria-label="First page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/></svg></a>
+                {%- else -%}
+                  <span class="coll__page coll__page--nav is-disabled" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/></svg></span>
+                {%- endif -%}
                 {%- if paginate.previous.is_link -%}
-                  <a href="{{ paginate.previous.url }}" class="coll__page coll__page--nav" rel="prev" aria-label="Previous page">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-                  </a>
+                  <a href="{{ paginate.previous.url }}" class="coll__page coll__page--nav" rel="prev" aria-label="Previous page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></a>
                 {%- else -%}
                   <span class="coll__page coll__page--nav is-disabled" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></span>
                 {%- endif -%}
@@ -185,14 +199,17 @@
                   {%- endif -%}
                 {%- endfor -%}
                 {%- if paginate.next.is_link -%}
-                  <a href="{{ paginate.next.url }}" class="coll__page coll__page--nav" rel="next" aria-label="Next page">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-                  </a>
+                  <a href="{{ paginate.next.url }}" class="coll__page coll__page--nav" rel="next" aria-label="Next page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>
                 {%- else -%}
                   <span class="coll__page coll__page--nav is-disabled" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
                 {%- endif -%}
+                {%- if last_part.is_link -%}
+                  <a href="{{ last_part.url }}" class="coll__page coll__page--nav" aria-label="Last page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg></a>
+                {%- else -%}
+                  <span class="coll__page coll__page--nav is-disabled" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg></span>
+                {%- endif -%}
               </nav>
-              <div class="coll__pagination-info">Page {{ paginate.current_page }} of {{ paginate.pages }}</div>
+              <div class="coll__pagination-info" data-numbered-info>Page {{ paginate.current_page }} of {{ paginate.pages }}</div>
             {%- endif -%}
           {%- else -%}
             <div class="coll__empty">
@@ -301,6 +318,12 @@
   .coll__page.is-disabled { opacity: .3; pointer-events: none; }
   .coll__page-gap { min-width: 26px; height: 44px; display: inline-flex; align-items: flex-end; justify-content: center; padding-bottom: 6px; color: var(--color-text-faint); font-size: 15px; letter-spacing: 2px; }
   .coll__pagination-info { text-align: center; margin-top: 16px; font-size: 12.5px; letter-spacing: .04em; color: var(--color-text-muted); }
+  .coll__loadmore { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: 56px; }
+  .coll__loadmore-bar { width: 230px; max-width: 60vw; height: 3px; background: rgba(22,51,94,.12); border-radius: 2px; overflow: hidden; }
+  .coll__loadmore-bar-fill { display: block; height: 100%; width: 0; background: var(--color-blue); border-radius: 2px; transition: width .45s ease; }
+  .coll__loadmore-progress { font-size: 13px; letter-spacing: .04em; color: var(--color-text-muted); }
+  .coll__loadmore-btn { min-width: 230px; }
+  .coll__loadmore-btn.is-loading { opacity: .6; pointer-events: none; }
   @media (max-width: 600px) { .coll__page { min-width: 40px; height: 40px; } .coll__pagination { gap: 6px; } }
   .coll__empty { text-align: center; padding: 70px 20px; }
   .coll__empty-title { font-family: var(--font-display); font-style: italic; font-size: 28px; color: var(--color-navy); margin-bottom: 14px; }
@@ -379,6 +402,91 @@
       draw();
     }
     document.querySelectorAll('[data-price-slider]').forEach(initSlider);
+  })();
+</script>
+
+<script>
+  (function () {
+    var wrap = document.querySelector('[data-load-more-wrap]');
+    var grid = document.querySelector('.coll__grid');
+    if (!wrap || !grid) return;
+    var pager = document.querySelector('[data-numbered-pager]');
+    var numInfo = document.querySelector('[data-numbered-info]');
+    var btn = wrap.querySelector('[data-load-more]');
+    var progress = wrap.querySelector('[data-load-more-progress]');
+    var fill = wrap.querySelector('[data-load-more-fill]');
+    var total = parseInt(wrap.getAttribute('data-total') || '0', 10);
+    var loading = false, finished = false, io = null;
+
+    /* progressive enhancement: reveal Load More, hide the numbered pager */
+    wrap.hidden = false;
+    if (pager) pager.style.display = 'none';
+    if (numInfo) numInfo.style.display = 'none';
+
+    function bindHeart(el) {
+      if (!window.imaWishlist || el.dataset.bound) return;
+      el.dataset.bound = '1';
+      var d = el.dataset;
+      var item = { handle: d.productHandle, title: d.wishTitle, url: d.wishUrl, image: d.wishImage, price: d.wishPrice, sub: d.wishSub };
+      var sync = function () { el.classList.toggle('is-saved', window.imaWishlist.has(item.handle)); };
+      el.addEventListener('click', function (e) { e.preventDefault(); window.imaWishlist.toggle(item); sync(); });
+      sync();
+    }
+    function shown() { return grid.children.length; }
+    function update() {
+      if (progress) progress.textContent = 'Showing ' + shown() + (total ? ' of ' + total : '') + ' artworks';
+      if (fill && total) fill.style.width = Math.min(100, Math.round(shown() / total * 100)) + '%';
+    }
+    update();
+
+    function load() {
+      if (loading || finished || !btn) return;
+      var next = btn.getAttribute('data-next');
+      if (!next) { finished = true; return; }
+      loading = true;
+      btn.classList.add('is-loading');
+      btn.textContent = 'Loading…';
+      fetch(next)
+        .then(function (r) { return r.text(); })
+        .then(function (html) {
+          var doc = new DOMParser().parseFromString(html, 'text/html');
+          var ng = doc.querySelector('.coll__grid');
+          if (ng) {
+            Array.prototype.slice.call(ng.children).forEach(function (card) {
+              grid.appendChild(card);
+              var h = card.querySelector && card.querySelector('[data-wish-add]');
+              if (h) bindHeart(h);
+            });
+          }
+          var nb = doc.querySelector('[data-load-more]');
+          var nextUrl = nb ? nb.getAttribute('data-next') : '';
+          loading = false;
+          update();
+          if (nextUrl) {
+            btn.setAttribute('data-next', nextUrl);
+            btn.classList.remove('is-loading');
+            btn.textContent = 'Load More Mosaics';
+          } else {
+            finished = true;
+            if (io) io.disconnect();
+            btn.remove();
+            if (progress) progress.textContent = 'You’ve seen all ' + shown() + ' artworks';
+          }
+        })
+        .catch(function () {
+          loading = false;
+          if (btn) { btn.classList.remove('is-loading'); btn.textContent = 'Load More Mosaics'; }
+        });
+    }
+    if (btn) btn.addEventListener('click', load);
+
+    /* infinite scroll: auto-load as the button nears the viewport */
+    if ('IntersectionObserver' in window) {
+      io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) load(); });
+      }, { rootMargin: '700px 0px' });
+      io.observe(wrap);
+    }
   })();
 </script>
 
