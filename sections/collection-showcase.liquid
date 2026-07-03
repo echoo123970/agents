@@ -5,6 +5,8 @@
     {%- if section.settings.text != blank -%}<p class="showcase__intro">{{ section.settings.text }}</p>{%- endif -%}
   </div>
   <div class="showcase__grid">
+    {%- comment -%} Per-card cover override URLs (pipe-separated, same order). Used by BOTH the block and default branches. {%- endcomment -%}
+    {%- assign d_covers = section.settings.default_covers | split: '|' -%}
     {%- if section.blocks.size > 0 -%}
       {%- for block in section.blocks -%}
         {%- assign coll = block.settings.collection -%}
@@ -17,8 +19,11 @@
           {%- assign card_name = block.settings.title -%}
           {%- assign card_image = block.settings.image -%}
         {%- endif -%}
+        {%- assign cover = d_covers[forloop.index0] -%}
         <a href="{{ card_url | default: '#' }}" class="col-card" {{ block.shopify_attributes }}>
-          {%- if card_image != blank -%}
+          {%- if cover != blank -%}
+            <img src="{{ cover }}" alt="{{ card_name | escape }}" width="900" height="600" class="col-zoom cover-img" loading="lazy" referrerpolicy="no-referrer"{% if card_image != blank %} onerror="this.onerror=null;this.src='{{ card_image | image_url: width: 900 }}'"{% endif %}>
+          {%- elsif card_image != blank -%}
             <img src="{{ card_image | image_url: width: 900 }}" alt="{{ card_name | escape }}" width="900" height="600" class="col-zoom cover-img" loading="lazy">
           {%- else -%}
             {{ 'collection-2' | placeholder_svg_tag: 'col-zoom cover-img' }}
@@ -35,8 +40,6 @@
       {%- assign d_handles = section.settings.default_handles | split: ',' -%}
       {%- assign d_titles = section.settings.default_titles | split: '|' -%}
       {%- assign d_descs = section.settings.default_descs | split: '|' -%}
-      {%- comment -%} Per-card cover override URLs (pipe-separated, matching handle order). Leave blank to use the collection image set in admin. {%- endcomment -%}
-      {%- assign d_covers = section.settings.default_covers | split: '|' -%}
       {%- for h in d_handles -%}
         {%- assign hh = h | strip -%}
         {%- assign coll = collections[hh] -%}
