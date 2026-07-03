@@ -35,8 +35,8 @@
       {%- assign d_handles = section.settings.default_handles | split: ',' -%}
       {%- assign d_titles = section.settings.default_titles | split: '|' -%}
       {%- assign d_descs = section.settings.default_descs | split: '|' -%}
-      {%- comment -%} Claude-design cover per card (blank falls back to the collection image). {%- endcomment -%}
-      {%- assign d_covers = '|||https://cdn.shopify.com/s/files/1/0754/6093/5978/files/1b1de6db-5b36-4cde-a9a6-3651c1e1292f.jpeg?width=900' | split: '|' -%}
+      {%- comment -%} Per-card cover override URLs (pipe-separated, matching handle order). Leave blank to use the collection image set in admin. {%- endcomment -%}
+      {%- assign d_covers = section.settings.default_covers | split: '|' -%}
       {%- for h in d_handles -%}
         {%- assign hh = h | strip -%}
         {%- assign coll = collections[hh] -%}
@@ -92,7 +92,8 @@
     { "type": "paragraph", "content": "Shown when no Collection blocks are added. Handles comma-separated; titles & descriptions pipe-separated (|), in matching order." },
     { "type": "textarea", "id": "default_handles", "label": "Default collection handles", "default": "mosaic-tile-backsplash, table-countertop-mosaics, van-gogh-mosaics, glass-mosaic-art" },
     { "type": "textarea", "id": "default_titles", "label": "Default titles", "default": "Mosaic Kitchen Backsplash|Mosaic Tabletops|The Van Gogh Collection|Glass Mosaic Art" },
-    { "type": "textarea", "id": "default_descs", "label": "Default descriptions", "default": "Stylish. Durable. Handcrafted.|Artfully crafted for everyday elegance.|Mosaic art inspired by timeless genius.|Light, color and craftsmanship in every piece." }
+    { "type": "textarea", "id": "default_descs", "label": "Default descriptions", "default": "Stylish. Durable. Handcrafted.|Artfully crafted for everyday elegance.|Mosaic art inspired by timeless genius.|Light, color and craftsmanship in every piece." },
+    { "type": "textarea", "id": "default_covers", "label": "Cover image URLs (pipe-separated, in the same order). Leave blank to use each collection's own image." }
   ],
   "blocks": [
     {
