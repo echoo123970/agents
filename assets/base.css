@@ -4,6 +4,11 @@
    ============================================================ */
 
 * { box-sizing: border-box; }
+/* Force lining (modern) numerals on EVERY element directly — not just via
+   inheritance from body — so Cormorant Garamond never renders 1/3/4/7 as
+   old-style glyphs anywhere (product price/title, etc.). Default ligatures
+   and kerning are unaffected. */
+*, *::before, *::after { font-variant-numeric: lining-nums; font-feature-settings: "lnum" 1; }
 
 html, body {
   margin: 0;
