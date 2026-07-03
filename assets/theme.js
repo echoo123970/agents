@@ -160,8 +160,20 @@
     if (!img) return;
     var lens = document.createElement('div');
     lens.className = 'hero-lens';
-    var SRC = img.currentSrc || img.src;
-    var LENS = 150, ZOOM = 1.85;
+    var LENS = 112, ZOOM = 2.4;
+    // Load a high-resolution source for the lens so magnified detail stays crisp.
+    var RAW = img.currentSrc || img.src;
+    function hiRes(url, w) {
+      if (!url) return url;
+      if (/cdn\.shopify\.com|\/cdn\//.test(url)) {
+        if (/[?&]width=\d+/.test(url)) return url.replace(/([?&])width=\d+/, '$1width=' + w);
+        return url + (url.indexOf('?') > -1 ? '&' : '?') + 'width=' + w;
+      }
+      return url;
+    }
+    var SRC = hiRes(RAW, 2400);
+    // Preload so the first hover is already sharp.
+    var pre = new Image(); pre.src = SRC;
     lens.style.backgroundImage = 'url(' + SRC + ')';
 
     frame.addEventListener('mousemove', function (ev) {
