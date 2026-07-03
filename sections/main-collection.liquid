@@ -101,7 +101,9 @@
           <span class="coll__sort-label">Sort</span>
           <select name="sort_by" class="coll__sort-select" data-auto-submit>
             {%- for option in collection.sort_options -%}
-              <option value="{{ option.value }}" {% if option.value == collection.sort_by %}selected{% endif %}>{{ option.name }}</option>
+              {%- unless option.value == 'title-ascending' or option.value == 'title-descending' -%}
+                <option value="{{ option.value }}" {% if option.value == collection.sort_by %}selected{% endif %}>{{ option.name }}</option>
+              {%- endunless -%}
             {%- endfor -%}
           </select>
         </div>
