@@ -35,14 +35,20 @@
       {%- assign d_handles = section.settings.default_handles | split: ',' -%}
       {%- assign d_titles = section.settings.default_titles | split: '|' -%}
       {%- assign d_descs = section.settings.default_descs | split: '|' -%}
+      {%- comment -%} Claude-design cover per card (blank falls back to the collection image). {%- endcomment -%}
+      {%- assign d_covers = '|||https://cdn.shopify.com/s/files/1/0754/6093/5978/files/1b1de6db-5b36-4cde-a9a6-3651c1e1292f.jpeg?width=900' | split: '|' -%}
       {%- for h in d_handles -%}
         {%- assign hh = h | strip -%}
         {%- assign coll = collections[hh] -%}
         {%- assign card_name = d_titles[forloop.index0] | strip | default: coll.title -%}
         {%- if coll != empty and coll.url != blank -%}{%- assign card_url = coll.url -%}{%- else -%}{%- capture card_url -%}{{ routes.search_url }}?q={{ card_name | url_encode }}&type=product{%- endcapture -%}{%- endif -%}
+        {%- assign cover = d_covers[forloop.index0] -%}
+        {%- if coll.featured_image != blank -%}{%- assign fb = coll.featured_image | image_url: width: 900 -%}{%- else -%}{%- assign fb = 'about-hands-tesserae.png' | asset_url -%}{%- endif -%}
         <a href="{{ card_url }}" class="col-card">
-          {%- if coll.featured_image != blank -%}
-            <img src="{{ coll.featured_image | image_url: width: 900 }}" alt="{{ card_name | escape }}" width="900" height="600" class="col-zoom cover-img" loading="lazy">
+          {%- if cover != blank -%}
+            <img src="{{ cover }}" alt="{{ card_name | escape }}" width="900" height="600" class="col-zoom cover-img" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='{{ fb }}'">
+          {%- elsif coll.featured_image != blank -%}
+            <img src="{{ fb }}" alt="{{ card_name | escape }}" width="900" height="600" class="col-zoom cover-img" loading="lazy">
           {%- else -%}
             {{ 'collection-2' | placeholder_svg_tag: 'col-zoom cover-img' }}
           {%- endif -%}
