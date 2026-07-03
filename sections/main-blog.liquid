@@ -1,4 +1,4 @@
-{%- paginate blog.articles by 50 -%}
+{%- paginate blog.articles by 15 -%}
 <div class="bj">
   <!-- HERO -->
   <section class="bj-hero">
@@ -16,11 +16,11 @@
   {%- assign cats = section.settings.categories | default: 'Art Trends, Decor Tips, Mosaic Trends, Latest Updates' | split: ',' -%}
   <section class="bj-tabs">
     <div class="bj-tabs__row">
-      <button type="button" class="bj-tab is-active" data-bj-tab="all">All</button>
+      <a href="{{ blog.url }}" class="bj-tab{% if current_tags == blank %} is-active{% endif %}">All</a>
       {%- for c in cats -%}
         {%- assign ct = c | strip -%}
         {%- if ct != blank -%}
-          <button type="button" class="bj-tab" data-bj-tab="{{ ct | handleize }}">{{ ct }}</button>
+          <a href="{{ blog.url }}/tagged/{{ ct | handleize }}" class="bj-tab{% if current_tags contains ct %} is-active{% endif %}">{{ ct }}</a>
         {%- endif -%}
       {%- endfor -%}
     </div>
@@ -114,7 +114,7 @@
 
   .bj-tabs { border-bottom: 1px solid rgba(22,51,94,.08); background: rgba(255,255,255,.5); }
   .bj-tabs__row { max-width: 1320px; margin: 0 auto; padding: 18px 40px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-  .bj-tab { font-family: var(--font-body); font-size: 12.5px; letter-spacing: .06em; text-transform: uppercase; padding: 10px 20px; border: 1px solid rgba(22,51,94,.18); background: none; color: #46546E; cursor: pointer; transition: all .2s ease; }
+  .bj-tab { display: inline-block; font-family: var(--font-body); font-size: 12.5px; letter-spacing: .06em; text-transform: uppercase; padding: 10px 20px; border: 1px solid rgba(22,51,94,.18); background: none; color: #46546E; cursor: pointer; text-decoration: none; transition: all .2s ease; }
   .bj-tab:hover { border-color: #2B7BE8; color: #16335E; }
   .bj-tab.is-active { background: #16335E; color: #fff; border-color: #16335E; }
 
@@ -174,34 +174,6 @@
   }
 </style>
 
-<script>
-  (function () {
-    var root = document.querySelector('.bj');
-    if (!root) return;
-    var tabs = root.querySelectorAll('[data-bj-tab]');
-    var cards = root.querySelectorAll('[data-bj-item]');
-    var featured = root.querySelector('[data-bj-featured]');
-    var empty = root.querySelector('[data-bj-empty]');
-    var pag = root.querySelector('[data-bj-pagination]');
-    tabs.forEach(function (tab) {
-      tab.addEventListener('click', function () {
-        var cat = tab.getAttribute('data-bj-tab');
-        tabs.forEach(function (t) { t.classList.toggle('is-active', t === tab); });
-        var visible = 0;
-        cards.forEach(function (c) {
-          var isFirst = c.hasAttribute('data-bj-first');
-          var list = (c.getAttribute('data-bj-cat') || '').split(' ');
-          var show = (cat === 'all') ? !isFirst : (list.indexOf(cat) !== -1);
-          c.style.display = show ? '' : 'none';
-          if (show) visible++;
-        });
-        if (featured) featured.style.display = (cat === 'all') ? '' : 'none';
-        if (pag) pag.style.display = (cat === 'all') ? '' : 'none';
-        if (empty) empty.style.display = (cat !== 'all' && visible === 0) ? '' : 'none';
-      });
-    });
-  })();
-</script>
 {%- endpaginate -%}
 
 {% schema %}
