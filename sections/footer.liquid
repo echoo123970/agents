@@ -1,14 +1,14 @@
 <footer class="site-footer" role="contentinfo">
   <div class="page-width site-footer__top">
     <div class="site-footer__brand">
-      <div class="site-footer__logo">
+      <a href="{{ routes.root_url }}" class="site-footer__logo" aria-label="{{ shop.name | escape }} — home">
         {%- if settings.logo_light != blank -%}
           <img src="{{ settings.logo_light | image_url: width: 200 }}" alt="{{ shop.name | escape }}" width="40" height="40">
         {%- else -%}
           <img src="{{ 'mark-white.png' | asset_url }}" alt="{{ shop.name | escape }}" width="40" height="40">
         {%- endif -%}
         <span class="site-footer__name">iMosaic<span class="site-footer__name-accent">Art</span></span>
-      </div>
+      </a>
       {%- if section.settings.about_text != blank -%}
         <p class="site-footer__about">{{ section.settings.about_text }}</p>
       {%- endif -%}
