@@ -123,11 +123,13 @@
                 <div class="coll-facet__body-inner">
                   {%- case filter.type -%}
                     {%- when 'price_range' -%}
-                      {%- comment -%} Normalise to whole dollars so the slider and inputs share one unit. {%- endcomment -%}
+                      {%- comment -%} Shopify returns min/max .value in cents; normalise EVERYTHING to whole dollars so the slider, boxes and resubmitted params agree. {%- endcomment -%}
                       {%- assign rmax = filter.range_max | money_without_currency | replace: ',', '' | replace: '.00', '' | plus: 0 -%}
                       {%- if rmax == 0 -%}{%- assign rmax = 1 -%}{%- endif -%}
-                      {%- assign vmin = filter.min_value.value | default: 0 | plus: 0 -%}
-                      {%- assign vmax = filter.max_value.value | default: rmax | plus: 0 -%}
+                      {%- assign vmin = 0 -%}
+                      {%- if filter.min_value.value != blank -%}{%- assign vmin = filter.min_value.value | money_without_currency | replace: ',', '' | replace: '.00', '' | plus: 0 -%}{%- endif -%}
+                      {%- assign vmax = rmax -%}
+                      {%- if filter.max_value.value != blank -%}{%- assign vmax = filter.max_value.value | money_without_currency | replace: ',', '' | replace: '.00', '' | plus: 0 -%}{%- endif -%}
                       {%- assign lpct = vmin | times: 100 | divided_by: rmax -%}
                       {%- assign mpct = vmax | times: 100 | divided_by: rmax -%}
                       <div class="coll-facet__pricetop">Highest price <strong>${{ rmax }}</strong></div>
@@ -137,8 +139,8 @@
                         <input type="range" class="coll-facet__range coll-facet__range--max" min="0" max="{{ rmax }}" step="1" value="{{ vmax }}" data-price-range="max" aria-label="Maximum price">
                       </div>
                       <div class="coll-facet__price">
-                        <div class="coll-facet__price-box"><span class="coll-facet__price-cur">$</span><input type="number" name="{{ filter.min_value.param_name }}" value="{{ filter.min_value.value }}" placeholder="0" min="0" max="{{ rmax }}" data-price-input="min"></div>
-                        <div class="coll-facet__price-box"><span class="coll-facet__price-cur">$</span><input type="number" name="{{ filter.max_value.param_name }}" value="{{ filter.max_value.value }}" placeholder="{{ rmax }}" min="0" max="{{ rmax }}" data-price-input="max"></div>
+                        <div class="coll-facet__price-box"><span class="coll-facet__price-cur">$</span><input type="number" name="{{ filter.min_value.param_name }}" value="{% if filter.min_value.value != blank %}{{ vmin }}{% endif %}" placeholder="0" min="0" max="{{ rmax }}" data-price-input="min"></div>
+                        <div class="coll-facet__price-box"><span class="coll-facet__price-cur">$</span><input type="number" name="{{ filter.max_value.param_name }}" value="{% if filter.max_value.value != blank %}{{ vmax }}{% endif %}" placeholder="{{ rmax }}" min="0" max="{{ rmax }}" data-price-input="max"></div>
                       </div>
                     {%- else -%}
                       {%- for value in filter.values -%}
