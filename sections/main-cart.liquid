@@ -147,6 +147,14 @@
     .cart__line { grid-template-columns: 80px 1fr; }
     .cart__line-total { grid-column: 2; }
   }
+
+  /* Force lining (modern) numerals so Cormorant does not render 1/3/4/7 as old-style glyphs */
+  .cart-hero__title, .cart__line-title, .cart__line-price, .cart__line-total,
+  .cart__qty-val, .cart__summary-title, .cart__summary-row, .cart__summary-val,
+  .cart__summary-total-label, .cart__summary-total-val, .cart__empty-title {
+    font-variant-numeric: lining-nums;
+    font-feature-settings: "lnum" 1;
+  }
 </style>
 
 {% schema %}
