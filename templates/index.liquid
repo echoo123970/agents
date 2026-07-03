@@ -121,6 +121,9 @@
     {%- for t in d_titles -%}
       {%- assign im = d_images[forloop.index0] -%}
       {%- assign lk = d_links[forloop.index0] -%}
+      {%- comment -%} Lemon Grove product photo has a border/matte — zoom in slightly to crop it out. {%- endcomment -%}
+      {%- assign zoom_style = '' -%}
+      {%- if t == 'Lemon Grove' -%}{%- assign zoom_style = 'transform:scale(1.12);transform-origin:center;' -%}{%- endif -%}
       {%- assign lk_parts = lk | split: '/' -%}
       {%- if lk_parts[1] == 'products' and all_products[lk_parts[2]] != empty -%}{%- assign card_href = lk -%}
       {%- elsif lk_parts[1] == 'collections' and collections[lk_parts[2]] != empty -%}{%- assign card_href = lk -%}
@@ -128,9 +131,9 @@
       <a href="{{ card_href }}" class="prod-card">
         <div class="prod-card__media">
           {%- if im contains '://' -%}
-            <img src="{{ im }}" alt="{{ t | escape }}" width="600" height="750" class="prod-img cover-img" loading="lazy" referrerpolicy="no-referrer">
+            <img src="{{ im }}" alt="{{ t | escape }}" width="600" height="750" class="prod-img cover-img" loading="lazy" referrerpolicy="no-referrer" style="{{ zoom_style }}">
           {%- else -%}
-            <img src="{{ im | asset_url }}" alt="{{ t | escape }}" width="600" height="750" class="prod-img cover-img" loading="lazy">
+            <img src="{{ im | asset_url }}" alt="{{ t | escape }}" width="600" height="750" class="prod-img cover-img" loading="lazy" style="{{ zoom_style }}">
           {%- endif -%}
         </div>
         <div class="prod-card__sub">{{ d_subs[forloop.index0] }}</div>
