@@ -8,7 +8,8 @@
         </div>
       {%- endif -%}
       {%- if section.settings.heading != blank -%}
-        <h1 class="hero__heading">{{ section.settings.heading }}</h1>
+        {%- assign hero_heading = section.settings.heading | replace: '&amp;', '<span class="hero__amp">&amp;</span>' -%}
+        <h1 class="hero__heading">{{ hero_heading }}</h1>
       {%- endif -%}
       {%- if section.settings.text != blank -%}
         <p class="hero__text">{{ section.settings.text }}</p>
@@ -84,6 +85,7 @@
   .hero__eyebrow-text { font-family: var(--font-accent); font-size: 14px; letter-spacing: .36em; text-transform: uppercase; color: var(--color-navy); }
   .hero__heading { font-family: var(--font-display); font-weight: 500; font-size: clamp(46px, 5.2vw, 78px); line-height: 1.02; letter-spacing: -.01em; margin-bottom: 28px; color: var(--color-navy); }
   .hero__heading em, .hero__heading i { font-style: italic; color: var(--color-blue); }
+  .hero__heading .hero__amp { font-style: normal; font-feature-settings: "liga" 0, "dlig" 0, "swsh" 0; }
   .hero__text { font-size: 17px; line-height: 1.7; color: var(--color-text-muted); max-width: 480px; margin-bottom: 38px; }
   .hero__ctas { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 46px; }
   .hero__btn { min-width: 286px; }
