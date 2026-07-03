@@ -14,7 +14,11 @@
         {%- for link in section.settings.menu.links -%}
           {%- assign lt = link.title | downcase | strip -%}
           {%- unless lt == 'mosaic tile art' -%}
-            <a href="{{ link.url }}" class="nav-link">{{ link.title }}</a>
+            {%- assign disp = link.title -%}
+            {%- assign href = link.url -%}
+            {%- if lt == 'about us' -%}{%- assign disp = 'About' -%}{%- endif -%}
+            {%- if lt == 'contact us' -%}{%- assign disp = 'Journal' -%}{%- assign href = blogs.news.url | default: '/blogs/news' -%}{%- endif -%}
+            <a href="{{ href }}" class="nav-link">{{ disp }}</a>
           {%- endunless -%}
         {%- endfor -%}
       {%- else -%}
@@ -64,7 +68,11 @@
       {%- for link in section.settings.menu.links -%}
         {%- assign lt = link.title | downcase | strip -%}
         {%- unless lt == 'mosaic tile art' -%}
-          <a href="{{ link.url }}" class="mobile-nav__link">{{ link.title }}</a>
+          {%- assign disp = link.title -%}
+          {%- assign href = link.url -%}
+          {%- if lt == 'about us' -%}{%- assign disp = 'About' -%}{%- endif -%}
+          {%- if lt == 'contact us' -%}{%- assign disp = 'Journal' -%}{%- assign href = blogs.news.url | default: '/blogs/news' -%}{%- endif -%}
+          <a href="{{ href }}" class="mobile-nav__link">{{ disp }}</a>
         {%- endunless -%}
       {%- endfor -%}
     {%- else -%}
