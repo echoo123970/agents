@@ -13,18 +13,16 @@
   </section>
 
   <!-- CATEGORY TABS -->
-  {%- assign cats = section.settings.categories | default: 'Art Trends, Decor Tips, Mosaic Trends, Latest Updates' | split: ',' -%}
-  <section class="bj-tabs">
-    <div class="bj-tabs__row">
-      <a href="{{ blog.url }}" class="bj-tab{% if current_tags == blank %} is-active{% endif %}">All</a>
-      {%- for c in cats -%}
-        {%- assign ct = c | strip -%}
-        {%- if ct != blank -%}
-          <a href="{{ blog.url }}/tagged/{{ ct | handleize }}" class="bj-tab{% if current_tags contains ct %} is-active{% endif %}">{{ ct }}</a>
-        {%- endif -%}
-      {%- endfor -%}
-    </div>
-  </section>
+  {%- if blog.all_tags.size > 0 -%}
+    <section class="bj-tabs">
+      <div class="bj-tabs__row">
+        <a href="{{ blog.url }}" class="bj-tab{% if current_tags == blank %} is-active{% endif %}">All</a>
+        {%- for tag in blog.all_tags -%}
+          <a href="{{ blog.url }}/tagged/{{ tag | handleize }}" class="bj-tab{% if current_tags contains tag %} is-active{% endif %}">{{ tag }}</a>
+        {%- endfor -%}
+      </div>
+    </section>
+  {%- endif -%}
 
   {%- assign show_featured = false -%}
   {%- if paginate.current_page == 1 and current_tags == blank and blog.articles.size > 0 -%}{%- assign show_featured = true -%}{%- endif -%}
