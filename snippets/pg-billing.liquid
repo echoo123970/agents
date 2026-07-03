@@ -97,10 +97,10 @@
     .bt-hero__crumb { max-width:1320px; margin:0 auto; padding:30px 40px 0; display:flex; align-items:center; gap:9px; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:#7E8AA0; }
     .bt-hero__crumb a:hover { color:#2B7BE8; }
     .bt-sep { color:#B7C0D2; } .bt-cur { color:#16335E; }
-    .bt-hero__head { max-width:760px; margin:0 auto; padding:46px 40px 36px; text-align:center; }
+    .bt-hero__head { max-width:1040px; margin:0 auto; padding:46px 40px 36px; text-align:center; }
     .bt-eyebrow { display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:22px; font-family:'Marcellus',serif; font-size:13px; letter-spacing:.36em; text-transform:uppercase; color:#16335E; }
     .bt-eyebrow__ln { width:38px; height:1px; background:#2B7BE8; }
-    .bt-hero__title { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(44px, 5.4vw, 71px); line-height:1.02; letter-spacing:-.01em; margin:0 0 20px; color:#16335E; }
+    .bt-hero__title { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(34px, 5.8vw, 66px); line-height:1.02; letter-spacing:-.01em; margin:0 0 20px; color:#16335E; white-space:nowrap; }
     .bt-hero__sub { font-size:17px; line-height:1.7; color:#5E6B85; max-width:520px; margin:0 auto; }
     .bt-facts { max-width:1100px; margin:0 auto; padding:0 40px 56px; display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
     .bt-fact { background:#fff; border:1px solid rgba(22,51,94,.1); padding:26px 28px; display:flex; align-items:center; gap:18px; }
@@ -155,6 +155,7 @@
       .bt-pays { grid-template-columns:repeat(2,1fr); }
     }
     @media (max-width:600px) {
+      .bt-hero__title { white-space:normal; }
       .bt-hero__crumb, .bt-hero__head, .bt-facts, .bt-body { padding-left:22px; padding-right:22px; }
       .bt-pays { grid-template-columns:1fr; }
       .bt-contact { grid-template-columns:1fr; padding:32px 24px; }
