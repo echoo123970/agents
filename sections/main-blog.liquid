@@ -13,16 +13,32 @@
   </section>
 
   <!-- CATEGORY TABS -->
-  {%- if blog.all_tags.size > 0 -%}
-    <section class="bj-tabs">
-      <div class="bj-tabs__row">
-        <a href="{{ blog.url }}" class="bj-tab{% if current_tags == blank %} is-active{% endif %}">All</a>
-        {%- for tag in blog.all_tags -%}
-          <a href="{{ blog.url }}/tagged/{{ tag | handleize }}" class="bj-tab{% if current_tags contains tag %} is-active{% endif %}">{{ tag }}</a>
-        {%- endfor -%}
-      </div>
-    </section>
-  {%- endif -%}
+  {%- assign want_cats = section.settings.categories | default: 'Art Trends, Decor Tips, Mosaic Trends, Latest Updates' | split: ',' -%}
+  {%- comment -%} Build a lookup of the blog's real tag handles so empty categories never 404. {%- endcomment -%}
+  {%- assign all_handles = '|' -%}
+  {%- for t in blog.all_tags -%}
+    {%- assign th = t | handleize -%}
+    {%- assign all_handles = all_handles | append: th | append: '|' -%}
+  {%- endfor -%}
+  {%- assign cur_handle = '' -%}
+  {%- if current_tags != blank -%}{%- assign cur_handle = current_tags | first | handleize -%}{%- endif -%}
+  <section class="bj-tabs">
+    <div class="bj-tabs__row">
+      <a href="{{ blog.url }}" class="bj-tab{% if current_tags == blank %} is-active{% endif %}">All</a>
+      {%- for c in want_cats -%}
+        {%- assign ct = c | strip -%}
+        {%- if ct != blank -%}
+          {%- assign ch = ct | handleize -%}
+          {%- assign token = ch | prepend: '|' | append: '|' -%}
+          {%- if all_handles contains token -%}
+            <a href="{{ blog.url }}/tagged/{{ ch }}" class="bj-tab{% if cur_handle == ch %} is-active{% endif %}">{{ ct }}</a>
+          {%- else -%}
+            <span class="bj-tab bj-tab--empty" title="No articles tagged “{{ ct }}” yet">{{ ct }}</span>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </section>
 
   {%- assign show_featured = false -%}
   {%- if paginate.current_page == 1 and current_tags == blank and blog.articles.size > 0 -%}{%- assign show_featured = true -%}{%- endif -%}
@@ -131,6 +147,8 @@
   .bj-tab { display: inline-block; font-family: var(--font-body); font-size: 12.5px; letter-spacing: .06em; text-transform: uppercase; padding: 10px 20px; border: 1px solid rgba(22,51,94,.18); background: none; color: #46546E; cursor: pointer; text-decoration: none; transition: all .2s ease; }
   .bj-tab:hover { border-color: #2B7BE8; color: #16335E; }
   .bj-tab.is-active { background: #16335E; color: #fff; border-color: #16335E; }
+  .bj-tab--empty { opacity: .4; cursor: not-allowed; }
+  .bj-tab--empty:hover { border-color: rgba(22,51,94,.18); color: #46546E; }
 
   .bj-pager { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 56px; }
   .bj-pager__num { display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border: 1px solid rgba(22,51,94,.18); color: #16335E; font-family: var(--font-body); font-size: 15px; text-decoration: none; transition: all .2s ease; }
