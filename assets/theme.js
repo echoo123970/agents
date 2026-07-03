@@ -180,17 +180,27 @@
     var fw = frame.getBoundingClientRect().width || img.clientWidth || 700;
     var reqW = Math.min(5000, Math.max(1600, Math.round(fw * ZOOM * dpr)));
     var SRC = atWidth(RAW, reqW);
-    var pre = new Image(); pre.src = SRC; // preload so first hover is sharp
+    var natW = 0, natH = 0;
+    var pre = new Image();               // preload + learn the master's real size
+    pre.onload = function () { natW = pre.naturalWidth; natH = pre.naturalHeight; };
+    pre.src = SRC;
     lens.style.backgroundImage = 'url(' + SRC + ')';
 
     frame.addEventListener('mousemove', function (ev) {
       var r = frame.getBoundingClientRect();
       var x = ev.clientX - r.left, y = ev.clientY - r.top;
       if (!lens.parentNode) frame.appendChild(lens);
+      // Clamp zoom so the source is never upscaled past 1 device px = 1 source px
+      // (blur comes from upscaling). This keeps the lens as sharp as the image allows.
+      var z = ZOOM;
+      if (natW && natH) {
+        var maxZ = Math.min(natW / (r.width * dpr), natH / (r.height * dpr));
+        if (maxZ < z) z = Math.max(1.3, maxZ);
+      }
       lens.style.left = (x - LENS / 2) + 'px';
       lens.style.top = (y - LENS / 2) + 'px';
-      lens.style.backgroundSize = (r.width * ZOOM) + 'px ' + (r.height * ZOOM) + 'px';
-      lens.style.backgroundPosition = (-(x * ZOOM - LENS / 2)) + 'px ' + (-(y * ZOOM - LENS / 2)) + 'px';
+      lens.style.backgroundSize = (r.width * z) + 'px ' + (r.height * z) + 'px';
+      lens.style.backgroundPosition = (-(x * z - LENS / 2)) + 'px ' + (-(y * z - LENS / 2)) + 'px';
     });
     frame.addEventListener('mouseleave', function () {
       if (lens.parentNode) lens.parentNode.removeChild(lens);
