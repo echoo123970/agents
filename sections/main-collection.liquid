@@ -173,13 +173,9 @@
               <nav class="coll__pagination" data-numbered-pager aria-label="Pagination">
                 {%- if first_part.is_link -%}
                   <a href="{{ first_part.url }}" class="coll__page coll__page--nav" aria-label="First page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/></svg></a>
-                {%- else -%}
-                  <span class="coll__page coll__page--nav is-disabled" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/></svg></span>
                 {%- endif -%}
                 {%- if paginate.previous.is_link -%}
                   <a href="{{ paginate.previous.url }}" class="coll__page coll__page--nav" rel="prev" aria-label="Previous page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></a>
-                {%- else -%}
-                  <span class="coll__page coll__page--nav is-disabled" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></span>
                 {%- endif -%}
                 {%- for part in paginate.parts -%}
                   {%- if part.is_link -%}
@@ -192,13 +188,9 @@
                 {%- endfor -%}
                 {%- if paginate.next.is_link -%}
                   <a href="{{ paginate.next.url }}" class="coll__page coll__page--nav" rel="next" aria-label="Next page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>
-                {%- else -%}
-                  <span class="coll__page coll__page--nav is-disabled" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
                 {%- endif -%}
                 {%- if last_part.is_link -%}
                   <a href="{{ last_part.url }}" class="coll__page coll__page--nav" aria-label="Last page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg></a>
-                {%- else -%}
-                  <span class="coll__page coll__page--nav is-disabled" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg></span>
                 {%- endif -%}
               </nav>
               <div class="coll__pagination-info" data-numbered-info>Page {{ paginate.current_page }} of {{ paginate.pages }}</div>
