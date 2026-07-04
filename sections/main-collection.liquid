@@ -300,7 +300,9 @@
   .coll__grid .cardc:hover { z-index: 5; }
   .coll__grid .cardc__media { aspect-ratio: 1 / 1; background: #fff; }
   .coll__grid .cardc__media .prod-img { width: 100%; height: 100%; object-fit: contain; }
-  .coll__grid .cardc__add { z-index: 4; }
+  /* Always show the Add to Cart / Choose Options bar (no hover needed) */
+  .coll__grid .cardc__add { transform: translateY(0); z-index: 4; }
+  .coll__grid .cardc__fav { opacity: 1; transform: translateY(0); }
   .coll__pagination { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 64px; flex-wrap: wrap; }
   .coll__page { min-width: 44px; height: 44px; padding: 0 14px; display: inline-flex; align-items: center; justify-content: center; background: #fff; border: 1px solid rgba(22,51,94,.18); color: var(--color-navy); font-size: 14px; transition: background .2s ease, border-color .2s ease, color .2s ease, transform .2s ease; }
   .coll__page:hover { border-color: var(--color-blue); color: var(--color-blue); transform: translateY(-2px); }
