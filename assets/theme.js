@@ -464,4 +464,19 @@
     });
   })();
 
+  /* Product page: finishing / framing option cards — highlight + reveal contact link. */
+  (function () {
+    document.querySelectorAll('.pdp-opt__check').forEach(function (cb) {
+      var card = cb.closest('.pdp-opt');
+      if (!card) return;
+      var contact = card.querySelector('[data-frame-contact]');
+      var sync = function () {
+        card.classList.toggle('is-on', cb.checked);
+        if (contact) contact.hidden = !cb.checked;
+      };
+      cb.addEventListener('change', sync);
+      sync();
+    });
+  })();
+
 })();

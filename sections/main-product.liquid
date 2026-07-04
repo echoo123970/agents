@@ -132,6 +132,39 @@
           </div>
         {%- endunless -%}
 
+        {%- if section.settings.show_addons -%}
+          <div class="pdp__addons">
+            <div class="pdp__addons-label">{{ section.settings.addons_label | default: 'Finishing Options' }} <span class="pdp__addons-opt">— optional</span></div>
+
+            <label class="pdp-opt" data-addon>
+              <input type="checkbox" class="pdp-opt__check" name="properties[Finish]" value="{{ section.settings.polished_value | default: 'Polished — museum-grade hand-sealed finish' }}">
+              <span class="pdp-opt__tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12.5 10 17.5 19 7"/></svg></span>
+              <span class="pdp-opt__body">
+                <span class="pdp-opt__title">{{ section.settings.polished_title | default: 'Polished Finish' }}</span>
+                <span class="pdp-opt__desc">{{ section.settings.polished_desc | default: 'A hand-applied seal that deepens colour and lends a refined, museum-grade sheen.' }}</span>
+              </span>
+              <span class="pdp-opt__flag">Optional</span>
+            </label>
+
+            <div class="pdp-opt pdp-opt--frame" data-addon>
+              <label class="pdp-opt__main">
+                <input type="checkbox" class="pdp-opt__check" name="properties[Framing]" value="{{ section.settings.frame_value | default: 'Requested — please contact me for a bespoke framing quote' }}" data-frame-check>
+                <span class="pdp-opt__tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12.5 10 17.5 19 7"/></svg></span>
+                <span class="pdp-opt__body">
+                  <span class="pdp-opt__title">{{ section.settings.frame_title | default: 'Add a Handcrafted Frame' }}</span>
+                  <span class="pdp-opt__desc">{{ section.settings.frame_desc | default: 'Bespoke framing tailored to your piece. Priced individually — our team will guide you through the options.' }}</span>
+                </span>
+                <span class="pdp-opt__flag">By request</span>
+              </label>
+              <a class="pdp-opt__contact" href="{{ section.settings.frame_contact_url | default: '/pages/contact-us' }}" data-frame-contact hidden>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v13H7l-3 3z"/></svg>
+                {{ section.settings.frame_contact_label | default: 'Contact us about framing' }}
+                <span class="pdp-opt__contact-arrow">→</span>
+              </a>
+            </div>
+          </div>
+        {%- endif -%}
+
         <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-variant-input>
 
         <div class="pdp__buy">
@@ -264,6 +297,28 @@
   .pdp__pay-icons { display: flex; gap: 7px; flex-wrap: wrap; }
   .pdp__pay-icon { height: 24px; width: auto; }
 
+  /* Finishing / framing add-on options */
+  .pdp__addons { display: flex; flex-direction: column; gap: 10px; margin-bottom: 26px; }
+  .pdp__addons-label { font-family: var(--font-accent); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--color-navy); margin-bottom: 3px; }
+  .pdp__addons-opt { color: var(--color-text-faint); }
+  .pdp-opt { position: relative; display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; background: #fff; border: 1px solid rgba(22,51,94,.18); cursor: pointer; transition: border-color .2s ease, background .2s ease, box-shadow .2s ease; }
+  .pdp-opt:hover { border-color: rgba(43,123,232,.55); }
+  .pdp-opt.is-on { background: #F4F8FE; border-color: var(--color-blue); box-shadow: inset 0 0 0 1px var(--color-blue); }
+  .pdp-opt__check { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+  .pdp-opt__tick { flex-shrink: 0; width: 22px; height: 22px; margin-top: 1px; border: 1.5px solid rgba(22,51,94,.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; transition: background .2s ease, border-color .2s ease; }
+  .pdp-opt__tick svg { width: 13px; height: 13px; opacity: 0; transition: opacity .15s ease; }
+  .pdp-opt.is-on .pdp-opt__tick { background: var(--color-blue); border-color: var(--color-blue); }
+  .pdp-opt.is-on .pdp-opt__tick svg { opacity: 1; }
+  .pdp-opt__body { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+  .pdp-opt__title { font-size: 15px; font-weight: 600; color: var(--color-navy); }
+  .pdp-opt__desc { font-size: 13px; line-height: 1.5; color: var(--color-text-muted); }
+  .pdp-opt__flag { flex-shrink: 0; align-self: flex-start; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--color-text-soft); background: var(--color-panel); padding: 4px 9px; }
+  .pdp-opt--frame { flex-direction: column; align-items: stretch; gap: 0; padding: 0; }
+  .pdp-opt--frame .pdp-opt__main { display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; cursor: pointer; }
+  .pdp-opt__contact { display: flex; align-items: center; gap: 9px; padding: 13px 18px; border-top: 1px dashed rgba(43,123,232,.45); background: #EEF4FD; color: var(--color-blue); font-size: 12.5px; font-weight: 600; letter-spacing: .03em; transition: background .2s ease; }
+  .pdp-opt__contact:hover { background: #E2ECFB; }
+  .pdp-opt__contact-arrow { margin-left: auto; }
+
   @media (max-width: 990px) {
     .pdp__grid { grid-template-columns: 1fr; gap: 36px; }
     .pdp__info { position: static; }
@@ -281,6 +336,17 @@
     { "type": "text", "id": "variant_label", "label": "Variant selector label", "default": "Select Size" },
     { "type": "checkbox", "id": "show_quote_banner", "label": "Show custom-quote banner", "default": true },
     { "type": "text", "id": "quote_banner_text", "label": "Quote banner text", "default": "Want a custom size or subject?" },
+    { "type": "header", "content": "Finishing & framing options" },
+    { "type": "checkbox", "id": "show_addons", "label": "Show finishing / framing options", "default": true },
+    { "type": "text", "id": "addons_label", "label": "Section label", "default": "Finishing Options" },
+    { "type": "text", "id": "polished_title", "label": "Polished option title", "default": "Polished Finish" },
+    { "type": "text", "id": "polished_desc", "label": "Polished option description", "default": "A hand-applied seal that deepens colour and lends a refined, museum-grade sheen." },
+    { "type": "text", "id": "polished_value", "label": "Polished order note (recorded on order)", "default": "Polished — museum-grade hand-sealed finish" },
+    { "type": "text", "id": "frame_title", "label": "Frame option title", "default": "Add a Handcrafted Frame" },
+    { "type": "text", "id": "frame_desc", "label": "Frame option description", "default": "Bespoke framing tailored to your piece. Priced individually — our team will guide you through the options." },
+    { "type": "text", "id": "frame_value", "label": "Frame order note (recorded on order)", "default": "Requested — please contact me for a bespoke framing quote" },
+    { "type": "url", "id": "frame_contact_url", "label": "Frame contact link", "info": "Where the 'Contact us about framing' button points (e.g. contact page)." },
+    { "type": "text", "id": "frame_contact_label", "label": "Frame contact button text", "default": "Contact us about framing" },
     { "type": "header", "content": "Accordion rows (shown under the gallery)" },
     { "type": "textarea", "id": "acc_titles", "label": "Row titles (pipe-separated)", "default": "Materials & Craft|Shipping & Returns" },
     { "type": "textarea", "id": "acc_bodies", "label": "Row bodies (pipe-separated)", "default": "Hand-cut from natural stone and glass tesserae, assembled tile by tile by master artisans and mounted on a fiber-mesh backing for easy installation. Each piece is unique — slight variation in colour and texture is part of its handmade character.|Made to order with a 4–5 week handling time, then shipped free worldwide with full tracking. Covered by our 30-day returns policy and lifetime warranty." },
