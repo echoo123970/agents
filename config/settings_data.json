@@ -151,9 +151,9 @@
         "disabled": false,
         "settings": {
           "greeting_message": "",
-          "background_color": "#f4f6fa",
-          "font_color": "#16335e",
-          "button_color": "#2b7be8",
+          "background_color": "#16335e",
+          "font_color": "#f4f6fa",
+          "button_color": "#2BE870",
           "secondary_color": "#f4f6fa",
           "ternary_color": "#6A6A6A",
           "button_icon": "chat_bubble",
