@@ -418,14 +418,18 @@
     document.addEventListener('click', function (e) {
       var toggle = e.target.closest ? e.target.closest('[data-opts-toggle]') : null;
       if (toggle && !toggle.disabled) {
-        var wrap = toggle.closest('[data-card-opts]');
-        if (wrap) {
+        var card = toggle.closest('.cardc');
+        if (card) {
           e.preventDefault();
-          var wasOpen = wrap.classList.contains('is-open');
-          document.querySelectorAll('[data-card-opts].is-open').forEach(function (o) { o.classList.remove('is-open'); });
-          if (!wasOpen) wrap.classList.add('is-open');
+          var wasOpen = card.classList.contains('is-open');
+          document.querySelectorAll('.cardc.is-open').forEach(function (o) { o.classList.remove('is-open'); });
+          if (!wasOpen) card.classList.add('is-open');
         }
         return;
+      }
+      // Click outside any open picker closes it.
+      if (!(e.target.closest && e.target.closest('.cardc.is-open'))) {
+        document.querySelectorAll('.cardc.is-open').forEach(function (o) { o.classList.remove('is-open'); });
       }
       var pill = e.target.closest ? e.target.closest('[data-variant-add]') : null;
       if (pill && !pill.disabled) {
@@ -449,7 +453,7 @@
           updateCartCount();
           setTimeout(function () {
             pill.textContent = original;
-            var w = pill.closest('[data-card-opts]');
+            var w = pill.closest('.cardc');
             if (w) w.classList.remove('is-open');
           }, 1500);
         }).catch(function () {

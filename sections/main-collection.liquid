@@ -183,6 +183,16 @@
                     <button type="button" class="cardc__fav" data-wish-add data-product-handle="{{ product.handle }}" data-wish-title="{{ product.title | escape }}" data-wish-url="{{ product.url }}" data-wish-image="{% if product.featured_media %}{{ product.featured_media | image_url: width: 600 }}{% endif %}" data-wish-price="{% if product.price_varies %}From {{ product.price_min | money }}{% else %}{{ product.price | money }}{% endif %}" data-wish-sub="{{ product.type | default: product.vendor | escape }}" aria-label="Add to wishlist">
                       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#16335E" stroke-width="1.6"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>
                     </button>
+                    {%- if product.variants.size > 1 and product.available -%}
+                      <div class="cardc__vpanel" data-variants>
+                        <div class="cardc__vpanel-cap">Select a size</div>
+                        <div class="cardc__vpills">
+                          {%- for v in product.variants -%}
+                            <button type="button" class="cardc__vpill" data-variant-add data-variant-id="{{ v.id }}"{% unless v.available %} disabled{% endunless %} aria-label="Add size {{ v.title | escape }} to cart">{{ v.title }}</button>
+                          {%- endfor -%}
+                        </div>
+                      </div>
+                    {%- endif -%}
                   </div>
                   {%- if product.selected_or_first_available_variant.sku != blank -%}
                     <div class="cardc__sku">{{ product.selected_or_first_available_variant.sku }}</div>
@@ -203,15 +213,8 @@
                       <button type="submit" class="cardc__add-btn">Add to Cart</button>
                     </form>
                   {%- else -%}
-                    <div class="cardc__cta cardc__cta--opts" data-card-opts>
+                    <div class="cardc__cta cardc__cta--opts">
                       <button type="button" class="cardc__add-btn" data-opts-toggle{% unless product.available %} disabled{% endunless %}>{% if product.available %}Choose Options{% else %}Sold Out{% endif %}</button>
-                      {%- if product.available -%}
-                        <div class="cardc__variants" data-variants>
-                          {%- for v in product.variants -%}
-                            <button type="button" class="cardc__vpill" data-variant-add data-variant-id="{{ v.id }}"{% unless v.available %} disabled{% endunless %} aria-label="Add size {{ v.title | escape }} to cart">{{ v.title }}</button>
-                          {%- endfor -%}
-                        </div>
-                      {%- endif -%}
                     </div>
                   {%- endif -%}
                 </div>
@@ -377,14 +380,16 @@
   .coll__grid .cardc__add-btn { display: block; width: 100%; background: var(--color-navy); color: #fff; text-align: center; font-weight: 600; text-transform: uppercase; border: none; cursor: pointer; padding: 16px; font-size: 11.5px; letter-spacing: .2em; }
   .coll__grid .cardc__add-btn:hover:not(:disabled) { background: #224A82; }
   .coll__grid .cardc__add-btn:disabled { background: var(--color-text-faint); cursor: default; }
-  /* Inline variant / size picker — revealed under "Choose Options", no redirect. */
+  /* Inline size picker — fades UP as a panel over the bottom of the image, no redirect. */
   .coll__grid .cardc__cta--opts { position: static !important; }
-  .coll__grid .cardc__variants { display: none; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-  .coll__grid .cardc__cta--opts.is-open .cardc__variants { display: flex; }
-  .coll__grid .cardc__cta--opts.is-open .cardc__add-btn { background: #224A82; }
-  .coll__grid .cardc__vpill { flex: 1 1 auto; min-width: 58px; padding: 12px 10px; background: #fff; border: 1px solid var(--color-navy); color: var(--color-navy); font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; transition: background .2s ease, color .2s ease; }
-  .coll__grid .cardc__vpill:hover:not(:disabled) { background: var(--color-navy); color: #fff; }
-  .coll__grid .cardc__vpill:disabled { opacity: .38; cursor: not-allowed; text-decoration: line-through; }
+  .coll__grid .cardc.is-open .cardc__add-btn { background: #224A82; }
+  .coll__grid .cardc__vpanel { position: absolute; left: 0; right: 0; bottom: 0; background: rgba(11,28,53,.93); padding: 16px 16px 18px; transform: translateY(14px); opacity: 0; visibility: hidden; transition: transform .34s ease, opacity .34s ease, visibility .34s ease; z-index: 4; }
+  .coll__grid .cardc.is-open .cardc__vpanel { transform: translateY(0); opacity: 1; visibility: visible; }
+  .coll__grid .cardc__vpanel-cap { color: #cdd9ef; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 10px; }
+  .coll__grid .cardc__vpills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .coll__grid .cardc__vpill { flex: 1 1 auto; min-width: 54px; padding: 11px 8px; background: transparent; border: 1px solid rgba(255,255,255,.55); color: #fff; font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; text-align: center; cursor: pointer; transition: background .2s ease, color .2s ease, border-color .2s ease; }
+  .coll__grid .cardc__vpill:hover:not(:disabled) { background: #fff; border-color: #fff; color: var(--color-navy); }
+  .coll__grid .cardc__vpill:disabled { opacity: .4; cursor: not-allowed; text-decoration: line-through; }
   .coll__grid .cardc__vpill.is-adding { opacity: .6; pointer-events: none; }
   .coll__pagination { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 64px; flex-wrap: wrap; }
   .coll__page { min-width: 44px; height: 44px; padding: 0 14px; display: inline-flex; align-items: center; justify-content: center; background: #fff; border: 1px solid rgba(22,51,94,.18); color: var(--color-navy); font-size: 14px; transition: background .2s ease, border-color .2s ease, color .2s ease, transform .2s ease; }
