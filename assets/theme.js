@@ -418,7 +418,7 @@
             setTimeout(function () { pill.textContent = original; }, 1600);
             return;
           }
-          pill.textContent = 'Added ✓';
+          pill.textContent = 'Added To Cart';
           updateCartCount();
           setTimeout(function () {
             pill.textContent = original;
