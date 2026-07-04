@@ -101,13 +101,17 @@
     }
   });
 
-  /* Collection: auto-submit sort/filter form on change */
-  document.querySelectorAll('[data-collection-filter]').forEach(function (form) {
-    form.addEventListener('change', function (e) {
-      if (e.target.closest('[data-auto-submit]') || e.target.hasAttribute('data-auto-submit')) {
-        form.submit();
-      }
-    });
+  /* Collection: auto-submit sort/filter form on change.
+     Fields are linked to the form via the HTML form="" attribute (not DOM nesting,
+     to avoid nesting the add-to-cart forms inside the filter form), so we listen
+     globally and submit through the field's .form reference. */
+  document.addEventListener('change', function (e) {
+    var t = e.target;
+    if (!t) return;
+    if (t.hasAttribute('data-auto-submit') || (t.closest && t.closest('[data-auto-submit]'))) {
+      var form = t.form || document.querySelector('[data-collection-filter]');
+      if (form) { if (form.requestSubmit) { form.requestSubmit(); } else { form.submit(); } }
+    }
   });
 
   /* Collection/search card favorite hearts */

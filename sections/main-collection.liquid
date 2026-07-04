@@ -84,7 +84,8 @@
       {%- for c in collections -%}
         {%- assign c_tl = c.title | downcase -%}
         {%- unless c.handle == 'all' or c.handle == 'frontpage' or c.handle == 'home-page' or c.products_count == 0 or c_tl contains 'limited edition' or c_tl contains 'studio special' or c_tl contains 'best seller' or c_tl contains 'new arrival' -%}
-          <a href="{{ c.url }}" class="coll-chip{% if collection.handle == c.handle %} is-active{% endif %}">{{ c.title }}</a>
+          {%- assign chip_label = c.title | remove: ' Mosaics' | remove: ' Mosaic' | remove: 'Mosaic ' | strip -%}
+          <a href="{{ c.url }}" class="coll-chip{% if collection.handle == c.handle %} is-active{% endif %}">{{ chip_label }}</a>
         {%- endunless -%}
       {%- endfor -%}
     {%- endif -%}
@@ -94,14 +95,15 @@
 <!-- MAIN -->
 <section class="coll page-width">
   {%- paginate collection.products by section.settings.products_per_page -%}
-    <form data-collection-filter>
+    <div class="coll__filter-wrap">
+    <form id="CollFilterForm" method="get" action="{{ collection.url }}" data-collection-filter></form>
       <div class="coll__toolbar">
         {%- assign showing_label = collection.title -%}
         {%- if collection.handle == 'all' or collection.handle == blank -%}{%- assign showing_label = 'All Mosaics' -%}{%- endif -%}
         <div class="coll__count">Showing <strong>{{ showing_label }}</strong></div>
         <div class="coll__sort">
           <span class="coll__sort-label">Sort</span>
-          <select name="sort_by" class="coll__sort-select" data-auto-submit>
+          <select name="sort_by" form="CollFilterForm" class="coll__sort-select" data-auto-submit>
             {%- for option in collection.sort_options -%}
               {%- unless option.value == 'title-ascending' or option.value == 'title-descending' -%}
                 <option value="{{ option.value }}" {% if option.value == collection.sort_by %}selected{% endif %}>{{ option.name }}</option>
@@ -144,13 +146,13 @@
                         <input type="range" class="coll-facet__range coll-facet__range--max" min="0" max="{{ rmax }}" step="1" value="{{ vmax }}" data-price-range="max" aria-label="Maximum price">
                       </div>
                       <div class="coll-facet__price">
-                        <div class="coll-facet__price-box"><span class="coll-facet__price-cur">$</span><input type="number" name="{{ filter.min_value.param_name }}" value="{% if filter.min_value.value != blank %}{{ vmin }}{% endif %}" placeholder="0" min="0" max="{{ rmax }}" data-price-input="min"></div>
-                        <div class="coll-facet__price-box"><span class="coll-facet__price-cur">$</span><input type="number" name="{{ filter.max_value.param_name }}" value="{% if filter.max_value.value != blank %}{{ vmax }}{% endif %}" placeholder="{{ rmax }}" min="0" max="{{ rmax }}" data-price-input="max"></div>
+                        <div class="coll-facet__price-box"><span class="coll-facet__price-cur">$</span><input type="number" name="{{ filter.min_value.param_name }}" form="CollFilterForm" value="{% if filter.min_value.value != blank %}{{ vmin }}{% endif %}" placeholder="0" min="0" max="{{ rmax }}" data-price-input="min"></div>
+                        <div class="coll-facet__price-box"><span class="coll-facet__price-cur">$</span><input type="number" name="{{ filter.max_value.param_name }}" form="CollFilterForm" value="{% if filter.max_value.value != blank %}{{ vmax }}{% endif %}" placeholder="{{ rmax }}" min="0" max="{{ rmax }}" data-price-input="max"></div>
                       </div>
                     {%- else -%}
                       {%- for value in filter.values -%}
                         <label class="coll-facet__row">
-                          <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}" {% if value.active %}checked{% endif %} data-auto-submit>
+                          <input type="checkbox" name="{{ value.param_name }}" form="CollFilterForm" value="{{ value.value }}" {% if value.active %}checked{% endif %} data-auto-submit>
                           <span class="coll-facet__row-label">{{ value.label }}</span>
                           <span class="coll-facet__row-count">{{ value.count }}</span>
                         </label>
@@ -160,7 +162,7 @@
               </div>
             </div>
           {%- endfor -%}
-          <noscript><button type="submit" class="btn btn--dark" style="margin-top:16px;width:100%;">Apply</button></noscript>
+          <noscript><button type="submit" form="CollFilterForm" class="btn btn--dark" style="margin-top:16px;width:100%;">Apply</button></noscript>
         </aside>
 
         <!-- GRID -->
@@ -244,7 +246,7 @@
           {%- endif -%}
         </div>
       </div>
-    </form>
+    </div>
   {%- endpaginate -%}
 </section>
 
@@ -401,9 +403,10 @@
       var rMin = slider.querySelector('[data-price-range="min"]');
       var rMax = slider.querySelector('[data-price-range="max"]');
       var fill = slider.querySelector('[data-price-fill]');
-      var form = slider.closest('form');
-      var iMin = form ? form.querySelector('[data-price-input="min"]') : null;
-      var iMax = form ? form.querySelector('[data-price-input="max"]') : null;
+      var form = document.getElementById('CollFilterForm') || slider.closest('form');
+      var facet = slider.closest('.coll-facet') || document;
+      var iMin = facet.querySelector('[data-price-input="min"]');
+      var iMax = facet.querySelector('[data-price-input="max"]');
       if (!rMin || !rMax) return;
 
       function pct(v) { return (v / max) * 100; }
