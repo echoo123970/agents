@@ -334,9 +334,9 @@
   .coll__grid { display: grid; gap: 30px 26px; }
   /* Luxury framed tile — image full-bleed at top, padded detail section below.
      The card padding insets every text/button uniformly, so all CTAs align. */
-  .coll__grid { align-items: stretch; }
+  .coll__grid { align-items: start; }
   .coll__grid .cardc {
-    position: relative; display: flex !important; flex-direction: column !important; height: 100% !important;
+    position: relative; display: flex !important; flex-direction: column !important;
     background: #fff; border: 1px solid rgba(22,51,94,.1); padding: 0 24px 24px;
     transition: box-shadow .4s ease, transform .4s ease, border-color .4s ease;
   }
@@ -362,7 +362,7 @@
   .coll__grid .cardc__cta, .coll__grid .cardc__add {
     position: static !important; transform: none; margin: 0 !important; z-index: auto;
   }
-  .coll__grid .cardc__cta { margin-top: auto !important; padding-top: 24px !important; }
+  .coll__grid .cardc__cta { margin-top: 24px !important; padding-top: 0 !important; }
   .coll__grid .cardc__add-btn { display: block; width: 100%; background: var(--color-navy); color: #fff; text-align: center; font-weight: 600; text-transform: uppercase; border: none; cursor: pointer; padding: 16px; font-size: 11.5px; letter-spacing: .2em; }
   .coll__grid .cardc__add-btn:hover { background: #224A82; }
   .coll__pagination { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 64px; flex-wrap: wrap; }
