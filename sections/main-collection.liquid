@@ -299,7 +299,7 @@
   .coll__grid { display: grid; gap: 30px 26px; }
   /* Luxury framed tile — image full-bleed at top, padded detail section below.
      The card padding insets every text/button uniformly, so all CTAs align. */
-  .coll__grid { align-items: stretch; }
+  .coll__grid { align-items: start; }
   .coll__grid .cardc {
     position: relative; display: flex; flex-direction: column;
     background: #fff; border: 1px solid rgba(22,51,94,.1); padding: 0 24px 24px;
@@ -312,20 +312,20 @@
   .coll__grid .cardc__media .prod-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; padding: 14px; }
   .coll__grid .cardc__fav { opacity: 1; transform: translateY(0); top: 16px; right: 16px; }
   /* Detail section */
-  .coll__grid .cardc__sku { margin: 22px 0 0; color: var(--color-blue); }
+  .coll__grid .cardc__sku { margin: 22px 0 0; color: var(--color-blue); min-height: 1.2em; }
   .coll__grid .cardc__title { margin: 9px 0 24px; padding: 0; font-size: 22px; line-height: 1.3; height: calc(1.3em * 3); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
   /* Price — elegant serif, set off with a hairline */
   .coll__grid .cardc__price {
     margin: 0; padding-top: 16px; border-top: 1px solid rgba(22,51,94,.1);
     font-family: var(--font-display); font-weight: 500; font-size: 26px; line-height: 1;
-    color: var(--color-navy); letter-spacing: .01em;
+    color: var(--color-navy); letter-spacing: .01em; white-space: nowrap;
     font-variant-numeric: lining-nums; font-feature-settings: "lnum" 1;
   }
-  /* Button — pushed to the card bottom so the price-to-button gap is uniform */
+  /* Button — fixed distance after the price. Every element above is a fixed
+     height, so every card is identical and the buttons align across the row. */
   .coll__grid .cardc__cta, .coll__grid .cardc__add {
-    position: static; transform: none; margin: 26px 0 0 0; z-index: auto;
+    position: static; transform: none; margin: 24px 0 0; z-index: auto;
   }
-  .coll__grid .cardc__cta { margin-top: auto; padding-top: 26px; }
   .coll__grid .cardc__add-btn { padding: 16px; font-size: 11.5px; letter-spacing: .2em; }
   .coll__pagination { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 64px; flex-wrap: wrap; }
   .coll__page { min-width: 44px; height: 44px; padding: 0 14px; display: inline-flex; align-items: center; justify-content: center; background: #fff; border: 1px solid rgba(22,51,94,.18); color: var(--color-navy); font-size: 14px; transition: background .2s ease, border-color .2s ease, color .2s ease, transform .2s ease; }

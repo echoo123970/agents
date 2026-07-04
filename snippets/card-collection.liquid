@@ -24,6 +24,8 @@
   </div>
   {%- if product.selected_or_first_available_variant.sku != blank -%}
     <div class="cardc__sku">{{ product.selected_or_first_available_variant.sku }}</div>
+  {%- elsif stacked_cta -%}
+    <div class="cardc__sku">&nbsp;</div>
   {%- endif -%}
   <a href="{{ product.url }}" class="prod-title cardc__title">{{ product.title }}</a>
   <div class="cardc__price">
