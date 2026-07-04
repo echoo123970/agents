@@ -40,7 +40,7 @@
         <button type="submit" class="cardc__add-btn">Add to Cart</button>
       </form>
     {%- else -%}
-      <a href="{{ product.url }}" class="cardc__cta cardc__add-btn">{% if product.available %}Choose Options{% else %}Sold Out{% endif %}</a>
+      <div class="cardc__cta"><a href="{{ product.url }}" class="cardc__add-btn">{% if product.available %}Choose Options{% else %}Sold Out{% endif %}</a></div>
     {%- endif -%}
   {%- endif -%}
 </div>
