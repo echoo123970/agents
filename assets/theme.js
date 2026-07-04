@@ -377,4 +377,60 @@
     });
   })();
 
+  /* Inline variant picker on collection cards — reveal sizes, AJAX add, no redirect. */
+  (function () {
+    function updateCartCount() {
+      fetch('/cart.js', { headers: { 'Accept': 'application/json' } })
+        .then(function (r) { return r.json(); })
+        .then(function (c) {
+          document.querySelectorAll('.site-header__cart-count').forEach(function (el) {
+            el.textContent = c.item_count;
+          });
+        }).catch(function () {});
+    }
+    document.addEventListener('click', function (e) {
+      var toggle = e.target.closest ? e.target.closest('[data-opts-toggle]') : null;
+      if (toggle && !toggle.disabled) {
+        var wrap = toggle.closest('[data-card-opts]');
+        if (wrap) {
+          e.preventDefault();
+          var wasOpen = wrap.classList.contains('is-open');
+          document.querySelectorAll('[data-card-opts].is-open').forEach(function (o) { o.classList.remove('is-open'); });
+          if (!wasOpen) wrap.classList.add('is-open');
+        }
+        return;
+      }
+      var pill = e.target.closest ? e.target.closest('[data-variant-add]') : null;
+      if (pill && !pill.disabled) {
+        e.preventDefault();
+        var id = pill.getAttribute('data-variant-id');
+        if (!id || pill.classList.contains('is-adding')) return;
+        var original = pill.textContent;
+        pill.classList.add('is-adding');
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ items: [{ id: id, quantity: 1 }] })
+        }).then(function (r) { return r.json(); }).then(function (data) {
+          pill.classList.remove('is-adding');
+          if (data && data.status && data.status !== 200) {
+            pill.textContent = 'Unavailable';
+            setTimeout(function () { pill.textContent = original; }, 1600);
+            return;
+          }
+          pill.textContent = 'Added ✓';
+          updateCartCount();
+          setTimeout(function () {
+            pill.textContent = original;
+            var w = pill.closest('[data-card-opts]');
+            if (w) w.classList.remove('is-open');
+          }, 1500);
+        }).catch(function () {
+          pill.classList.remove('is-adding');
+          pill.textContent = original;
+        });
+      }
+    });
+  })();
+
 })();

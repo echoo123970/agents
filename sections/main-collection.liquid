@@ -203,7 +203,16 @@
                       <button type="submit" class="cardc__add-btn">Add to Cart</button>
                     </form>
                   {%- else -%}
-                    <div class="cardc__cta"><a href="{{ product.url }}" class="cardc__add-btn">{% if product.available %}Choose Options{% else %}Sold Out{% endif %}</a></div>
+                    <div class="cardc__cta cardc__cta--opts" data-card-opts>
+                      <button type="button" class="cardc__add-btn" data-opts-toggle{% unless product.available %} disabled{% endunless %}>{% if product.available %}Choose Options{% else %}Sold Out{% endif %}</button>
+                      {%- if product.available -%}
+                        <div class="cardc__variants" data-variants>
+                          {%- for v in product.variants -%}
+                            <button type="button" class="cardc__vpill" data-variant-add data-variant-id="{{ v.id }}"{% unless v.available %} disabled{% endunless %} aria-label="Add size {{ v.title | escape }} to cart">{{ v.title }}</button>
+                          {%- endfor -%}
+                        </div>
+                      {%- endif -%}
+                    </div>
                   {%- endif -%}
                 </div>
               {%- endfor -%}
@@ -366,7 +375,17 @@
   }
   .coll__grid .cardc__cta { margin-top: 24px !important; padding-top: 0 !important; }
   .coll__grid .cardc__add-btn { display: block; width: 100%; background: var(--color-navy); color: #fff; text-align: center; font-weight: 600; text-transform: uppercase; border: none; cursor: pointer; padding: 16px; font-size: 11.5px; letter-spacing: .2em; }
-  .coll__grid .cardc__add-btn:hover { background: #224A82; }
+  .coll__grid .cardc__add-btn:hover:not(:disabled) { background: #224A82; }
+  .coll__grid .cardc__add-btn:disabled { background: var(--color-text-faint); cursor: default; }
+  /* Inline variant / size picker — revealed under "Choose Options", no redirect. */
+  .coll__grid .cardc__cta--opts { position: static !important; }
+  .coll__grid .cardc__variants { display: none; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .coll__grid .cardc__cta--opts.is-open .cardc__variants { display: flex; }
+  .coll__grid .cardc__cta--opts.is-open .cardc__add-btn { background: #224A82; }
+  .coll__grid .cardc__vpill { flex: 1 1 auto; min-width: 58px; padding: 12px 10px; background: #fff; border: 1px solid var(--color-navy); color: var(--color-navy); font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; transition: background .2s ease, color .2s ease; }
+  .coll__grid .cardc__vpill:hover:not(:disabled) { background: var(--color-navy); color: #fff; }
+  .coll__grid .cardc__vpill:disabled { opacity: .38; cursor: not-allowed; text-decoration: line-through; }
+  .coll__grid .cardc__vpill.is-adding { opacity: .6; pointer-events: none; }
   .coll__pagination { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 64px; flex-wrap: wrap; }
   .coll__page { min-width: 44px; height: 44px; padding: 0 14px; display: inline-flex; align-items: center; justify-content: center; background: #fff; border: 1px solid rgba(22,51,94,.18); color: var(--color-navy); font-size: 14px; transition: background .2s ease, border-color .2s ease, color .2s ease, transform .2s ease; }
   .coll__page:hover { border-color: var(--color-blue); color: var(--color-blue); transform: translateY(-2px); }
