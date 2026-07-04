@@ -11,14 +11,16 @@
     <button type="button" class="cardc__fav" data-wish-add data-product-handle="{{ product.handle }}" data-wish-title="{{ product.title | escape }}" data-wish-url="{{ product.url }}" data-wish-image="{% if product.featured_media %}{{ product.featured_media | image_url: width: 600 }}{% endif %}" data-wish-price="{% if product.price_varies %}From {{ product.price_min | money }}{% else %}{{ product.price | money }}{% endif %}" data-wish-sub="{{ product.type | default: product.vendor | escape }}" aria-label="Add to wishlist">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#16335E" stroke-width="1.6"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>
     </button>
-    {%- if product.variants.size == 1 and product.selected_or_first_available_variant.available -%}
-      <form method="post" action="{{ routes.cart_add_url }}" class="cardc__add">
-        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-        <button type="submit" class="cardc__add-btn">Add to Cart</button>
-      </form>
-    {%- else -%}
-      <a href="{{ product.url }}" class="cardc__add cardc__add-btn">{% if product.available %}Choose Options{% else %}Sold Out{% endif %}</a>
-    {%- endif -%}
+    {%- unless stacked_cta -%}
+      {%- if product.variants.size == 1 and product.selected_or_first_available_variant.available -%}
+        <form method="post" action="{{ routes.cart_add_url }}" class="cardc__add">
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+          <button type="submit" class="cardc__add-btn">Add to Cart</button>
+        </form>
+      {%- else -%}
+        <a href="{{ product.url }}" class="cardc__add cardc__add-btn">{% if product.available %}Choose Options{% else %}Sold Out{% endif %}</a>
+      {%- endif -%}
+    {%- endunless -%}
   </div>
   {%- if product.selected_or_first_available_variant.sku != blank -%}
     <div class="cardc__sku">{{ product.selected_or_first_available_variant.sku }}</div>
@@ -31,6 +33,16 @@
       Price on request
     {%- endif -%}
   </div>
+  {%- if stacked_cta -%}
+    {%- if product.variants.size == 1 and product.selected_or_first_available_variant.available -%}
+      <form method="post" action="{{ routes.cart_add_url }}" class="cardc__cta">
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+        <button type="submit" class="cardc__add-btn">Add to Cart</button>
+      </form>
+    {%- else -%}
+      <a href="{{ product.url }}" class="cardc__cta cardc__add-btn">{% if product.available %}Choose Options{% else %}Sold Out{% endif %}</a>
+    {%- endif -%}
+  {%- endif -%}
 </div>
 
 <style>
@@ -48,4 +60,5 @@
   .cardc__title { display: block; font-family: var(--font-display); font-size: 21px; line-height: 1.2; color: var(--color-navy); margin-bottom: 9px; min-height: 50px; transition: color .3s ease; }
   .cardc:hover .cardc__title { color: var(--color-blue); }
   .cardc__price { font-size: 14px; color: var(--color-text-muted); letter-spacing: .02em; }
+  .cardc__cta { display: block; margin-top: 14px; }
 </style>
