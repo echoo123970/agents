@@ -307,8 +307,9 @@
   }
   .coll__grid .cardc:hover { z-index: 5; transform: translateY(-5px); box-shadow: 0 26px 54px rgba(16,42,79,.15); border-color: rgba(22,51,94,.2); }
   /* Image — full-bleed to the card edges via negative margin against the padding */
-  .coll__grid .cardc__media { aspect-ratio: 1 / 1; background: #fff; margin: 0 -24px; border-bottom: 1px solid rgba(22,51,94,.07); }
-  .coll__grid .cardc__media .prod-img { width: 100%; height: 100%; object-fit: contain; padding: 14px; }
+  .coll__grid .cardc__media { position: relative; aspect-ratio: 1 / 1; background: #fff; margin: 0 -24px; border-bottom: 1px solid rgba(22,51,94,.07); overflow: hidden; }
+  .coll__grid .cardc__img-link { position: absolute; inset: 0; display: block; }
+  .coll__grid .cardc__media .prod-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; padding: 14px; }
   .coll__grid .cardc__fav { opacity: 1; transform: translateY(0); top: 16px; right: 16px; }
   /* Detail section */
   .coll__grid .cardc__sku { margin: 22px 0 0; color: var(--color-blue); }
