@@ -320,10 +320,11 @@
     color: var(--color-navy); letter-spacing: .01em;
     font-variant-numeric: lining-nums; font-feature-settings: "lnum" 1;
   }
-  /* Button — inset by the card padding, aligned across the row */
+  /* Button — pushed to the card bottom so the price-to-button gap is uniform */
   .coll__grid .cardc__cta, .coll__grid .cardc__add {
-    position: static; transform: none; margin: 26px 0 0; z-index: auto;
+    position: static; transform: none; margin: 26px 0 0 0; z-index: auto;
   }
+  .coll__grid .cardc__cta { margin-top: auto; padding-top: 26px; }
   .coll__grid .cardc__add-btn { padding: 16px; font-size: 11.5px; letter-spacing: .2em; }
   .coll__pagination { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 64px; flex-wrap: wrap; }
   .coll__page { min-width: 44px; height: 44px; padding: 0 14px; display: inline-flex; align-items: center; justify-content: center; background: #fff; border: 1px solid rgba(22,51,94,.18); color: var(--color-navy); font-size: 14px; transition: background .2s ease, border-color .2s ease, color .2s ease, transform .2s ease; }
