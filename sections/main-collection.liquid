@@ -294,17 +294,31 @@
   .coll-facet__price-box input { flex: 1; width: 100%; border: none; outline: none; background: none; font-size: 13px; color: #5E6B85; padding: 0; -moz-appearance: textfield; }
   .coll-facet__price-box input::-webkit-outer-spin-button, .coll-facet__price-box input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
-  .coll__grid { display: grid; gap: 38px 26px; }
-  /* Square cards that show the whole product image (no cropping) */
-  .coll__grid .cardc { position: relative; }
-  .coll__grid .cardc:hover { z-index: 5; }
-  .coll__grid .cardc__media { aspect-ratio: 1 / 1; background: #fff; }
-  .coll__grid .cardc__media .prod-img { width: 100%; height: 100%; object-fit: contain; }
-  /* Keep the wishlist heart always visible; the CTA now sits below the card */
-  .coll__grid .cardc__fav { opacity: 1; transform: translateY(0); }
-  /* Equal-height cards so the buttons line up across each row */
-  .coll__grid .cardc { display: flex; flex-direction: column; height: 100%; }
-  .coll__grid .cardc__cta { margin-top: auto; }
+  .coll__grid { display: grid; gap: 30px 26px; }
+  /* Luxury product tile — framed card, full image on top, defined detail section below */
+  .coll__grid .cardc {
+    position: relative; display: flex; flex-direction: column; height: 100%;
+    background: #fff; border: 1px solid rgba(22,51,94,.1);
+    transition: box-shadow .4s ease, transform .4s ease, border-color .4s ease;
+  }
+  .coll__grid .cardc:hover { z-index: 5; transform: translateY(-5px); box-shadow: 0 26px 54px rgba(16,42,79,.15); border-color: rgba(22,51,94,.2); }
+  /* Image section (whole image, no crop) */
+  .coll__grid .cardc__media { aspect-ratio: 1 / 1; background: #fff; margin: 0; border-bottom: 1px solid rgba(22,51,94,.07); }
+  .coll__grid .cardc__media .prod-img { width: 100%; height: 100%; object-fit: contain; padding: 14px; }
+  .coll__grid .cardc__fav { opacity: 1; transform: translateY(0); top: 16px; right: 16px; }
+  /* Detail section */
+  .coll__grid .cardc__sku { margin: 22px 24px 0; color: var(--color-blue); }
+  .coll__grid .cardc__title { margin: 9px 24px 0; padding: 0; min-height: 0; font-size: 22px; }
+  /* Price — elegant serif, set off with a hairline */
+  .coll__grid .cardc__price {
+    margin: auto 24px 0; padding-top: 16px; border-top: 1px solid rgba(22,51,94,.1);
+    font-family: var(--font-display); font-weight: 500; font-size: 26px; line-height: 1;
+    color: var(--color-navy); letter-spacing: .01em;
+    font-variant-numeric: lining-nums; font-feature-settings: "lnum" 1;
+  }
+  /* Button footer — aligned across the row */
+  .coll__grid .cardc__cta { margin: 18px 24px 24px; }
+  .coll__grid .cardc__add-btn { padding: 16px; font-size: 11.5px; letter-spacing: .2em; }
   .coll__pagination { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 64px; flex-wrap: wrap; }
   .coll__page { min-width: 44px; height: 44px; padding: 0 14px; display: inline-flex; align-items: center; justify-content: center; background: #fff; border: 1px solid rgba(22,51,94,.18); color: var(--color-navy); font-size: 14px; transition: background .2s ease, border-color .2s ease, color .2s ease, transform .2s ease; }
   .coll__page:hover { border-color: var(--color-blue); color: var(--color-blue); transform: translateY(-2px); }
