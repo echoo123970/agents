@@ -16,6 +16,26 @@
     }
   };
 
+  /* Lightweight toast notifications (bottom-center). */
+  window.imaToast = function (message, kind) {
+    var host = document.querySelector('[data-toast-host]');
+    if (!host) {
+      host = document.createElement('div');
+      host.setAttribute('data-toast-host', '');
+      host.style.cssText = 'position:fixed;left:50%;bottom:32px;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:10px;align-items:center;pointer-events:none;';
+      document.body.appendChild(host);
+    }
+    var t = document.createElement('div');
+    t.textContent = message;
+    t.style.cssText = 'pointer-events:auto;background:' + (kind === 'muted' ? '#4A5468' : '#16335E') + ';color:#fff;font-family:\'Hanken Grotesk\',system-ui,sans-serif;font-size:13px;letter-spacing:.06em;padding:13px 22px;border-radius:2px;box-shadow:0 10px 30px rgba(11,28,53,.28);opacity:0;transform:translateY(10px);transition:opacity .3s ease,transform .3s ease;max-width:88vw;';
+    host.appendChild(t);
+    requestAnimationFrame(function () { t.style.opacity = '1'; t.style.transform = 'translateY(0)'; });
+    setTimeout(function () {
+      t.style.opacity = '0'; t.style.transform = 'translateY(10px)';
+      setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 320);
+    }, 2200);
+  };
+
   /* Mobile nav toggle */
   document.addEventListener('click', function (e) {
     var toggle = e.target.closest('[data-menu-toggle]');
@@ -96,7 +116,10 @@
         wishBtn.classList.toggle('is-saved', saved);
         if (label) label.textContent = saved ? 'Saved to Wishlist' : 'Add to Wishlist';
       };
-      wishBtn.addEventListener('click', function () { window.imaWishlist.toggle(item); sync(); });
+      wishBtn.addEventListener('click', function () {
+        var added = window.imaWishlist.toggle(item); sync();
+        window.imaToast(added ? 'Added to Wishlist' : 'Removed from Wishlist', added ? '' : 'muted');
+      });
       sync();
     }
   });
@@ -119,7 +142,11 @@
     var d = btn.dataset;
     var item = { handle: d.productHandle, title: d.wishTitle, url: d.wishUrl, image: d.wishImage, price: d.wishPrice, sub: d.wishSub };
     var sync = function () { btn.classList.toggle('is-saved', window.imaWishlist.has(item.handle)); };
-    btn.addEventListener('click', function (e) { e.preventDefault(); window.imaWishlist.toggle(item); sync(); });
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      var added = window.imaWishlist.toggle(item); sync();
+      window.imaToast(added ? 'Added to Wishlist' : 'Removed from Wishlist', added ? '' : 'muted');
+    });
     sync();
   });
 
