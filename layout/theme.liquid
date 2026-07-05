@@ -71,8 +71,11 @@
     <style>
       /* Shopify spam-protection (hCaptcha) challenge page */
       .shopify-challenge__container { max-width: 640px; margin: 0 auto; padding: 90px 24px 100px; text-align: center; }
-      .shopify-challenge__button, .shopify-challenge__button.btn { display: inline-block; margin-top: 34px; background: {{ settings.color_accent | default: '#2B7BE8' }}; color: #fff; border: none; font-family: 'Hanken Grotesk', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding: 16px 46px; cursor: pointer; transition: background .25s ease; }
-      .shopify-challenge__button:hover, .shopify-challenge__button.btn:hover { background: #1E63C4; }
+      .shopify-challenge__container form { margin-top: 34px; }
+      .shopify-challenge__container p, .shopify-challenge__container h1, .shopify-challenge__container h2 { margin-bottom: 34px; }
+      .shopify-challenge__container .h-captcha, .shopify-challenge__container iframe { margin: 0 auto; }
+      .shopify-challenge__button, .shopify-challenge__button.btn { display: inline-block; margin-top: 34px; background: {{ settings.color_navy | default: '#16335E' }}; color: #fff; border: none; font-family: 'Hanken Grotesk', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding: 16px 46px; cursor: pointer; transition: background .25s ease; }
+      .shopify-challenge__button:hover, .shopify-challenge__button.btn:hover { background: #224A82; }
     </style>
   </head>
 

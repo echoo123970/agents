@@ -117,7 +117,7 @@
       <p class="bj-news__text">New articles, studio updates and fresh mosaic inspiration — straight to your inbox.</p>
       {%- form 'customer', class: 'bj-news__form' -%}
         {%- if form.posted_successfully? -%}
-          <p class="bj-news__ok">Thanks — you're subscribed. Watch your inbox for our next story.</p>
+          <p class="bj-news__ok">Thanks — you're subscribed</p>
         {%- else -%}
           <input type="hidden" name="contact[tags]" value="newsletter, newsletter-blog">
           <input type="email" name="contact[email]" required placeholder="Your email address" class="bj-news__input" aria-label="Email address">
@@ -200,7 +200,7 @@
   .bj-news__input::placeholder { color: #9AA4B8; }
   .bj-news__btn { background: #2B7BE8; color: #fff; border: none; font-family: var(--font-body); font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; padding: 0 28px; cursor: pointer; transition: background .25s ease; }
   .bj-news__btn:hover { background: #5C9AF0; }
-  .bj-news__ok { font-size: 16px; color: #7BB0F4; }
+  .bj-news__ok { font-size: 16px; color: #fff; }
 
   @media (max-width: 990px) {
     .bj-feat { grid-template-columns: 1fr; gap: 28px; }
