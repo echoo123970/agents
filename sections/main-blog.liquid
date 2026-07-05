@@ -119,7 +119,7 @@
         {%- if form.posted_successfully? -%}
           <p class="bj-news__ok">Thanks — you're subscribed. Watch your inbox for our next story.</p>
         {%- else -%}
-          <input type="hidden" name="contact[tags]" value="newsletter, journal">
+          <input type="hidden" name="contact[tags]" value="newsletter, blog, newsletter-blog">
           <input type="email" name="contact[email]" required placeholder="Your email address" class="bj-news__input" aria-label="Email address">
           <button type="submit" class="bj-news__btn">Subscribe</button>
         {%- endif -%}
