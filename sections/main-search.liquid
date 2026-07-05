@@ -23,7 +23,10 @@
 
   /* Filters */
   .srch__filters { position: sticky; top: 100px; }
-  .srch__filters-head { font-family: var(--font-accent); font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--color-navy); padding-bottom: 14px; border-bottom: 1px solid rgba(22,51,94,.14); }
+  .srch__filters-head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px solid rgba(22,51,94,.14); }
+  .srch__filters-title { font-family: var(--font-accent); font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--color-navy); }
+  .srch__filter-reset { font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-blue); }
+  .srch__filter-reset:hover { color: var(--color-navy); }
   .srch-facet { border-bottom: 1px solid rgba(22,51,94,.1); padding: 16px 0; }
   .srch-facet__title { font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--color-navy); margin-bottom: 12px; }
   .srch-facet__list { list-style: none; margin: 0; padding: 0 8px 0 0; max-height: 260px; overflow-y: auto; scrollbar-gutter: stable; scrollbar-width: thin; scrollbar-color: transparent transparent; }
@@ -59,8 +62,6 @@
   .srch-facet .coll-facet__price-cur { font-size: 13px; color: #5E6B85; }
   .srch-facet .coll-facet__price-box input { flex: 1; width: 100%; border: none; outline: none; background: none; font-size: 13px; color: #5E6B85; padding: 0; -moz-appearance: textfield; }
   .srch-facet .coll-facet__price-box input::-webkit-outer-spin-button, .srch-facet .coll-facet__price-box input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-  .srch-facet__clear { display: inline-block; margin-top: 18px; font-size: 13px; color: var(--color-blue); }
-  .srch-facet__clear:hover { color: var(--color-navy); }
 
   /* Pages / guides / journal / collection results */
   .srch__docs { display: flex; flex-direction: column; gap: 12px; margin-bottom: 40px; }
@@ -134,7 +135,10 @@
 
           {%- if search.filters.size > 0 -%}
             <aside class="srch__filters">
-              <div class="srch__filters-head">Filter</div>
+              <div class="srch__filters-head">
+                <span class="srch__filters-title">Filter</span>
+                <a href="{{ routes.search_url }}?q={{ search.terms | url_encode }}&options%5Bprefix%5D=last" class="srch__filter-reset">Reset</a>
+              </div>
               {%- for filter in search.filters -%}
                 <div class="srch-facet">
                   <div class="srch-facet__title">{{ filter.label }}</div>
@@ -178,7 +182,6 @@
                   {%- endcase -%}
                 </div>
               {%- endfor -%}
-              <a href="{{ routes.search_url }}?q={{ search.terms | url_encode }}&options%5Bprefix%5D=last" class="srch-facet__clear">Clear all filters</a>
             </aside>
           {%- endif -%}
 
