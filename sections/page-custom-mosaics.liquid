@@ -70,48 +70,11 @@
       <p class="cmx-formsec__sub">Share your vision below — a photo, a sketch or just an idea and your dimensions. Our team replies within one business day with a tailored design and quote.</p>
     </div>
 
-    {%- form 'contact', id: 'CmxForm', class: 'cmx-form', enctype: 'multipart/form-data' -%}
-      {%- if form.posted_successfully? -%}
-        <div class="cmx-form__success">
-          <div class="cmx-form__success-ic">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7BB0F4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>
-          </div>
-          <h3 class="cmx-form__success-t">Thank you — your vision is on its way.</h3>
-          <p class="cmx-form__success-p">One of our designers will be in touch within one business day to begin shaping your custom mosaic.</p>
-        </div>
-      {%- else -%}
-        {%- if form.errors -%}<div class="cmx-form__err">{{ form.errors | default_errors }}</div>{%- endif -%}
-        <div class="cmx-form__row cmx-form__row--2">
-          <div class="cmx-field"><label class="cmx-label">Name <span class="cmx-req">*</span></label><input class="cm-input" name="contact[name]" type="text" required placeholder="Your full name"></div>
-          <div class="cmx-field"><label class="cmx-label">Email <span class="cmx-req">*</span></label><input class="cm-input" name="contact[email]" type="email" required placeholder="you@email.com"></div>
-        </div>
-        <div class="cmx-form__row cmx-form__row--3">
-          <div class="cmx-field"><label class="cmx-label">Phone <span class="cmx-req">*</span></label><input class="cm-input" name="contact[phone]" type="tel" required placeholder="(315) 000-0000"></div>
-          <div class="cmx-field"><label class="cmx-label">Width (in)</label><input class="cm-input" name="contact[Width (in)]" type="number" placeholder="e.g. 36"></div>
-          <div class="cmx-field"><label class="cmx-label">Height (in)</label><input class="cm-input" name="contact[Height (in)]" type="number" placeholder="e.g. 48"></div>
-        </div>
-        <div class="cmx-field cmx-field--full">
-          <label class="cmx-label">Artwork / Reference</label>
-          <label class="cmx-upload" data-cmx-upload>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2B7BE8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 9 12 4 17 9"/><line x1="12" y1="4" x2="12" y2="16"/></svg>
-            <span class="cmx-upload__label" data-file-label>Click to upload an image (JPG, PNG)</span>
-            <input type="file" accept="image/*" name="contact[Reference image]" data-file style="display:none;">
-          </label>
-        </div>
-        <div class="cmx-field cmx-field--full">
-          <label class="cmx-label">Tell us about your vision</label>
-          <textarea class="cm-input" name="contact[body]" placeholder="Subject, style, colors, where it will hang, timeline…"></textarea>
-        </div>
-        <div class="cmx-form__foot">
-          <div class="cmx-field cmx-field--cap">
-            <label class="cmx-label">Quick check: <span data-cap-q>4 + 3 =</span> <span class="cmx-req">*</span></label>
-            <input class="cm-input" type="text" required placeholder="Answer" data-cap-input>
-            <div class="cmx-cap-err" data-cap-err>That answer is not quite right — please re-check the quick math question.</div>
-          </div>
-          <button type="submit" class="cmx-submit">Submit Request</button>
-        </div>
-      {%- endif -%}
-    {%- endform -%}
+    {%- comment -%} Quote form handled by the AAA Form Builder app (form 16105); restyled below to match the cmx design. {%- endcomment -%}
+    <div class="cmx-form">
+      <div class="aaa_formbuilder_container" style="width: 100%; margin: 0 auto; float: none;"><form method="post" action="" class="aaaformbuilder_form  aaa_formbuilder_form_id_16105" enctype="multipart/form-data"><input type="hidden" name="url" class="get_current_page_url" value="{{ canonical_url }}"><input type="hidden" name="container_id" value=""><input type="hidden" name="form_id" value="16105"><input type="hidden" name="form_domain" value="aml89.myshopify.com"><input type="hidden" name="" value="Thank You! We'll be in touch" class="success_msg"><input type="hidden" name="" value="Please fill all the required fields" class="error_msg"><input type="hidden" name="" value="Please enter a valid email address." class="emailerror_msg"><input type="hidden" name="" value="" class="aaa_thankyoupageurl"><input type="hidden" name="uploadeLimit" class="formUploadLimit" value="10"><input type="hidden" name="allowefiletype" class="allowedfiletype" value=""><input type="hidden" name="conditionallogic" class="conditionallogic" value=""><div class="fb-text form-group field-first-name"><label for="first-name" class="fb-text-label">Name <span class="required">*</span></label> <input type="text" required="" placeholder="Your full name" class="form-control field__input" name="first-name" id="first-name"></div><div class="fb-email form-group field-replyemail"><label for="replyemail" class="fb-email-label">Email <span class="required">*</span></label> <input type="email" required="" placeholder="you@email.com" class="form-control field__input" name="replyemail" id="replyemail" aria-required="true"></div><div class="fb-number form-group field-number-1703859243649"><label for="number-1703859243649" class="fb-number-label">Phone Number</label> <input type="number" class="form-control field__input" name="number-1703859243649" placeholder="(315) 000-0000" id="number-1703859243649"></div><div class="fb-text form-group field-width"><label for="width" class="fb-text-label">Width In Inches</label> <input type="text" placeholder="e.g. 36" class="form-control field__input" name="width" id="width"></div><div class="fb-text form-group field-height"><label for="height" class="fb-text-label">Height In Inches</label> <input type="text" placeholder="e.g. 48" class="form-control field__input" name="height" id="height"></div><div class="fb-file form-group field-file-1704224393638"><label for="file-1704224393638" class="fb-file-label">Artwork / Reference</label> <input type="file" class="form-control" name="file-1704224393638" id="file-1704224393638"></div><div class="fb-undefined form-group field-textarea-1481364899702"><label for="textarea-1481364899702" class="fb-textarea-label">Tell us about your vision <span class="required">*</span></label><textarea required="" placeholder="Subject, style, colors, where it will hang, timeline…" class="form-control field__input" name="textarea-1481364899702" id="textarea-1481364899702"></textarea></div><div class="fb-submit form-group field-button-1481029333721"><div class="aaa_captcha_cont"><label>Captcha</label><span class="rand1">5</span> + <span class="rand2">7</span> = <input type="text" class="aaa_captcha_result" style="width: 60px; display: inline-block;"></div><button type="submit" class="button-input btn button btn-default" name="button-1481029333721" id="button-1481029333721">Submit Request</button></div></form></div>
+      <script> function isMyScriptLoaded() { var url = 'https://shopifycdn.aaawebstore.com/formbuilder/appfiles/aaa_form_builder_script_minify_v1.js?shop=aml89.myshopify.com'; var jsFound = 0; var scripts = document.getElementsByTagName('script');  for (var i = scripts.length; i--;) { if (scripts[i].src == url) { jsFound = 1; } } if(!jsFound) { var headTag = document.getElementsByTagName('head')[0]; var jqTag = document.createElement('script'); jqTag.type = 'text/javascript'; jqTag.src = url; jqTag.onload = ''; headTag.appendChild(jqTag); } } isMyScriptLoaded(); </script>
+    </div>
 
     <div class="cmx-contact">
       <a href="tel:+13152175538" class="cmx-contact__l">
@@ -235,6 +198,25 @@
     .cmx-form { padding:30px 22px; }
     .cmx-form__row--2, .cmx-form__row--3 { grid-template-columns:1fr; }
   }
+
+  /* AAA Form Builder app form — restyled to match the cmx design */
+  .cmx-form .aaa_formbuilder_container { background:transparent !important; width:100% !important; }
+  .cmx-form .aaaformbuilder_form .form-group { margin-bottom:22px; box-sizing:border-box; }
+  .cmx-form .aaaformbuilder_form label { display:block; font-family:'Hanken Grotesk',sans-serif; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:#46546E !important; margin-bottom:9px; font-weight:400; }
+  .cmx-form .aaaformbuilder_form .required { color:#2B7BE8 !important; }
+  .cmx-form .aaaformbuilder_form .form-control { width:100%; box-sizing:border-box; font-family:'Hanken Grotesk',sans-serif; font-size:15px; color:#16335E; background:#fff; border:1px solid rgba(22,51,94,.18); border-radius:0; padding:14px 16px; outline:none; box-shadow:none; }
+  .cmx-form .aaaformbuilder_form .form-control:focus { border-color:#2B7BE8; }
+  .cmx-form .aaaformbuilder_form .form-control::placeholder { color:#9AA4B8; }
+  .cmx-form .aaaformbuilder_form textarea.form-control { resize:vertical; min-height:104px; }
+  .cmx-form .aaaformbuilder_form .fb-file .form-control { padding:12px 16px; color:#5E6B85; background:#F8FAFD; border:1px dashed rgba(22,51,94,.3); }
+  .cmx-form .aaaformbuilder_form .field-first-name, .cmx-form .aaaformbuilder_form .field-replyemail, .cmx-form .aaaformbuilder_form .field-width, .cmx-form .aaaformbuilder_form .field-height { display:inline-block; width:calc(50% - 11px); vertical-align:top; box-sizing:border-box; }
+  .cmx-form .aaaformbuilder_form .field-first-name, .cmx-form .aaaformbuilder_form .field-width { margin-right:20px; }
+  .cmx-form .aaaformbuilder_form .aaa_captcha_cont { margin-bottom:18px; color:#46546E; font-size:13px; letter-spacing:.06em; }
+  .cmx-form .aaaformbuilder_form .aaa_captcha_cont label { display:inline; margin-right:10px; text-transform:uppercase; }
+  .cmx-form .aaaformbuilder_form .aaa_captcha_result { border:1px solid rgba(22,51,94,.18); color:#16335E; padding:8px 10px; }
+  .cmx-form .aaa_formbuilder_container .aaaformbuilder_form .fb-submit button { background:#2B7BE8 !important; color:#fff !important; border:none !important; border-radius:0 !important; font-family:'Hanken Grotesk',sans-serif !important; font-size:13px !important; font-weight:600 !important; letter-spacing:.14em !important; text-transform:uppercase !important; padding:17px 44px !important; width:auto !important; cursor:pointer !important; }
+  .cmx-form .aaa_formbuilder_container .aaaformbuilder_form .fb-submit button:hover { background:#5C9AF0 !important; }
+  @media (max-width:600px){ .cmx-form .aaaformbuilder_form .field-first-name, .cmx-form .aaaformbuilder_form .field-replyemail, .cmx-form .aaaformbuilder_form .field-width, .cmx-form .aaaformbuilder_form .field-height { display:block; width:100%; margin-right:0; } }
 </style>
 
 <script>
