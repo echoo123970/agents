@@ -65,6 +65,11 @@
     .ig-timeline__card { padding: 32px 24px; }
     .ig-timeline__row { grid-template-columns: 90px 1fr 70px; gap: 12px; }
   }
+  @media (max-width: 600px) {
+    .ig-hero__stats { flex-wrap: nowrap; gap: 12px; justify-content: space-between; }
+    .ig-hero__stat-val { font-size: 21px; }
+    .ig-hero__stat-label { font-size: 10px; letter-spacing: .04em; }
+  }
 </style>
 
 {%- assign tools = section.blocks | where: 'type', 'tool' -%}
