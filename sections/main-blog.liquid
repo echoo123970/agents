@@ -82,6 +82,11 @@
     .bj-news__form { flex-direction: column; }
     .bj-news__btn { padding: 15px; }
   }
+  @media (max-width: 749px) {
+    .bj-tabs__row { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; gap: 8px; scroll-padding-left: 22px; scroll-snap-type: x proximity; }
+    .bj-tabs__row::-webkit-scrollbar { display: none; }
+    .bj-tab { flex: 0 0 auto; scroll-snap-align: start; white-space: nowrap; font-size: 12px; letter-spacing: .06em; padding: 9px 16px; }
+  }
 </style>
 
 {%- paginate blog.articles by 15 -%}
