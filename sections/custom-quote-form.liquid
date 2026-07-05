@@ -20,8 +20,8 @@
           <div class="quote-form__error">{{ form.errors | default_errors }}</div>
         {%- endif -%}
         <div class="quote-form__field">
-          <label class="quote-form__label" for="QuoteName">Name</label>
-          <input type="text" id="QuoteName" name="contact[name]" placeholder="Enter your full name" class="quote-form__input">
+          <label class="quote-form__label" for="QuoteName">Name <span class="quote-form__req">*</span></label>
+          <input type="text" id="QuoteName" name="contact[name]" required placeholder="Enter your full name" class="quote-form__input">
         </div>
         <div class="quote-form__field">
           <label class="quote-form__label" for="QuoteEmail">Email <span class="quote-form__req">*</span></label>
@@ -42,8 +42,8 @@
           </div>
         </div>
         <div class="quote-form__field">
-          <label class="quote-form__label" for="QuoteMsg">Customize Your Own Mosaic Design</label>
-          <textarea id="QuoteMsg" name="contact[body]" rows="4" placeholder="Give us details about color, size, shape or design" class="quote-form__input quote-form__textarea"></textarea>
+          <label class="quote-form__label" for="QuoteMsg">Customize Your Own Mosaic Design <span class="quote-form__req">*</span></label>
+          <textarea id="QuoteMsg" name="contact[body]" rows="4" required placeholder="Give us details about color, size, shape or design" class="quote-form__input quote-form__textarea"></textarea>
         </div>
         <div class="quote-form__field">
           <label class="quote-form__label" for="QuoteFile">Upload Reference Image</label>
