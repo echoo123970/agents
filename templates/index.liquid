@@ -160,8 +160,13 @@
   .prod-card__sub { font-family: var(--font-accent); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--color-text-faint); margin-bottom: 6px; }
   .prod-card__title { font-family: var(--font-display); font-size: 23px; line-height: 1.15; color: var(--color-navy); margin-bottom: 8px; }
   .prod-card__price { font-size: 14px; color: var(--color-text-muted); letter-spacing: .02em; }
-  @media (max-width: 990px) { .bestsellers__grid { grid-template-columns: repeat(2, 1fr) !important; } }
-  @media (max-width: 600px) { .bestsellers { padding-top: 60px; padding-bottom: 70px; } }
+  @media (max-width: 990px) and (min-width: 750px) { .bestsellers__grid { grid-template-columns: repeat(2, 1fr) !important; } }
+  @media (max-width: 749px) {
+    .bestsellers { padding-top: 60px; padding-bottom: 70px; }
+    .bestsellers__grid { display: flex !important; grid-template-columns: none !important; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin: 0 -18px; padding: 2px 18px 8px; }
+    .bestsellers__grid::-webkit-scrollbar { display: none; }
+    .prod-card { flex: 0 0 62%; scroll-snap-align: start; }
+  }
 </style>
 {% section 'custom-process' %}
 {% section 'promises' %}
