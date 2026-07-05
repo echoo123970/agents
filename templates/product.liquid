@@ -133,7 +133,7 @@
         <div class="pdp-acc pdp-acc--options" data-accordion>
           <button type="button" class="pdp-acc__head" data-accordion-toggle>
             <span class="pdp-acc__title">Bespoke Options</span>
-            <span class="pdp-acc__icon">+</span>
+            <span class="pdp-acc__icon pdp-acc__icon--chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
           </button>
           <div class="pdp-acc__body">
             <div class="pdp-acc__body-inner">
@@ -269,6 +269,8 @@
   .pdp-acc__body { overflow: hidden; max-height: 0; opacity: 0; transition: max-height .4s ease, opacity .3s ease; }
   .pdp-acc[data-open] .pdp-acc__body { max-height: 600px; opacity: 1; }
   .pdp-acc--options { margin-bottom: 22px; }
+  .pdp-acc__icon--chev { display: flex; align-items: center; }
+  .pdp-acc--options[data-open] .pdp-acc__icon--chev { transform: rotate(180deg); }
   .pdp-acc--options[data-open] .pdp-acc__body { max-height: 1400px; }
   .pdp-opt-list { display: flex; flex-direction: column; gap: 10px; padding-bottom: 6px; }
   .pdp-acc__body-inner { font-size: 15px; line-height: 1.75; color: var(--color-text-muted); padding: 0 2px 22px; }
