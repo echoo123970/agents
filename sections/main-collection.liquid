@@ -150,11 +150,22 @@
   .coll-cta__heading { font-family: var(--font-display); font-weight: 500; font-size: clamp(32px,3.8vw,50px); line-height: 1.08; margin-bottom: 16px; color: #fff; }
   .coll-cta__sub { font-size: 16px; line-height: 1.7; color: var(--color-text-faint); }
 
+  .coll__filter-toggle { display: none; }
   @media (max-width: 990px) {
     .coll__layout { grid-template-columns: 1fr; gap: 28px; }
-    .coll__sidebar { position: static; }
+    .coll__sidebar { position: static; display: none; }
     .coll__grid { grid-template-columns: repeat(2, 1fr) !important; }
+    .coll__filter-toggle { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px; margin-bottom: 22px; border: 1px solid rgba(22,51,94,.2); background: #fff; font-family: var(--font-body); font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--color-navy); cursor: pointer; }
+    .coll__layout.is-filters-open .coll__sidebar { display: block; margin-bottom: 8px; }
   }
+  @media (max-width: 749px) {
+    .coll-hero__inner { padding-left: 4px; padding-right: 4px; }
+    .coll-facet__slider { height: 34px; }
+    .coll-facet__range { height: 34px; }
+    .coll-facet__range::-webkit-slider-thumb { width: 26px; height: 26px; margin-top: 4px; }
+    .coll-facet__range::-moz-range-thumb { width: 26px; height: 26px; }
+  }
+  @media (max-width: 600px) { .coll__grid { grid-template-columns: repeat(2, 1fr) !important; } }
 </style>
 
 <section class="coll-hero">
@@ -275,6 +286,10 @@
         </div>
       </div>
 
+      <button type="button" class="coll__filter-toggle" data-coll-filter-toggle aria-expanded="false">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+        Filter &amp; Sort
+      </button>
       <div class="coll__layout">
         <!-- SIDEBAR -->
         <aside class="coll__sidebar">
@@ -558,6 +573,15 @@
       draw();
     }
     document.querySelectorAll('[data-price-slider]').forEach(initSlider);
+    // Mobile filter drawer toggle
+    document.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-coll-filter-toggle]');
+      if (!btn) return;
+      var layout = btn.nextElementSibling;
+      if (!layout || !layout.classList.contains('coll__layout')) return;
+      var open = layout.classList.toggle('is-filters-open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
   })();
 </script>
 

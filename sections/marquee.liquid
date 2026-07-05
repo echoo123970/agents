@@ -5,6 +5,7 @@
   .marquee__item { display: inline-flex; align-items: center; }
   .marquee__word { font-family: var(--font-display); font-size: 21px; font-style: italic; color: var(--color-text-muted); padding: 0 28px; white-space: nowrap; }
   .marquee__star { color: var(--color-blue); font-size: 14px; }
+  @media (max-width: 600px) { .marquee__word { font-size: 17px; padding: 0 18px; } }
 </style>
 
 {%- assign words = section.settings.words | split: ',' -%}

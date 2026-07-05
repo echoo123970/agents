@@ -8,6 +8,11 @@
   .article__body { font-size: 17px; line-height: 1.8; color: var(--color-text-muted); }
   .article__body :is(h2,h3) { font-family: var(--font-display); color: var(--color-navy); margin: 32px 0 12px; }
   .article__body img { margin: 24px 0; }
+  @media (max-width: 600px) {
+    .article { padding-top: 40px; padding-bottom: 64px; }
+    .article__body { font-size: 16px; overflow-wrap: break-word; }
+    .article__body table, .article__body pre, .article__body iframe { display: block; max-width: 100%; overflow-x: auto; }
+  }
 </style>
 
 <article class="article page-width">

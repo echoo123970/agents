@@ -25,6 +25,11 @@
   .lg__body hr { border: none; border-top: 1px solid var(--color-line); margin: 36px 0; }
   .lg__help { margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--color-line); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 15px; color: var(--color-text-muted); }
   .lg__help-link { color: var(--color-blue); font-weight: 600; }
+  @media (max-width: 600px) {
+    .lg-hero__inner { padding: 40px 22px 44px; }
+    .lg__body { font-size: 15px; }
+    .lg__body table, .lg__body pre, .lg__body iframe { display: block; max-width: 100%; overflow-x: auto; }
+  }
 </style>
 
 <section class="lg-hero">

@@ -87,4 +87,9 @@
   .cardc__vpill:hover:not(:disabled) { background: #fff; border-color: #fff; color: var(--color-navy); }
   .cardc__vpill:disabled { opacity: .4; cursor: not-allowed; text-decoration: line-through; }
   .cardc__vpill.is-adding { opacity: .6; pointer-events: none; }
+  /* Touch devices have no hover — reveal the add-to-cart bar and wishlist button */
+  @media (hover: none), (max-width: 749px) {
+    .cardc__add { transform: translateY(0); }
+    .cardc__fav { opacity: 1; transform: none; }
+  }
 </style>

@@ -14,7 +14,11 @@
   .cat-cta { position: absolute; left: 32px; bottom: 22px; color: #fff; font-size: clamp(9px, 3.4cqw, 10.5px); letter-spacing: .18em; text-transform: uppercase; z-index: 3; opacity: 0; transform: translateY(8px); transition: opacity .4s ease, transform .4s ease; pointer-events: none; }
   .cat-card:hover .cat-cta { opacity: 1; transform: translateY(0); }
   @media (max-width: 990px) { .cat-grid { padding-top: 80px; } .cat-grid__grid { grid-template-columns: repeat(3, 1fr) !important; } }
-  @media (max-width: 600px) { .cat-grid__grid { grid-template-columns: repeat(2, 1fr) !important; } }
+  @media (max-width: 600px) {
+    .cat-grid__grid { grid-template-columns: repeat(2, 1fr) !important; }
+    .cat-label { left: 18px; right: 18px; bottom: 20px; }
+    .cat-cta { display: none; }
+  }
 </style>
 
 {% section 'hero' %}

@@ -10,6 +10,12 @@
   .faq-item[data-open] .faq-item__body { max-height: 320px; opacity: 1; }
   .faq-item__a { font-size: 15px; line-height: 1.75; color: var(--color-text-muted); padding: 0 44px 24px 2px; }
   .faq__cta { text-align: center; margin-top: 44px; }
+  @media (max-width: 600px) {
+    .faq-item__q { font-size: 19px; }
+    .faq-item__head { gap: 16px; padding: 20px 2px; }
+    .faq-item__a { padding: 0 2px 22px 2px; }
+    .faq-item[data-open] .faq-item__body { max-height: 1200px; }
+  }
 </style>
 
 <section class="faq page-width">

@@ -99,10 +99,20 @@
   .srch__empty-title { font-family: var(--font-display); font-weight: 500; font-size: 30px; margin-bottom: 10px; color: var(--color-navy); }
   .srch__empty-text { font-size: 15.5px; line-height: 1.6; color: var(--color-text-muted); margin-bottom: 26px; }
 
+  .srch__filter-toggle { display: none; }
   @media (max-width: 990px) {
     .srch__layout { grid-template-columns: 1fr; gap: 28px; }
-    .srch__filters { position: static; }
+    .srch__filters { position: static; display: none; }
     .srch__grid, .srch__layout:not(.srch__layout--full) .srch__main .srch__grid { grid-template-columns: repeat(2, 1fr); }
+    .srch__filter-toggle { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px; margin-bottom: 22px; border: 1px solid rgba(22,51,94,.2); background: #fff; font-family: var(--font-body); font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--color-navy); cursor: pointer; }
+    .srch__layout.is-filters-open .srch__filters { display: block; margin-bottom: 8px; }
+  }
+  @media (max-width: 749px) {
+    .srch-hero__inner { padding-left: 4px; padding-right: 4px; }
+    .srch-facet .coll-facet__slider { height: 34px; }
+    .srch-facet .coll-facet__range { height: 34px; }
+    .srch-facet .coll-facet__range::-webkit-slider-thumb { width: 26px; height: 26px; margin-top: 4px; }
+    .srch-facet .coll-facet__range::-moz-range-thumb { width: 26px; height: 26px; }
   }
 </style>
 
@@ -131,6 +141,12 @@
     {%- paginate search.results by per_page -%}
       <div class="srch__count">{{ 'general.search.results_with_count' | t: count: search.results_count }} for “{{ search.terms }}”</div>
       {%- if search.results_count > 0 -%}
+        {%- if search.filters.size > 0 -%}
+          <button type="button" class="srch__filter-toggle" data-srch-filter-toggle aria-expanded="false">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+            Filter &amp; Sort
+          </button>
+        {%- endif -%}
         <div class="srch__layout{% if search.filters.size == 0 %} srch__layout--full{% endif %}">
 
           {%- if search.filters.size > 0 -%}
@@ -336,6 +352,15 @@
       draw();
     }
     document.querySelectorAll('[data-price-slider]').forEach(initSlider);
+    // Mobile filter drawer toggle
+    document.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-srch-filter-toggle]');
+      if (!btn) return;
+      var layout = btn.nextElementSibling;
+      if (!layout || !layout.classList.contains('srch__layout')) return;
+      var open = layout.classList.toggle('is-filters-open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
   })();
 </script>
 

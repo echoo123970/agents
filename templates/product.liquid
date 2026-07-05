@@ -124,6 +124,9 @@
     .pdp__grid { grid-template-columns: 1fr; gap: 36px; }
     .pdp__info { position: static; }
   }
+  @media (max-width: 600px) {
+    .pdp__price-row { flex-wrap: wrap; }
+  }
 </style>
 
 {%- comment -%} PDP inlined directly into the template so it always reaches the theme (section sync is unreliable on this store). {%- endcomment -%}
