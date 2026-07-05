@@ -39,11 +39,26 @@
   .srch-facet__opt.is-active .srch-facet__box::after { content: ""; position: absolute; left: 5px; top: 1px; width: 5px; height: 10px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
   .srch-facet__lbl { flex: 1; }
   .srch-facet__cnt { flex-shrink: 0; min-width: 34px; text-align: right; color: var(--color-text-faint); font-size: 12px; font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
-  .srch-facet__price-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-  .srch-facet__price-in { width: 100%; border: 1px solid rgba(22,51,94,.2); padding: 9px 10px; font-size: 13px; color: #5E6B85; outline: none; -moz-appearance: textfield; }
-  .srch-facet__price-in::-webkit-outer-spin-button, .srch-facet__price-in::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-  .srch-facet__price-btn { background: var(--color-navy); color: #fff; border: none; padding: 10px 18px; font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; }
-  .srch-facet__price-btn:hover { background: #224A82; }
+  /* Price slider (same as the collection page) */
+  .srch-facet .coll-facet__pricetop { font-size: 13px; color: #5E6B85; margin-bottom: 14px; }
+  .srch-facet .coll-facet__pricetop strong { color: var(--color-navy); font-weight: 600; }
+  .srch-facet .coll-facet__slider { position: relative; height: 24px; margin: 6px 0 20px; }
+  .srch-facet .coll-facet__track { position: absolute; top: 10px; left: 8px; right: 8px; height: 3px; background: #DCE6F5; border-radius: 2px; }
+  .srch-facet .coll-facet__track-fill { position: absolute; top: 0; bottom: 0; background: var(--color-blue); border-radius: 2px; }
+  .srch-facet .coll-facet__range { -webkit-appearance: none; appearance: none; position: absolute; top: 0; left: 0; width: 100%; height: 24px; margin: 0; background: transparent; pointer-events: none; }
+  .srch-facet .coll-facet__range:focus { outline: none; }
+  .srch-facet .coll-facet__range--min { z-index: 4; }
+  .srch-facet .coll-facet__range--max { z-index: 3; }
+  .srch-facet .coll-facet__range::-webkit-slider-runnable-track { -webkit-appearance: none; height: 24px; background: transparent; border: none; }
+  .srch-facet .coll-facet__range::-moz-range-track { height: 24px; background: transparent; border: none; }
+  .srch-facet .coll-facet__range::-webkit-slider-thumb { -webkit-appearance: none; pointer-events: auto; margin-top: 4px; width: 16px; height: 16px; border-radius: 50%; background: var(--color-navy); border: 2px solid #fff; box-shadow: 0 1px 5px rgba(22,51,94,.4); cursor: grab; }
+  .srch-facet .coll-facet__range::-webkit-slider-thumb:active { cursor: grabbing; }
+  .srch-facet .coll-facet__range::-moz-range-thumb { pointer-events: auto; width: 16px; height: 16px; border-radius: 50%; background: var(--color-navy); border: 2px solid #fff; box-shadow: 0 1px 5px rgba(22,51,94,.4); cursor: grab; }
+  .srch-facet .coll-facet__price { display: flex; gap: 10px; align-items: center; }
+  .srch-facet .coll-facet__price-box { flex: 1; display: flex; align-items: center; gap: 4px; border: 1px solid rgba(22,51,94,.2); padding: 9px 12px; }
+  .srch-facet .coll-facet__price-cur { font-size: 13px; color: #5E6B85; }
+  .srch-facet .coll-facet__price-box input { flex: 1; width: 100%; border: none; outline: none; background: none; font-size: 13px; color: #5E6B85; padding: 0; -moz-appearance: textfield; }
+  .srch-facet .coll-facet__price-box input::-webkit-outer-spin-button, .srch-facet .coll-facet__price-box input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
   .srch-facet__clear { display: inline-block; margin-top: 18px; font-size: 13px; color: var(--color-blue); }
   .srch-facet__clear:hover { color: var(--color-navy); }
 
@@ -125,16 +140,28 @@
                   <div class="srch-facet__title">{{ filter.label }}</div>
                   {%- case filter.type -%}
                     {%- when 'price_range' -%}
-                      <form method="get" action="{{ routes.search_url }}" class="srch-facet__price">
+                      {%- assign rmax = filter.range_max | money_without_currency | replace: ',', '' | replace: '.00', '' | plus: 0 -%}
+                      {%- if rmax == 0 -%}{%- assign rmax = 1 -%}{%- endif -%}
+                      {%- assign vmin = 0 -%}
+                      {%- if filter.min_value.value != blank -%}{%- assign vmin = filter.min_value.value | money_without_currency | replace: ',', '' | replace: '.00', '' | plus: 0 -%}{%- endif -%}
+                      {%- assign vmax = rmax -%}
+                      {%- if filter.max_value.value != blank -%}{%- assign vmax = filter.max_value.value | money_without_currency | replace: ',', '' | replace: '.00', '' | plus: 0 -%}{%- endif -%}
+                      {%- assign lpct = vmin | times: 100 | divided_by: rmax -%}
+                      {%- assign mpct = vmax | times: 100 | divided_by: rmax -%}
+                      <form method="get" action="{{ routes.search_url }}" class="coll-facet">
                         <input type="hidden" name="q" value="{{ search.terms | escape }}">
                         <input type="hidden" name="options[prefix]" value="last">
                         {%- for f2 in search.filters -%}{%- unless f2.type == 'price_range' -%}{%- for v in f2.active_values -%}<input type="hidden" name="{{ v.param_name }}" value="{{ v.value }}">{%- endfor -%}{%- endunless -%}{%- endfor -%}
-                        <div class="srch-facet__price-row">
-                          <input type="number" name="{{ filter.min_value.param_name }}" value="{{ filter.min_value.value }}" placeholder="0" min="0" class="srch-facet__price-in" aria-label="Minimum price">
-                          <span>–</span>
-                          <input type="number" name="{{ filter.max_value.param_name }}" value="{{ filter.max_value.value }}" placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}" min="0" class="srch-facet__price-in" aria-label="Maximum price">
+                        <div class="coll-facet__pricetop">Highest price <strong>${{ rmax }}</strong></div>
+                        <div class="coll-facet__slider" data-price-slider data-max="{{ rmax }}">
+                          <div class="coll-facet__track"><span class="coll-facet__track-fill" data-price-fill style="left:{{ lpct }}%; right:{{ 100 | minus: mpct }}%;"></span></div>
+                          <input type="range" class="coll-facet__range coll-facet__range--min" min="0" max="{{ rmax }}" step="1" value="{{ vmin }}" data-price-range="min" aria-label="Minimum price">
+                          <input type="range" class="coll-facet__range coll-facet__range--max" min="0" max="{{ rmax }}" step="1" value="{{ vmax }}" data-price-range="max" aria-label="Maximum price">
                         </div>
-                        <button type="submit" class="srch-facet__price-btn">Apply</button>
+                        <div class="coll-facet__price">
+                          <div class="coll-facet__price-box"><span class="coll-facet__price-cur">$</span><input type="number" name="{{ filter.min_value.param_name }}" value="{% if filter.min_value.value != blank %}{{ vmin }}{% endif %}" placeholder="0" min="0" max="{{ rmax }}" data-price-input="min"></div>
+                          <div class="coll-facet__price-box"><span class="coll-facet__price-cur">$</span><input type="number" name="{{ filter.max_value.param_name }}" value="{% if filter.max_value.value != blank %}{{ vmax }}{% endif %}" placeholder="{{ rmax }}" min="0" max="{{ rmax }}" data-price-input="max"></div>
+                        </div>
                       </form>
                     {%- else -%}
                       <ul class="srch-facet__list">
@@ -274,6 +301,41 @@
   {%- endif -%}
 </section>
 
+
+<script>
+  (function () {
+    function initSlider(slider) {
+      var max = parseFloat(slider.getAttribute('data-max')) || 1;
+      var rMin = slider.querySelector('[data-price-range="min"]');
+      var rMax = slider.querySelector('[data-price-range="max"]');
+      var fill = slider.querySelector('[data-price-fill]');
+      var form = slider.closest('form');
+      var scope = slider.closest('.coll-facet') || document;
+      var iMin = scope.querySelector('[data-price-input="min"]');
+      var iMax = scope.querySelector('[data-price-input="max"]');
+      if (!rMin || !rMax) return;
+      function pct(v) { return (v / max) * 100; }
+      function lohi() { return [Math.min(+rMin.value, +rMax.value), Math.max(+rMin.value, +rMax.value)]; }
+      function draw() { var lh = lohi(); if (fill) { fill.style.left = pct(lh[0]) + '%'; fill.style.right = (100 - pct(lh[1])) + '%'; } }
+      function syncInputs() { var lh = lohi(); if (iMin) iMin.value = lh[0] > 0 ? lh[0] : ''; if (iMax) iMax.value = lh[1] < max ? lh[1] : ''; }
+      var appliedLo = Math.min(+rMin.value, +rMax.value);
+      var appliedHi = Math.max(+rMin.value, +rMax.value);
+      function apply() { if (!form) return; var lh = lohi(); if (lh[0] === appliedLo && lh[1] === appliedHi) return; if (form.requestSubmit) { form.requestSubmit(); } else { form.submit(); } }
+      rMin.addEventListener('input', function () { if (+rMin.value > +rMax.value) { rMin.value = rMax.value; } draw(); syncInputs(); });
+      rMax.addEventListener('input', function () { if (+rMax.value < +rMin.value) { rMax.value = rMin.value; } draw(); syncInputs(); });
+      rMin.addEventListener('change', apply);
+      rMax.addEventListener('change', apply);
+      [rMin, rMax].forEach(function (r) {
+        r.addEventListener('pointerdown', function () { rMin.style.zIndex = (r === rMin) ? 6 : 4; rMax.style.zIndex = (r === rMax) ? 6 : 4; });
+        r.addEventListener('wheel', function (e) { e.preventDefault(); }, { passive: false });
+      });
+      if (iMin) { iMin.addEventListener('input', function () { var v = parseFloat(iMin.value); rMin.value = isNaN(v) ? 0 : Math.max(0, Math.min(v, max)); draw(); }); iMin.addEventListener('change', apply); }
+      if (iMax) { iMax.addEventListener('input', function () { var v = parseFloat(iMax.value); rMax.value = isNaN(v) ? max : Math.max(0, Math.min(v, max)); draw(); }); iMax.addEventListener('change', apply); }
+      draw();
+    }
+    document.querySelectorAll('[data-price-slider]').forEach(initSlider);
+  })();
+</script>
 
 {% schema %}
 {
