@@ -447,6 +447,15 @@
   {%- elsif cta_low contains 'landscape' -%}
     {%- assign cta_heading_out = "A view worth keeping? We'll capture it in tile." -%}
     {%- capture cta_sub_out -%}A coastline, a mountain or a sunset you love — share the scene and we'll hand-cut a custom landscape mosaic to your exact size.{%- endcapture -%}
+  {%- elsif cta_low contains 'nautical' -%}
+    {%- assign cta_heading_out = "Anchored to an idea? We'll craft it by hand." -%}
+    {%- capture cta_sub_out -%}A vessel, a compass or a coastal scene — share your vision and we'll hand-cut a weatherproof nautical mosaic for pool, patio or bath.{%- endcapture -%}
+  {%- elsif cta_low contains 'portrait' -%}
+    {%- assign cta_heading_out = "Want a face immortalized? We'll cut it in stone." -%}
+    {%- capture cta_sub_out -%}Send us a photograph and our artisans will recreate it tessera by tessera — a timeless, one-of-a-kind portrait mosaic made just for you.{%- endcapture -%}
+  {%- elsif cta_low contains 'pattern' -%}
+    {%- assign cta_heading_out = "Have a motif in mind? We'll tailor it in tile." -%}
+    {%- capture cta_sub_out -%}Arabesques, scrollwork or a repeating design — share your reference and we'll hand-cut a custom pattern mosaic to your exact dimensions.{%- endcapture -%}
   {%- elsif cta_low contains 'other' or cta_low contains 'best' or cta_low contains 'new arrival' or cta_low contains 'limited' or cta_low contains 'special' or cta_low contains 'sale' or cta_subject == blank -%}
     {%- assign cta_heading_out = "Don't see your vision? We'll hand-cut it in stone." -%}
     {%- capture cta_sub_out -%}Share a photo, sketch or idea and our artisans will craft a one-of-a-kind mosaic in any subject — tailored to your exact dimensions, palette and space.{%- endcapture -%}
