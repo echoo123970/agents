@@ -31,7 +31,7 @@
       {%- if coll.featured_image != blank -%}{%- assign fb = coll.featured_image | image_url: width: 900 -%}{%- else -%}{%- assign fb = 'about-hands-tesserae.png' | asset_url -%}{%- endif -%}
       <a href="{{ card_url }}" class="cat-card">
         {%- if cover != blank -%}
-          <img src="{{ cover }}" alt="{{ card_name | escape }}" width="900" height="1200" class="cat-img cover-img" loading="lazy" referrerpolicy="no-referrer"{% if h == 'portrait-mosaics' %} style="object-position:center 28%"{% endif %} onerror="this.onerror=null;this.src='{{ fb }}'">
+          <img src="{{ cover }}" alt="{{ card_name | escape }}" width="900" height="1200" class="cat-img cover-img{% if h == 'landscape-mosaics' %} cat-img--zoom{% endif %}" loading="lazy" referrerpolicy="no-referrer"{% if h == 'portrait-mosaics' %} style="object-position:center 28%"{% endif %} onerror="this.onerror=null;this.src='{{ fb }}'">
         {%- elsif coll.featured_image != blank -%}
           <img src="{{ fb }}" alt="{{ card_name | escape }}" width="900" height="1200" class="cat-img cover-img" loading="lazy">
         {%- else -%}
@@ -50,6 +50,8 @@
   .cat-grid__title { max-width: 640px; }
   .cat-grid__grid { display: grid; gap: 18px; }
   .cat-card { position: relative; display: block; overflow: hidden; aspect-ratio: 3/4; background: var(--color-light-text); container-type: inline-size; }
+  .cat-card .cat-img--zoom { transform: scale(1.08); }
+  .cat-card:hover .cat-img--zoom { transform: scale(1.16); }
   .cat-grid__scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(11,28,53,.72), rgba(11,28,53,0) 55%); transition: background .4s ease; z-index: 1; }
   .cat-card:hover .cat-grid__scrim { background: linear-gradient(to top, rgba(11,28,53,.82), rgba(11,28,53,.14) 72%); }
   .cat-card::after { content: ""; position: absolute; inset: 18px; border: 1px solid rgba(255,255,255,.85); opacity: 0; transform: scale(1.03); transition: opacity .4s ease, transform .4s ease; pointer-events: none; z-index: 2; }
