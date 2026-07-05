@@ -112,9 +112,19 @@
   @media (max-width:600px) {
     .cmx-wrap { padding:0 22px; }
     .cmx-hero__badge { left:16px; padding:18px 20px; }
-    .cmx-cap__grid, .cmx-proc__grid { grid-template-columns:1fr; }
     .cmx-form { padding:30px 22px; }
     .cmx-form__row--2, .cmx-form__row--3 { grid-template-columns:1fr; }
+    .cmx-hero__ctas { gap:10px; }
+    .cmx-btn { flex:1; min-width:0; padding:14px 6px; font-size:10.5px; letter-spacing:.04em; }
+    .cmx-cap__inner, .cmx-proc__inner { padding-top:88px; }
+    .cmx-h2 { line-height:1.16; }
+    .cmx-cap__grid { display:flex; grid-template-columns:none; gap:0; overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; scrollbar-width:none; margin:0 -22px 0 0; padding-right:22px; }
+    .cmx-proc__grid { display:flex; grid-template-columns:none; gap:24px; overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; scrollbar-width:none; margin:0 -22px 0 0; padding-right:22px; }
+    .cmx-cap__grid::-webkit-scrollbar, .cmx-proc__grid::-webkit-scrollbar { display:none; }
+    .cmx-cap__col { flex:0 0 70%; scroll-snap-align:start; padding:0 24px; }
+    .cmx-cap__col:first-child { padding-left:0; }
+    .cmx-step { flex:0 0 70%; scroll-snap-align:start; }
+    .cmx-contact { margin-bottom:26px; }
   }
 
   /* AAA Form Builder app form — restyled to match the cmx design */
