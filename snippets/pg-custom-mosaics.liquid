@@ -99,6 +99,16 @@
     .cmx-proc__grid { grid-template-columns:1fr 1fr; gap:32px; }
     .cmx-cap__inner, .cmx-proc__inner { padding-top:70px; padding-bottom:70px; }
   }
+  @media (max-width:749px) {
+    /* Mobile: image sits below the description, before the buttons/steps */
+    .cmx-hero__grid { display:flex; flex-direction:column; gap:0; }
+    .cmx-hero__copy { display:contents; }
+    .cmx-eyebrow, .cmx-hero__title, .cmx-hero__text { order:0; }
+    .cmx-hero__media { order:1; min-height:0; margin:6px 0 26px; }
+    .cmx-hero__ctas { order:2; }
+    .cmx-hero__img { position:relative; height:460px; }
+    .cmx-hero__img img { object-position:center top; }
+  }
   @media (max-width:600px) {
     .cmx-wrap { padding:0 22px; }
     .cmx-hero__badge { left:16px; padding:18px 20px; }
