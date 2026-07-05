@@ -292,7 +292,6 @@
                       {%- if filter.max_value.value != blank -%}{%- assign vmax = filter.max_value.value | money_without_currency | replace: ',', '' | replace: '.00', '' | plus: 0 -%}{%- endif -%}
                       {%- assign lpct = vmin | times: 100 | divided_by: rmax -%}
                       {%- assign mpct = vmax | times: 100 | divided_by: rmax -%}
-                      <div class="coll-facet__pricetop">Highest price <strong>${{ rmax }}</strong></div>
                       <div class="coll-facet__slider" data-price-slider data-max="{{ rmax }}">
                         <div class="coll-facet__track"><span class="coll-facet__track-fill" data-price-fill style="left:{{ lpct }}%; right:{{ 100 | minus: mpct }}%;"></span></div>
                         <input type="range" class="coll-facet__range coll-facet__range--min" min="0" max="{{ rmax }}" step="1" value="{{ vmin }}" data-price-range="min" aria-label="Minimum price">

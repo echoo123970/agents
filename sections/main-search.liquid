@@ -156,7 +156,6 @@
                         <input type="hidden" name="q" value="{{ search.terms | escape }}">
                         <input type="hidden" name="options[prefix]" value="last">
                         {%- for f2 in search.filters -%}{%- unless f2.type == 'price_range' -%}{%- for v in f2.active_values -%}<input type="hidden" name="{{ v.param_name }}" value="{{ v.value }}">{%- endfor -%}{%- endunless -%}{%- endfor -%}
-                        <div class="coll-facet__pricetop">Highest price <strong>${{ rmax }}</strong></div>
                         <div class="coll-facet__slider" data-price-slider data-max="{{ rmax }}">
                           <div class="coll-facet__track"><span class="coll-facet__track-fill" data-price-fill style="left:{{ lpct }}%; right:{{ 100 | minus: mpct }}%;"></span></div>
                           <input type="range" class="coll-facet__range coll-facet__range--min" min="0" max="{{ rmax }}" step="1" value="{{ vmin }}" data-price-range="min" aria-label="Minimum price">
