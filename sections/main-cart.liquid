@@ -48,9 +48,12 @@
   .cart__secure { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 18px; font-size: 12px; color: var(--color-text-faint); }
   .cart__note { margin-top: 22px; padding-top: 20px; border-top: 1px solid rgba(220,230,245,.16); font-size: 12.5px; line-height: 1.6; color: var(--color-text-faint); text-align: center; }
 
+  .cart__continue--mob { display: none; }
   @media (max-width: 990px) {
     .cart__layout { grid-template-columns: 1fr; gap: 32px; }
     .cart__summary { position: static; }
+    .cart__continue--desk { display: none; }
+    .cart__continue--mob { display: inline-flex; margin-top: 26px; }
   }
   @media (max-width: 600px) {
     .cart__line { grid-template-columns: 80px 1fr; }
@@ -128,7 +131,7 @@
           </div>
         {%- endfor -%}
 
-        <a href="{{ routes.all_products_collection_url }}" class="cart__continue">
+        <a href="{{ routes.all_products_collection_url }}" class="cart__continue cart__continue--desk">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="20" y1="12" x2="5" y2="12"/><polyline points="11 18 5 12 11 6"/></svg>
           Continue Shopping
         </a>
@@ -154,6 +157,11 @@
         </div>
         <div class="cart__note">Each mosaic is handcrafted to order.</div>
       </div>
+
+      <a href="{{ routes.all_products_collection_url }}" class="cart__continue cart__continue--mob">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="20" y1="12" x2="5" y2="12"/><polyline points="11 18 5 12 11 6"/></svg>
+        Continue Shopping
+      </a>
     </form>
   {%- endif -%}
 </section>
