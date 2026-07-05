@@ -37,12 +37,26 @@
     .hero__btn { min-width: 0; flex: 1; }
     .hero__card { left: 12px; bottom: 12px; }
   }
-  @media (max-width: 600px) {
+  @media (max-width: 749px) {
+    /* Mobile order: eyebrow/heading/text → image → stats (one row) → buttons */
+    .hero__grid { display: flex; flex-direction: column; padding: 36px 0 42px; }
+    .hero__content { display: contents; }
+    .hero__eyebrow, .hero__heading, .hero__text { order: 0; }
+    .hero__media { order: 1; }
+    .hero__stats { order: 2; }
+    .hero__ctas { order: 3; }
+
     .hero__heading { font-size: clamp(34px, 9vw, 44px); }
-    .hero__content { padding: 40px 0 32px; }
-    .hero__stats { gap: 24px 32px; }
-    .hero__media { min-height: 360px; }
-    .hero__frame { height: 360px; }
+    .hero__text { max-width: none; margin-bottom: 24px; }
+    .hero__media { min-height: 0; margin-bottom: 24px; }
+    .hero__frame { position: relative; inset: 0; height: 340px; }
+    .hero__card { left: 12px; bottom: 12px; }
+
+    .hero__stats { flex-wrap: nowrap; gap: 14px; justify-content: space-between; border-top: 1px solid rgba(22,51,94,.12); padding-top: 22px; margin-top: 0; }
+    .hero__stat-value { font-size: 22px; }
+    .hero__stat-label { font-size: 10.5px; letter-spacing: .04em; margin-top: 5px; }
+    .hero__ctas { flex-wrap: wrap; gap: 12px; margin: 24px 0 0; }
+    .hero__btn { min-width: 0; flex: 1 1 100%; }
   }
 </style>
 

@@ -10,9 +10,15 @@
   .testimonials__avatar { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; }
   .testimonials__name { font-size: 14.5px; font-weight: 600; color: var(--color-navy); }
   .testimonials__place { font-size: 12.5px; color: var(--color-text-soft); }
-  @media (max-width: 990px) {
+  @media (max-width: 990px) and (min-width: 750px) {
     .testimonials__inner { padding-top: 80px; padding-bottom: 80px; }
     .testimonials__grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 749px) {
+    .testimonials__inner { padding-top: 72px; padding-bottom: 72px; }
+    .testimonials__grid { display: flex; grid-template-columns: none; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin: 0 -18px; padding: 2px 18px 8px; }
+    .testimonials__grid::-webkit-scrollbar { display: none; }
+    .testimonials__card { flex: 0 0 82%; scroll-snap-align: start; height: auto; }
   }
 </style>
 

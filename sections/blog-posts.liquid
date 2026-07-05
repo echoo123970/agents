@@ -9,7 +9,14 @@
   .journal__title { font-family: var(--font-display); font-weight: 500; font-size: 24px; line-height: 1.2; margin-bottom: 10px; color: var(--color-navy); }
   .journal__excerpt { font-size: 14px; line-height: 1.6; color: var(--color-text-muted); margin-bottom: 16px; }
   .journal__more { display: inline-block; font-size: 11.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--color-navy); border-bottom: 1px solid var(--color-blue); padding-bottom: 4px; }
-  @media (max-width: 990px) { .journal { padding-top: 80px; padding-bottom: 80px; } .journal__grid { grid-template-columns: 1fr; max-width: 480px; } }
+  @media (max-width: 990px) and (min-width: 750px) { .journal { padding-top: 80px; padding-bottom: 80px; } .journal__grid { grid-template-columns: 1fr; max-width: 480px; } }
+  @media (max-width: 749px) {
+    .journal { padding-top: 72px; padding-bottom: 72px; }
+    .journal__grid { display: flex; grid-template-columns: none; max-width: none; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin: 0 -18px; padding: 2px 18px 8px; }
+    .journal__grid::-webkit-scrollbar { display: none; }
+    .journal__card { flex: 0 0 78%; scroll-snap-align: start; }
+    .journal__media { margin-bottom: 14px; }
+  }
 </style>
 
 {%- comment -%} Auto-pick: chosen blog, else 'news', else the first blog that has articles {%- endcomment -%}

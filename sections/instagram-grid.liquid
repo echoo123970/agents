@@ -9,8 +9,19 @@
   .ig-tile:hover .cover-img { transform: scale(1.06); }
   .ig-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(11,28,53,.42); opacity: 0; transition: opacity .3s ease; }
   .ig-tile:hover .ig-overlay { opacity: 1; }
+  .ig-tile--hidden { display: block; }
+  .instagram__more-wrap { display: none; text-align: center; padding-top: 30px; }
+  .instagram__more { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-body); font-size: 12px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--color-navy); background: none; border: 1px solid rgba(22,51,94,.28); padding: 15px 34px; cursor: pointer; transition: color .25s ease, border-color .25s ease, background-color .25s ease; }
+  .instagram__more:hover { border-color: var(--color-navy); background: var(--color-navy); color: #fff; }
+  .instagram__more svg { transition: transform .3s ease; }
+  .instagram.is-expanded .instagram__more svg { transform: rotate(180deg); }
   @media (max-width: 990px) { .instagram__grid { grid-template-columns: repeat(4, 1fr); } }
-  @media (max-width: 600px) { .instagram__grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 749px) {
+    .instagram__grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .ig-tile--hidden { display: none; }
+    .instagram.is-expanded .ig-tile--hidden { display: block; }
+    .instagram__more-wrap { display: block; }
+  }
 </style>
 
 <section class="instagram">
@@ -23,7 +34,7 @@
   <div class="instagram__grid">
     {%- if section.blocks.size > 0 -%}
       {%- for block in section.blocks -%}
-        <a href="{{ block.settings.link | default: settings.social_instagram_link | default: '#' }}" target="_blank" rel="noopener" class="ig-tile" {{ block.shopify_attributes }}>
+        <a href="{{ block.settings.link | default: settings.social_instagram_link | default: '#' }}" target="_blank" rel="noopener" class="ig-tile{% if forloop.index0 >= 6 %} ig-tile--hidden{% endif %}" {{ block.shopify_attributes }}>
           {%- if block.settings.image != blank -%}
             <img src="{{ block.settings.image | image_url: width: 400 }}" alt="" width="400" height="400" class="cover-img" loading="lazy">
           {%- else -%}
@@ -40,7 +51,7 @@
       {%- for f in ig_files -%}
         {%- assign tile_link = ig_links[forloop.index0] -%}
         {%- if tile_link == blank or tile_link == '#' -%}{%- assign tile_link = ig_link -%}{%- endif -%}
-        <a href="{{ tile_link }}" target="_blank" rel="noopener" class="ig-tile">
+        <a href="{{ tile_link }}" target="_blank" rel="noopener" class="ig-tile{% if forloop.index0 >= 6 %} ig-tile--hidden{% endif %}">
           {%- if f contains '://' -%}
             <img src="{{ f }}" alt="" width="400" height="400" class="cover-img" loading="lazy" referrerpolicy="no-referrer">
           {%- else -%}
@@ -51,7 +62,27 @@
       {%- endfor -%}
     {%- endif -%}
   </div>
+  <div class="instagram__more-wrap">
+    <button type="button" class="instagram__more" data-ig-more aria-expanded="false">
+      <span data-ig-more-label>Show More</span>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+  </div>
 </section>
+
+<script>
+  (function () {
+    var btn = document.currentScript.previousElementSibling.querySelector('[data-ig-more]');
+    if (!btn) return;
+    var section = btn.closest('.instagram');
+    var label = btn.querySelector('[data-ig-more-label]');
+    btn.addEventListener('click', function () {
+      var open = section.classList.toggle('is-expanded');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (label) label.textContent = open ? 'Show Less' : 'Show More';
+    });
+  })();
+</script>
 
 
 {% schema %}
