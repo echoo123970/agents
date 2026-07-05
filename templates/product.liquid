@@ -115,8 +115,12 @@
                   {% unless variant.available %}aria-disabled="true"{% endunless %}>
                   {%- assign vparts = variant.title | split: '(' -%}
                   <span class="size-btn__name">
-                    <span class="size-btn__cm">{{ vparts[0] | strip }}{% unless variant.available %} — Sold out{% endunless %}</span>
-                    {%- if vparts.size > 1 -%}<span class="size-btn__inch">({{ vparts[1] }}</span>{%- endif -%}
+                    {%- if vparts.size > 1 -%}
+                      <span class="size-btn__inch">{{ vparts[1] | remove: ')' | strip }}{% unless variant.available %} — Sold out{% endunless %}</span>
+                      <span class="size-btn__cm">{{ vparts[0] | strip }}</span>
+                    {%- else -%}
+                      <span class="size-btn__inch">{{ vparts[0] | strip }}{% unless variant.available %} — Sold out{% endunless %}</span>
+                    {%- endif -%}
                   </span>
                   <span class="size-btn__price">{{ variant.price | money }}</span>
                 </button>
@@ -300,8 +304,8 @@
   .size-btn.is-active { background: var(--color-navy); color: #fff; border-color: var(--color-navy); }
   .size-btn.is-unavailable { opacity: .45; }
   .size-btn__name { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; }
-  .size-btn__cm { font-size: 14.5px; font-weight: 600; }
-  .size-btn__inch { font-size: 12px; opacity: .7; }
+  .size-btn__inch { font-size: 14.5px; font-weight: 600; }
+  .size-btn__cm { font-size: 12px; opacity: .7; }
   .size-btn__price { font-family: var(--font-display); font-size: 22px; }
 
   .pdp__buy { display: flex; gap: 14px; margin-bottom: 18px; }
