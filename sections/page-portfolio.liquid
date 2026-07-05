@@ -44,6 +44,11 @@
 
   @media (max-width: 990px) { .pf-masonry { column-count: 2 !important; } }
   @media (max-width: 600px) { .pf-masonry { column-count: 1 !important; } }
+  @media (max-width: 749px) {
+    .pf-tabs { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; gap: 8px; scroll-padding-left: 18px; scroll-snap-type: x proximity; }
+    .pf-tabs::-webkit-scrollbar { display: none; }
+    .pf-tab { flex: 0 0 auto; scroll-snap-align: start; font-size: 12px; letter-spacing: .06em; padding: 9px 16px; }
+  }
 </style>
 
 {%- assign items = section.blocks | where: 'type', 'item' -%}
