@@ -33,6 +33,12 @@
   .coll-chip { display: inline-flex; align-items: center; white-space: nowrap; font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase; padding: 10px 20px; border: 1px solid rgba(22,51,94,.18); text-decoration: none; color: #46546E; transition: color .2s ease, border-color .2s ease, background-color .2s ease; }
   .coll-chip:hover { border-color: var(--color-blue); color: var(--color-navy); }
   .coll-chip.is-active { background: var(--color-navy); color: #fff; border-color: var(--color-navy); }
+  @media (max-width: 749px) {
+    .coll-chips__row { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; gap: 8px; padding-top: 14px; padding-bottom: 14px; scroll-snap-type: x proximity; }
+    .coll-chips__row::-webkit-scrollbar { display: none; }
+    .coll-chips__break { display: none; }
+    .coll-chip { flex: 0 0 auto; scroll-snap-align: start; font-size: 12px; letter-spacing: .06em; padding: 9px 16px; border-radius: 2px; }
+  }
 
   .coll { padding-top: 36px; padding-bottom: 90px; }
   .coll__toolbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; padding-bottom: 24px; margin-bottom: 34px; border-bottom: 1px solid rgba(22,51,94,.1); }
@@ -582,6 +588,12 @@
       var open = layout.classList.toggle('is-filters-open');
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
     });
+    // On mobile, bring the active category chip into view within the scroller
+    var activeChip = document.querySelector('.coll-chips__row .coll-chip.is-active');
+    if (activeChip && window.matchMedia('(max-width: 749px)').matches) {
+      var row = activeChip.parentNode;
+      row.scrollLeft = activeChip.offsetLeft - 16;
+    }
   })();
 </script>
 
