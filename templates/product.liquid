@@ -89,7 +89,8 @@
 
       <div class="pdp__price-row">
         <span class="pdp__price" data-price>{{ product.selected_or_first_available_variant.price | money }}</span>
-        <span class="pdp__size-label" data-size-label>{{ product.selected_or_first_available_variant.title }}</span>
+        {%- assign svp = product.selected_or_first_available_variant.title | split: '(' -%}
+        <span class="pdp__size-label" data-size-label>{%- if svp.size > 1 -%}{{ svp[1] | remove: ')' | strip }} ({{ svp[0] | strip }}){%- else -%}{{ product.selected_or_first_available_variant.title }}{%- endif -%}</span>
       </div>
       <p class="pdp__status"><span class="pdp__status-dot"></span>{{ availability_note }}</p>
 
@@ -107,13 +108,14 @@
             <div class="pdp__sizes-label">Select Size</div>
             <div class="pdp__sizes-list" data-variant-picker>
               {%- for variant in product.variants -%}
+                {%- assign vparts = variant.title | split: '(' -%}
+                {%- if vparts.size > 1 -%}{%- capture v_disp -%}{{ vparts[1] | remove: ')' | strip }} ({{ vparts[0] | strip }}){%- endcapture -%}{%- else -%}{%- assign v_disp = variant.title -%}{%- endif -%}
                 <button type="button"
                   class="size-btn{% if variant.id == product.selected_or_first_available_variant.id %} is-active{% endif %}{% unless variant.available %} is-unavailable{% endunless %}"
                   data-variant-id="{{ variant.id }}"
                   data-variant-price="{{ variant.price | money }}"
-                  data-variant-title="{{ variant.title | escape }}"
+                  data-variant-title="{{ v_disp | escape }}"
                   {% unless variant.available %}aria-disabled="true"{% endunless %}>
-                  {%- assign vparts = variant.title | split: '(' -%}
                   <span class="size-btn__name">
                     {%- if vparts.size > 1 -%}
                       <span class="size-btn__inch">{{ vparts[1] | remove: ')' | strip }}{% unless variant.available %} — Sold out{% endunless %}</span>
