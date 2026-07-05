@@ -232,15 +232,24 @@
     {%- else -%}
       <a href="{{ routes.all_products_collection_url }}" class="coll-chip{% if collection.handle == 'all' or collection.handle == blank %} is-active{% endif %}">All Mosaics</a>
       {%- assign chip_i = 1 -%}
+      {%- assign other_url = '' -%}
+      {%- assign other_active = false -%}
       {%- for c in collections -%}
         {%- assign c_tl = c.title | downcase -%}
-        {%- unless c.handle == 'all' or c.handle == 'frontpage' or c.handle == 'home-page' or c.products_count == 0 or c_tl contains 'limited edition' or c_tl contains 'studio special' or c_tl contains 'best seller' or c_tl contains 'new arrival' or c_tl contains 'van gogh' or c_tl contains 'backsplash' or c_tl contains 'table top' or c_tl contains 'tabletop' or c_tl contains 'glass' -%}
+        {%- if c_tl contains 'other' and c.products_count > 0 -%}
+          {%- assign other_url = c.url -%}
+          {%- if collection.handle == c.handle -%}{%- assign other_active = true -%}{%- endif -%}
+        {%- endif -%}
+        {%- unless c.handle == 'all' or c.handle == 'frontpage' or c.handle == 'home-page' or c.products_count == 0 or c_tl contains 'limited edition' or c_tl contains 'studio special' or c_tl contains 'best seller' or c_tl contains 'new arrival' or c_tl contains 'van gogh' or c_tl contains 'backsplash' or c_tl contains 'table top' or c_tl contains 'tabletop' or c_tl contains 'glass' or c_tl contains 'other' -%}
           {%- assign chip_label = c.title | remove: ' Mosaics' | remove: ' Mosaic' | remove: 'Mosaic ' | strip -%}
           <a href="{{ c.url }}" class="coll-chip{% if collection.handle == c.handle %} is-active{% endif %}">{{ chip_label }}</a>
           {%- assign chip_i = chip_i | plus: 1 -%}
           {%- if chip_i == 9 -%}<span class="coll-chips__break" aria-hidden="true"></span>{%- endif -%}
         {%- endunless -%}
       {%- endfor -%}
+      {%- if other_url != blank -%}
+        <a href="{{ other_url }}" class="coll-chip{% if other_active %} is-active{% endif %}">Other</a>
+      {%- endif -%}
     {%- endif -%}
   </div>
 </section>
