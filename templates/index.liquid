@@ -13,7 +13,12 @@
   .cat-label { position: absolute; left: 32px; bottom: 38px; right: 32px; color: var(--color-bg); font-family: var(--font-display); font-weight: 500; font-size: clamp(18px, 7cqw, 23px); line-height: 1; letter-spacing: .01em; z-index: 3; }
   .cat-cta { position: absolute; left: 32px; bottom: 22px; color: #fff; font-size: clamp(9px, 3.4cqw, 10.5px); letter-spacing: .18em; text-transform: uppercase; z-index: 3; opacity: 0; transform: translateY(8px); transition: opacity .4s ease, transform .4s ease; pointer-events: none; }
   .cat-card:hover .cat-cta { opacity: 1; transform: translateY(0); }
+  .cat-grid__foot-btn { display: none; }
   @media (max-width: 990px) { .cat-grid { padding-top: 80px; } .cat-grid__grid { grid-template-columns: repeat(3, 1fr) !important; } }
+  @media (max-width: 749px) {
+    .cat-grid__head-btn { display: none; }
+    .cat-grid__foot-btn { display: flex; justify-content: center; margin-top: 34px; }
+  }
   @media (max-width: 600px) {
     .cat-grid__grid { grid-template-columns: repeat(2, 1fr) !important; }
     .cat-label { left: 18px; right: 18px; bottom: 20px; }
@@ -31,7 +36,7 @@
       <div class="eyebrow">Shop by Subject</div>
       <h2 class="section-title cat-grid__title">Artisanal Mosaic Designs In Natural Marble &amp; Glass</h2>
     </div>
-    <a href="{{ routes.all_products_collection_url }}" class="btn btn--ghost">View All Subjects</a>
+    <a href="{{ routes.all_products_collection_url }}" class="btn btn--ghost cat-grid__head-btn">View All Subjects</a>
   </div>
   <div class="cat-grid__grid" style="grid-template-columns: repeat(5, 1fr);">
     {%- assign cat_handles = 'portrait-mosaics~nautical-mosaics~flower-mosaics~landscape-mosaics~food-mosaics~geometric-mosaics~animal-mosaics~bird-mosaics~patterns-mosaics~tree-mosaics' | split: '~' -%}
@@ -65,6 +70,9 @@
         <span class="cat-cta">View Collection</span>
       </a>
     {%- endfor -%}
+  </div>
+  <div class="cat-grid__foot-btn">
+    <a href="{{ routes.all_products_collection_url }}" class="btn btn--ghost">View All Subjects</a>
   </div>
 </section>
 {% section 'marquee' %}
@@ -126,7 +134,7 @@
       <div class="eyebrow">Collector's Favorites</div>
       <h2 class="section-title">Our Iconic Mosaic Masterpieces</h2>
     </div>
-    <a href="{{ routes.all_products_collection_url }}" class="btn btn--ghost">View All Mosaics</a>
+    <a href="{{ routes.all_products_collection_url }}" class="btn btn--ghost bestsellers__head-btn">View All Mosaics</a>
   </div>
   <div class="bestsellers__grid" style="grid-template-columns: repeat(4, 1fr);">
     {%- assign d_images = 'nautical-sunset.jpg~flower-vase.jpg~https://www.imosaicart.com/cdn/shop/files/MAS081_b2d557a7-36fa-418b-b736-ec6f27f75af3.jpg?width=600~bird-peacock.jpg~https://www.imosaicart.com/cdn/shop/files/MAT053_-_60cm_x_85cm_8343d742-e897-4c91-b648-f7480e0e8ee5.jpg?width=600~religious-lady-jesus.png~https://www.imosaicart.com/cdn/shop/files/MAA034_55b3da2e-eb16-4125-9de5-fcd9a5899e57.jpg?width=600~portrait-pearl.png' | split: '~' -%}
@@ -157,9 +165,13 @@
       </a>
     {%- endfor -%}
   </div>
+  <div class="bestsellers__foot-btn">
+    <a href="{{ routes.all_products_collection_url }}" class="btn btn--ghost">View All Mosaics</a>
+  </div>
 </section>
 <style>
   .bestsellers { padding-top: 90px; padding-bottom: 100px; }
+  .bestsellers__foot-btn { display: none; }
   .bestsellers__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 46px; flex-wrap: wrap; }
   .bestsellers__grid { display: grid; gap: 28px 22px; }
   .prod-card { display: block; }
@@ -170,9 +182,11 @@
   @media (max-width: 990px) and (min-width: 750px) { .bestsellers__grid { grid-template-columns: repeat(2, 1fr) !important; } }
   @media (max-width: 749px) {
     .bestsellers { padding-top: 60px; padding-bottom: 70px; }
-    .bestsellers__grid { display: flex !important; grid-template-columns: none !important; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin: 0 -18px; padding: 2px 18px 8px; }
+    .bestsellers__grid { display: flex !important; grid-template-columns: none !important; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin: 0 -18px 0 0; padding: 2px 18px 8px 0; }
     .bestsellers__grid::-webkit-scrollbar { display: none; }
     .prod-card { flex: 0 0 62%; scroll-snap-align: start; }
+    .bestsellers__head-btn { display: none; }
+    .bestsellers__foot-btn { display: flex; justify-content: center; margin-top: 30px; }
   }
 </style>
 {% section 'custom-process' %}
