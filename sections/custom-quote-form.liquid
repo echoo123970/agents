@@ -6,62 +6,9 @@
       {%- if section.settings.text != blank -%}<p class="quote-section__text">{{ section.settings.text }}</p>{%- endif -%}
     </div>
 
-    {%- form 'contact', class: 'quote-form', enctype: 'multipart/form-data' -%}
-      {%- if form.posted_successfully? -%}
-        <div class="quote-form__success">
-          <div class="quote-form__success-icon">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#7BB0F4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          </div>
-          <h3 class="quote-form__success-title">Quote Request Sent</h3>
-          <p class="quote-form__success-text">Thank you — our studio will reply with a tailored quote within one business day.</p>
-        </div>
-      {%- else -%}
-        {%- if form.errors -%}
-          <div class="quote-form__error">{{ form.errors | default_errors }}</div>
-        {%- endif -%}
-        <div class="quote-form__field">
-          <label class="quote-form__label" for="QuoteName">Name <span class="quote-form__req">*</span></label>
-          <input type="text" id="QuoteName" name="contact[name]" required placeholder="Enter your full name" class="quote-form__input">
-        </div>
-        <div class="quote-form__field">
-          <label class="quote-form__label" for="QuoteEmail">Email <span class="quote-form__req">*</span></label>
-          <input type="email" id="QuoteEmail" name="contact[email]" required placeholder="Enter your email address" class="quote-form__input">
-        </div>
-        <div class="quote-form__field">
-          <label class="quote-form__label" for="QuotePhone">Phone Number</label>
-          <input type="tel" id="QuotePhone" name="contact[phone]" placeholder="Enter your phone number" class="quote-form__input">
-        </div>
-        <div class="quote-form__row">
-          <div class="quote-form__field">
-            <label class="quote-form__label" for="QuoteWidth">Width In Inches</label>
-            <input type="number" id="QuoteWidth" name="contact[Width (in)]" placeholder="Enter width" class="quote-form__input">
-          </div>
-          <div class="quote-form__field">
-            <label class="quote-form__label" for="QuoteHeight">Height In Inches</label>
-            <input type="number" id="QuoteHeight" name="contact[Height (in)]" placeholder="Enter height" class="quote-form__input">
-          </div>
-        </div>
-        <div class="quote-form__field">
-          <label class="quote-form__label" for="QuoteMsg">Customize Your Own Mosaic Design <span class="quote-form__req">*</span></label>
-          <textarea id="QuoteMsg" name="contact[body]" rows="4" required placeholder="Give us details about color, size, shape or design" class="quote-form__input quote-form__textarea"></textarea>
-        </div>
-        <div class="quote-form__field">
-          <label class="quote-form__label" for="QuoteFile">Upload Reference Image</label>
-          <label class="quote-upload" for="QuoteFile" data-upload>
-            <input type="file" id="QuoteFile" name="contact[Reference image]" class="quote-upload__input" accept="image/png,image/jpeg,image/jpg,image/webp,application/pdf" data-upload-input>
-            <span class="quote-upload__icon">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v3a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-3"/><polyline points="8 8 12 4 16 8"/><line x1="12" y1="4" x2="12" y2="15.5"/></svg>
-            </span>
-            <span class="quote-upload__title" data-upload-title>Click to upload or drag &amp; drop</span>
-            <span class="quote-upload__hint">PNG, JPG, WEBP or PDF — up to 10MB</span>
-          </label>
-        </div>
-        {%- if product -%}
-          <input type="hidden" name="contact[Product]" value="{{ product.title }}">
-        {%- endif -%}
-        <button type="submit" class="quote-form__submit">Submit Request</button>
-      {%- endif -%}
-    {%- endform -%}
+    {%- comment -%} Quote form handled by the AAA Form Builder app (form 16105); restyled below to match the design. {%- endcomment -%}
+    <div class="aaa_formbuilder_container" style="width: 100%; margin: 0 auto; float: none;"><form method="post" action="" class="aaaformbuilder_form  aaa_formbuilder_form_id_16105" enctype="multipart/form-data"><input type="hidden" name="url" class="get_current_page_url" value="{{ canonical_url }}"><input type="hidden" name="container_id" value=""><input type="hidden" name="form_id" value="16105"><input type="hidden" name="form_domain" value="aml89.myshopify.com"><input type="hidden" name="" value="Thank You! We'll be in touch" class="success_msg"><input type="hidden" name="" value="Please fill all the required fields" class="error_msg"><input type="hidden" name="" value="Please enter a valid email address." class="emailerror_msg"><input type="hidden" name="" value="" class="aaa_thankyoupageurl"><input type="hidden" name="uploadeLimit" class="formUploadLimit" value="10"><input type="hidden" name="allowefiletype" class="allowedfiletype" value=""><input type="hidden" name="conditionallogic" class="conditionallogic" value=""><div class="fb-text form-group field-first-name"><label for="first-name" class="fb-text-label">Name <span class="required">*</span></label> <input type="text" required="" placeholder="Enter your full name" class="form-control field__input" name="first-name" id="first-name"></div><div class="fb-email form-group field-replyemail"><label for="replyemail" class="fb-email-label">Email <span class="required">*</span></label> <input type="email" required="" placeholder="Enter your email address" class="form-control field__input" name="replyemail" id="replyemail" aria-required="true"></div><div class="fb-number form-group field-number-1703859243649"><label for="number-1703859243649" class="fb-number-label">Phone Number</label> <input type="number" class="form-control field__input" name="number-1703859243649" placeholder="Enter your phone number" id="number-1703859243649"></div><div class="fb-text form-group field-width"><label for="width" class="fb-text-label">Width In Inches</label> <input type="text" placeholder="Enter width" class="form-control field__input" name="width" id="width"></div><div class="fb-text form-group field-height"><label for="height" class="fb-text-label">Height In Inches</label> <input type="text" placeholder="Enter Height" class="form-control field__input" name="height" id="height"></div><div class="fb-file form-group field-file-1704224393638"><label for="file-1704224393638" class="fb-file-label">Upload Reference Image</label> <input type="file" class="form-control" name="file-1704224393638" id="file-1704224393638"></div><div class="fb-undefined form-group field-textarea-1481364899702"><label for="textarea-1481364899702" class="fb-textarea-label">Customize Your Own Mosaic Design <span class="required">*</span></label><textarea required="" placeholder="Give us details about color, size, shape or design" class="form-control field__input" name="textarea-1481364899702" id="textarea-1481364899702"></textarea></div><div class="fb-submit form-group field-button-1481029333721"><div class="aaa_captcha_cont"><label>Captcha</label><span class="rand1">8</span> + <span class="rand2">8</span> = <input type="text" class="aaa_captcha_result" style="width: 60px; display: inline-block;"></div><button type="submit" class="button-input btn button btn-default" name="button-1481029333721" id="button-1481029333721">Submit Request</button></div></form></div>
+    <script> function isMyScriptLoaded() { var url = 'https://shopifycdn.aaawebstore.com/formbuilder/appfiles/aaa_form_builder_script_minify_v1.js?shop=aml89.myshopify.com'; var jsFound = 0; var scripts = document.getElementsByTagName('script');  for (var i = scripts.length; i--;) { if (scripts[i].src == url) { jsFound = 1; } } if(!jsFound) { var headTag = document.getElementsByTagName('head')[0]; var jqTag = document.createElement('script'); jqTag.type = 'text/javascript'; jqTag.src = url; jqTag.onload = ''; headTag.appendChild(jqTag); } } isMyScriptLoaded(); </script>
   </div>
 </section>
 
@@ -94,6 +41,25 @@
   .quote-form__success-title { font-family: var(--font-display); font-weight: 500; font-size: 30px; margin-bottom: 12px; color: #fff; }
   .quote-form__success-text { font-size: 16px; line-height: 1.65; color: var(--color-text-faint); max-width: 380px; margin: 0 auto; }
   @media (max-width: 600px) { .quote-form__row { grid-template-columns: 1fr; } }
+
+  /* AAA Form Builder app form — restyled to match the design */
+  .aaa_formbuilder_container { background: transparent !important; width: 100% !important; }
+  .aaaformbuilder_form .form-group { margin-bottom: 20px; box-sizing: border-box; }
+  .aaaformbuilder_form label { display: block; font-family: var(--font-body); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--color-text-faint) !important; margin-bottom: 9px; font-weight: 400; }
+  .aaaformbuilder_form .required { color: var(--color-blue-light) !important; }
+  .aaaformbuilder_form .form-control { width: 100%; box-sizing: border-box; background: rgba(255,255,255,.06); border: 1px solid rgba(220,230,245,.22); border-radius: 0; outline: none; box-shadow: none; color: #fff; font-family: var(--font-body); font-size: 15px; padding: 14px 16px; }
+  .aaaformbuilder_form .form-control:focus { border-color: var(--color-blue-light); }
+  .aaaformbuilder_form .form-control::placeholder { color: var(--color-text-faint); }
+  .aaaformbuilder_form textarea.form-control { min-height: 120px; resize: vertical; }
+  .aaaformbuilder_form .fb-file .form-control { padding: 12px 16px; color: var(--color-text-faint); }
+  .aaaformbuilder_form .field-width, .aaaformbuilder_form .field-height { display: inline-block; width: calc(50% - 9px); vertical-align: top; box-sizing: border-box; }
+  .aaaformbuilder_form .field-width { margin-right: 16px; }
+  .aaaformbuilder_form .aaa_captcha_cont { margin-bottom: 18px; color: var(--color-text-faint); font-size: 13px; letter-spacing: .08em; }
+  .aaaformbuilder_form .aaa_captcha_cont label { display: inline; margin-right: 10px; text-transform: uppercase; }
+  .aaaformbuilder_form .aaa_captcha_result { background: rgba(255,255,255,.06); border: 1px solid rgba(220,230,245,.22); color: #fff; padding: 8px 10px; }
+  .aaa_formbuilder_container .aaaformbuilder_form .fb-submit button { background: var(--color-blue) !important; color: #fff !important; border: none !important; border-radius: 0 !important; font-family: var(--font-body) !important; font-size: 13px !important; font-weight: 600 !important; letter-spacing: .14em !important; text-transform: uppercase !important; padding: 16px 44px !important; width: auto !important; cursor: pointer !important; margin-top: 6px; }
+  .aaa_formbuilder_container .aaaformbuilder_form .fb-submit button:hover { background: #1E63C4 !important; }
+  @media (max-width: 600px) { .aaaformbuilder_form .field-width, .aaaformbuilder_form .field-height { display: block; width: 100%; margin-right: 0; } }
 </style>
 
 <script>
