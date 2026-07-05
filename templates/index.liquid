@@ -39,6 +39,7 @@
         {%- endif -%}
         <span class="cat-grid__scrim"></span>
         <span class="cat-label">{{ card_name }}</span>
+        <span class="cat-cta">View Collection</span>
       </a>
     {%- endfor -%}
   </div>
@@ -50,9 +51,11 @@
   .cat-grid__grid { display: grid; gap: 18px; }
   .cat-card { position: relative; display: block; overflow: hidden; aspect-ratio: 3/4; background: var(--color-light-text); container-type: inline-size; }
   .cat-grid__scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(11,28,53,.72), rgba(11,28,53,0) 55%); transition: background .4s ease; z-index: 1; }
-  .cat-card:hover .cat-grid__scrim { background: linear-gradient(to top, rgba(11,28,53,.78), rgba(11,28,53,.12) 70%); }
-  .cat-label { position: absolute; left: 34px; bottom: 30px; right: 34px; color: var(--color-bg); font-family: var(--font-display); font-weight: 500; font-size: clamp(18px, 8.4cqw, 26px); line-height: 1; letter-spacing: .01em; z-index: 3; }
-  .cat-cta { position: absolute; left: 34px; bottom: 34px; color: rgba(255,255,255,.82); font-size: clamp(9px, 3.7cqw, 11px); letter-spacing: .18em; text-transform: uppercase; z-index: 3; transition: color .3s ease; }
+  .cat-card:hover .cat-grid__scrim { background: linear-gradient(to top, rgba(11,28,53,.82), rgba(11,28,53,.14) 72%); }
+  .cat-card::after { content: ""; position: absolute; inset: 18px; border: 1px solid rgba(255,255,255,.85); opacity: 0; transform: scale(1.03); transition: opacity .4s ease, transform .4s ease; pointer-events: none; z-index: 2; }
+  .cat-card:hover::after { opacity: 1; transform: scale(1); }
+  .cat-label { position: absolute; left: 34px; bottom: 56px; right: 34px; color: var(--color-bg); font-family: var(--font-display); font-weight: 500; font-size: clamp(20px, 9cqw, 28px); line-height: 1; letter-spacing: .01em; z-index: 3; }
+  .cat-cta { position: absolute; left: 34px; bottom: 32px; color: rgba(255,255,255,.82); font-size: clamp(9px, 3.7cqw, 11px); letter-spacing: .18em; text-transform: uppercase; z-index: 3; transition: color .3s ease; }
   .cat-card:hover .cat-cta { color: #fff; }
   @media (max-width: 990px) { .cat-grid { padding-top: 80px; } .cat-grid__grid { grid-template-columns: repeat(3, 1fr) !important; } }
   @media (max-width: 600px) { .cat-grid__grid { grid-template-columns: repeat(2, 1fr) !important; } }
