@@ -94,7 +94,9 @@
   @media (max-width:990px) {
     .cmx-hero__grid, .cmx-desg__grid { grid-template-columns:1fr; gap:40px; }
     .cmx-desg__grid { padding:70px 0; }
-    .cmx-hero__media { min-height:440px; }
+    .cmx-hero__media { min-height:0; }
+    .cmx-hero__img { position:static; }
+    .cmx-hero__img img { height:auto; object-fit:contain; }
     .cmx-cap__grid { grid-template-columns:1fr 1fr; gap:44px 0; }
     .cmx-proc__grid { grid-template-columns:1fr 1fr; gap:32px; }
     .cmx-cap__inner, .cmx-proc__inner { padding-top:70px; padding-bottom:70px; }
