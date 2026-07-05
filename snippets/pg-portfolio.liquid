@@ -160,6 +160,8 @@
     .pf-tab:hover { border-color:#2B7BE8; color:#16335E; }
     .pf-tab.is-active { background:#16335E; color:#fff; border-color:#16335E; }
     .pf-tab__count { opacity:.55; font-size:11px; }
+    .pf-tab__count::before { content:"("; }
+    .pf-tab__count::after { content:")"; }
     .pf-tab.is-active .pf-tab__count { opacity:.8; }
 
     .pf-gallerysec { max-width:1320px; margin:0 auto; padding:50px 40px 90px; }
