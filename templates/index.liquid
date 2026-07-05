@@ -54,10 +54,10 @@
   .cat-card::after { content: ""; position: absolute; inset: 18px; border: 1px solid rgba(255,255,255,.85); opacity: 0; transform: scale(1.03); transition: opacity .4s ease, transform .4s ease; pointer-events: none; z-index: 2; }
   .cat-card:hover::after { opacity: 1; transform: scale(1); }
   .cat-card:hover .cat-grid__scrim { background: linear-gradient(to top, rgba(11,28,53,.78), rgba(11,28,53,.12) 70%); }
-  .cat-label { position: absolute; left: 38px; bottom: 30px; right: 38px; color: var(--color-bg); font-family: var(--font-accent); font-size: 15px; letter-spacing: .04em; z-index: 3; transition: transform .4s ease; }
-  .cat-cta { position: absolute; left: 38px; bottom: -30px; color: var(--color-bg); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; opacity: 0; transition: all .4s ease; z-index: 3; }
-  .cat-card:hover .cat-label { transform: translateY(-38px); }
-  .cat-card:hover .cat-cta { opacity: 1; bottom: 42px; }
+  .cat-label { position: absolute; left: 34px; bottom: 30px; right: 34px; color: var(--color-bg); font-family: var(--font-display); font-weight: 500; font-size: 26px; line-height: 1; letter-spacing: .01em; z-index: 3; transition: transform .4s ease; }
+  .cat-cta { position: absolute; left: 34px; bottom: -30px; color: var(--color-bg); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; opacity: 0; transition: all .4s ease; z-index: 3; }
+  .cat-card:hover .cat-label { transform: translateY(-26px); }
+  .cat-card:hover .cat-cta { opacity: 1; bottom: 32px; }
   @media (max-width: 990px) { .cat-grid { padding-top: 80px; } .cat-grid__grid { grid-template-columns: repeat(3, 1fr) !important; } }
   @media (max-width: 600px) { .cat-grid__grid { grid-template-columns: repeat(2, 1fr) !important; } }
 </style>
