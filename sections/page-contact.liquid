@@ -74,26 +74,11 @@
 
     <!-- FORM -->
     <div class="ct__form-card">
-      {%- form 'contact', class: 'ct__form' -%}
-        {%- if form.posted_successfully? -%}
-          <div class="ct__success">
-            <div class="ct__success-icon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#7BB0F4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-            <h3 class="ct__success-title">Message Sent</h3>
-            <p class="ct__success-text">Thank you for reaching out. Our studio team will get back to you within one business day.</p>
-          </div>
-        {%- else -%}
-          <div class="ct__form-eyebrow">Get in Touch</div>
-          <h2 class="ct__form-heading">Send Us a Message</h2>
-          {%- if form.errors -%}<div class="ct__form-error">{{ form.errors | default_errors }}</div>{%- endif -%}
-          <label class="ct__form-label">Your Name</label>
-          <input class="ct__field" type="text" name="contact[name]" placeholder="Jane Doe">
-          <label class="ct__form-label">Email <span>*</span></label>
-          <input class="ct__field" type="email" name="contact[email]" required placeholder="you@email.com">
-          <label class="ct__form-label">Special Message</label>
-          <textarea class="ct__field ct__field--area" name="contact[body]" rows="5" placeholder="Tell us about your space, idea or question…"></textarea>
-          <button type="submit" class="ct__submit">Send Message</button>
-        {%- endif -%}
-      {%- endform -%}
+      <div class="ct__form-eyebrow">Get in Touch</div>
+      <h2 class="ct__form-heading">Send Us a Message</h2>
+      {%- comment -%} Contact form handled by the AAA Form Builder app (form 16104); restyled below to match the design. {%- endcomment -%}
+      <div class="aaa_formbuilder_container" style="width: 100%; margin: 0 auto; float: none;"><form method="post" action="" class="aaaformbuilder_form  aaa_formbuilder_form_id_16104" enctype="multipart/form-data"><input type="hidden" name="url" class="get_current_page_url" value="{{ canonical_url }}"><input type="hidden" name="container_id" value=""><input type="hidden" name="form_id" value="16104"><input type="hidden" name="form_domain" value="aml89.myshopify.com"><input type="hidden" name="" value="Thank You! We'll be in touch" class="success_msg"><input type="hidden" name="" value="Please fill all the required fields" class="error_msg"><input type="hidden" name="" value="Please enter a valid email address." class="emailerror_msg"><input type="hidden" name="" value="" class="aaa_thankyoupageurl"><input type="hidden" name="uploadeLimit" class="formUploadLimit" value="10"><input type="hidden" name="allowefiletype" class="allowedfiletype" value=""><input type="hidden" name="conditionallogic" class="conditionallogic" value=""><div class="fb-text form-group field-first-name"><label for="first-name" class="fb-text-label">Name <span class="required">*</span></label> <input type="text" required="" placeholder="Enter your full name" class="form-control field__input" name="first-name" id="first-name" aria-required="true"></div><div class="fb-email form-group field-replyemail"><label for="replyemail" class="fb-email-label">Email <span class="required">*</span></label> <input type="email" required="" placeholder="Enter your email address" class="form-control field__input" name="replyemail" id="replyemail" aria-required="true"></div><div class="fb-undefined form-group field-textarea-1481364899702"><label for="textarea-1481364899702" class="fb-textarea-label">Special Message</label><textarea placeholder="Tell us about your space, idea or question…" class="form-control field__input" name="textarea-1481364899702" id="textarea-1481364899702"></textarea></div><div class="fb-submit form-group field-button-1481029333721"><div class="aaa_captcha_cont"><label>Captcha</label><span class="rand1">7</span> + <span class="rand2">8</span> = <input type="text" class="aaa_captcha_result" style="width: 60px; display: inline-block;"></div><button type="submit" class="button-input btn button btn-default" name="button-1481029333721" id="button-1481029333721">Send Message</button></div></form></div>
+      <script> function isMyScriptLoaded() { var url = 'https://shopifycdn.aaawebstore.com/formbuilder/appfiles/aaa_form_builder_script_minify_v1.js?shop=aml89.myshopify.com'; var jsFound = 0; var scripts = document.getElementsByTagName('script');  for (var i = scripts.length; i--;) { if (scripts[i].src == url) { jsFound = 1; } } if(!jsFound) { var headTag = document.getElementsByTagName('head')[0]; var jqTag = document.createElement('script'); jqTag.type = 'text/javascript'; jqTag.src = url; jqTag.onload = ''; headTag.appendChild(jqTag); } } isMyScriptLoaded(); </script>
     </div>
   </div>
 </section>
@@ -157,6 +142,21 @@
   @media (max-width: 600px) {
     .ct-hero__title { white-space: normal; }
   }
+
+  /* AAA Form Builder app form — restyled to match the contact card design */
+  .ct__form-card .aaa_formbuilder_container { background: transparent !important; width: 100% !important; }
+  .ct__form-card .aaaformbuilder_form .form-group { margin-bottom: 22px; box-sizing: border-box; }
+  .ct__form-card .aaaformbuilder_form label { display: block; font-family: var(--font-body); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--color-text-faint) !important; margin-bottom: 9px; font-weight: 400; }
+  .ct__form-card .aaaformbuilder_form .required { color: var(--color-blue-light) !important; }
+  .ct__form-card .aaaformbuilder_form .form-control { width: 100%; box-sizing: border-box; background: rgba(255,255,255,.06); border: 1px solid rgba(220,230,245,.22); border-radius: 0; outline: none; box-shadow: none; color: #fff; font-family: var(--font-body); font-size: 15px; padding: 15px 18px; }
+  .ct__form-card .aaaformbuilder_form .form-control:focus { border-color: var(--color-blue); }
+  .ct__form-card .aaaformbuilder_form .form-control::placeholder { color: var(--color-text-faint); }
+  .ct__form-card .aaaformbuilder_form textarea.form-control { min-height: 130px; resize: vertical; }
+  .ct__form-card .aaaformbuilder_form .aaa_captcha_cont { margin-bottom: 18px; color: var(--color-text-faint); font-size: 13px; letter-spacing: .08em; }
+  .ct__form-card .aaaformbuilder_form .aaa_captcha_cont label { display: inline; margin-right: 10px; text-transform: uppercase; }
+  .ct__form-card .aaaformbuilder_form .aaa_captcha_result { background: rgba(255,255,255,.06); border: 1px solid rgba(220,230,245,.22); color: #fff; padding: 8px 10px; }
+  .ct__form-card .aaa_formbuilder_container .aaaformbuilder_form .fb-submit button { width: 100% !important; background: var(--color-blue) !important; color: #fff !important; border: none !important; border-radius: 0 !important; font-family: var(--font-body) !important; font-size: 13px !important; font-weight: 600 !important; letter-spacing: .14em !important; text-transform: uppercase !important; padding: 17px 28px !important; cursor: pointer !important; }
+  .ct__form-card .aaa_formbuilder_container .aaaformbuilder_form .fb-submit button:hover { background: #1E63C4 !important; }
 </style>
 
 {% schema %}
