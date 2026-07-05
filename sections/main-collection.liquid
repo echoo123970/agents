@@ -425,7 +425,7 @@
       {%- if section.settings.cta_text != blank -%}<p class="coll-cta__sub">{{ section.settings.cta_text }}</p>{%- endif -%}
     </div>
     {%- if section.settings.cta_button_label != blank -%}
-      <a href="{{ section.settings.cta_button_link }}" class="btn btn--blue">{{ section.settings.cta_button_label }}</a>
+      <a href="{{ section.settings.cta_button_link | default: '/pages/custom-mosaics' }}" class="btn btn--blue">{{ section.settings.cta_button_label }}</a>
     {%- endif -%}
   </div>
 </section>
