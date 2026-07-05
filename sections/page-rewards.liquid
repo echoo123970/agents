@@ -73,6 +73,11 @@
     .rw-perks__grid { grid-template-columns: 1fr; gap: 48px; }
     .rw-perks__item { border-left: none; }
   }
+  @media (max-width: 749px) {
+    .rw-how__grid { display: flex; grid-template-columns: none; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin: 0 -18px 0 0; padding: 0 18px 8px 0; }
+    .rw-how__grid::-webkit-scrollbar { display: none; }
+    .rw-how__step { flex: 0 0 74%; scroll-snap-align: start; }
+  }
 </style>
 
 {%- assign steps = section.blocks | where: 'type', 'step' -%}
