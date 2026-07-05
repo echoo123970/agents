@@ -52,6 +52,13 @@
   .coll__filter-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; padding-bottom: 18px; border-bottom: 1px solid var(--color-line); }
   .coll__filter-title { font-family: var(--font-accent); font-size: 16px; color: var(--color-navy); }
   .coll__filter-reset { font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-blue); }
+  .coll__applied { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 26px; }
+  .coll__applied-label { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--color-text-faint); }
+  .coll__applied-chip { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; letter-spacing: .03em; padding: 7px 8px 7px 14px; border: 1px solid rgba(22,51,94,.2); color: var(--color-navy); background: #fff; transition: border-color .2s ease, background-color .2s ease; }
+  .coll__applied-chip:hover { border-color: var(--color-blue); background: var(--color-panel); }
+  .coll__applied-x { display: inline-flex; font-size: 15px; line-height: 1; color: var(--color-text-soft); }
+  .coll__applied-chip:hover .coll__applied-x { color: var(--color-blue); }
+  .coll__applied-reset { font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-blue); margin-left: 2px; }
   .coll-facet { border-bottom: 1px solid rgba(22,51,94,.1); }
   .coll-facet__head { width: 100%; background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 18px 0; font-family: var(--font-body); font-size: 13px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--color-navy); }
   .coll-facet__icon { font-size: 18px; font-weight: 300; color: var(--color-text-soft); transition: transform .25s ease; }
@@ -305,6 +312,35 @@
           </select>
         </div>
       </div>
+
+      {%- liquid
+        assign active_count = 0
+        for filter in collection.filters
+          assign active_count = active_count | plus: filter.active_values.size
+          if filter.type == 'price_range'
+            if filter.min_value.value != blank or filter.max_value.value != blank
+              assign active_count = active_count | plus: 1
+            endif
+          endif
+        endfor
+      -%}
+      {%- if active_count > 0 -%}
+        <div class="coll__applied">
+          <span class="coll__applied-label">Filters</span>
+          {%- for filter in collection.filters -%}
+            {%- if filter.type == 'price_range' -%}
+              {%- if filter.min_value.value != blank or filter.max_value.value != blank -%}
+                <a href="{{ filter.url_to_remove }}" class="coll__applied-chip">Price<span class="coll__applied-x">&times;</span></a>
+              {%- endif -%}
+            {%- else -%}
+              {%- for value in filter.active_values -%}
+                <a href="{{ value.url_to_remove }}" class="coll__applied-chip">{{ value.label }}<span class="coll__applied-x">&times;</span></a>
+              {%- endfor -%}
+            {%- endif -%}
+          {%- endfor -%}
+          <a href="{{ collection.url }}" class="coll__applied-reset">Reset all</a>
+        </div>
+      {%- endif -%}
 
       <button type="button" class="coll__filter-toggle" data-coll-filter-toggle aria-expanded="false">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
