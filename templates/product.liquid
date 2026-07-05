@@ -3,7 +3,7 @@
 {%- assign availability_note = 'Made to order · ships free worldwide' -%}
 {%- assign quote_banner_text = 'Want a custom size or subject?' -%}
 {%- assign acc_titles_str = 'Materials & Craft|Shipping & Returns' -%}
-{%- assign acc_bodies_str = 'Hand-cut from natural stone and glass tesserae, assembled tile by tile by master artisans and mounted on a fiber-mesh backing for easy installation. Each piece is unique — slight variation in colour and texture is part of its handmade character.|Made to order with a 4–5 week production time, then shipped free worldwide via UPS, FedEx or DHL with full tracking — around 10 days in transit. Covered by our 30-day returns policy and lifetime warranty.' -%}
+{%- assign acc_bodies_str = 'Hand-cut from natural stone and/or glass tesserae — the material varies by design — and assembled tile by tile by master artisans, then mounted on a fiber-mesh backing for easy installation. Each piece is unique; slight variation in colour and texture is part of its handmade character.|Made to order with a 4–5 week production time, then shipped free worldwide via UPS, FedEx or DHL with full tracking — around 10 days in transit. Covered by our 30-day returns policy and lifetime warranty.' -%}
 {%- assign trust_labels_str = 'Free worldwide shipping|30-day returns policy|Lifetime warranty|Hand-cut by master artisans' -%}
 
 <section class="pdp page-width" data-product>
@@ -68,6 +68,62 @@
             </div></div>
           </div>
         {%- endfor -%}
+      </div>
+    </div>
+
+    <!-- INFO -->
+    <div class="pdp__info">
+      <div class="pdp__meta">
+        {%- if product.type != blank -%}<span class="pdp__type">{{ product.type }}</span>{%- endif -%}
+        {%- if product.selected_or_first_available_variant.sku != blank -%}
+          <span class="pdp__dot"></span>
+          <span class="pdp__sku">SKU: {{ product.selected_or_first_available_variant.sku }}</span>
+        {%- endif -%}
+      </div>
+      <h1 class="pdp__title">{{ product.title }}</h1>
+
+      <div class="pdp__rating">
+        <span class="pdp__stars">★★★★★</span>
+        <span class="pdp__rating-text">Handcrafted Reproduction · <strong class="pdp__rating-score">4.9</strong> · <a href="/pages/all-reviews" class="pdp__rating-link">38 reviews</a></span>
+      </div>
+
+      <div class="pdp__price-row">
+        <span class="pdp__price" data-price>{{ product.selected_or_first_available_variant.price | money }}</span>
+        <span class="pdp__size-label" data-size-label>{{ product.selected_or_first_available_variant.title }}</span>
+      </div>
+      <p class="pdp__status"><span class="pdp__status-dot"></span>{{ availability_note }}</p>
+
+      <a href="#quote-form" class="pdp__quote-banner">
+        <span class="pdp__quote-banner-text">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2B7BE8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h13l5 5-9 9-9-9z"/><line x1="7" y1="11" x2="13" y2="17"/></svg>
+          {{ quote_banner_text }}
+        </span>
+        <span class="pdp__quote-banner-cta">Request a Quote</span>
+      </a>
+
+      {%- form 'product', product, class: 'pdp__form', id: 'ProductForm' -%}
+        {%- unless product.has_only_default_variant -%}
+          <div class="pdp__sizes">
+            <div class="pdp__sizes-label">Select Size</div>
+            <div class="pdp__sizes-list" data-variant-picker>
+              {%- for variant in product.variants -%}
+                <button type="button"
+                  class="size-btn{% if variant.id == product.selected_or_first_available_variant.id %} is-active{% endif %}{% unless variant.available %} is-unavailable{% endunless %}"
+                  data-variant-id="{{ variant.id }}"
+                  data-variant-price="{{ variant.price | money }}"
+                  data-variant-title="{{ variant.title | escape }}"
+                  {% unless variant.available %}aria-disabled="true"{% endunless %}>
+                  {%- assign vparts = variant.title | split: '(' -%}
+                  <span class="size-btn__name">
+                    <span class="size-btn__cm">{{ vparts[0] | strip }}{% unless variant.available %} — Sold out{% endunless %}</span>
+                    {%- if vparts.size > 1 -%}<span class="size-btn__inch">({{ vparts[1] }}</span>{%- endif -%}
+                  </span>
+                  <span class="size-btn__price">{{ variant.price | money }}</span>
+                </button>
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endunless -%}
         <div class="pdp-acc pdp-acc--options" data-accordion>
           <button type="button" class="pdp-acc__head" data-accordion-toggle>
             <span class="pdp-acc__title">Bespoke Options</span>
@@ -130,62 +186,7 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- INFO -->
-    <div class="pdp__info">
-      <div class="pdp__meta">
-        {%- if product.type != blank -%}<span class="pdp__type">{{ product.type }}</span>{%- endif -%}
-        {%- if product.selected_or_first_available_variant.sku != blank -%}
-          <span class="pdp__dot"></span>
-          <span class="pdp__sku">SKU: {{ product.selected_or_first_available_variant.sku }}</span>
-        {%- endif -%}
-      </div>
-      <h1 class="pdp__title">{{ product.title }}</h1>
-
-      <div class="pdp__rating">
-        <span class="pdp__stars">★★★★★</span>
-        <span class="pdp__rating-text">Handcrafted Reproduction · <strong class="pdp__rating-score">4.9</strong> · <a href="/pages/all-reviews" class="pdp__rating-link">38 reviews</a></span>
-      </div>
-
-      <div class="pdp__price-row">
-        <span class="pdp__price" data-price>{{ product.selected_or_first_available_variant.price | money }}</span>
-        <span class="pdp__size-label" data-size-label>{{ product.selected_or_first_available_variant.title }}</span>
-      </div>
-      <p class="pdp__status"><span class="pdp__status-dot"></span>{{ availability_note }}</p>
-
-      <a href="#quote-form" class="pdp__quote-banner">
-        <span class="pdp__quote-banner-text">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2B7BE8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h13l5 5-9 9-9-9z"/><line x1="7" y1="11" x2="13" y2="17"/></svg>
-          {{ quote_banner_text }}
-        </span>
-        <span class="pdp__quote-banner-cta">Request a Quote</span>
-      </a>
-
-      {%- form 'product', product, class: 'pdp__form', id: 'ProductForm' -%}
-        {%- unless product.has_only_default_variant -%}
-          <div class="pdp__sizes">
-            <div class="pdp__sizes-label">Select Size</div>
-            <div class="pdp__sizes-list" data-variant-picker>
-              {%- for variant in product.variants -%}
-                <button type="button"
-                  class="size-btn{% if variant.id == product.selected_or_first_available_variant.id %} is-active{% endif %}{% unless variant.available %} is-unavailable{% endunless %}"
-                  data-variant-id="{{ variant.id }}"
-                  data-variant-price="{{ variant.price | money }}"
-                  data-variant-title="{{ variant.title | escape }}"
-                  {% unless variant.available %}aria-disabled="true"{% endunless %}>
-                  {%- assign vparts = variant.title | split: '(' -%}
-                  <span class="size-btn__name">
-                    <span class="size-btn__cm">{{ vparts[0] | strip }}{% unless variant.available %} — Sold out{% endunless %}</span>
-                    {%- if vparts.size > 1 -%}<span class="size-btn__inch">({{ vparts[1] }}</span>{%- endif -%}
-                  </span>
-                  <span class="size-btn__price">{{ variant.price | money }}</span>
-                </button>
-              {%- endfor -%}
-            </div>
-          </div>
-        {%- endunless -%}
 
         <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-variant-input>
 
@@ -261,6 +262,7 @@
   .pdp-acc[data-open] .pdp-acc__icon { transform: rotate(45deg); }
   .pdp-acc__body { overflow: hidden; max-height: 0; opacity: 0; transition: max-height .4s ease, opacity .3s ease; }
   .pdp-acc[data-open] .pdp-acc__body { max-height: 600px; opacity: 1; }
+  .pdp-acc--options { margin-bottom: 22px; }
   .pdp-acc--options[data-open] .pdp-acc__body { max-height: 1400px; }
   .pdp-opt-list { display: flex; flex-direction: column; gap: 10px; padding-bottom: 6px; }
   .pdp-acc__body-inner { font-size: 15px; line-height: 1.75; color: var(--color-text-muted); padding: 0 2px 22px; }
