@@ -45,7 +45,7 @@
               {%- elsif item.product.vendor != blank -%}<div class="cart__line-sub">{{ item.product.vendor }}</div>{%- endif -%}
               <a href="{{ item.url }}" class="cart__line-title">{{ item.product.title }}</a>
               {%- unless item.product.has_only_default_variant -%}<div class="cart__line-variant">{{ item.variant.title }}</div>{%- endunless -%}
-              <div class="cart__line-price">{{ item.original_price | money }} each</div>
+              <div class="cart__line-price">{{ item.original_price | money }}</div>
               <div class="cart__line-controls">
                 <div class="cart__qty">
                   <a href="{{ routes.cart_change_url }}?id={{ item.key }}&quantity={{ item.quantity | minus: 1 }}" class="cart__qty-btn" aria-label="Decrease">−</a>
