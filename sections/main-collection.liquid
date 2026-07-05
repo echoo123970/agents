@@ -417,12 +417,26 @@
 
 <!-- CUSTOM CTA BAND -->
 {%- if section.settings.cta_heading != blank -%}
+  {%- comment -%} Tailor the bespoke-commission copy to the current collection's subject. {%- endcomment -%}
+  {%- assign cta_low = collection.title | downcase -%}
+  {%- assign cta_generic = false -%}
+  {%- if collection.handle == 'all' or collection.handle == blank or collection.handle == 'frontpage' or collection.handle == 'home-page' or cta_low contains 'other' or cta_low contains 'best' or cta_low contains 'new arrival' or cta_low contains 'limited' or cta_low contains 'special' or cta_low contains 'sale' -%}
+    {%- assign cta_generic = true -%}
+  {%- endif -%}
+  {%- assign cta_subject = collection.title | remove: ' Mosaics' | remove: ' Mosaic' | remove: ' mosaics' | remove: ' mosaic' | strip -%}
+  {%- if cta_generic or cta_subject == blank -%}
+    {%- assign cta_heading_out = section.settings.cta_heading -%}
+    {%- assign cta_sub_out = section.settings.cta_text -%}
+  {%- else -%}
+    {%- capture cta_heading_out -%}Want a custom {{ cta_subject }} mosaic? We'll hand-cut it in stone.{%- endcapture -%}
+    {%- capture cta_sub_out -%}Share a photo, sketch or idea and our artisans will craft a one-of-a-kind {{ cta_subject | downcase }} mosaic — tailored to your exact dimensions, palette and space.{%- endcapture -%}
+  {%- endif -%}
 <section class="coll-cta">
   <div class="page-width coll-cta__inner">
     <div class="coll-cta__text">
       <div class="coll-cta__eyebrow">{{ section.settings.cta_eyebrow }}</div>
-      <h2 class="coll-cta__heading">{{ section.settings.cta_heading }}</h2>
-      {%- if section.settings.cta_text != blank -%}<p class="coll-cta__sub">{{ section.settings.cta_text }}</p>{%- endif -%}
+      <h2 class="coll-cta__heading">{{ cta_heading_out }}</h2>
+      {%- if cta_sub_out != blank -%}<p class="coll-cta__sub">{{ cta_sub_out }}</p>{%- endif -%}
     </div>
     {%- if section.settings.cta_button_label != blank -%}
       <a href="{{ section.settings.cta_button_link | default: '/pages/custom-mosaics' }}" class="btn btn--blue">{{ section.settings.cta_button_label }}</a>
