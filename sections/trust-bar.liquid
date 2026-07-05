@@ -1,3 +1,14 @@
+<style>
+  .trust-bar { background: var(--color-navy); color: var(--color-light-text); }
+  .trust-bar__grid { padding-top: 30px; padding-bottom: 30px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .trust-bar__item { display: flex; align-items: center; gap: 14px; justify-content: center; }
+  .trust-bar__icon { color: var(--color-blue-light); display: flex; align-items: center; flex-shrink: 0; font-size: 22px; line-height: 1; }
+  .trust-bar__icon svg { width: 24px; height: 24px; }
+  .trust-bar__title { font-size: 13.5px; font-weight: 600; color: var(--color-bg); }
+  .trust-bar__sub { font-size: 12px; color: var(--color-text-faint); margin-top: 2px; }
+  @media (max-width: 750px) { .trust-bar__grid { grid-template-columns: 1fr 1fr; gap: 20px 24px; } }
+</style>
+
 <section class="trust-bar">
   <div class="page-width trust-bar__grid">
     {%- assign items = section.blocks | where: 'type', 'item' -%}
@@ -36,16 +47,6 @@
   </div>
 </section>
 
-<style>
-  .trust-bar { background: var(--color-navy); color: var(--color-light-text); }
-  .trust-bar__grid { padding-top: 30px; padding-bottom: 30px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
-  .trust-bar__item { display: flex; align-items: center; gap: 14px; justify-content: center; }
-  .trust-bar__icon { color: var(--color-blue-light); display: flex; align-items: center; flex-shrink: 0; font-size: 22px; line-height: 1; }
-  .trust-bar__icon svg { width: 24px; height: 24px; }
-  .trust-bar__title { font-size: 13.5px; font-weight: 600; color: var(--color-bg); }
-  .trust-bar__sub { font-size: 12px; color: var(--color-text-faint); margin-top: 2px; }
-  @media (max-width: 750px) { .trust-bar__grid { grid-template-columns: 1fr 1fr; gap: 20px 24px; } }
-</style>
 
 {% schema %}
 {

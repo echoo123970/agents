@@ -1,3 +1,15 @@
+<style>
+  .cat-grid { padding-top: 128px; padding-bottom: 90px; }
+  .cat-grid__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 48px; flex-wrap: wrap; }
+  .cat-grid__title { max-width: 640px; }
+  .cat-grid__grid { display: grid; gap: 18px; }
+  .cat-card { position: relative; display: block; overflow: hidden; aspect-ratio: 3/4; background: var(--color-light-text); }
+  .cat-grid__scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(11,28,53,.72), rgba(11,28,53,0) 55%); }
+  .cat-label { position: absolute; left: 16px; bottom: 14px; right: 16px; color: var(--color-bg); font-family: var(--font-accent); font-size: 15px; letter-spacing: .04em; }
+  @media (max-width: 990px) { .cat-grid { padding-top: 80px; } .cat-grid__grid { grid-template-columns: repeat(3, 1fr) !important; } }
+  @media (max-width: 600px) { .cat-grid__grid { grid-template-columns: repeat(2, 1fr) !important; } }
+</style>
+
 <section id="categories" class="cat-grid page-width">
   <div class="cat-grid__head">
     <div>
@@ -65,17 +77,6 @@
   </div>
 </section>
 
-<style>
-  .cat-grid { padding-top: 128px; padding-bottom: 90px; }
-  .cat-grid__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 48px; flex-wrap: wrap; }
-  .cat-grid__title { max-width: 640px; }
-  .cat-grid__grid { display: grid; gap: 18px; }
-  .cat-card { position: relative; display: block; overflow: hidden; aspect-ratio: 3/4; background: var(--color-light-text); }
-  .cat-grid__scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(11,28,53,.72), rgba(11,28,53,0) 55%); }
-  .cat-label { position: absolute; left: 16px; bottom: 14px; right: 16px; color: var(--color-bg); font-family: var(--font-accent); font-size: 15px; letter-spacing: .04em; }
-  @media (max-width: 990px) { .cat-grid { padding-top: 80px; } .cat-grid__grid { grid-template-columns: repeat(3, 1fr) !important; } }
-  @media (max-width: 600px) { .cat-grid__grid { grid-template-columns: repeat(2, 1fr) !important; } }
-</style>
 
 {% schema %}
 {

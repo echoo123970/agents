@@ -1,3 +1,11 @@
+<style>
+  .quote-banner { background: var(--color-bg); border-bottom: 1px solid rgba(22,51,94,.1); }
+  .quote-banner__inner { padding-top: 36px; padding-bottom: 36px; display: flex; align-items: center; justify-content: center; gap: 18px; text-align: center; }
+  .quote-banner__star { color: var(--color-blue); font-size: 16px; }
+  .quote-banner__text { font-family: var(--font-display); font-style: italic; font-size: clamp(15px, 1.7vw, 23px); line-height: 1.4; color: var(--color-navy); }
+  @media (max-width: 750px) { .quote-banner__star { display: none; } }
+</style>
+
 <section class="quote-banner">
   <div class="page-width quote-banner__inner">
     <span class="quote-banner__star">✦</span>
@@ -6,13 +14,6 @@
   </div>
 </section>
 
-<style>
-  .quote-banner { background: var(--color-bg); border-bottom: 1px solid rgba(22,51,94,.1); }
-  .quote-banner__inner { padding-top: 36px; padding-bottom: 36px; display: flex; align-items: center; justify-content: center; gap: 18px; text-align: center; }
-  .quote-banner__star { color: var(--color-blue); font-size: 16px; }
-  .quote-banner__text { font-family: var(--font-display); font-style: italic; font-size: clamp(15px, 1.7vw, 23px); line-height: 1.4; color: var(--color-navy); }
-  @media (max-width: 750px) { .quote-banner__star { display: none; } }
-</style>
 
 {% schema %}
 {

@@ -1,3 +1,32 @@
+<style>
+  .wl-hero { background: var(--color-panel); border-bottom: 1px solid rgba(22,51,94,.08); }
+  .wl-hero__crumb-wrap { padding-top: 30px; }
+  .wl-hero__crumb { display: flex; align-items: center; gap: 9px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-soft); }
+  .wl-hero__crumb-sep { color: #B7C0D2; }
+  .wl-hero__crumb-current { color: var(--color-navy); }
+  .wl-hero__title-wrap { padding-top: 40px; padding-bottom: 44px; }
+  .wl-hero__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(38px,4.6vw,60px); line-height: 1.02; color: var(--color-navy); }
+  .wl-hero__count { font-style: italic; color: var(--color-blue); font-size: .6em; }
+
+  .wl { padding-top: 56px; padding-bottom: 100px; }
+  .wl__empty { text-align: center; padding: 70px 20px 90px; }
+  .wl__empty-icon { width: 80px; height: 80px; border-radius: 50%; background: var(--color-panel); display: flex; align-items: center; justify-content: center; margin: 0 auto 28px; }
+  .wl__empty-title { font-family: var(--font-display); font-weight: 500; font-size: 34px; margin-bottom: 12px; color: var(--color-navy); }
+  .wl__empty-text { font-size: 16px; line-height: 1.6; color: var(--color-text-muted); margin-bottom: 30px; }
+  .wl__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px 24px; }
+  .wl-card { display: flex; flex-direction: column; }
+  .wl-card__media { position: relative; overflow: hidden; aspect-ratio: 4/5; background: var(--color-light-text); margin-bottom: 16px; }
+  .wl-card__media img { width: 100%; height: 100%; object-fit: cover; }
+  .wl-card__remove { position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,.92); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--color-blue); }
+  .wl-card__sub { font-family: var(--font-accent); font-size: 10.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--color-text-faint); margin-bottom: 6px; }
+  .wl-card__title { font-family: var(--font-display); font-size: 22px; line-height: 1.15; color: var(--color-navy); margin-bottom: 6px; }
+  .wl-card__price { font-size: 14px; color: var(--color-text-muted); margin-bottom: 16px; }
+  .wl-card__btn { margin-top: auto; width: 100%; text-align: center; background: var(--color-navy); color: #fff; font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; padding: 13px; transition: background .2s ease; }
+  .wl-card__btn:hover { background: #224A82; }
+  .wl__continue-wrap { margin-top: 50px; display: flex; justify-content: center; }
+  @media (max-width: 990px) { .wl__grid { grid-template-columns: repeat(2, 1fr); } }
+</style>
+
 <section class="wl-hero">
   <div class="page-width wl-hero__crumb-wrap">
     <div class="wl-hero__crumb">
@@ -72,34 +101,6 @@
   })();
 </script>
 
-<style>
-  .wl-hero { background: var(--color-panel); border-bottom: 1px solid rgba(22,51,94,.08); }
-  .wl-hero__crumb-wrap { padding-top: 30px; }
-  .wl-hero__crumb { display: flex; align-items: center; gap: 9px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-soft); }
-  .wl-hero__crumb-sep { color: #B7C0D2; }
-  .wl-hero__crumb-current { color: var(--color-navy); }
-  .wl-hero__title-wrap { padding-top: 40px; padding-bottom: 44px; }
-  .wl-hero__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(38px,4.6vw,60px); line-height: 1.02; color: var(--color-navy); }
-  .wl-hero__count { font-style: italic; color: var(--color-blue); font-size: .6em; }
-
-  .wl { padding-top: 56px; padding-bottom: 100px; }
-  .wl__empty { text-align: center; padding: 70px 20px 90px; }
-  .wl__empty-icon { width: 80px; height: 80px; border-radius: 50%; background: var(--color-panel); display: flex; align-items: center; justify-content: center; margin: 0 auto 28px; }
-  .wl__empty-title { font-family: var(--font-display); font-weight: 500; font-size: 34px; margin-bottom: 12px; color: var(--color-navy); }
-  .wl__empty-text { font-size: 16px; line-height: 1.6; color: var(--color-text-muted); margin-bottom: 30px; }
-  .wl__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px 24px; }
-  .wl-card { display: flex; flex-direction: column; }
-  .wl-card__media { position: relative; overflow: hidden; aspect-ratio: 4/5; background: var(--color-light-text); margin-bottom: 16px; }
-  .wl-card__media img { width: 100%; height: 100%; object-fit: cover; }
-  .wl-card__remove { position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,.92); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--color-blue); }
-  .wl-card__sub { font-family: var(--font-accent); font-size: 10.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--color-text-faint); margin-bottom: 6px; }
-  .wl-card__title { font-family: var(--font-display); font-size: 22px; line-height: 1.15; color: var(--color-navy); margin-bottom: 6px; }
-  .wl-card__price { font-size: 14px; color: var(--color-text-muted); margin-bottom: 16px; }
-  .wl-card__btn { margin-top: auto; width: 100%; text-align: center; background: var(--color-navy); color: #fff; font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; padding: 13px; transition: background .2s ease; }
-  .wl-card__btn:hover { background: #224A82; }
-  .wl__continue-wrap { margin-top: 50px; display: flex; justify-content: center; }
-  @media (max-width: 990px) { .wl__grid { grid-template-columns: repeat(2, 1fr); } }
-</style>
 
 {% schema %}
 { "name": "Wishlist", "settings": [], "presets": [{ "name": "Wishlist" }] }

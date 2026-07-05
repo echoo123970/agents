@@ -1,11 +1,3 @@
-{%- if section.settings.show_announcement and section.settings.text != blank -%}
-  <div class="announcement-bar">
-    <span class="announcement-bar__star">✦</span>
-    <span class="announcement-bar__text">{{ section.settings.text }}</span>
-    <span class="announcement-bar__star">✦</span>
-  </div>
-{%- endif -%}
-
 <style>
   .announcement-bar {
     background: var(--color-navy);
@@ -26,6 +18,15 @@
     .announcement-bar__star { display: none; }
   }
 </style>
+
+{%- if section.settings.show_announcement and section.settings.text != blank -%}
+  <div class="announcement-bar">
+    <span class="announcement-bar__star">✦</span>
+    <span class="announcement-bar__text">{{ section.settings.text }}</span>
+    <span class="announcement-bar__star">✦</span>
+  </div>
+{%- endif -%}
+
 
 {% schema %}
 {

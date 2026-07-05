@@ -1,3 +1,75 @@
+  <style>
+    .rf { background:#F4F6FA; color:#16335E; }
+    .rf-i { font-style:italic; color:#2B7BE8; }
+    .rf-hero { background:#EEF1F6; border-bottom:1px solid rgba(22,51,94,.08); }
+    .rf-hero__crumb { max-width:1320px; margin:0 auto; padding:30px 40px 0; display:flex; align-items:center; gap:9px; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:#7E8AA0; }
+    .rf-hero__crumb a:hover { color:#2B7BE8; }
+    .rf-sep { color:#B7C0D2; } .rf-cur { color:#16335E; }
+    .rf-hero__head { max-width:760px; margin:0 auto; padding:46px 40px 36px; text-align:center; }
+    .rf-eyebrow { display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:22px; font-family:'Marcellus',serif; font-size:13px; letter-spacing:.36em; text-transform:uppercase; color:#16335E; }
+    .rf-eyebrow__ln { width:38px; height:1px; background:#2B7BE8; }
+    .rf-hero__title { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(44px, 5.4vw, 71px); line-height:1.02; letter-spacing:-.01em; margin:0 0 20px; color:#16335E; }
+    .rf-hero__sub { font-size:17px; line-height:1.7; color:#5E6B85; max-width:520px; margin:0 auto; }
+    .rf-facts { max-width:1100px; margin:0 auto; padding:0 40px 56px; display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+    .rf-fact { background:#fff; border:1px solid rgba(22,51,94,.1); padding:26px 28px; display:flex; align-items:center; gap:18px; }
+    .rf-fact__ic { flex-shrink:0; width:48px; height:48px; border-radius:50%; background:#EEF1F6; color:#2B7BE8; display:flex; align-items:center; justify-content:center; }
+    .rf-fact__big { font-family:'Cormorant Garamond',serif; font-size:26px; line-height:1; color:#16335E; margin-bottom:5px; font-variant-numeric:lining-nums; font-feature-settings:"lnum" 1; }
+    .rf-fact__label { font-size:12.5px; letter-spacing:.04em; color:#7E8AA0; }
+
+    .rf-body { max-width:1100px; margin:0 auto; padding:76px 40px 100px; display:grid; grid-template-columns:230px 1fr; gap:60px; align-items:start; }
+    .rf-toc { position:sticky; top:104px; }
+    .rf-toc__title { font-family:'Marcellus',serif; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#9AA4B8; margin-bottom:18px; }
+    .rf-toc__links { display:flex; flex-direction:column; gap:2px; border-left:1px solid rgba(22,51,94,.14); }
+    .rf-toc__link { font-size:14px; color:#5E6B85; padding:9px 0 9px 18px; margin-left:-1px; border-left:1px solid transparent; transition:all .2s ease; }
+    .rf-toc__link:hover { color:#2B7BE8; border-left-color:#2B7BE8; }
+    .rf-toc__card { margin-top:28px; padding:22px; background:#16335E; color:#DCE6F5; }
+    .rf-toc__card-t { font-size:13px; line-height:1.6; margin-bottom:14px; }
+    .rf-toc__card-a { font-size:13px; letter-spacing:.1em; text-transform:uppercase; color:#7BB0F4; border-bottom:1px solid #2B7BE8; padding-bottom:3px; }
+    .rf-toc__card-a:hover { color:#fff; }
+
+    .rf-updated { font-size:13.5px; color:#9AA4B8; margin-bottom:40px; padding-bottom:24px; border-bottom:1px solid rgba(22,51,94,.1); }
+    .rf-sec { margin-bottom:48px; scroll-margin-top:104px; }
+    .rf-h2 { font-family:'Cormorant Garamond',serif; font-weight:600; font-size:30px; margin:0 0 16px; color:#16335E; font-variant-numeric:lining-nums; font-feature-settings:"lnum" 1; }
+    .rf-p { font-size:16px; line-height:1.8; color:#46546E; margin:0 0 16px; }
+    .rf-p:last-child { margin-bottom:0; }
+    .rf-p strong { color:#16335E; font-weight:600; }
+    .rf-link { color:#2B7BE8; border-bottom:1px solid rgba(43,123,232,.4); }
+    .rf-reqs { display:flex; flex-direction:column; gap:11px; }
+    .rf-req { display:flex; align-items:flex-start; gap:12px; }
+    .rf-req__ic { flex-shrink:0; margin-top:3px; }
+    .rf-req__t { font-size:15.5px; line-height:1.5; color:#46546E; }
+    .rf-note { background:#EEF1F6; border-left:3px solid #2B7BE8; padding:18px 22px; margin-bottom:18px; font-size:15.5px; line-height:1.6; color:#16335E; }
+    .rf-fees { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .rf-fee { background:#fff; border:1px solid rgba(22,51,94,.12); padding:26px; }
+    .rf-fee__head { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+    .rf-fee__ic { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+    .rf-fee__ic--ok { background:rgba(31,138,91,.12); color:#1F8A5B; }
+    .rf-fee__ic--info { background:rgba(22,51,94,.08); color:#16335E; }
+    .rf-fee__t { font-size:16px; font-weight:600; color:#16335E; }
+    .rf-fee__d { font-size:15px; line-height:1.6; color:#5E6B85; margin:0; }
+
+    .rf-contact { background:#16335E; color:#EAE1D2; padding:40px 44px; display:grid; grid-template-columns:1fr 1fr; gap:30px; }
+    .rf-contact__head { grid-column:1 / -1; }
+    .rf-contact__eyebrow { font-family:'Marcellus',serif; font-size:12px; letter-spacing:.28em; text-transform:uppercase; color:#7BB0F4; margin-bottom:8px; }
+    .rf-contact__title { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:28px; margin:0; color:#fff; }
+    .rf-contact__row { display:flex; align-items:center; gap:14px; }
+    .rf-contact__row span { font-size:15px; color:#F4F6FA; }
+    .rf-contact__row:hover span { color:#fff; }
+    .rf-contact__addr { grid-column:1 / -1; display:flex; align-items:flex-start; gap:14px; }
+    .rf-contact__addr span { font-size:15px; color:#9AA4B8; line-height:1.5; }
+
+    @media (max-width:900px) {
+      .rf-body { grid-template-columns:1fr; gap:36px; }
+      .rf-toc { position:static; } .rf-toc__links { display:none; }
+      .rf-facts { grid-template-columns:1fr; }
+    }
+    @media (max-width:600px) {
+      .rf-hero__crumb, .rf-hero__head, .rf-facts, .rf-body { padding-left:22px; padding-right:22px; }
+      .rf-fees { grid-template-columns:1fr; }
+      .rf-contact { grid-template-columns:1fr; padding:32px 24px; }
+    }
+  </style>
+
   <div class="rf">
     <section class="rf-hero">
       <div class="rf-hero__crumb"><a href="{{ routes.root_url }}">Home</a><span class="rf-sep">/</span><span class="rf-cur">Refund Policy</span></div>
@@ -109,74 +181,3 @@
     </section>
   </div>
 
-  <style>
-    .rf { background:#F4F6FA; color:#16335E; }
-    .rf-i { font-style:italic; color:#2B7BE8; }
-    .rf-hero { background:#EEF1F6; border-bottom:1px solid rgba(22,51,94,.08); }
-    .rf-hero__crumb { max-width:1320px; margin:0 auto; padding:30px 40px 0; display:flex; align-items:center; gap:9px; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:#7E8AA0; }
-    .rf-hero__crumb a:hover { color:#2B7BE8; }
-    .rf-sep { color:#B7C0D2; } .rf-cur { color:#16335E; }
-    .rf-hero__head { max-width:760px; margin:0 auto; padding:46px 40px 36px; text-align:center; }
-    .rf-eyebrow { display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:22px; font-family:'Marcellus',serif; font-size:13px; letter-spacing:.36em; text-transform:uppercase; color:#16335E; }
-    .rf-eyebrow__ln { width:38px; height:1px; background:#2B7BE8; }
-    .rf-hero__title { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(44px, 5.4vw, 71px); line-height:1.02; letter-spacing:-.01em; margin:0 0 20px; color:#16335E; }
-    .rf-hero__sub { font-size:17px; line-height:1.7; color:#5E6B85; max-width:520px; margin:0 auto; }
-    .rf-facts { max-width:1100px; margin:0 auto; padding:0 40px 56px; display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
-    .rf-fact { background:#fff; border:1px solid rgba(22,51,94,.1); padding:26px 28px; display:flex; align-items:center; gap:18px; }
-    .rf-fact__ic { flex-shrink:0; width:48px; height:48px; border-radius:50%; background:#EEF1F6; color:#2B7BE8; display:flex; align-items:center; justify-content:center; }
-    .rf-fact__big { font-family:'Cormorant Garamond',serif; font-size:26px; line-height:1; color:#16335E; margin-bottom:5px; font-variant-numeric:lining-nums; font-feature-settings:"lnum" 1; }
-    .rf-fact__label { font-size:12.5px; letter-spacing:.04em; color:#7E8AA0; }
-
-    .rf-body { max-width:1100px; margin:0 auto; padding:76px 40px 100px; display:grid; grid-template-columns:230px 1fr; gap:60px; align-items:start; }
-    .rf-toc { position:sticky; top:104px; }
-    .rf-toc__title { font-family:'Marcellus',serif; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#9AA4B8; margin-bottom:18px; }
-    .rf-toc__links { display:flex; flex-direction:column; gap:2px; border-left:1px solid rgba(22,51,94,.14); }
-    .rf-toc__link { font-size:14px; color:#5E6B85; padding:9px 0 9px 18px; margin-left:-1px; border-left:1px solid transparent; transition:all .2s ease; }
-    .rf-toc__link:hover { color:#2B7BE8; border-left-color:#2B7BE8; }
-    .rf-toc__card { margin-top:28px; padding:22px; background:#16335E; color:#DCE6F5; }
-    .rf-toc__card-t { font-size:13px; line-height:1.6; margin-bottom:14px; }
-    .rf-toc__card-a { font-size:13px; letter-spacing:.1em; text-transform:uppercase; color:#7BB0F4; border-bottom:1px solid #2B7BE8; padding-bottom:3px; }
-    .rf-toc__card-a:hover { color:#fff; }
-
-    .rf-updated { font-size:13.5px; color:#9AA4B8; margin-bottom:40px; padding-bottom:24px; border-bottom:1px solid rgba(22,51,94,.1); }
-    .rf-sec { margin-bottom:48px; scroll-margin-top:104px; }
-    .rf-h2 { font-family:'Cormorant Garamond',serif; font-weight:600; font-size:30px; margin:0 0 16px; color:#16335E; font-variant-numeric:lining-nums; font-feature-settings:"lnum" 1; }
-    .rf-p { font-size:16px; line-height:1.8; color:#46546E; margin:0 0 16px; }
-    .rf-p:last-child { margin-bottom:0; }
-    .rf-p strong { color:#16335E; font-weight:600; }
-    .rf-link { color:#2B7BE8; border-bottom:1px solid rgba(43,123,232,.4); }
-    .rf-reqs { display:flex; flex-direction:column; gap:11px; }
-    .rf-req { display:flex; align-items:flex-start; gap:12px; }
-    .rf-req__ic { flex-shrink:0; margin-top:3px; }
-    .rf-req__t { font-size:15.5px; line-height:1.5; color:#46546E; }
-    .rf-note { background:#EEF1F6; border-left:3px solid #2B7BE8; padding:18px 22px; margin-bottom:18px; font-size:15.5px; line-height:1.6; color:#16335E; }
-    .rf-fees { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-    .rf-fee { background:#fff; border:1px solid rgba(22,51,94,.12); padding:26px; }
-    .rf-fee__head { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
-    .rf-fee__ic { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
-    .rf-fee__ic--ok { background:rgba(31,138,91,.12); color:#1F8A5B; }
-    .rf-fee__ic--info { background:rgba(22,51,94,.08); color:#16335E; }
-    .rf-fee__t { font-size:16px; font-weight:600; color:#16335E; }
-    .rf-fee__d { font-size:15px; line-height:1.6; color:#5E6B85; margin:0; }
-
-    .rf-contact { background:#16335E; color:#EAE1D2; padding:40px 44px; display:grid; grid-template-columns:1fr 1fr; gap:30px; }
-    .rf-contact__head { grid-column:1 / -1; }
-    .rf-contact__eyebrow { font-family:'Marcellus',serif; font-size:12px; letter-spacing:.28em; text-transform:uppercase; color:#7BB0F4; margin-bottom:8px; }
-    .rf-contact__title { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:28px; margin:0; color:#fff; }
-    .rf-contact__row { display:flex; align-items:center; gap:14px; }
-    .rf-contact__row span { font-size:15px; color:#F4F6FA; }
-    .rf-contact__row:hover span { color:#fff; }
-    .rf-contact__addr { grid-column:1 / -1; display:flex; align-items:flex-start; gap:14px; }
-    .rf-contact__addr span { font-size:15px; color:#9AA4B8; line-height:1.5; }
-
-    @media (max-width:900px) {
-      .rf-body { grid-template-columns:1fr; gap:36px; }
-      .rf-toc { position:static; } .rf-toc__links { display:none; }
-      .rf-facts { grid-template-columns:1fr; }
-    }
-    @media (max-width:600px) {
-      .rf-hero__crumb, .rf-hero__head, .rf-facts, .rf-body { padding-left:22px; padding-right:22px; }
-      .rf-fees { grid-template-columns:1fr; }
-      .rf-contact { grid-template-columns:1fr; padding:32px 24px; }
-    }
-  </style>

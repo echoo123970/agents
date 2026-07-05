@@ -1,89 +1,3 @@
-<header class="site-header" role="banner">
-  <div class="page-width site-header__inner">
-    <a href="{{ routes.root_url }}" class="site-header__logo">
-      {%- if settings.logo != blank -%}
-        <img src="{{ settings.logo | image_url: width: 200 }}" alt="{{ shop.name | escape }}" width="44" height="44" class="site-header__logo-img">
-      {%- else -%}
-        <img src="{{ 'mark-color.png' | asset_url }}" alt="{{ shop.name | escape }}" width="44" height="44" class="site-header__logo-img">
-      {%- endif -%}
-      <span class="site-header__name">iMosaic<span class="site-header__name-accent">Art</span></span>
-    </a>
-
-    <nav class="site-header__nav" role="navigation">
-      {%- if section.settings.menu != blank and section.settings.menu.links.size > 0 -%}
-        {%- for link in section.settings.menu.links -%}
-          {%- assign lt = link.title | downcase | strip -%}
-          {%- unless lt == 'mosaic tile art' -%}
-            {%- assign disp = link.title -%}
-            {%- assign href = link.url -%}
-            {%- if lt == 'about us' -%}{%- assign disp = 'About' -%}{%- endif -%}
-            {%- if lt == 'contact us' -%}{%- assign disp = 'Journal' -%}{%- assign href = blogs.news.url | default: '/blogs/news' -%}{%- endif -%}
-            <a href="{{ href }}" class="nav-link">{{ disp }}</a>
-          {%- endunless -%}
-        {%- endfor -%}
-      {%- else -%}
-        <a href="{{ routes.all_products_collection_url }}" class="nav-link">Mosaics</a>
-        <a href="/pages/custom-mosaics" class="nav-link">Custom Mosaics</a>
-        <a href="/pages/about-us" class="nav-link">About</a>
-        <a href="{{ blogs.news.url | default: '/blogs/news' }}" class="nav-link">Journal</a>
-      {%- endif -%}
-    </nav>
-
-    <div class="site-header__icons">
-      <button type="button" aria-label="Search" class="site-header__icon" data-search-toggle>
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
-      </button>
-      <a href="{{ routes.account_url }}" aria-label="Account" class="site-header__icon">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
-      </a>
-      <a href="/pages/wishlist" aria-label="Wishlist" class="site-header__icon site-header__wish">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>
-        <span class="site-header__wish-count" data-wl-header-count hidden></span>
-      </a>
-      <a href="{{ routes.cart_url }}" aria-label="Cart" class="site-header__icon site-header__cart">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
-        <span class="site-header__cart-count">{{ cart.item_count }}</span>
-      </a>
-      <button type="button" class="site-header__icon site-header__burger" data-menu-toggle aria-label="Menu">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
-      </button>
-    </div>
-  </div>
-
-  <div class="hsearch" data-hsearch hidden>
-    <div class="page-width hsearch__inner">
-      <form action="{{ routes.search_url }}" method="get" class="hsearch__form" data-predictive data-money-format="{{ shop.money_format }}">
-        <input type="hidden" name="options[prefix]" value="last">
-        <svg class="hsearch__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7E8AA0" stroke-width="1.7"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
-        <input type="search" name="q" placeholder="Search mosaics by name, subject or style…" class="hsearch__input" data-predictive-input>
-        <button type="button" class="hsearch__close" data-search-close aria-label="Close">&times;</button>
-        <div class="psg" data-predictive-results hidden></div>
-      </form>
-    </div>
-  </div>
-
-  <div class="mobile-nav" id="MobileNav">
-    <button type="button" class="mobile-nav__close" data-menu-close aria-label="Close">&times;</button>
-    {%- if section.settings.menu != blank and section.settings.menu.links.size > 0 -%}
-      {%- for link in section.settings.menu.links -%}
-        {%- assign lt = link.title | downcase | strip -%}
-        {%- unless lt == 'mosaic tile art' -%}
-          {%- assign disp = link.title -%}
-          {%- assign href = link.url -%}
-          {%- if lt == 'about us' -%}{%- assign disp = 'About' -%}{%- endif -%}
-          {%- if lt == 'contact us' -%}{%- assign disp = 'Journal' -%}{%- assign href = blogs.news.url | default: '/blogs/news' -%}{%- endif -%}
-          <a href="{{ href }}" class="mobile-nav__link">{{ disp }}</a>
-        {%- endunless -%}
-      {%- endfor -%}
-    {%- else -%}
-      <a href="{{ routes.all_products_collection_url }}" class="mobile-nav__link">Mosaics</a>
-      <a href="/pages/custom-mosaics" class="mobile-nav__link">Custom Mosaics</a>
-      <a href="/pages/about-us" class="mobile-nav__link">About</a>
-      <a href="{{ blogs.news.url | default: '/blogs/news' }}" class="mobile-nav__link">Journal</a>
-    {%- endif -%}
-  </div>
-</header>
-
 <style>
   .site-header {
     position: sticky;
@@ -188,6 +102,93 @@
     .site-header__name { font-size: 23px; }
   }
 </style>
+
+<header class="site-header" role="banner">
+  <div class="page-width site-header__inner">
+    <a href="{{ routes.root_url }}" class="site-header__logo">
+      {%- if settings.logo != blank -%}
+        <img src="{{ settings.logo | image_url: width: 200 }}" alt="{{ shop.name | escape }}" width="44" height="44" class="site-header__logo-img">
+      {%- else -%}
+        <img src="{{ 'mark-color.png' | asset_url }}" alt="{{ shop.name | escape }}" width="44" height="44" class="site-header__logo-img">
+      {%- endif -%}
+      <span class="site-header__name">iMosaic<span class="site-header__name-accent">Art</span></span>
+    </a>
+
+    <nav class="site-header__nav" role="navigation">
+      {%- if section.settings.menu != blank and section.settings.menu.links.size > 0 -%}
+        {%- for link in section.settings.menu.links -%}
+          {%- assign lt = link.title | downcase | strip -%}
+          {%- unless lt == 'mosaic tile art' -%}
+            {%- assign disp = link.title -%}
+            {%- assign href = link.url -%}
+            {%- if lt == 'about us' -%}{%- assign disp = 'About' -%}{%- endif -%}
+            {%- if lt == 'contact us' -%}{%- assign disp = 'Journal' -%}{%- assign href = blogs.news.url | default: '/blogs/news' -%}{%- endif -%}
+            <a href="{{ href }}" class="nav-link">{{ disp }}</a>
+          {%- endunless -%}
+        {%- endfor -%}
+      {%- else -%}
+        <a href="{{ routes.all_products_collection_url }}" class="nav-link">Mosaics</a>
+        <a href="/pages/custom-mosaics" class="nav-link">Custom Mosaics</a>
+        <a href="/pages/about-us" class="nav-link">About</a>
+        <a href="{{ blogs.news.url | default: '/blogs/news' }}" class="nav-link">Journal</a>
+      {%- endif -%}
+    </nav>
+
+    <div class="site-header__icons">
+      <button type="button" aria-label="Search" class="site-header__icon" data-search-toggle>
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+      </button>
+      <a href="{{ routes.account_url }}" aria-label="Account" class="site-header__icon">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+      </a>
+      <a href="/pages/wishlist" aria-label="Wishlist" class="site-header__icon site-header__wish">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>
+        <span class="site-header__wish-count" data-wl-header-count hidden></span>
+      </a>
+      <a href="{{ routes.cart_url }}" aria-label="Cart" class="site-header__icon site-header__cart">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+        <span class="site-header__cart-count">{{ cart.item_count }}</span>
+      </a>
+      <button type="button" class="site-header__icon site-header__burger" data-menu-toggle aria-label="Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="hsearch" data-hsearch hidden>
+    <div class="page-width hsearch__inner">
+      <form action="{{ routes.search_url }}" method="get" class="hsearch__form" data-predictive data-money-format="{{ shop.money_format }}">
+        <input type="hidden" name="options[prefix]" value="last">
+        <svg class="hsearch__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7E8AA0" stroke-width="1.7"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+        <input type="search" name="q" placeholder="Search mosaics by name, subject or style…" class="hsearch__input" data-predictive-input>
+        <button type="button" class="hsearch__close" data-search-close aria-label="Close">&times;</button>
+        <div class="psg" data-predictive-results hidden></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="mobile-nav" id="MobileNav">
+    <button type="button" class="mobile-nav__close" data-menu-close aria-label="Close">&times;</button>
+    {%- if section.settings.menu != blank and section.settings.menu.links.size > 0 -%}
+      {%- for link in section.settings.menu.links -%}
+        {%- assign lt = link.title | downcase | strip -%}
+        {%- unless lt == 'mosaic tile art' -%}
+          {%- assign disp = link.title -%}
+          {%- assign href = link.url -%}
+          {%- if lt == 'about us' -%}{%- assign disp = 'About' -%}{%- endif -%}
+          {%- if lt == 'contact us' -%}{%- assign disp = 'Journal' -%}{%- assign href = blogs.news.url | default: '/blogs/news' -%}{%- endif -%}
+          <a href="{{ href }}" class="mobile-nav__link">{{ disp }}</a>
+        {%- endunless -%}
+      {%- endfor -%}
+    {%- else -%}
+      <a href="{{ routes.all_products_collection_url }}" class="mobile-nav__link">Mosaics</a>
+      <a href="/pages/custom-mosaics" class="mobile-nav__link">Custom Mosaics</a>
+      <a href="/pages/about-us" class="mobile-nav__link">About</a>
+      <a href="{{ blogs.news.url | default: '/blogs/news' }}" class="mobile-nav__link">Journal</a>
+    {%- endif -%}
+  </div>
+</header>
+
 
 <script>
   (function () {

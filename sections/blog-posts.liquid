@@ -1,3 +1,17 @@
+<style>
+  .journal { padding-top: 128px; padding-bottom: 128px; }
+  .journal__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 46px; flex-wrap: wrap; }
+  .journal__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  .journal__card { display: block; transition: opacity .3s ease; }
+  .journal__card:hover { opacity: .86; }
+  .journal__media { overflow: hidden; aspect-ratio: 4/4.4; background: var(--color-light-text); margin-bottom: 18px; }
+  .journal__date { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--color-text-faint); margin-bottom: 10px; }
+  .journal__title { font-family: var(--font-display); font-weight: 500; font-size: 24px; line-height: 1.2; margin-bottom: 10px; color: var(--color-navy); }
+  .journal__excerpt { font-size: 14px; line-height: 1.6; color: var(--color-text-muted); margin-bottom: 16px; }
+  .journal__more { display: inline-block; font-size: 11.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--color-navy); border-bottom: 1px solid var(--color-blue); padding-bottom: 4px; }
+  @media (max-width: 990px) { .journal { padding-top: 80px; padding-bottom: 80px; } .journal__grid { grid-template-columns: 1fr; max-width: 480px; } }
+</style>
+
 {%- comment -%} Auto-pick: chosen blog, else 'news', else the first blog that has articles {%- endcomment -%}
 {%- assign blog_obj = blogs[section.settings.blog] -%}
 {%- if blog_obj == blank or blog_obj.articles_count == 0 -%}
@@ -47,19 +61,6 @@
   </div>
 </section>
 
-<style>
-  .journal { padding-top: 128px; padding-bottom: 128px; }
-  .journal__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 46px; flex-wrap: wrap; }
-  .journal__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
-  .journal__card { display: block; transition: opacity .3s ease; }
-  .journal__card:hover { opacity: .86; }
-  .journal__media { overflow: hidden; aspect-ratio: 4/4.4; background: var(--color-light-text); margin-bottom: 18px; }
-  .journal__date { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--color-text-faint); margin-bottom: 10px; }
-  .journal__title { font-family: var(--font-display); font-weight: 500; font-size: 24px; line-height: 1.2; margin-bottom: 10px; color: var(--color-navy); }
-  .journal__excerpt { font-size: 14px; line-height: 1.6; color: var(--color-text-muted); margin-bottom: 16px; }
-  .journal__more { display: inline-block; font-size: 11.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--color-navy); border-bottom: 1px solid var(--color-blue); padding-bottom: 4px; }
-  @media (max-width: 990px) { .journal { padding-top: 80px; padding-bottom: 80px; } .journal__grid { grid-template-columns: 1fr; max-width: 480px; } }
-</style>
 
 {% schema %}
 {

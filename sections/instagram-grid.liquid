@@ -1,3 +1,18 @@
+<style>
+  .instagram { padding-bottom: 28px; }
+  .instagram__head { padding-bottom: 30px; text-align: center; }
+  .instagram__head .section-title { margin-bottom: 14px; font-size: clamp(30px, 3.4vw, 44px); }
+  .instagram__handle { display: inline-block; font-family: var(--font-accent); font-size: 13px; letter-spacing: .36em; text-transform: uppercase; color: var(--color-navy); }
+  .instagram__grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
+  .ig-tile { position: relative; display: block; aspect-ratio: 1/1; overflow: hidden; background: var(--color-light-text); }
+  .ig-tile .cover-img { transition: transform .5s ease; }
+  .ig-tile:hover .cover-img { transform: scale(1.06); }
+  .ig-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(11,28,53,.42); opacity: 0; transition: opacity .3s ease; }
+  .ig-tile:hover .ig-overlay { opacity: 1; }
+  @media (max-width: 990px) { .instagram__grid { grid-template-columns: repeat(4, 1fr); } }
+  @media (max-width: 600px) { .instagram__grid { grid-template-columns: repeat(3, 1fr); } }
+</style>
+
 <section class="instagram">
   <div class="page-width instagram__head">
     {%- if section.settings.heading != blank -%}<h2 class="section-title">{{ section.settings.heading }}</h2>{%- endif -%}
@@ -38,20 +53,6 @@
   </div>
 </section>
 
-<style>
-  .instagram { padding-bottom: 28px; }
-  .instagram__head { padding-bottom: 30px; text-align: center; }
-  .instagram__head .section-title { margin-bottom: 14px; font-size: clamp(30px, 3.4vw, 44px); }
-  .instagram__handle { display: inline-block; font-family: var(--font-accent); font-size: 13px; letter-spacing: .36em; text-transform: uppercase; color: var(--color-navy); }
-  .instagram__grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
-  .ig-tile { position: relative; display: block; aspect-ratio: 1/1; overflow: hidden; background: var(--color-light-text); }
-  .ig-tile .cover-img { transition: transform .5s ease; }
-  .ig-tile:hover .cover-img { transform: scale(1.06); }
-  .ig-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(11,28,53,.42); opacity: 0; transition: opacity .3s ease; }
-  .ig-tile:hover .ig-overlay { opacity: 1; }
-  @media (max-width: 990px) { .instagram__grid { grid-template-columns: repeat(4, 1fr); } }
-  @media (max-width: 600px) { .instagram__grid { grid-template-columns: repeat(3, 1fr); } }
-</style>
 
 {% schema %}
 {

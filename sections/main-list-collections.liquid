@@ -1,3 +1,10 @@
+<style>
+  .collection { padding-top: 64px; padding-bottom: 96px; }
+  .collection__head { text-align: center; margin-bottom: 56px; }
+  .collection__head .eyebrow { margin-bottom: 14px; }
+  @media (max-width: 990px) { .cat-grid__grid { grid-template-columns: repeat(2, 1fr) !important; } }
+</style>
+
 <section class="collection page-width">
   <div class="collection__head">
     <div class="eyebrow">Browse</div>
@@ -21,12 +28,6 @@
   </div>
 </section>
 
-<style>
-  .collection { padding-top: 64px; padding-bottom: 96px; }
-  .collection__head { text-align: center; margin-bottom: 56px; }
-  .collection__head .eyebrow { margin-bottom: 14px; }
-  @media (max-width: 990px) { .cat-grid__grid { grid-template-columns: repeat(2, 1fr) !important; } }
-</style>
 
 {% schema %}
 { "name": "List collections", "settings": [] }

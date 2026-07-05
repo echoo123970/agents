@@ -1,3 +1,22 @@
+<style>
+  .process { background: var(--color-navy); color: var(--color-light-text); }
+  .process__grid { padding-top: 128px; padding-bottom: 128px; display: grid; grid-template-columns: 1fr 1fr; gap: 70px; align-items: center; }
+  .process__eyebrow { font-family: var(--font-accent); font-size: 13px; letter-spacing: .26em; text-transform: uppercase; color: var(--color-blue-light); margin-bottom: 18px; }
+  .process__heading { font-family: var(--font-display); font-weight: 500; font-size: clamp(34px, 4vw, 54px); line-height: 1.06; margin-bottom: 22px; color: #fff; }
+  .process__text { font-size: 16px; line-height: 1.75; color: var(--color-text-faint); max-width: 460px; margin-bottom: 44px; }
+  .process__step { display: flex; gap: 24px; align-items: flex-start; padding: 22px 0; border-top: 1px solid rgba(220,230,245,.14); }
+  .process__step-n { font-family: var(--font-display); font-size: 30px; color: var(--color-blue-light); line-height: 1; min-width: 46px; }
+  .process__step-title { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 5px; }
+  .process__step-desc { font-size: 14px; line-height: 1.6; color: var(--color-text-faint); }
+  .process__btn { margin-top: 36px; gap: 10px; }
+  .process__media { position: relative; aspect-ratio: 4/5; overflow: hidden; }
+  .process__media-veil { position: absolute; inset: auto 0 0 0; height: 40%; background: linear-gradient(to top, rgba(11,28,53,.55), transparent); }
+  .process__media-caption { position: absolute; left: 24px; bottom: 22px; font-family: var(--font-display); font-style: italic; font-size: 24px; color: #fff; }
+  @media (max-width: 990px) {
+    .process__grid { grid-template-columns: 1fr; gap: 48px; padding-top: 80px; padding-bottom: 80px; }
+  }
+</style>
+
 <section class="process">
   <div class="page-width process__grid">
     <div class="process__content">
@@ -48,24 +67,6 @@
   </div>
 </section>
 
-<style>
-  .process { background: var(--color-navy); color: var(--color-light-text); }
-  .process__grid { padding-top: 128px; padding-bottom: 128px; display: grid; grid-template-columns: 1fr 1fr; gap: 70px; align-items: center; }
-  .process__eyebrow { font-family: var(--font-accent); font-size: 13px; letter-spacing: .26em; text-transform: uppercase; color: var(--color-blue-light); margin-bottom: 18px; }
-  .process__heading { font-family: var(--font-display); font-weight: 500; font-size: clamp(34px, 4vw, 54px); line-height: 1.06; margin-bottom: 22px; color: #fff; }
-  .process__text { font-size: 16px; line-height: 1.75; color: var(--color-text-faint); max-width: 460px; margin-bottom: 44px; }
-  .process__step { display: flex; gap: 24px; align-items: flex-start; padding: 22px 0; border-top: 1px solid rgba(220,230,245,.14); }
-  .process__step-n { font-family: var(--font-display); font-size: 30px; color: var(--color-blue-light); line-height: 1; min-width: 46px; }
-  .process__step-title { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 5px; }
-  .process__step-desc { font-size: 14px; line-height: 1.6; color: var(--color-text-faint); }
-  .process__btn { margin-top: 36px; gap: 10px; }
-  .process__media { position: relative; aspect-ratio: 4/5; overflow: hidden; }
-  .process__media-veil { position: absolute; inset: auto 0 0 0; height: 40%; background: linear-gradient(to top, rgba(11,28,53,.55), transparent); }
-  .process__media-caption { position: absolute; left: 24px; bottom: 22px; font-family: var(--font-display); font-style: italic; font-size: 24px; color: #fff; }
-  @media (max-width: 990px) {
-    .process__grid { grid-template-columns: 1fr; gap: 48px; padding-top: 80px; padding-bottom: 80px; }
-  }
-</style>
 
 {% schema %}
 {

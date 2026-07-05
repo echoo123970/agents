@@ -1,3 +1,82 @@
+<style>
+  .site-footer { background: var(--color-navy-deep); color: var(--color-text-faint); }
+  .site-footer__top {
+    padding-top: 58px;
+    padding-bottom: 40px;
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1fr;
+    gap: 48px;
+  }
+  .site-footer__logo { display: flex; align-items: center; gap: 13px; margin-bottom: 20px; }
+  .site-footer__name { font-family: var(--font-display); font-weight: 600; font-size: 26px; color: #fff; line-height: 1; }
+  .site-footer__name-accent { font-style: italic; color: var(--color-blue-lighter); }
+  .site-footer__about { font-size: 14px; line-height: 1.7; max-width: 320px; margin-bottom: 22px; }
+  .site-footer__contact { font-size: 14px; color: var(--color-text-soft); display: flex; flex-direction: column; gap: 13px; }
+  .site-footer__contact-row { display: flex; align-items: center; gap: 12px; }
+  .site-footer__contact-row--top { align-items: flex-start; }
+  .site-footer__contact-row span { max-width: 240px; }
+  .site-footer__col-title {
+    font-family: var(--font-accent);
+    font-size: 13px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--color-bg);
+    margin-bottom: 20px;
+  }
+  .site-footer__col-links { display: flex; flex-direction: column; gap: 12px; font-size: 14px; }
+  .site-footer__bottom {
+    padding-top: 24px;
+    padding-bottom: 30px;
+    border-top: 1px solid rgba(220,230,245,.12);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px 28px;
+    flex-wrap: wrap;
+    font-size: 13px;
+  }
+  .site-footer__copy { color: #7B879F; letter-spacing: .01em; }
+
+  /* Accepted payment methods — sits in the centre of the bottom bar */
+  .site-footer__pay-icons { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .pay-ic { display: inline-flex; transition: transform .2s ease; }
+  .pay-ic:hover { transform: translateY(-2px); }
+  .pay-ic svg { display: block; width: 40px; height: 26px; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,.32); }
+
+  /* Social — each logo in its own brand colour, hover fills with it */
+  .site-footer__social { display: flex; gap: 10px; }
+  .social-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(220,230,245,.16);
+    background: rgba(255,255,255,.04);
+    transition: color .25s ease, background .25s ease, border-color .25s ease, transform .25s ease;
+  }
+  .social-btn svg { width: 17px; height: 17px; }
+  .social-btn:hover { color: #fff; transform: translateY(-3px); }
+  .social-btn--ig { color: #F06292; }
+  .social-btn--ig:hover { background: linear-gradient(45deg,#F58529,#DD2A7B,#8134AF,#515BD4); border-color: transparent; }
+  .social-btn--fb { color: #4C8DF5; }
+  .social-btn--fb:hover { background: #1877F2; border-color: #1877F2; }
+  .social-btn--yt { color: #FF4B4B; }
+  .social-btn--yt:hover { background: #FF0000; border-color: #FF0000; }
+  .social-btn--pin { color: #F14B5E; }
+  .social-btn--pin:hover { background: #E60023; border-color: #E60023; }
+  @media (max-width: 990px) {
+    .site-footer__top { grid-template-columns: 1fr 1fr; gap: 36px; }
+  }
+  @media (max-width: 700px) {
+    .site-footer__bottom { flex-direction: column; text-align: center; gap: 20px; padding-top: 26px; }
+  }
+  @media (max-width: 600px) {
+    .site-footer__top { grid-template-columns: 1fr; }
+  }
+</style>
+
 <footer class="site-footer" role="contentinfo">
   <div class="page-width site-footer__top">
     <div class="site-footer__brand">
@@ -108,84 +187,6 @@
   </div>
 </footer>
 
-<style>
-  .site-footer { background: var(--color-navy-deep); color: var(--color-text-faint); }
-  .site-footer__top {
-    padding-top: 58px;
-    padding-bottom: 40px;
-    display: grid;
-    grid-template-columns: 1.6fr 1fr 1fr 1fr;
-    gap: 48px;
-  }
-  .site-footer__logo { display: flex; align-items: center; gap: 13px; margin-bottom: 20px; }
-  .site-footer__name { font-family: var(--font-display); font-weight: 600; font-size: 26px; color: #fff; line-height: 1; }
-  .site-footer__name-accent { font-style: italic; color: var(--color-blue-lighter); }
-  .site-footer__about { font-size: 14px; line-height: 1.7; max-width: 320px; margin-bottom: 22px; }
-  .site-footer__contact { font-size: 14px; color: var(--color-text-soft); display: flex; flex-direction: column; gap: 13px; }
-  .site-footer__contact-row { display: flex; align-items: center; gap: 12px; }
-  .site-footer__contact-row--top { align-items: flex-start; }
-  .site-footer__contact-row span { max-width: 240px; }
-  .site-footer__col-title {
-    font-family: var(--font-accent);
-    font-size: 13px;
-    letter-spacing: .16em;
-    text-transform: uppercase;
-    color: var(--color-bg);
-    margin-bottom: 20px;
-  }
-  .site-footer__col-links { display: flex; flex-direction: column; gap: 12px; font-size: 14px; }
-  .site-footer__bottom {
-    padding-top: 24px;
-    padding-bottom: 30px;
-    border-top: 1px solid rgba(220,230,245,.12);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 18px 28px;
-    flex-wrap: wrap;
-    font-size: 13px;
-  }
-  .site-footer__copy { color: #7B879F; letter-spacing: .01em; }
-
-  /* Accepted payment methods — sits in the centre of the bottom bar */
-  .site-footer__pay-icons { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; }
-  .pay-ic { display: inline-flex; transition: transform .2s ease; }
-  .pay-ic:hover { transform: translateY(-2px); }
-  .pay-ic svg { display: block; width: 40px; height: 26px; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,.32); }
-
-  /* Social — each logo in its own brand colour, hover fills with it */
-  .site-footer__social { display: flex; gap: 10px; }
-  .social-btn {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid rgba(220,230,245,.16);
-    background: rgba(255,255,255,.04);
-    transition: color .25s ease, background .25s ease, border-color .25s ease, transform .25s ease;
-  }
-  .social-btn svg { width: 17px; height: 17px; }
-  .social-btn:hover { color: #fff; transform: translateY(-3px); }
-  .social-btn--ig { color: #F06292; }
-  .social-btn--ig:hover { background: linear-gradient(45deg,#F58529,#DD2A7B,#8134AF,#515BD4); border-color: transparent; }
-  .social-btn--fb { color: #4C8DF5; }
-  .social-btn--fb:hover { background: #1877F2; border-color: #1877F2; }
-  .social-btn--yt { color: #FF4B4B; }
-  .social-btn--yt:hover { background: #FF0000; border-color: #FF0000; }
-  .social-btn--pin { color: #F14B5E; }
-  .social-btn--pin:hover { background: #E60023; border-color: #E60023; }
-  @media (max-width: 990px) {
-    .site-footer__top { grid-template-columns: 1fr 1fr; gap: 36px; }
-  }
-  @media (max-width: 700px) {
-    .site-footer__bottom { flex-direction: column; text-align: center; gap: 20px; padding-top: 26px; }
-  }
-  @media (max-width: 600px) {
-    .site-footer__top { grid-template-columns: 1fr; }
-  }
-</style>
 
 {% schema %}
 {
