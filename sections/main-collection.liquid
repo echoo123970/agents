@@ -302,7 +302,7 @@
                         <label class="coll-facet__row">
                           <input type="checkbox" name="{{ value.param_name }}" form="CollFilterForm" value="{{ value.value }}" {% if value.active %}checked{% endif %} data-auto-submit>
                           <span class="coll-facet__row-label">{{ value.label }}</span>
-                          <span class="coll-facet__row-count">{{ value.count }}</span>
+                          <span class="coll-facet__row-count">({{ value.count }})</span>
                         </label>
                       {%- endfor -%}
                   {%- endcase -%}
