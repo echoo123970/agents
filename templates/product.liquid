@@ -121,61 +121,6 @@
           </div>
         {%- endunless -%}
 
-        <div class="pdp__addons">
-          <div class="pdp__addons-label">Finishing Options <span class="pdp__addons-opt">— optional</span></div>
-
-          <div class="pdp-opt pdp-opt--frame" data-addon>
-            <label class="pdp-opt__main">
-              <input type="checkbox" class="pdp-opt__check" name="properties[Finish]" value="Polished — requested, please contact me for a quote" data-frame-check>
-              <span class="pdp-opt__tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12.5 10 17.5 19 7"/></svg></span>
-              <span class="pdp-opt__body">
-                <span class="pdp-opt__title">Polished Finish</span>
-                <span class="pdp-opt__desc">A hand-applied seal that deepens colour and lends a refined, museum-grade sheen.</span>
-              </span>
-              <span class="pdp-opt__flag">By request</span>
-            </label>
-            <a class="pdp-opt__contact" href="#quote-form" data-frame-contact hidden>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v13H7l-3 3z"/></svg>
-              Contact us about a polished finish
-              <span class="pdp-opt__contact-arrow">→</span>
-            </a>
-          </div>
-
-          <div class="pdp-opt pdp-opt--frame" data-addon>
-            <label class="pdp-opt__main">
-              <input type="checkbox" class="pdp-opt__check" name="properties[Framing]" value="Requested — please contact me for a bespoke framing quote" data-frame-check>
-              <span class="pdp-opt__tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12.5 10 17.5 19 7"/></svg></span>
-              <span class="pdp-opt__body">
-                <span class="pdp-opt__title">Add a Handcrafted Frame</span>
-                <span class="pdp-opt__desc">Bespoke framing tailored to your piece. Priced individually — our team will guide you through the options.</span>
-              </span>
-              <span class="pdp-opt__flag">By request</span>
-            </label>
-            <a class="pdp-opt__contact" href="#quote-form" data-frame-contact hidden>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v13H7l-3 3z"/></svg>
-              Contact us about framing
-              <span class="pdp-opt__contact-arrow">→</span>
-            </a>
-          </div>
-
-          <div class="pdp-opt pdp-opt--frame" data-addon>
-            <label class="pdp-opt__main">
-              <input type="checkbox" class="pdp-opt__check" name="properties[Technique]" value="Old Roman technique — requested, please contact me for a quote" data-frame-check>
-              <span class="pdp-opt__tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12.5 10 17.5 19 7"/></svg></span>
-              <span class="pdp-opt__body">
-                <span class="pdp-opt__title">Old Roman Technique</span>
-                <span class="pdp-opt__desc">Hand-laid in the ancient Roman method with irregular natural tesserae, for an authentic, timeworn character.</span>
-              </span>
-              <span class="pdp-opt__flag">By request</span>
-            </label>
-            <a class="pdp-opt__contact" href="#quote-form" data-frame-contact hidden>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v13H7l-3 3z"/></svg>
-              Contact us about the Old Roman technique
-              <span class="pdp-opt__contact-arrow">→</span>
-            </a>
-          </div>
-        </div>
-
         <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-variant-input>
 
         <div class="pdp__buy">
@@ -194,6 +139,61 @@
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>
         <span data-wishlist-label>Add to Wishlist</span>
       </button>
+
+      <div class="pdp__addons">
+        <div class="pdp__addons-label">Finishing Options <span class="pdp__addons-opt">— optional</span></div>
+
+        <div class="pdp-opt pdp-opt--frame" data-addon>
+          <label class="pdp-opt__main">
+            <input type="checkbox" class="pdp-opt__check" form="ProductForm" name="properties[Finish]" value="Polished — requested, please contact me for a quote" data-frame-check>
+            <span class="pdp-opt__tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12.5 10 17.5 19 7"/></svg></span>
+            <span class="pdp-opt__body">
+              <span class="pdp-opt__title">Polished Finish</span>
+              <span class="pdp-opt__desc">A hand-applied seal that deepens colour and lends a refined, museum-grade sheen.</span>
+            </span>
+            <span class="pdp-opt__flag">By request</span>
+          </label>
+          <a class="pdp-opt__contact" href="#quote-form" data-frame-contact hidden>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v13H7l-3 3z"/></svg>
+            Contact us about a polished finish
+            <span class="pdp-opt__contact-arrow">→</span>
+          </a>
+        </div>
+
+        <div class="pdp-opt pdp-opt--frame" data-addon>
+          <label class="pdp-opt__main">
+            <input type="checkbox" class="pdp-opt__check" form="ProductForm" name="properties[Framing]" value="Requested — please contact me for a bespoke framing quote" data-frame-check>
+            <span class="pdp-opt__tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12.5 10 17.5 19 7"/></svg></span>
+            <span class="pdp-opt__body">
+              <span class="pdp-opt__title">Add a Handcrafted Frame</span>
+              <span class="pdp-opt__desc">Bespoke framing tailored to your piece. Priced individually — our team will guide you through the options.</span>
+            </span>
+            <span class="pdp-opt__flag">By request</span>
+          </label>
+          <a class="pdp-opt__contact" href="#quote-form" data-frame-contact hidden>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v13H7l-3 3z"/></svg>
+            Contact us about framing
+            <span class="pdp-opt__contact-arrow">→</span>
+          </a>
+        </div>
+
+        <div class="pdp-opt pdp-opt--frame" data-addon>
+          <label class="pdp-opt__main">
+            <input type="checkbox" class="pdp-opt__check" form="ProductForm" name="properties[Technique]" value="Old Roman technique — requested, please contact me for a quote" data-frame-check>
+            <span class="pdp-opt__tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12.5 10 17.5 19 7"/></svg></span>
+            <span class="pdp-opt__body">
+              <span class="pdp-opt__title">Old Roman Technique</span>
+              <span class="pdp-opt__desc">Hand-laid in the ancient Roman method with irregular natural tesserae, for an authentic, timeworn character.</span>
+            </span>
+            <span class="pdp-opt__flag">By request</span>
+          </label>
+          <a class="pdp-opt__contact" href="#quote-form" data-frame-contact hidden>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v13H7l-3 3z"/></svg>
+            Contact us about the Old Roman technique
+            <span class="pdp-opt__contact-arrow">→</span>
+          </a>
+        </div>
+      </div>
 
       <div class="pdp__trust">
         {%- assign trust_labels = trust_labels_str | split: '|' -%}
