@@ -268,6 +268,8 @@
   .pdp-acc__body { overflow: hidden; max-height: 0; opacity: 0; transition: max-height .4s ease, opacity .3s ease; }
   .pdp-acc[data-open] .pdp-acc__body { max-height: 600px; opacity: 1; }
   .pdp-acc--options { margin-bottom: 22px; }
+  .pdp-acc--options .pdp-acc__head { cursor: pointer; transition: color .2s ease; }
+  .pdp-acc--options .pdp-acc__head:hover .pdp-acc__title { color: var(--color-blue); }
   .pdp-acc__icon--chev { display: flex; align-items: center; }
   .pdp-acc--options[data-open] .pdp-acc__icon--chev { transform: rotate(180deg); }
   .pdp-acc--options[data-open] .pdp-acc__body { max-height: 1400px; }
