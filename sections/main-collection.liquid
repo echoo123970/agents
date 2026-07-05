@@ -417,16 +417,24 @@
 
 <!-- CUSTOM CTA BAND -->
 {%- if section.settings.cta_heading != blank -%}
-  {%- comment -%} Tailor the bespoke-commission copy to the current collection's subject. {%- endcomment -%}
+  {%- comment -%} Bespoke-commission copy tailored per collection (from the design). {%- endcomment -%}
   {%- assign cta_low = collection.title | downcase -%}
-  {%- assign cta_generic = false -%}
-  {%- if collection.handle == 'all' or collection.handle == blank or collection.handle == 'frontpage' or collection.handle == 'home-page' or cta_low contains 'other' or cta_low contains 'best' or cta_low contains 'new arrival' or cta_low contains 'limited' or cta_low contains 'special' or cta_low contains 'sale' -%}
-    {%- assign cta_generic = true -%}
-  {%- endif -%}
   {%- assign cta_subject = collection.title | remove: ' Mosaics' | remove: ' Mosaic' | remove: ' mosaics' | remove: ' mosaic' | strip -%}
-  {%- if cta_generic or cta_subject == blank -%}
-    {%- assign cta_heading_out = section.settings.cta_heading -%}
-    {%- assign cta_sub_out = section.settings.cta_text -%}
+  {%- if collection.handle == 'all' or collection.handle == blank or collection.handle == 'frontpage' or collection.handle == 'home-page' -%}
+    {%- assign cta_heading_out = "Don't see your vision? We'll hand-cut it in stone." -%}
+    {%- capture cta_sub_out -%}Share a photo, sketch or idea and our artisans will craft a one-of-a-kind mosaic in any subject — tailored to your exact dimensions, palette and space.{%- endcapture -%}
+  {%- elsif cta_low contains 'abstract' -%}
+    {%- assign cta_heading_out = "Don't see your vision? We'll hand-cut it in stone." -%}
+    {%- capture cta_sub_out -%}Share a photo, sketch or idea and our artisans will craft a one-of-a-kind abstract mosaic, tailored to your exact dimensions and palette.{%- endcapture -%}
+  {%- elsif cta_low contains 'animal' -%}
+    {%- assign cta_heading_out = "Have a creature in mind? We'll bring it to life in stone." -%}
+    {%- capture cta_sub_out -%}Send us a photo of your pet or favorite animal and our artisans will hand-cut a custom mosaic portrait, tailored to your dimensions.{%- endcapture -%}
+  {%- elsif cta_low contains 'bird' -%}
+    {%- assign cta_heading_out = "Dreaming of a particular bird? We'll craft it by hand." -%}
+    {%- capture cta_sub_out -%}From a treasured species to a heraldic emblem, share your idea and we'll hand-cut a bespoke bird mosaic to your exact size and palette.{%- endcapture -%}
+  {%- elsif cta_low contains 'other' or cta_low contains 'best' or cta_low contains 'new arrival' or cta_low contains 'limited' or cta_low contains 'special' or cta_low contains 'sale' or cta_subject == blank -%}
+    {%- assign cta_heading_out = "Don't see your vision? We'll hand-cut it in stone." -%}
+    {%- capture cta_sub_out -%}Share a photo, sketch or idea and our artisans will craft a one-of-a-kind mosaic in any subject — tailored to your exact dimensions, palette and space.{%- endcapture -%}
   {%- else -%}
     {%- capture cta_heading_out -%}Want a custom {{ cta_subject }} mosaic? We'll hand-cut it in stone.{%- endcapture -%}
     {%- capture cta_sub_out -%}Share a photo, sketch or idea and our artisans will craft a one-of-a-kind {{ cta_subject | downcase }} mosaic — tailored to your exact dimensions, palette and space.{%- endcapture -%}
