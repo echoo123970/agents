@@ -110,7 +110,14 @@
   .showcase__desc { font-size: 14.5px; color: #E0D6C6; margin-bottom: 18px; max-width: 300px; }
   .showcase__cta { font-size: 12.5px; letter-spacing: .16em; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,.5); padding-bottom: 5px; width: fit-content; }
   @media (max-width: 990px) { .showcase { padding-top: 80px; } }
-  @media (max-width: 600px) { .showcase__grid { grid-template-columns: 1fr; } .col-card { height: 360px; } }
+  @media (max-width: 749px) {
+    .showcase__grid { display: flex; grid-template-columns: none; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin: 0 -18px 0 0; padding: 2px 18px 8px 0; }
+    .showcase__grid::-webkit-scrollbar { display: none; }
+    .col-card { flex: 0 0 47%; scroll-snap-align: start; height: 300px; }
+    .showcase__caption { left: 20px; right: 20px; top: 20px; bottom: 20px; }
+    .showcase__name { font-size: 21px; }
+    .showcase__desc { font-size: 12.5px; margin-bottom: 12px; max-width: none; }
+  }
 </style>
 {%- comment -%} Bestsellers inlined here (not a separate section) so it renders even if the store's GitHub sync fails to create new section files. {%- endcomment -%}
 <section class="bestsellers page-width">
