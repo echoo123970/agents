@@ -21,6 +21,16 @@
         <a href="{{ product.url }}" class="cardc__add cardc__add-btn">{% if product.available %}Choose Options{% else %}Sold Out{% endif %}</a>
       {%- endif -%}
     {%- endunless -%}
+    {%- if stacked_cta and product.variants.size > 1 and product.available -%}
+      <div class="cardc__vpanel" data-variants>
+        <div class="cardc__vpanel-cap">Select a size</div>
+        <div class="cardc__vpills">
+          {%- for v in product.variants -%}
+            <button type="button" class="cardc__vpill" data-variant-add data-variant-id="{{ v.id }}"{% unless v.available %} disabled{% endunless %} aria-label="Add size {{ v.title | escape }} to cart">{{ v.title }}</button>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
   </div>
   {%- if product.selected_or_first_available_variant.sku != blank -%}
     <div class="cardc__sku">{{ product.selected_or_first_available_variant.sku }}</div>
@@ -42,7 +52,9 @@
         <button type="submit" class="cardc__add-btn">Add to Cart</button>
       </form>
     {%- else -%}
-      <div class="cardc__cta"><a href="{{ product.url }}" class="cardc__add-btn">{% if product.available %}Choose Options{% else %}Sold Out{% endif %}</a></div>
+      <div class="cardc__cta cardc__cta--opts">
+        <button type="button" class="cardc__add-btn" data-opts-toggle{% unless product.available %} disabled{% endunless %}>{% if product.available %}Choose Options{% else %}Sold Out{% endif %}</button>
+      </div>
     {%- endif -%}
   {%- endif -%}
 </div>
@@ -64,4 +76,15 @@
   .cardc:hover .cardc__title { color: var(--color-blue); }
   .cardc__price { font-size: 14px; color: var(--color-text-muted); letter-spacing: .02em; }
   .cardc__cta { display: block; margin-top: 14px; }
+  /* Inline size picker — fades up over the image, AJAX add (same as collection page) */
+  .cardc.is-open .cardc__add-btn { background: #224A82; }
+  .cardc__add-btn:disabled { background: var(--color-text-faint); cursor: default; }
+  .cardc__vpanel { position: absolute; left: 0; right: 0; bottom: 0; background: rgba(11,28,53,.93); padding: 16px 16px 18px; transform: translateY(14px); opacity: 0; visibility: hidden; transition: transform .34s ease, opacity .34s ease, visibility .34s ease; z-index: 4; }
+  .cardc.is-open .cardc__vpanel { transform: translateY(0); opacity: 1; visibility: visible; }
+  .cardc__vpanel-cap { color: #cdd9ef; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 10px; }
+  .cardc__vpills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .cardc__vpill { flex: 1 1 auto; min-width: 54px; padding: 11px 8px; background: transparent; border: 1px solid rgba(255,255,255,.55); color: #fff; font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; text-align: center; cursor: pointer; transition: background .2s ease, color .2s ease, border-color .2s ease; }
+  .cardc__vpill:hover:not(:disabled) { background: #fff; border-color: #fff; color: var(--color-navy); }
+  .cardc__vpill:disabled { opacity: .4; cursor: not-allowed; text-decoration: line-through; }
+  .cardc__vpill.is-adding { opacity: .6; pointer-events: none; }
 </style>

@@ -233,7 +233,7 @@
               <div class="srch__grid">
                 {%- for item in search.results -%}
                   {%- if item.object_type == 'product' -%}
-                    {% render 'card-collection', product: item %}
+                    {% render 'card-collection', product: item, stacked_cta: true %}
                   {%- endif -%}
                 {%- endfor -%}
               </div>
@@ -296,7 +296,7 @@
       <div class="srch__suggest-label srch__suggest-label--mt">Featured Mosaics</div>
       <div class="srch__grid">
         {%- for product in feat.products limit: 8 -%}
-          {% render 'card-collection', product: product %}
+          {% render 'card-collection', product: product, stacked_cta: true %}
         {%- endfor -%}
       </div>
     {%- endif -%}
