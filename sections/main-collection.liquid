@@ -225,7 +225,7 @@
       <a href="{{ routes.all_products_collection_url }}" class="coll-chip{% if collection.handle == 'all' or collection.handle == blank %} is-active{% endif %}">All Mosaics</a>
       {%- for c in collections -%}
         {%- assign c_tl = c.title | downcase -%}
-        {%- unless c.handle == 'all' or c.handle == 'frontpage' or c.handle == 'home-page' or c.products_count == 0 or c_tl contains 'limited edition' or c_tl contains 'studio special' or c_tl contains 'best seller' or c_tl contains 'new arrival' -%}
+        {%- unless c.handle == 'all' or c.handle == 'frontpage' or c.handle == 'home-page' or c.products_count == 0 or c_tl contains 'limited edition' or c_tl contains 'studio special' or c_tl contains 'best seller' or c_tl contains 'new arrival' or c_tl contains 'van gogh' or c_tl contains 'backsplash' or c_tl contains 'table top' or c_tl contains 'tabletop' or c_tl contains 'glass' -%}
           {%- assign chip_label = c.title | remove: ' Mosaics' | remove: ' Mosaic' | remove: 'Mosaic ' | strip -%}
           <a href="{{ c.url }}" class="coll-chip{% if collection.handle == c.handle %} is-active{% endif %}">{{ chip_label }}</a>
         {%- endunless -%}
