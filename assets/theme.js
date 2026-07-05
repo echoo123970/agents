@@ -152,17 +152,32 @@
 
   /* Portfolio: category filter + lightbox */
   document.querySelectorAll('[data-portfolio]').forEach(function (root) {
-    var tiles = root.querySelectorAll('.pf-tile');
+    var tiles = Array.prototype.slice.call(root.querySelectorAll('.pf-tile'));
+    var moreBtn = root.querySelector('[data-pf-more]');
+    var STEP = 20;
+    var currentFilter = 'all';
+    var limit = STEP;
+    function renderTiles() {
+      var shown = 0, matched = 0;
+      tiles.forEach(function (tile) {
+        var match = (currentFilter === 'all' || tile.dataset.pfCat === currentFilter);
+        if (match && shown < limit) { tile.style.display = ''; shown++; }
+        else { tile.style.display = 'none'; }
+        if (match) matched++;
+      });
+      if (moreBtn) { moreBtn.style.display = (matched > limit) ? '' : 'none'; }
+    }
     root.querySelectorAll('[data-pf-filter]').forEach(function (tab) {
       tab.addEventListener('click', function () {
         root.querySelectorAll('[data-pf-filter]').forEach(function (t) { t.classList.remove('is-active'); });
         tab.classList.add('is-active');
-        var f = tab.dataset.pfFilter;
-        tiles.forEach(function (tile) {
-          tile.style.display = (f === 'all' || tile.dataset.pfCat === f) ? '' : 'none';
-        });
+        currentFilter = tab.dataset.pfFilter;
+        limit = STEP;
+        renderTiles();
       });
     });
+    if (moreBtn) { moreBtn.addEventListener('click', function () { limit += STEP; renderTiles(); }); }
+    renderTiles();
 
     var lb = document.querySelector('[data-pf-lightbox]');
     if (lb) {
