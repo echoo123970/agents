@@ -34,7 +34,7 @@
   .coll-chip:hover { border-color: var(--color-blue); color: var(--color-navy); }
   .coll-chip.is-active { background: var(--color-navy); color: #fff; border-color: var(--color-navy); }
   @media (max-width: 749px) {
-    .coll-chips__row { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; gap: 8px; padding-top: 14px; padding-bottom: 14px; scroll-snap-type: x proximity; }
+    .coll-chips__row { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; gap: 8px; padding-top: 14px; padding-bottom: 14px; scroll-padding-left: 18px; scroll-snap-type: x proximity; }
     .coll-chips__row::-webkit-scrollbar { display: none; }
     .coll-chips__break { display: none; }
     .coll-chip { flex: 0 0 auto; scroll-snap-align: start; font-size: 12px; letter-spacing: .06em; padding: 9px 16px; border-radius: 2px; }
@@ -602,11 +602,14 @@
       var open = layout.classList.toggle('is-filters-open');
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
     });
-    // On mobile, bring the active category chip into view within the scroller
+    // On mobile, bring the active category chip into view — only if it is off-screen to the right
     var activeChip = document.querySelector('.coll-chips__row .coll-chip.is-active');
     if (activeChip && window.matchMedia('(max-width: 749px)').matches) {
       var row = activeChip.parentNode;
-      row.scrollLeft = activeChip.offsetLeft - 16;
+      var chipRight = activeChip.offsetLeft + activeChip.offsetWidth;
+      if (chipRight > row.clientWidth) {
+        row.scrollLeft = activeChip.offsetLeft - 16;
+      }
     }
   })();
 </script>
