@@ -126,10 +126,6 @@ p { margin: 0; }
 .cat-card:hover .cat-veil { opacity: 1; }
 .cat-card .cat-frame { position: absolute; inset: 13px; border: 1px solid rgba(244,246,250,.55); opacity: 0; transform: scale(1.04); transition: opacity .5s ease, transform .6s cubic-bezier(.2,.7,.2,1); pointer-events: none; }
 .cat-card:hover .cat-frame { opacity: 1; transform: scale(1); }
-.cat-card .cat-label { transition: transform .55s cubic-bezier(.2,.7,.2,1); }
-.cat-card:hover .cat-label { transform: translateY(-26px); }
-.cat-card .cat-cta { position: absolute; left: 18px; bottom: 16px; color: var(--color-bg); font-family: var(--font-body); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; opacity: 0; transform: translateY(10px); transition: opacity .5s ease, transform .55s cubic-bezier(.2,.7,.2,1); }
-.cat-card:hover .cat-cta { opacity: 1; transform: translateY(0); }
 
 .cm-zoom { overflow: hidden; }
 .cm-zoom img { transition: transform .8s cubic-bezier(.2,.7,.2,1); }
