@@ -10,6 +10,12 @@
           <div class="rv-stat"><div class="rv-stat__big"><span data-countup data-count-to="10000" data-count-sep="1" data-count-suffix="+">10,000+</span></div><div class="rv-stat__label">Happy Collectors</div></div>
           <div class="rv-stat"><div class="rv-stat__big"><span data-countup data-count-to="100" data-count-suffix="%">100%</span></div><div class="rv-stat__label">Handcrafted</div></div>
         </div>
+        <div class="rv-top__cta">
+          <a href="#write-review" class="rv-top__review-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77 5.82 21l1.18-6.88-5-4.87 7.1-1.01z"/></svg>
+            Leave a Review
+          </a>
+        </div>
       </div>
     </section>
 
@@ -261,8 +267,13 @@
     .rv-cta__btn--outline { background:transparent; color:#16335E; border:1px solid rgba(22,51,94,.3); }
     .rv-cta__btn--outline:hover { background:#16335E; color:#F4F6FA; border-color:#16335E; }
 
+    .rv-top__cta { margin-top:42px; }
+    .rv-top__review-btn { display:inline-flex; align-items:center; gap:10px; background:#2B7BE8; color:#fff; font-family:'Hanken Grotesk',sans-serif; font-size:12.5px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; padding:15px 34px; transition:background .25s ease, transform .25s ease; }
+    .rv-top__review-btn:hover { background:#1E63C4; transform:translateY(-2px); }
+    .rv-top__review-btn svg { color:#fff; }
+
     /* Leave a review form */
-    .rv-form { max-width:1320px; margin:0 auto; padding:0 40px 90px; }
+    .rv-form { max-width:1320px; margin:0 auto; padding:0 40px 90px; scroll-margin-top:100px; }
     .rv-form__inner { max-width:700px; margin:0 auto; background:#fff; border:1px solid rgba(22,51,94,.08); padding:52px 48px; box-shadow:0 26px 60px rgba(22,51,94,.09); }
     .rv-form__head { text-align:center; margin-bottom:34px; }
     .rv-eyebrow--dark { color:#2B7BE8; }
