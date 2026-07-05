@@ -119,7 +119,20 @@
       .ab-cta__btn { flex:1; text-align:center; }
     }
     @media (max-width:400px) {
-      .ab-stats__grid, .ab-promise__grid { grid-template-columns:1fr; }
+      .ab-stats__grid { grid-template-columns:1fr; }
+    }
+    @media (max-width:749px) {
+      /* small extra space above the "Our Craft" heading */
+      .ab-pillars__inner { padding-top:84px; }
+      /* Our Craft, In Real Spaces, Our Promise → horizontal swipe rows */
+      .ab-pillars__grid, .ab-gallery__grid, .ab-promise__grid {
+        display:flex; grid-template-columns:none; gap:14px;
+        overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+      }
+      .ab-pillars__grid::-webkit-scrollbar, .ab-gallery__grid::-webkit-scrollbar, .ab-promise__grid::-webkit-scrollbar { display:none; }
+      .ab-pillar { flex:0 0 74%; scroll-snap-align:start; }
+      .ab-gtile { flex:0 0 74%; scroll-snap-align:start; }
+      .ab-promise__col { flex:0 0 62%; scroll-snap-align:start; border-left:none; }
     }
   </style>
 
