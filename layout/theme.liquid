@@ -67,6 +67,13 @@
         --page-width: 1320px; /* exact Claude design width — keeps all font/layout proportions 1:1 */
       }
     </style>
+
+    <style>
+      /* Shopify spam-protection (hCaptcha) challenge page */
+      .shopify-challenge__container { max-width: 640px; margin: 0 auto; padding: 90px 24px 100px; text-align: center; }
+      .shopify-challenge__button, .shopify-challenge__button.btn { display: inline-block; margin-top: 34px; background: {{ settings.color_accent | default: '#2B7BE8' }}; color: #fff; border: none; font-family: 'Hanken Grotesk', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding: 16px 46px; cursor: pointer; transition: background .25s ease; }
+      .shopify-challenge__button:hover, .shopify-challenge__button.btn:hover { background: #1E63C4; }
+    </style>
   </head>
 
   <body class="template-{{ request.page_type | handle }}">
