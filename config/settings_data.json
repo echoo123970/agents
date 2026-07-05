@@ -13,6 +13,7 @@
     "color_navy": "#16335E",
     "color_accent": "#2B7BE8",
     "page_width": 1320,
+    "favicon": "shopify://shop_images/favicon-512.png",
     "social_instagram_link": "https://www.instagram.com/i.mosaicart/",
     "social_pinterest_link": "https://www.pinterest.com/iMosaicArt/",
     "social_facebook_link": "https://www.facebook.com/profile.php?id=100094048131287",
@@ -131,16 +132,8 @@
         "type": "floating-actions",
         "settings": {
           "enable": true,
-          "show_chat": true,
-          "chat_label": "Chat with us",
           "whatsapp_number": "13152175538",
-          "whatsapp_message": "Hi iMosaicArt! I have a question about your mosaics.",
-          "show_search": true,
-          "show_subscribe": true,
-          "subscribe_heading": "Join the studio list",
-          "subscribe_text": "Be first to see new mosaics, stories and private offers.",
-          "subscribe_success": "You’re on the list.",
-          "show_back_to_top": true
+          "whatsapp_message": "Hi iMosaicArt! I have a question about your mosaics."
         }
       }
     },
