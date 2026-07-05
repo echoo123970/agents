@@ -75,7 +75,9 @@
       .faqx-cta__panel { grid-template-columns: 1fr; padding: 44px 28px; gap: 30px; }
       .faqx-hero__inner { padding: 40px 24px 44px; }
       .faqx-list { padding: 44px 24px 20px; }
-      .faqx-pills__row { padding: 16px 20px; }
+      .faqx-pills__row { padding: 16px 20px; flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; gap: 8px; scroll-padding-left: 20px; scroll-snap-type: x proximity; }
+      .faqx-pills__row::-webkit-scrollbar { display: none; }
+      .faqx-pill { flex: 0 0 auto; scroll-snap-align: start; white-space: nowrap; font-size: 12px; letter-spacing: .05em; padding: 9px 16px; }
     }
   </style>
 
