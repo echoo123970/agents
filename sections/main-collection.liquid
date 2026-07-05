@@ -432,6 +432,21 @@
   {%- elsif cta_low contains 'bird' -%}
     {%- assign cta_heading_out = "Dreaming of a particular bird? We'll craft it by hand." -%}
     {%- capture cta_sub_out -%}From a treasured species to a heraldic emblem, share your idea and we'll hand-cut a bespoke bird mosaic to your exact size and palette.{%- endcapture -%}
+  {%- elsif cta_low contains 'flower' -%}
+    {%- assign cta_heading_out = "Have a bloom in mind? We'll hand-cut it in stone." -%}
+    {%- capture cta_sub_out -%}A wedding bouquet, a favorite flower or a botanical motif — share your idea and we'll craft a custom floral mosaic to your dimensions.{%- endcapture -%}
+  {%- elsif cta_low contains 'food' -%}
+    {%- assign cta_heading_out = "Craving a custom piece? We'll compose it in tile." -%}
+    {%- capture cta_sub_out -%}A signature dish, a vineyard or a coffee ritual — tell us the story and our artisans will hand-cut a bespoke food mosaic for your space.{%- endcapture -%}
+  {%- elsif cta_low contains 'geometric' -%}
+    {%- assign cta_heading_out = "Need a precise pattern? We'll cut it to measure." -%}
+    {%- capture cta_sub_out -%}Share your motif, medallion or tessellation and we'll hand-cut a custom geometric mosaic sized exactly for your floor, wall or backsplash.{%- endcapture -%}
+  {%- elsif cta_low contains 'landmark' -%}
+    {%- assign cta_heading_out = "A place close to your heart? We'll render it in stone." -%}
+    {%- capture cta_sub_out -%}Your city, a monument or a meaningful skyline — send a photo and our artisans will craft a bespoke landmark mosaic to your dimensions.{%- endcapture -%}
+  {%- elsif cta_low contains 'landscape' -%}
+    {%- assign cta_heading_out = "A view worth keeping? We'll capture it in tile." -%}
+    {%- capture cta_sub_out -%}A coastline, a mountain or a sunset you love — share the scene and we'll hand-cut a custom landscape mosaic to your exact size.{%- endcapture -%}
   {%- elsif cta_low contains 'other' or cta_low contains 'best' or cta_low contains 'new arrival' or cta_low contains 'limited' or cta_low contains 'special' or cta_low contains 'sale' or cta_subject == blank -%}
     {%- assign cta_heading_out = "Don't see your vision? We'll hand-cut it in stone." -%}
     {%- capture cta_sub_out -%}Share a photo, sketch or idea and our artisans will craft a one-of-a-kind mosaic in any subject — tailored to your exact dimensions, palette and space.{%- endcapture -%}
