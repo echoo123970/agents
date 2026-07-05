@@ -456,6 +456,15 @@
   {%- elsif cta_low contains 'pattern' -%}
     {%- assign cta_heading_out = "Have a motif in mind? We'll tailor it in tile." -%}
     {%- capture cta_sub_out -%}Arabesques, scrollwork or a repeating design — share your reference and we'll hand-cut a custom pattern mosaic to your exact dimensions.{%- endcapture -%}
+  {%- elsif cta_low contains 'roman' -%}
+    {%- assign cta_heading_out = "Inspired by antiquity? We'll craft it the ancient way." -%}
+    {%- capture cta_sub_out -%}A classical border, medallion or scene — share your idea and our artisans will hand-cut a bespoke Roman mosaic in the timeless tradition.{%- endcapture -%}
+  {%- elsif cta_low contains 'religious' -%}
+    {%- assign cta_heading_out = "A sacred vision? We'll render it with reverence." -%}
+    {%- capture cta_sub_out -%}An icon, a saint or a chapel commission — share your idea and our artisans will hand-cut a bespoke devotional mosaic to your dimensions.{%- endcapture -%}
+  {%- elsif cta_low contains 'tree' -%}
+    {%- assign cta_heading_out = "Rooted in an idea? We'll grow it in stone." -%}
+    {%- capture cta_sub_out -%}A tree of life, a family olive grove or a blossoming canopy — share your vision and we'll hand-cut a custom tree mosaic to your size.{%- endcapture -%}
   {%- elsif cta_low contains 'other' or cta_low contains 'best' or cta_low contains 'new arrival' or cta_low contains 'limited' or cta_low contains 'special' or cta_low contains 'sale' or cta_subject == blank -%}
     {%- assign cta_heading_out = "Don't see your vision? We'll hand-cut it in stone." -%}
     {%- capture cta_sub_out -%}Share a photo, sketch or idea and our artisans will craft a one-of-a-kind mosaic in any subject — tailored to your exact dimensions, palette and space.{%- endcapture -%}
