@@ -3,7 +3,7 @@
 {%- assign availability_note = 'Made to order · ships free worldwide' -%}
 {%- assign quote_banner_text = 'Want a custom size or subject?' -%}
 {%- assign acc_titles_str = 'Materials & Craft|Shipping & Returns' -%}
-{%- assign acc_bodies_str = 'Hand-cut from natural stone and glass tesserae, assembled tile by tile by master artisans and mounted on a fiber-mesh backing for easy installation. Each piece is unique — slight variation in colour and texture is part of its handmade character.|Made to order with a 4–5 week production time, then shipped free worldwide via UPS, FedEx or DHL with full tracking — around 10 days in transit. In a hurry? A 2-week rush production is available — just contact us. Covered by our 30-day returns policy and lifetime warranty.' -%}
+{%- assign acc_bodies_str = 'Hand-cut from natural stone and glass tesserae, assembled tile by tile by master artisans and mounted on a fiber-mesh backing for easy installation. Each piece is unique — slight variation in colour and texture is part of its handmade character.|Made to order with a 4–5 week production time, then shipped free worldwide via UPS, FedEx or DHL with full tracking — around 10 days in transit. Covered by our 30-day returns policy and lifetime warranty.' -%}
 {%- assign trust_labels_str = 'Free worldwide shipping|30-day returns policy|Lifetime warranty|Hand-cut by master artisans' -%}
 
 <section class="pdp page-width" data-product>
@@ -61,7 +61,11 @@
               <span class="pdp-acc__title">{{ t | strip }}</span>
               <span class="pdp-acc__icon">+</span>
             </button>
-            <div class="pdp-acc__body"><div class="pdp-acc__body-inner rte"><p>{{ acc_bodies[forloop.index0] | strip }}</p></div></div>
+            <div class="pdp-acc__body"><div class="pdp-acc__body-inner rte"><p>{{ acc_bodies[forloop.index0] | strip }}</p>
+              {%- if t contains 'Shipping' -%}
+                <p class="pdp-rush"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg><span>In a hurry? A <strong>2-week rush production</strong> is available — <a href="#quote-form">just contact us</a>.</span></p>
+              {%- endif -%}
+            </div></div>
           </div>
         {%- endfor -%}
         <div class="pdp-acc pdp-acc--options" data-accordion>
@@ -260,6 +264,10 @@
   .pdp-acc--options[data-open] .pdp-acc__body { max-height: 1400px; }
   .pdp-opt-list { display: flex; flex-direction: column; gap: 10px; padding-bottom: 6px; }
   .pdp-acc__body-inner { font-size: 15px; line-height: 1.75; color: var(--color-text-muted); padding: 0 2px 22px; }
+  .pdp-rush { display: flex; align-items: flex-start; gap: 10px; margin-top: 14px; padding: 13px 16px; background: #EEF4FD; border-left: 3px solid var(--color-blue); font-size: 14px; line-height: 1.55; color: var(--color-navy); }
+  .pdp-rush svg { flex-shrink: 0; margin-top: 2px; color: var(--color-blue); }
+  .pdp-rush a { color: var(--color-blue); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+  .pdp-rush a:hover { color: var(--color-navy); }
 
   .pdp__info { position: sticky; top: 100px; }
   .pdp__meta { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
