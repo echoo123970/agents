@@ -80,7 +80,7 @@
 
       <div class="pdp__rating">
         <span class="pdp__stars">★★★★★</span>
-        <span class="pdp__rating-text">{{ rating_text }}</span>
+        <span class="pdp__rating-text">Handcrafted Reproduction · <strong class="pdp__rating-score">4.9</strong> · <a href="/pages/all-reviews" class="pdp__rating-link">38 reviews</a></span>
       </div>
 
       <div class="pdp__price-row">
@@ -140,6 +140,34 @@
         <span data-wishlist-label>Add to Wishlist</span>
       </button>
 
+      <div class="pdp__trust">
+        {%- assign trust_labels = trust_labels_str | split: '|' -%}
+        {%- for lbl in trust_labels -%}
+          <div class="pdp__trust-item">
+            <span class="pdp__trust-icon">
+              {%- case forloop.index -%}
+                {%- when 1 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19"/><path d="M12 2.5c2.7 2.6 4.2 5.9 4.2 9.5s-1.5 6.9-4.2 9.5c-2.7-2.6-4.2-5.9-4.2-9.5s1.5-6.9 4.2-9.5z"/></svg>
+                {%- when 2 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-2.4-5.9"/><path d="M20.7 3.6V9.1H15.2"/></svg>
+                {%- when 3 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l8 3v5.5c0 5-3.4 8.6-8 10.5-4.6-1.9-8-5.5-8-10.5V5.5z"/><path d="M9 12l2 2 4-4.5"/></svg>
+                {%- when 4 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0l-7.2-7.2a2 2 0 0 1-.6-1.4V4a1.5 1.5 0 0 1 1.5-1.5h8a2 2 0 0 1 1.4.6l7.2 7.2a2 2 0 0 1 0 2.8z"/><circle cx="7.6" cy="7.6" r="1.3" fill="currentColor" stroke="none"/></svg>
+              {%- endcase -%}
+            </span>
+            <span class="pdp__trust-label">{{ lbl | strip }}</span>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {%- if shop.enabled_payment_types.size > 0 -%}
+        <div class="pdp__pay">
+          <span class="pdp__pay-label">Secure payment</span>
+          <div class="pdp__pay-icons">
+            {%- for type in shop.enabled_payment_types -%}
+              {{ type | payment_type_svg_tag: class: 'pdp__pay-icon' }}
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+
       <div class="pdp__addons">
         <div class="pdp__addons-label">Finishing Options <span class="pdp__addons-opt">— optional</span></div>
 
@@ -194,34 +222,6 @@
           </a>
         </div>
       </div>
-
-      <div class="pdp__trust">
-        {%- assign trust_labels = trust_labels_str | split: '|' -%}
-        {%- for lbl in trust_labels -%}
-          <div class="pdp__trust-item">
-            <span class="pdp__trust-icon">
-              {%- case forloop.index -%}
-                {%- when 1 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19"/><path d="M12 2.5c2.7 2.6 4.2 5.9 4.2 9.5s-1.5 6.9-4.2 9.5c-2.7-2.6-4.2-5.9-4.2-9.5s1.5-6.9 4.2-9.5z"/></svg>
-                {%- when 2 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-2.4-5.9"/><path d="M20.7 3.6V9.1H15.2"/></svg>
-                {%- when 3 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l8 3v5.5c0 5-3.4 8.6-8 10.5-4.6-1.9-8-5.5-8-10.5V5.5z"/><path d="M9 12l2 2 4-4.5"/></svg>
-                {%- when 4 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0l-7.2-7.2a2 2 0 0 1-.6-1.4V4a1.5 1.5 0 0 1 1.5-1.5h8a2 2 0 0 1 1.4.6l7.2 7.2a2 2 0 0 1 0 2.8z"/><circle cx="7.6" cy="7.6" r="1.3" fill="currentColor" stroke="none"/></svg>
-              {%- endcase -%}
-            </span>
-            <span class="pdp__trust-label">{{ lbl | strip }}</span>
-          </div>
-        {%- endfor -%}
-      </div>
-
-      {%- if shop.enabled_payment_types.size > 0 -%}
-        <div class="pdp__pay">
-          <span class="pdp__pay-label">Secure payment</span>
-          <div class="pdp__pay-icons">
-            {%- for type in shop.enabled_payment_types -%}
-              {{ type | payment_type_svg_tag: class: 'pdp__pay-icon' }}
-            {%- endfor -%}
-          </div>
-        </div>
-      {%- endif -%}
     </div>
   </div>
 </section>
@@ -261,6 +261,9 @@
   .pdp__rating { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
   .pdp__stars { color: var(--color-blue); letter-spacing: 2px; font-size: 14px; }
   .pdp__rating-text { font-size: 13.5px; color: var(--color-text-soft); }
+  .pdp__rating-score { color: var(--color-navy); font-weight: 600; }
+  .pdp__rating-link { color: var(--color-blue); text-decoration: underline; text-underline-offset: 2px; transition: color .2s ease; }
+  .pdp__rating-link:hover { color: var(--color-navy); }
   .pdp__price-row { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; }
   .pdp__price { font-family: var(--font-display); font-size: 40px; line-height: 1; color: var(--color-navy); }
   .pdp__size-label { font-size: 13px; color: var(--color-text-soft); }
@@ -309,7 +312,7 @@
   .pdp__pay-icon { height: 24px; width: auto; }
 
   /* Finishing / framing add-on options */
-  .pdp__addons { display: flex; flex-direction: column; gap: 10px; margin-bottom: 26px; }
+  .pdp__addons { display: flex; flex-direction: column; gap: 10px; padding-top: 28px; border-top: 1px solid var(--color-line); }
   .pdp__addons-label { font-family: var(--font-accent); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--color-navy); margin-bottom: 3px; }
   .pdp__addons-opt { color: var(--color-text-faint); }
   .pdp-opt { position: relative; display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; background: #fff; border: 1px solid rgba(22,51,94,.18); cursor: pointer; transition: border-color .2s ease, background .2s ease, box-shadow .2s ease; }
