@@ -168,6 +168,44 @@
       </div>
     </section>
 
+    <section class="rv-form" id="write-review">
+      <div class="rv-form__inner">
+        <div class="rv-form__head">
+          <div class="rv-eyebrow rv-eyebrow--dark"><span class="rv-eyebrow__ln"></span>Share Your Experience<span class="rv-eyebrow__ln"></span></div>
+          <h2 class="rv-form__title">Leave a Review</h2>
+          <p class="rv-form__sub">Tell us about your mosaic — your words help other collectors and mean the world to our artisans.</p>
+        </div>
+        {%- form 'contact', class: 'rv-form__form' -%}
+          {%- if form.posted_successfully? -%}
+            <div class="rv-form__ok">
+              <div class="rv-form__ok-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#2B7BE8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <h3>Thank you for your review!</h3>
+              <p>We've received it — our team will review and publish it shortly.</p>
+            </div>
+          {%- else -%}
+            {%- if form.errors -%}<div class="rv-form__err">{{ form.errors | default_errors }}</div>{%- endif -%}
+            <input type="hidden" name="contact[Submission type]" value="Customer review">
+            <div class="rv-form__rating">
+              <span class="rv-form__label">Your Rating <span>*</span></span>
+              <div class="rv-stars-input">
+                <input type="radio" id="rvst5" name="contact[Rating]" value="★★★★★ (5)" required><label for="rvst5" title="5 stars">★</label>
+                <input type="radio" id="rvst4" name="contact[Rating]" value="★★★★ (4)"><label for="rvst4" title="4 stars">★</label>
+                <input type="radio" id="rvst3" name="contact[Rating]" value="★★★ (3)"><label for="rvst3" title="3 stars">★</label>
+                <input type="radio" id="rvst2" name="contact[Rating]" value="★★ (2)"><label for="rvst2" title="2 stars">★</label>
+                <input type="radio" id="rvst1" name="contact[Rating]" value="★ (1)"><label for="rvst1" title="1 star">★</label>
+              </div>
+            </div>
+            <div class="rv-form__row">
+              <div class="rv-form__field"><label class="rv-form__label" for="rvName">Name <span>*</span></label><input type="text" id="rvName" name="contact[name]" required placeholder="Your name" class="rv-form__input"></div>
+              <div class="rv-form__field"><label class="rv-form__label" for="rvEmail">Email <span>*</span></label><input type="email" id="rvEmail" name="contact[email]" required placeholder="you@email.com" class="rv-form__input"></div>
+            </div>
+            <div class="rv-form__field"><label class="rv-form__label" for="rvBody">Your Review <span>*</span></label><textarea id="rvBody" name="contact[body]" rows="5" required placeholder="Share your experience with your mosaic…" class="rv-form__input rv-form__textarea"></textarea></div>
+            <button type="submit" class="rv-form__submit">Submit Review</button>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+    </section>
+
     <section class="rv-cta">
       <div class="rv-cta__inner">
         <h2 class="rv-cta__title">Join Thousands of Happy Collectors</h2>
@@ -223,10 +261,43 @@
     .rv-cta__btn--outline { background:transparent; color:#16335E; border:1px solid rgba(22,51,94,.3); }
     .rv-cta__btn--outline:hover { background:#16335E; color:#F4F6FA; border-color:#16335E; }
 
+    /* Leave a review form */
+    .rv-form { max-width:1320px; margin:0 auto; padding:0 40px 90px; }
+    .rv-form__inner { max-width:700px; margin:0 auto; background:#fff; border:1px solid rgba(22,51,94,.08); padding:52px 48px; box-shadow:0 26px 60px rgba(22,51,94,.09); }
+    .rv-form__head { text-align:center; margin-bottom:34px; }
+    .rv-eyebrow--dark { color:#2B7BE8; }
+    .rv-form__title { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(30px,3.4vw,42px); line-height:1.1; color:#16335E; margin:0 0 10px; }
+    .rv-form__sub { font-size:15.5px; line-height:1.6; color:#5E6B85; max-width:460px; margin:0 auto; }
+    .rv-form__label { display:block; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#5E6B85; margin-bottom:9px; }
+    .rv-form__label span { color:#2B7BE8; }
+    .rv-form__rating { text-align:center; margin-bottom:28px; }
+    .rv-form__rating .rv-form__label { margin-bottom:8px; }
+    .rv-stars-input { display:inline-flex; flex-direction:row-reverse; gap:6px; }
+    .rv-stars-input input { position:absolute; opacity:0; width:0; height:0; }
+    .rv-stars-input label { font-size:34px; line-height:1; color:#d4dae6; cursor:pointer; transition:color .15s ease; }
+    .rv-stars-input label:hover, .rv-stars-input label:hover ~ label, .rv-stars-input input:checked ~ label { color:#2B7BE8; }
+    .rv-form__row { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:20px; }
+    .rv-form__row .rv-form__field { margin-bottom:0; }
+    .rv-form__field { margin-bottom:20px; }
+    .rv-form__input { width:100%; box-sizing:border-box; background:#F8FAFD; border:1px solid rgba(22,51,94,.16); color:#16335E; font-family:'Hanken Grotesk',sans-serif; font-size:15px; padding:14px 16px; outline:none; transition:border-color .2s ease, background .2s ease; }
+    .rv-form__input:focus { border-color:#2B7BE8; background:#fff; }
+    .rv-form__input::placeholder { color:#9AA4B8; }
+    .rv-form__textarea { resize:vertical; min-height:130px; }
+    .rv-form__submit { width:100%; background:#16335E; color:#fff; border:none; font-family:'Hanken Grotesk',sans-serif; font-size:13px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; padding:16px; cursor:pointer; transition:background .25s ease; margin-top:6px; }
+    .rv-form__submit:hover { background:#22467E; }
+    .rv-form__err { background:rgba(192,67,47,.08); color:#C0432F; font-size:13px; padding:12px 14px; margin-bottom:18px; }
+    .rv-form__ok { text-align:center; padding:22px 0; }
+    .rv-form__ok-ic { width:66px; height:66px; border-radius:50%; background:rgba(43,123,232,.12); display:flex; align-items:center; justify-content:center; margin:0 auto 20px; }
+    .rv-form__ok h3 { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:30px; color:#16335E; margin:0 0 10px; }
+    .rv-form__ok p { font-size:15.5px; line-height:1.6; color:#5E6B85; max-width:400px; margin:0 auto; }
+
     @media (max-width:990px) { .rv-grid { grid-template-columns:repeat(2,1fr); } .rv-stat { padding:0 28px; } }
     @media (max-width:600px) {
-      .rv-top__crumb, .rv-top__head, .rv-gridsec, .rv-cta__inner { padding-left:22px; padding-right:22px; }
+      .rv-top__crumb, .rv-top__head, .rv-gridsec, .rv-cta__inner, .rv-form { padding-left:22px; padding-right:22px; }
       .rv-grid { grid-template-columns:1fr; }
       .rv-stats { gap:24px 0; } .rv-stat { padding:0 24px; }
+      .rv-form__inner { padding:34px 24px; }
+      .rv-form__row { grid-template-columns:1fr; gap:0; }
+      .rv-form__row .rv-form__field { margin-bottom:20px; }
     }
   </style>
