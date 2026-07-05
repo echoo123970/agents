@@ -465,7 +465,10 @@
   {%- elsif cta_low contains 'tree' -%}
     {%- assign cta_heading_out = "Rooted in an idea? We'll grow it in stone." -%}
     {%- capture cta_sub_out -%}A tree of life, a family olive grove or a blossoming canopy — share your vision and we'll hand-cut a custom tree mosaic to your size.{%- endcapture -%}
-  {%- elsif cta_low contains 'other' or cta_low contains 'best' or cta_low contains 'new arrival' or cta_low contains 'limited' or cta_low contains 'special' or cta_low contains 'sale' or cta_subject == blank -%}
+  {%- elsif cta_low contains 'other' -%}
+    {%- assign cta_heading_out = "Something entirely your own? We'll make it real." -%}
+    {%- capture cta_sub_out -%}If you can imagine it, our artisans can hand-cut it in marble and glass — share your concept and we'll craft a one-of-a-kind mosaic.{%- endcapture -%}
+  {%- elsif cta_low contains 'best' or cta_low contains 'new arrival' or cta_low contains 'limited' or cta_low contains 'special' or cta_low contains 'sale' or cta_subject == blank -%}
     {%- assign cta_heading_out = "Don't see your vision? We'll hand-cut it in stone." -%}
     {%- capture cta_sub_out -%}Share a photo, sketch or idea and our artisans will craft a one-of-a-kind mosaic in any subject — tailored to your exact dimensions, palette and space.{%- endcapture -%}
   {%- else -%}
