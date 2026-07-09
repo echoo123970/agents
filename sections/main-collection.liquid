@@ -276,10 +276,6 @@
     {%- else -%}
       {%- assign tile_handles = 'mosaic-tile-art,mosaic-tile-backsplash,table-countertop-mosaics,van-gogh-mosaics,glass-mosaic-art' | split: ',' -%}
       {%- if tile_handles contains collection.handle -%}
-        {%- assign tile_all = collections['mosaic-tile-art'] -%}
-        {%- assign tile_all_url = '/collections/mosaic-tile-art' -%}
-        {%- if tile_all != empty and tile_all.url != blank -%}{%- assign tile_all_url = tile_all.url -%}{%- endif -%}
-        <a href="{{ tile_all_url }}" class="coll-chip{% if collection.handle == 'mosaic-tile-art' %} is-active{% endif %}">All Mosaics</a>
         <a href="/collections/mosaic-tile-backsplash" class="coll-chip{% if collection.handle == 'mosaic-tile-backsplash' %} is-active{% endif %}">Kitchen Backsplash</a>
         <a href="/collections/table-countertop-mosaics" class="coll-chip{% if collection.handle == 'table-countertop-mosaics' %} is-active{% endif %}">Tabletops</a>
         <a href="/collections/van-gogh-mosaics" class="coll-chip{% if collection.handle == 'van-gogh-mosaics' %} is-active{% endif %}">Van Gogh</a>
@@ -417,57 +413,28 @@
 
         <!-- GRID -->
         <div class="coll__main">
-          {%- if collection.products.size > 0 -%}
+          {%- comment -%} mosaic-tile-art pulls together the products of all four sub-collections. {%- endcomment -%}
+          {%- assign is_tile_art = false -%}
+          {%- if collection.handle == 'mosaic-tile-art' -%}{%- assign is_tile_art = true -%}{%- endif -%}
+          {%- if is_tile_art -%}
+            {%- assign tile_src = 'mosaic-tile-backsplash,table-countertop-mosaics,van-gogh-mosaics,glass-mosaic-art' | split: ',' -%}
+            {%- assign tile_seen = ',' -%}
+            <div class="coll__grid" style="grid-template-columns: repeat({{ section.settings.columns }}, 1fr);">
+              {%- for th in tile_src -%}
+                {%- assign tcoll = collections[th] -%}
+                {%- for product in tcoll.products -%}
+                  {%- assign pid = product.id | append: ',' -%}
+                  {%- unless tile_seen contains pid -%}
+                    {%- assign tile_seen = tile_seen | append: pid -%}
+                    {% render 'coll-card', product: product %}
+                  {%- endunless -%}
+                {%- endfor -%}
+              {%- endfor -%}
+            </div>
+          {%- elsif collection.products.size > 0 -%}
             <div class="coll__grid" style="grid-template-columns: repeat({{ section.settings.columns }}, 1fr);">
               {%- for product in collection.products -%}
-                {%- comment -%} Card inlined here (not the shared snippet) so markup + CSS sync together. {%- endcomment -%}
-                <div class="cardc prod-card">
-                  <div class="cardc__media">
-                    <a href="{{ product.url }}" class="cardc__img-link">
-                      {%- if product.featured_media != blank -%}
-                        <img src="{{ product.featured_media | image_url: width: 600 }}" alt="{{ product.title | escape }}" width="600" height="600" class="prod-img cover-img" loading="lazy">
-                      {%- else -%}
-                        {{ 'product-1' | placeholder_svg_tag: 'prod-img cover-img' }}
-                      {%- endif -%}
-                    </a>
-                    <button type="button" class="cardc__fav" data-wish-add data-product-handle="{{ product.handle }}" data-wish-title="{{ product.title | escape }}" data-wish-url="{{ product.url }}" data-wish-image="{% if product.featured_media %}{{ product.featured_media | image_url: width: 600 }}{% endif %}" data-wish-price="{% if product.price_varies %}From {{ product.price_min | money }}{% else %}{{ product.price | money }}{% endif %}" data-wish-sub="{{ product.type | default: product.vendor | escape }}" aria-label="Add to wishlist">
-                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#16335E" stroke-width="1.6"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>
-                    </button>
-                    {%- if product.variants.size > 1 and product.available -%}
-                      <div class="cardc__vpanel" data-variants>
-                        <div class="cardc__vpanel-cap">Select a size</div>
-                        <div class="cardc__vpills">
-                          {%- for v in product.variants -%}
-                            <button type="button" class="cardc__vpill" data-variant-add data-variant-id="{{ v.id }}"{% unless v.available %} disabled{% endunless %} aria-label="Add size {{ v.title | escape }} to cart">{{ v.title }}</button>
-                          {%- endfor -%}
-                        </div>
-                      </div>
-                    {%- endif -%}
-                  </div>
-                  {%- if product.selected_or_first_available_variant.sku != blank -%}
-                    <div class="cardc__sku">{{ product.selected_or_first_available_variant.sku }}</div>
-                  {%- else -%}
-                    <div class="cardc__sku">&nbsp;</div>
-                  {%- endif -%}
-                  <a href="{{ product.url }}" class="prod-title cardc__title">{{ product.title }}</a>
-                  <div class="cardc__price">
-                    {%- if product.price > 0 -%}
-                      {%- if product.price_varies -%}From {{ product.price_min | money }}{%- else -%}{{ product.price | money }}{%- endif -%}
-                    {%- else -%}
-                      Price on request
-                    {%- endif -%}
-                  </div>
-                  {%- if product.variants.size == 1 and product.selected_or_first_available_variant.available -%}
-                    <form method="post" action="{{ routes.cart_add_url }}" class="cardc__cta">
-                      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-                      <button type="submit" class="cardc__add-btn">Add to Cart</button>
-                    </form>
-                  {%- else -%}
-                    <div class="cardc__cta cardc__cta--opts">
-                      <button type="button" class="cardc__add-btn" data-opts-toggle{% unless product.available %} disabled{% endunless %}>{% if product.available %}Choose Options{% else %}Sold Out{% endif %}</button>
-                    </div>
-                  {%- endif -%}
-                </div>
+                {% render 'coll-card', product: product %}
               {%- endfor -%}
             </div>
             {%- if paginate.pages > 1 -%}
