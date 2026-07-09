@@ -274,6 +274,17 @@
         <a href="{{ link.url }}" class="coll-chip{% if link.active %} is-active{% endif %}">{{ link.title }}</a>
       {%- endfor -%}
     {%- else -%}
+      {%- assign tile_handles = 'mosaic-tile-art,mosaic-tile-backsplash,table-countertop-mosaics,van-gogh-mosaics,glass-mosaic-art' | split: ',' -%}
+      {%- if tile_handles contains collection.handle -%}
+        {%- assign tile_all = collections['mosaic-tile-art'] -%}
+        {%- assign tile_all_url = '/collections/mosaic-tile-art' -%}
+        {%- if tile_all != empty and tile_all.url != blank -%}{%- assign tile_all_url = tile_all.url -%}{%- endif -%}
+        <a href="{{ tile_all_url }}" class="coll-chip{% if collection.handle == 'mosaic-tile-art' %} is-active{% endif %}">All Mosaics</a>
+        <a href="/collections/mosaic-tile-backsplash" class="coll-chip{% if collection.handle == 'mosaic-tile-backsplash' %} is-active{% endif %}">Kitchen Backsplash</a>
+        <a href="/collections/table-countertop-mosaics" class="coll-chip{% if collection.handle == 'table-countertop-mosaics' %} is-active{% endif %}">Tabletops</a>
+        <a href="/collections/van-gogh-mosaics" class="coll-chip{% if collection.handle == 'van-gogh-mosaics' %} is-active{% endif %}">Van Gogh</a>
+        <a href="/collections/glass-mosaic-art" class="coll-chip{% if collection.handle == 'glass-mosaic-art' %} is-active{% endif %}">Glass Mosaic Art</a>
+      {%- else -%}
       <a href="{{ routes.all_products_collection_url }}" class="coll-chip{% if collection.handle == 'all' or collection.handle == blank %} is-active{% endif %}">All Mosaics</a>
       {%- assign chip_i = 1 -%}
       {%- assign other_url = '' -%}
@@ -293,6 +304,7 @@
       {%- endfor -%}
       {%- if other_url != blank -%}
         <a href="{{ other_url }}" class="coll-chip{% if other_active %} is-active{% endif %}">Other</a>
+      {%- endif -%}
       {%- endif -%}
     {%- endif -%}
   </div>
