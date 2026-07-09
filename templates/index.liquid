@@ -89,9 +89,10 @@
     {%- assign s_descs = 'Stylish. Durable. Handcrafted.~Artfully crafted for everyday elegance.~Mosaic art inspired by timeless genius.~Light, color and craftsmanship in every piece.' | split: '~' -%}
     {%- assign s_covers = 'https://cdn.shopify.com/s/files/1/0754/6093/5978/files/1_Mosaic_Kitchen_Backsplash.jpg?v=1783066821&width=900~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/2_Mosaic_Tabletops.png?v=1783066824&width=900~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/3_The_Van_Gogh_Collection.png?v=1783066828&width=900~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/4_Glass_Mosaic_Art.jpg?v=1783066831&width=900' | split: '~' -%}
     {%- for h in s_handles -%}
-      {%- assign coll = collections[h] -%}
       {%- assign card_name = s_titles[forloop.index0] -%}
-      {%- if coll != empty and coll.url != blank -%}{%- assign card_url = coll.url -%}{%- else -%}{%- capture card_url -%}{{ routes.search_url }}?q={{ card_name | url_encode }}{%- endcapture -%}{%- endif -%}
+      {%- comment -%} All four Signature Collection cards land on the shared mosaic-tile-art collection. {%- endcomment -%}
+      {%- assign shared_coll = collections['mosaic-tile-art'] -%}
+      {%- if shared_coll != empty and shared_coll.url != blank -%}{%- assign card_url = shared_coll.url -%}{%- else -%}{%- assign card_url = '/collections/mosaic-tile-art' -%}{%- endif -%}
       <a href="{{ card_url }}" class="col-card">
         <img src="{{ s_covers[forloop.index0] }}" alt="{{ card_name | escape }}" width="900" height="600" class="col-zoom cover-img" loading="lazy" referrerpolicy="no-referrer">
         <span class="showcase__scrim"></span>
