@@ -24,6 +24,9 @@
 
     .pf-gallerysec { max-width:1320px; margin:0 auto; padding:50px 40px 90px; }
     .pf-masonry { column-count:4; column-gap:16px; }
+    .pf-more-wrap { text-align:center; padding-top:46px; }
+    .pf-more { display:inline-flex; align-items:center; gap:10px; font-family:'Hanken Grotesk',sans-serif; font-size:12px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#16335E; background:none; border:1px solid rgba(22,51,94,.28); padding:15px 40px; cursor:pointer; transition:color .25s ease, border-color .25s ease, background-color .25s ease; }
+    .pf-more:hover { border-color:#16335E; background:#16335E; color:#fff; }
     .pf-tile { break-inside:avoid; -webkit-column-break-inside:avoid; margin:0 0 16px; position:relative; overflow:hidden; background:#DCE6F5; cursor:zoom-in; display:block; width:100%; }
     .pf-img { width:100%; height:auto; display:block; transition:transform .7s cubic-bezier(.2,.7,.2,1); }
     .pf-tile:hover .pf-img { transform:scale(1.06); }
@@ -76,11 +79,11 @@
 
     <section class="pf-tabsbar" data-pf-tabsbar>
       <div class="pf-tabs__row">
-        <button type="button" class="pf-tab is-active" data-pf-tab="All">All Spaces <span class="pf-tab__count">94</span></button>
+        <button type="button" class="pf-tab is-active" data-pf-tab="All">All Spaces <span class="pf-tab__count">96</span></button>
         <button type="button" class="pf-tab" data-pf-tab="Kitchen">Kitchen <span class="pf-tab__count">17</span></button>
-        <button type="button" class="pf-tab" data-pf-tab="Pool">Pool <span class="pf-tab__count">9</span></button>
+        <button type="button" class="pf-tab" data-pf-tab="Pool">Pool <span class="pf-tab__count">10</span></button>
         <button type="button" class="pf-tab" data-pf-tab="Bathroom">Bathroom <span class="pf-tab__count">14</span></button>
-        <button type="button" class="pf-tab" data-pf-tab="Tabletops">Tabletops <span class="pf-tab__count">2</span></button>
+        <button type="button" class="pf-tab" data-pf-tab="Tabletops">Tabletops <span class="pf-tab__count">3</span></button>
         <button type="button" class="pf-tab" data-pf-tab="Bedroom">Bedroom <span class="pf-tab__count">4</span></button>
         <button type="button" class="pf-tab" data-pf-tab="Indoor">Indoor <span class="pf-tab__count">48</span></button>
       </div>
@@ -105,6 +108,7 @@
         <figure class="pf-tile" data-pf-item data-cat="Kitchen" data-full="https://www.imosaicart.com/cdn/shop/files/il_794xN.4526402532_5stc.jpg?width=1600" data-title="Unique Kitchen Tile Design" tabindex="0"><img class="pf-img" src="https://www.imosaicart.com/cdn/shop/files/il_794xN.4526402532_5stc.jpg?width=800" loading="lazy" width="800" height="800" referrerpolicy="no-referrer" alt="Unique Kitchen Tile Design"><figcaption class="pf-cap"><span class="pf-cap__cat">Kitchen</span><span class="pf-cap__title">Unique Kitchen Tile Design</span></figcaption></figure>
         <figure class="pf-tile" data-pf-item data-cat="Kitchen" data-full="https://www.imosaicart.com/cdn/shop/files/il_794xN.6250605826_2c3j.jpg?width=1600" data-title="High-quality Mosaic Backsplash" tabindex="0"><img class="pf-img" src="https://www.imosaicart.com/cdn/shop/files/il_794xN.6250605826_2c3j.jpg?width=800" loading="lazy" width="800" height="800" referrerpolicy="no-referrer" alt="High-quality Mosaic Backsplash"><figcaption class="pf-cap"><span class="pf-cap__cat">Kitchen</span><span class="pf-cap__title">High-quality Mosaic Backsplash</span></figcaption></figure>
         <figure class="pf-tile" data-pf-item data-cat="Kitchen" data-full="https://www.imosaicart.com/cdn/shop/files/iap_300x300.4821208188_tigml4lh.jpg?width=1600" data-title="Artisan Kitchen Mosaic" tabindex="0"><img class="pf-img" src="https://www.imosaicart.com/cdn/shop/files/iap_300x300.4821208188_tigml4lh.jpg?width=800" loading="lazy" width="800" height="800" referrerpolicy="no-referrer" alt="Artisan Kitchen Mosaic"><figcaption class="pf-cap"><span class="pf-cap__cat">Kitchen</span><span class="pf-cap__title">Artisan Kitchen Mosaic</span></figcaption></figure>
+        <figure class="pf-tile" data-pf-item data-cat="Pool" data-full="https://cdn.shopify.com/s/files/1/0754/6093/5978/files/514400651_615567438254855_8814883425095282072_n_2.jpg?v=1783266885&width=1600" data-title="Handcrafted Pool Mosaic" tabindex="0"><img class="pf-img" src="https://cdn.shopify.com/s/files/1/0754/6093/5978/files/514400651_615567438254855_8814883425095282072_n_2.jpg?v=1783266885&width=800" loading="lazy" width="800" height="800" referrerpolicy="no-referrer" alt="Handcrafted marble and glass pool mosaic installation"><figcaption class="pf-cap"><span class="pf-cap__cat">Pool</span><span class="pf-cap__title">Handcrafted Pool Mosaic</span></figcaption></figure>
         <figure class="pf-tile" data-pf-item data-cat="Pool" data-full="https://www.imosaicart.com/cdn/shop/files/Gemini_Generated_Image_q6gybsq6gybsq6gy_10d4a5d0-9184-4b9b-ad31-65da23f00c39.jpg?width=1600" data-title="Pool Mosaic Design" tabindex="0"><img class="pf-img" src="https://www.imosaicart.com/cdn/shop/files/Gemini_Generated_Image_q6gybsq6gybsq6gy_10d4a5d0-9184-4b9b-ad31-65da23f00c39.jpg?width=800" loading="lazy" width="800" height="800" referrerpolicy="no-referrer" alt="Pool Mosaic Design"><figcaption class="pf-cap"><span class="pf-cap__cat">Pool</span><span class="pf-cap__title">Pool Mosaic Design</span></figcaption></figure>
         <figure class="pf-tile" data-pf-item data-cat="Pool" data-full="https://www.imosaicart.com/cdn/shop/files/Gemini_Generated_Image_t42l98t42l98t42l.jpg?width=1600" data-title="Custom Pool Mosaic" tabindex="0"><img class="pf-img" src="https://www.imosaicart.com/cdn/shop/files/Gemini_Generated_Image_t42l98t42l98t42l.jpg?width=800" loading="lazy" width="800" height="800" referrerpolicy="no-referrer" alt="Custom Pool Mosaic"><figcaption class="pf-cap"><span class="pf-cap__cat">Pool</span><span class="pf-cap__title">Custom Pool Mosaic</span></figcaption></figure>
         <figure class="pf-tile" data-pf-item data-cat="Pool" data-full="https://www.imosaicart.com/cdn/shop/files/1fb48f95ffa41b0b3dd686c41c7e112.jpg?width=1600" data-title="Swimming Pool Mosaic Art" tabindex="0"><img class="pf-img" src="https://www.imosaicart.com/cdn/shop/files/1fb48f95ffa41b0b3dd686c41c7e112.jpg?width=800" loading="lazy" width="800" height="800" referrerpolicy="no-referrer" alt="Swimming Pool Mosaic Art"><figcaption class="pf-cap"><span class="pf-cap__cat">Pool</span><span class="pf-cap__title">Swimming Pool Mosaic Art</span></figcaption></figure>
@@ -128,6 +132,7 @@
         <figure class="pf-tile" data-pf-item data-cat="Bathroom" data-full="https://www.imosaicart.com/cdn/shop/files/iap_300x300.6337337691_eiae1mbd.jpg?width=1600" data-title="Timeless Bathroom Mosaic Design" tabindex="0"><img class="pf-img" src="https://www.imosaicart.com/cdn/shop/files/iap_300x300.6337337691_eiae1mbd.jpg?width=800" loading="lazy" width="800" height="800" referrerpolicy="no-referrer" alt="Timeless Bathroom Mosaic Design"><figcaption class="pf-cap"><span class="pf-cap__cat">Bathroom</span><span class="pf-cap__title">Timeless Bathroom Mosaic Design</span></figcaption></figure>
         <figure class="pf-tile" data-pf-item data-cat="Bathroom" data-full="https://www.imosaicart.com/cdn/shop/files/853831e78ef57a2a980b23ab95d7970a.jpg?width=1600" data-title="Premium Bathroom Mosaic Artwork" tabindex="0"><img class="pf-img" src="https://www.imosaicart.com/cdn/shop/files/853831e78ef57a2a980b23ab95d7970a.jpg?width=800" loading="lazy" width="800" height="800" referrerpolicy="no-referrer" alt="Premium Bathroom Mosaic Artwork"><figcaption class="pf-cap"><span class="pf-cap__cat">Bathroom</span><span class="pf-cap__title">Premium Bathroom Mosaic Artwork</span></figcaption></figure>
         <figure class="pf-tile" data-pf-item data-cat="Bathroom" data-full="https://www.imosaicart.com/cdn/shop/files/hbjkk.jpg?width=1600" data-title="Stylish Mosaic Tile For Bathroom Wall" tabindex="0"><img class="pf-img" src="https://www.imosaicart.com/cdn/shop/files/hbjkk.jpg?width=800" loading="lazy" width="800" height="800" referrerpolicy="no-referrer" alt="Stylish Mosaic Tile For Bathroom Wall"><figcaption class="pf-cap"><span class="pf-cap__cat">Bathroom</span><span class="pf-cap__title">Stylish Mosaic Tile For Bathroom Wall</span></figcaption></figure>
+        <figure class="pf-tile" data-pf-item data-cat="Tabletops" data-full="https://cdn.shopify.com/s/files/1/0754/6093/5978/files/730153277_17978732250022957_8484124778864759194_n_1.jpg?v=1783263955&width=1600" data-title="Handcrafted Mosaic Tabletop" tabindex="0"><img class="pf-img" src="https://cdn.shopify.com/s/files/1/0754/6093/5978/files/730153277_17978732250022957_8484124778864759194_n_1.jpg?v=1783263955&width=800" loading="lazy" width="800" height="800" referrerpolicy="no-referrer" alt="Handcrafted marble mosaic tabletop with floral design"><figcaption class="pf-cap"><span class="pf-cap__cat">Tabletops</span><span class="pf-cap__title">Handcrafted Mosaic Tabletop</span></figcaption></figure>
         <figure class="pf-tile" data-pf-item data-cat="Tabletops" data-full="https://www.imosaicart.com/cdn/shop/files/il_794xN.6083059216_mtjr.jpg?width=1600" data-title="Custom Mosaic Furniture" tabindex="0"><img class="pf-img" src="https://www.imosaicart.com/cdn/shop/files/il_794xN.6083059216_mtjr.jpg?width=800" loading="lazy" width="800" height="800" referrerpolicy="no-referrer" alt="Custom Mosaic Furniture"><figcaption class="pf-cap"><span class="pf-cap__cat">Tabletops</span><span class="pf-cap__title">Custom Mosaic Furniture</span></figcaption></figure>
         <figure class="pf-tile" data-pf-item data-cat="Tabletops" data-full="https://www.imosaicart.com/cdn/shop/files/0ca4a9c6ea7605fcab55f287b9c611a5_ad052f1e-748c-47b6-a88a-01de541e3190.jpg?width=1600" data-title="Mosaic Art For Tabletops" tabindex="0"><img class="pf-img" src="https://www.imosaicart.com/cdn/shop/files/0ca4a9c6ea7605fcab55f287b9c611a5_ad052f1e-748c-47b6-a88a-01de541e3190.jpg?width=800" loading="lazy" width="800" height="800" referrerpolicy="no-referrer" alt="Mosaic Art For Tabletops"><figcaption class="pf-cap"><span class="pf-cap__cat">Tabletops</span><span class="pf-cap__title">Mosaic Art For Tabletops</span></figcaption></figure>
         <figure class="pf-tile" data-pf-item data-cat="Bedroom" data-full="https://www.imosaicart.com/cdn/shop/files/Screenshot_2023-10-28_141654.png?width=1600" data-title="Mosaic Decor For Bedroom Walls" tabindex="0"><img class="pf-img" src="https://www.imosaicart.com/cdn/shop/files/Screenshot_2023-10-28_141654.png?width=800" loading="lazy" width="800" height="800" referrerpolicy="no-referrer" alt="Mosaic Decor For Bedroom Walls"><figcaption class="pf-cap"><span class="pf-cap__cat">Bedroom</span><span class="pf-cap__title">Mosaic Decor For Bedroom Walls</span></figcaption></figure>
@@ -184,6 +189,7 @@
         <figure class="pf-tile" data-pf-item data-cat="Indoor" data-full="https://www.imosaicart.com/cdn/shop/files/652cc99db18dc5fa8e80cb15067cc959.jpg?width=1600" data-title="Custom-made Mosaic Art Tile" tabindex="0"><img class="pf-img" src="https://www.imosaicart.com/cdn/shop/files/652cc99db18dc5fa8e80cb15067cc959.jpg?width=800" loading="lazy" width="800" height="800" referrerpolicy="no-referrer" alt="Custom-made Mosaic Art Tile"><figcaption class="pf-cap"><span class="pf-cap__cat">Indoor</span><span class="pf-cap__title">Custom-made Mosaic Art Tile</span></figcaption></figure>
       </div>
       <div class="pf-empty" data-pf-empty hidden>No installations in this category yet.</div>
+      <div class="pf-more-wrap"><button type="button" class="pf-more" data-pf-more>Show More</button></div>
     </section>
 
     <div class="pf-lightbox" data-pf-lightbox hidden>
@@ -217,15 +223,22 @@
       var lbCat = root.querySelector('[data-pf-lightbox-cat]');
       var lbTitle = root.querySelector('[data-pf-lightbox-title]');
 
-      function filter(cat) {
-        var visible = 0;
+      var moreBtn = root.querySelector('[data-pf-more]');
+      var STEP = 24;
+      var currentCat = 'All';
+      var limit = STEP;
+      function render() {
+        var shown = 0, matched = 0;
         tiles.forEach(function (t) {
-          var show = cat === 'All' || t.getAttribute('data-cat') === cat;
-          t.style.display = show ? '' : 'none';
-          if (show) visible++;
+          var match = currentCat === 'All' || t.getAttribute('data-cat') === currentCat;
+          if (match && shown < limit) { t.style.display = ''; shown++; }
+          else { t.style.display = 'none'; }
+          if (match) matched++;
         });
-        if (empty) empty.hidden = visible !== 0;
+        if (empty) empty.hidden = matched !== 0;
+        if (moreBtn) moreBtn.style.display = (matched > limit) ? '' : 'none';
       }
+      function filter(cat) { currentCat = cat; limit = STEP; render(); }
       function openLb(tile) {
         if (!lb) return;
         lbImg.src = tile.getAttribute('data-full');
@@ -261,5 +274,7 @@
         var tile = e.target.closest && e.target.closest('[data-pf-item]');
         if (tile && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openLb(tile); }
       });
+      if (moreBtn) moreBtn.addEventListener('click', function () { limit += STEP; render(); });
+      render();
     })();
   </script>
