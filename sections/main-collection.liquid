@@ -49,6 +49,8 @@
   .coll__sort-select { font-family: var(--font-body); font-size: 13px; color: var(--color-navy); background: #fff; border: 1px solid rgba(22,51,94,.22); padding: 11px 16px; cursor: pointer; outline: none; }
   .coll__layout { display: grid; grid-template-columns: 248px 1fr; gap: 48px; align-items: start; }
   .coll__sidebar { position: sticky; top: 100px; }
+  .coll__layout--full { grid-template-columns: 1fr; }
+  .coll__layout--full .coll__sidebar { display: none; }
   .coll__filter-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; padding-bottom: 18px; border-bottom: 1px solid var(--color-line); }
   @media (min-width: 991px) { .coll__filter-head { display: none; } }
   .coll__filter-title { font-family: var(--font-accent); font-size: 16px; color: var(--color-navy); }
@@ -309,6 +311,8 @@
 <!-- MAIN -->
 <section class="coll page-width">
   {%- paginate collection.products by section.settings.products_per_page -%}
+    {%- assign is_tile_art = false -%}
+    {%- if collection.handle == 'mosaic-tile-art' -%}{%- assign is_tile_art = true -%}{%- endif -%}
     <div class="coll__filter-wrap">
     <form id="CollFilterForm" method="get" action="{{ collection.url }}" data-collection-filter></form>
       <div class="coll__toolbar">
@@ -356,11 +360,13 @@
         </div>
       {%- endif -%}
 
+      {%- unless is_tile_art -%}
       <button type="button" class="coll__filter-toggle" data-coll-filter-toggle aria-expanded="false">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
         Filter &amp; Sort
       </button>
-      <div class="coll__layout">
+      {%- endunless -%}
+      <div class="coll__layout{% if is_tile_art %} coll__layout--full{% endif %}">
         <!-- SIDEBAR -->
         <aside class="coll__sidebar">
           <div class="coll__filter-head">
@@ -413,13 +419,11 @@
 
         <!-- GRID -->
         <div class="coll__main">
-          {%- comment -%} mosaic-tile-art pulls together the products of all four sub-collections. {%- endcomment -%}
-          {%- assign is_tile_art = false -%}
-          {%- if collection.handle == 'mosaic-tile-art' -%}{%- assign is_tile_art = true -%}{%- endif -%}
+          {%- comment -%} mosaic-tile-art pulls together the products of all four sub-collections, full-width at 4 per row. {%- endcomment -%}
           {%- if is_tile_art -%}
             {%- assign tile_src = 'mosaic-tile-backsplash,table-countertop-mosaics,van-gogh-mosaics,glass-mosaic-art' | split: ',' -%}
             {%- assign tile_seen = ',' -%}
-            <div class="coll__grid" style="grid-template-columns: repeat({{ section.settings.columns }}, 1fr);">
+            <div class="coll__grid" style="grid-template-columns: repeat(4, 1fr);">
               {%- for th in tile_src -%}
                 {%- assign tcoll = collections[th] -%}
                 {%- for product in tcoll.products -%}
