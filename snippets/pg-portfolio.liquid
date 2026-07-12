@@ -23,12 +23,13 @@
     .pf-tab.is-active .pf-tab__count { opacity:.8; }
 
     .pf-gallerysec { max-width:1320px; margin:0 auto; padding:50px 40px 90px; }
-    .pf-masonry { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+    .pf-masonry { display:flex; align-items:flex-start; gap:16px; }
+    .pf-col { flex:1; min-width:0; display:flex; flex-direction:column; gap:16px; }
     .pf-more-wrap { text-align:center; padding-top:46px; }
     .pf-more { display:inline-flex; align-items:center; gap:10px; font-family:'Hanken Grotesk',sans-serif; font-size:12px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#16335E; background:none; border:1px solid rgba(22,51,94,.28); padding:15px 40px; cursor:pointer; transition:color .25s ease, border-color .25s ease, background-color .25s ease; }
     .pf-more:hover { border-color:#16335E; background:#16335E; color:#fff; }
-    .pf-tile { position:relative; overflow:hidden; background:#DCE6F5; cursor:zoom-in; display:block; aspect-ratio:1; }
-    .pf-img { width:100%; height:100%; object-fit:cover; display:block; transition:transform .7s cubic-bezier(.2,.7,.2,1); }
+    .pf-tile { position:relative; overflow:hidden; background:#DCE6F5; cursor:zoom-in; display:block; }
+    .pf-img { width:100%; height:auto; display:block; transition:transform .7s cubic-bezier(.2,.7,.2,1); }
     .pf-tile:hover .pf-img { transform:scale(1.06); }
     .pf-cap { position:absolute; inset:0; display:flex; flex-direction:column; justify-content:flex-end; padding:18px; background:linear-gradient(to top, rgba(11,28,53,.78) 0%, rgba(11,28,53,.12) 55%, transparent 100%); opacity:0; transition:opacity .35s ease; }
     .pf-tile:hover .pf-cap, .pf-tile:focus .pf-cap { opacity:1; }
@@ -53,8 +54,7 @@
     .pf-cta__btn { background:#2B7BE8; color:#fff; font-size:13px; letter-spacing:.14em; text-transform:uppercase; padding:18px 42px; display:inline-block; transition:background .25s ease; }
     .pf-cta__btn:hover { background:#1E63C4; }
 
-    @media (max-width:1100px) { .pf-masonry { grid-template-columns:repeat(3,1fr); } }
-    @media (max-width:749px) { .pf-masonry { grid-template-columns:repeat(2,1fr); gap:10px; } }
+    @media (max-width:749px) { .pf-masonry { gap:10px; } .pf-col { gap:10px; } }
     @media (max-width:640px) {
       .pf-hero__crumb-wrap, .pf-hero__inner, .pf-tabs__row, .pf-gallerysec, .pf-cta__inner { padding-left:22px; padding-right:22px; }
     }
@@ -268,21 +268,49 @@
       var lbTitle = root.querySelector('[data-pf-lightbox-title]');
 
       var moreBtn = root.querySelector('[data-pf-more]');
+      var masonry = root.querySelector('[data-pf-masonry]');
       var STEP = 24;
       var currentCat = 'All';
       var limit = STEP;
+      function colCount() {
+        var w = window.innerWidth;
+        if (w <= 749) return 2;
+        if (w <= 1100) return 3;
+        return 4;
+      }
+      // Distribute tiles into fixed columns by index so revealing more appends
+      // to the bottom without reshuffling the images already shown.
       function render() {
-        var shown = 0, matched = 0;
+        if (!masonry) return;
+        var n = colCount();
+        masonry.textContent = '';
+        var cols = [], i;
+        for (i = 0; i < n; i++) {
+          var c = document.createElement('div');
+          c.className = 'pf-col';
+          masonry.appendChild(c);
+          cols.push(c);
+        }
+        var shown = 0, matched = 0, placed = 0;
         tiles.forEach(function (t) {
           var match = currentCat === 'All' || t.getAttribute('data-cat') === currentCat;
-          if (match && shown < limit) { t.style.display = ''; shown++; }
-          else { t.style.display = 'none'; }
-          if (match) matched++;
+          if (!match) return;
+          matched++;
+          if (shown < limit) {
+            t.style.display = '';
+            cols[placed % n].appendChild(t);
+            placed++; shown++;
+          }
         });
         if (empty) empty.hidden = matched !== 0;
         if (moreBtn) moreBtn.style.display = (matched > limit) ? '' : 'none';
       }
       function filter(cat) { currentCat = cat; limit = STEP; render(); }
+      var rzTimer;
+      window.addEventListener('resize', function () {
+        clearTimeout(rzTimer);
+        rzTimer = setTimeout(render, 150);
+      });
       function openLb(tile) {
         if (!lb) return;
         lbImg.src = tile.getAttribute('data-full');
