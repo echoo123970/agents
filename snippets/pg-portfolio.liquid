@@ -23,12 +23,12 @@
     .pf-tab.is-active .pf-tab__count { opacity:.8; }
 
     .pf-gallerysec { max-width:1320px; margin:0 auto; padding:50px 40px 90px; }
-    .pf-masonry { column-count:4; column-gap:16px; }
+    .pf-masonry { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
     .pf-more-wrap { text-align:center; padding-top:46px; }
     .pf-more { display:inline-flex; align-items:center; gap:10px; font-family:'Hanken Grotesk',sans-serif; font-size:12px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#16335E; background:none; border:1px solid rgba(22,51,94,.28); padding:15px 40px; cursor:pointer; transition:color .25s ease, border-color .25s ease, background-color .25s ease; }
     .pf-more:hover { border-color:#16335E; background:#16335E; color:#fff; }
-    .pf-tile { break-inside:avoid; -webkit-column-break-inside:avoid; margin:0 0 16px; position:relative; overflow:hidden; background:#DCE6F5; cursor:zoom-in; display:block; width:100%; }
-    .pf-img { width:100%; height:auto; display:block; transition:transform .7s cubic-bezier(.2,.7,.2,1); }
+    .pf-tile { position:relative; overflow:hidden; background:#DCE6F5; cursor:zoom-in; display:block; aspect-ratio:1; }
+    .pf-img { width:100%; height:100%; object-fit:cover; display:block; transition:transform .7s cubic-bezier(.2,.7,.2,1); }
     .pf-tile:hover .pf-img { transform:scale(1.06); }
     .pf-cap { position:absolute; inset:0; display:flex; flex-direction:column; justify-content:flex-end; padding:18px; background:linear-gradient(to top, rgba(11,28,53,.78) 0%, rgba(11,28,53,.12) 55%, transparent 100%); opacity:0; transition:opacity .35s ease; }
     .pf-tile:hover .pf-cap, .pf-tile:focus .pf-cap { opacity:1; }
@@ -53,9 +53,9 @@
     .pf-cta__btn { background:#2B7BE8; color:#fff; font-size:13px; letter-spacing:.14em; text-transform:uppercase; padding:18px 42px; display:inline-block; transition:background .25s ease; }
     .pf-cta__btn:hover { background:#1E63C4; }
 
-    @media (max-width:1100px) { .pf-masonry { column-count:2; } }
+    @media (max-width:1100px) { .pf-masonry { grid-template-columns:repeat(3,1fr); } }
+    @media (max-width:749px) { .pf-masonry { grid-template-columns:repeat(2,1fr); gap:10px; } }
     @media (max-width:640px) {
-      .pf-masonry { column-count:1; }
       .pf-hero__crumb-wrap, .pf-hero__inner, .pf-tabs__row, .pf-gallerysec, .pf-cta__inner { padding-left:22px; padding-right:22px; }
     }
     @media (max-width:749px) {
