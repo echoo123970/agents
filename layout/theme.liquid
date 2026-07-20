@@ -5,6 +5,37 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    {%- comment -%} Geo restriction: hide the storefront from selected regions. {%- endcomment -%}
+    <script>
+      (function () {
+        var BLOCKED = ['TR','SY','IR','VN','CN','IN','PK'];
+        function blockPage() {
+          try {
+            var html = document.documentElement;
+            var o = document.createElement('div');
+            o.id = 'geo-block';
+            o.setAttribute('style', 'position:fixed;inset:0;z-index:2147483647;background:#0B1C35;color:#F4F6FA;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;font-family:Georgia,"Times New Roman",serif;');
+            o.innerHTML = '<div style="max-width:520px"><div style="font-size:30px;line-height:1.3;margin-bottom:16px;letter-spacing:.02em">iMosaicArt</div><div style="font-size:18px;line-height:1.65;color:#C7CFDD">We\'re sorry — our website is not available in your region at this time.</div></div>';
+            (document.body || html).appendChild(o);
+            html.style.overflow = 'hidden';
+            if (document.body) document.body.style.overflow = 'hidden';
+          } catch (e) {}
+        }
+        try {
+          fetch('https://get.geojs.io/v1/ip/country', { cache: 'no-store' })
+            .then(function (r) { return r.text(); })
+            .then(function (cc) {
+              cc = (cc || '').trim().toUpperCase();
+              if (BLOCKED.indexOf(cc) !== -1) {
+                if (document.body) { blockPage(); }
+                else { document.addEventListener('DOMContentLoaded', blockPage); }
+              }
+            })
+            .catch(function () {});
+        } catch (e) {}
+      })();
+    </script>
     <link rel="canonical" href="{{ canonical_url }}">
     <link rel="icon" type="image/png" href="https://cdn.shopify.com/s/files/1/0754/6093/5978/files/favicon-32.png?v=1783243826">
     <link rel="apple-touch-icon" href="https://cdn.shopify.com/s/files/1/0754/6093/5978/files/favicon-32.png?v=1783243826">
