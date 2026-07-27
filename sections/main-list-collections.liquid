@@ -17,6 +17,8 @@
   .lc-card__cta { position: absolute; left: 30px; bottom: 22px; color: #fff; font-size: clamp(9px, 3.4cqw, 10.5px); letter-spacing: .18em; text-transform: uppercase; z-index: 3; opacity: 0; transform: translateY(8px); transition: opacity .4s ease, transform .4s ease; }
   .lc-card:hover .lc-card__cta { opacity: 1; transform: translateY(0); }
   .lc__empty { text-align: center; padding: 60px 20px; font-family: var(--font-display); font-style: italic; font-size: 24px; color: var(--color-navy); }
+  .lc-card--vg .lc-card__img { object-position: 60% center; transform: scale(1.1); }
+  .lc-card--vg:hover .lc-card__img { transform: scale(1.16); }
   @media (max-width: 990px) { .lc { padding-top: 40px; } .lc__head { margin-bottom: 40px; } .lc__grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 749px) {
     .lc__grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
@@ -39,7 +41,7 @@
       {%- comment -%} Only live categories: collections that actually have products, excluding system/meta collections. {%- endcomment -%}
       {%- unless collection.products_count == 0 or h == 'all' or h == 'frontpage' or h == 'home-page' or h == 'mosaic-tile-art' or collection.title contains 'Studio Specials' or collection.title contains 'Limited Edition' or collection.title contains 'Best Sellers' or collection.title contains 'New Arrivals' -%}
         {%- assign shown = shown | plus: 1 -%}
-        <a href="{{ collection.url }}" class="lc-card">
+        <a href="{{ collection.url }}" class="lc-card{% if h == 'van-gogh-mosaics' %} lc-card--vg{% endif %}">
           {%- if collection.featured_image != blank -%}
             <img src="{{ collection.featured_image | image_url: width: 700 }}" alt="{{ collection.title | escape }}" width="700" height="933" class="lc-card__img" loading="lazy"{% if h == 'portrait-mosaics' %} style="object-position: center 8%;"{% endif %}>
           {%- else -%}
