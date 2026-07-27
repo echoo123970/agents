@@ -37,7 +37,7 @@
     {%- for collection in collections -%}
       {%- assign h = collection.handle -%}
       {%- comment -%} Only live categories: collections that actually have products, excluding system/meta collections. {%- endcomment -%}
-      {%- unless collection.products_count == 0 or h == 'all' or h == 'frontpage' or h == 'home-page' or h == 'mosaic-tile-art' or collection.title contains 'Studio Specials' or collection.title contains 'Limited Edition' -%}
+      {%- unless collection.products_count == 0 or h == 'all' or h == 'frontpage' or h == 'home-page' or h == 'mosaic-tile-art' or collection.title contains 'Studio Specials' or collection.title contains 'Limited Edition' or collection.title contains 'Best Sellers' -%}
         {%- assign shown = shown | plus: 1 -%}
         <a href="{{ collection.url }}" class="lc-card">
           {%- if collection.featured_image != blank -%}
