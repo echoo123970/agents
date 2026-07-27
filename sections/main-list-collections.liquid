@@ -41,7 +41,7 @@
         {%- assign shown = shown | plus: 1 -%}
         <a href="{{ collection.url }}" class="lc-card">
           {%- if collection.featured_image != blank -%}
-            <img src="{{ collection.featured_image | image_url: width: 700 }}" alt="{{ collection.title | escape }}" width="700" height="933" class="lc-card__img" loading="lazy"{% if h == 'portrait-mosaics' %} style="object-position: center 22%;"{% endif %}>
+            <img src="{{ collection.featured_image | image_url: width: 700 }}" alt="{{ collection.title | escape }}" width="700" height="933" class="lc-card__img" loading="lazy"{% if h == 'portrait-mosaics' %} style="object-position: center 8%;"{% endif %}>
           {%- else -%}
             {{ 'collection-1' | placeholder_svg_tag: 'lc-card__img' }}
           {%- endif -%}
