@@ -59,6 +59,7 @@ applied to **every** product unless the user overrides them for a specific item.
 - **Image Src:** upload the provided product image to Shopify **Files** first,
   get the resulting **CDN URL** (`https://cdn.shopify.com/...`), and use that CDN
   link as the product's image source. Do not use local paths or external hosts.
+- **Image Position:** `1`.
 
 ## Variant weight (grams)
 
