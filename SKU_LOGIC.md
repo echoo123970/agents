@@ -160,6 +160,16 @@ Analyze the product image and assign **all** matching subject categories.
 - **Included / United States:** `TRUE`
 - **Included / International:** `TRUE`
 
+## Metafields
+
+- **Style Filter** — `product.metafields.custom.style_filter`:
+  - `Handcrafted Marble Art` → marble-material products
+  - `Tiled Glass Artistry` → glass-material products
+
+  **Material is detected from the product image.** If the product is **glass**,
+  also add it to the **Glass Mosaic Art** collection (in addition to setting the
+  style_filter metafield).
+
 ## Google Shopping
 
 - **Google Product Category:** `6829`.
