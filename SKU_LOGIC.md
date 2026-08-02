@@ -50,6 +50,15 @@ applied to **every** product unless the user overrides them for a specific item.
   (set the variant's inventory item to tracked / inventory management = Shopify).
 - **Variant Inventory Qty:** `999` (per variant).
 - **Variant Inventory Policy:** `continue` (keep selling when out of stock).
+- **Variant Fulfillment Service:** `manual`.
+- **Variant Requires Shipping:** `TRUE`.
+- **Variant Taxable:** `TRUE`.
+
+## Images
+
+- **Image Src:** upload the provided product image to Shopify **Files** first,
+  get the resulting **CDN URL** (`https://cdn.shopify.com/...`), and use that CDN
+  link as the product's image source. Do not use local paths or external hosts.
 
 ## Variant weight (grams)
 
