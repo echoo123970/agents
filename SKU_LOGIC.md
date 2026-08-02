@@ -198,6 +198,11 @@ Analyze the product image and assign **all** matching subject categories.
   is located (detected from the image/subject): `Europe`, `Middle East`,
   `North America` (and other regions as they arise).
 
+- **Theme Filter** — `product.metafields.custom.theme_filter`. Applies to
+  **Animal** products. Value = the specific animal depicted (detected from the
+  image): e.g. `Lion`, `Tiger`, `Dog`, `Cat`, `Horse`, `Rabbit`, `Dragon`,
+  `Deer`, `Fox`, `Cheeta`, `Zebra` (and others as they arise).
+
 ## Google Shopping
 
 - **Google Product Category:** `6829`.
