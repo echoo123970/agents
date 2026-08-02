@@ -176,6 +176,12 @@ Analyze the product image and assign **all** matching subject categories.
   - `Rectangular Wide` → width > height (landscape)
   - `Round` → circular piece (detected from the image)
 
+- **Dominant Color Filter** — `product.metafields.custom.dominant_color`,
+  detected from the image's dominant color, one of:
+  - `Earth Tones` — natural, muted, grounded (brown, beige, gray)
+  - `Cool Colors` — calming, refreshing, serene (blue, green, purple)
+  - `Warm Colors` — energetic, inviting, vibrant (red, orange, yellow)
+
 ## Google Shopping
 
 - **Google Product Category:** `6829`.
