@@ -117,9 +117,11 @@ Analyze the product image and assign **all** matching subject categories.
 - **Product Category (taxonomy):**
   `Arts & Entertainment > Hobbies & Creative Arts > Arts & Crafts > Art & Craft Kits > Mosaic Kits` (always)
 - **Published:** `TRUE` (product goes live / ACTIVE)
+- **Status:** `active`
 - **Option1 Name:** `Size`
 - **Gift Card:** `FALSE`
 - **Included / United States:** `TRUE`
+- **Included / International:** `TRUE`
 
 ## Google Shopping
 
