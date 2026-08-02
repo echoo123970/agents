@@ -60,6 +60,7 @@ applied to **every** product unless the user overrides them for a specific item.
   get the resulting **CDN URL** (`https://cdn.shopify.com/...`), and use that CDN
   link as the product's image source. Do not use local paths or external hosts.
 - **Image Position:** `1`.
+- **Image Alt Text:** same as the product **Title**.
 
 ## Variant weight (grams)
 
