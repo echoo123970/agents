@@ -119,6 +119,7 @@ Analyze the product image and assign **all** matching subject categories.
 - **Published:** `TRUE` (product goes live / ACTIVE)
 - **Option1 Name:** `Size`
 - **Gift Card:** `FALSE`
+- **Included / United States:** `TRUE`
 
 ## Google Shopping
 
