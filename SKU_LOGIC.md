@@ -199,9 +199,14 @@ Analyze the product image and assign **all** matching subject categories.
   `North America` (and other regions as they arise).
 
 - **Theme Filter** — `product.metafields.custom.theme_filter`. Applies to
-  **Animal** products. Value = the specific animal depicted (detected from the
-  image): e.g. `Lion`, `Tiger`, `Dog`, `Cat`, `Horse`, `Rabbit`, `Dragon`,
-  `Deer`, `Fox`, `Cheeta`, `Zebra` (and others as they arise).
+  **Animal** and **Bird** products. Value = the specific subject depicted
+  (detected from the image):
+  - Animal themes: e.g. `Lion`, `Tiger`, `Dog`, `Cat`, `Horse`, `Rabbit`,
+    `Dragon`, `Deer`, `Fox`, `Cheeta`, `Zebra`.
+  - Bird themes: e.g. `Bird`, `Butterfly`, `Cardinal`, `Peacock`, `Eagle`,
+    `Heron`, `Rooster`, `Hummingbird`, `Pigeon`, `Penguin`, `Swans`, `Flamingo`,
+    `Parrot`, `Owl`, `Doves`.
+  - (and others as they arise.)
 
 ## Google Shopping
 
