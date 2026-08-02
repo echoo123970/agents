@@ -197,10 +197,10 @@ Analyze the product image and assign **all** matching subject categories.
   - **Exception:** **Religious** products exclude `Floor Art` (cannot be
     installed on the floor) → they get the other 6.
 
-- **Space Filter** — `product.metafields.custom.space_filter` (list of rooms:
-  Attic, Basement, Bathroom, Bedroom, Dining Room, Entryway, Foyer, Garden,
-  Hallway, Kitchen, Laundry Room, Living Room, Office, Office Hallway, …).
-  *(Selection logic — TBD, pending from user.)*
+- **Space Filter** — `product.metafields.custom.space_filter` (list of rooms).
+  **Default: all rooms** apply to every product: Attic, Basement, Bathroom,
+  Bedroom, Dining Room, Entryway, Foyer, Garden, Hallway, Kitchen, Laundry Room,
+  Living Room, Office, Office Hallway.
 - **Landmark Place Filter** — `product.metafields.custom.landmark_place_filter`.
   Applies to **Landmark** products only. Value = the region where the landmark
   is located (detected from the image/subject): `Europe`, `Middle East`,
