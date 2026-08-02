@@ -72,6 +72,8 @@ applied to **every** product unless the user overrides them for a specific item.
 
 - Computed **per variant** (each `Size` has its own width × height, so each
   variant gets its own weight in grams).
+- **Variant Weight Unit:** `g` (grams). If Shopify requires the weight in `kg`,
+  convert (grams ÷ 1000).
 
 ## Category logic (image → collection)
 
