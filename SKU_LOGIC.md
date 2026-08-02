@@ -118,6 +118,10 @@ Analyze the product image and assign **all** matching subject categories.
 - **Option1 Name:** `Size`
 - **Gift Card:** `FALSE`
 
+## Google Shopping
+
+- **Google Product Category:** `6829`.
+
 ## Type
 
 - Set `Type` to the **primary/main subject** category name exactly as it appears
