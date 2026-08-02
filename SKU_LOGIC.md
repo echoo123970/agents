@@ -5,11 +5,15 @@ applied to **every** product unless the user overrides them for a specific item.
 
 ## SKU logic
 
+- **Field:** the SKU is the **Variant SKU** (Shopify's variant-level SKU field).
+- **Same SKU on all size variants.** A product has multiple `Size` variants; the
+  **same** category SKU is applied to **every** size variant of that product.
 - **Per-category running counter.** Each category has its own SKU series with a
   fixed prefix and a number.
-- **Starting number = next SKU to assign.** The first new product filed in a
-  category gets exactly the starting SKU below; each subsequent product in that
-  category gets the previous number **+1**.
+- **Counter increments per product, not per variant.** The first new product
+  filed in a category gets exactly the starting SKU below; each subsequent
+  **product** in that category gets the previous number **+1** (multiple size
+  variants of the same product do **not** each consume a number).
 - **Primary category sets the SKU.** A product may belong to multiple
   collections, but its SKU comes from the **primary/main category** (the same
   one used for `Type`), determined from the product image.
@@ -39,6 +43,24 @@ applied to **every** product unless the user overrides them for a specific item.
 
 > Update the "Next SKU" value for a category after each product is created so
 > the counter stays accurate across sessions.
+
+## Variant inventory
+
+- **Variant Inventory Tracker:** `shopify` — inventory is tracked by Shopify
+  (set the variant's inventory item to tracked / inventory management = Shopify).
+- **Variant Inventory Qty:** `999` (per variant).
+- **Variant Inventory Policy:** `continue` (keep selling when out of stock).
+
+## Variant weight (grams)
+
+- Set each variant's **Grams** using the size's dimensions:
+
+  ```
+  grams = (width_cm * height_cm / 10000) * 18000
+  ```
+
+- Computed **per variant** (each `Size` has its own width × height, so each
+  variant gets its own weight in grams).
 
 ## Category logic (image → collection)
 
