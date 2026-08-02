@@ -62,6 +62,13 @@ applied to **every** product unless the user overrides them for a specific item.
 - **Image Position:** `1`.
 - **Image Alt Text:** same as the product **Title**.
 
+## Size variant format
+
+- Sizes are given in **cm**; convert to **inches** (`inches = cm / 2.54`, rounded
+  to the nearest whole inch).
+- Variant value format: `{W}cm x {H}cm ({W_in}" x {H_in}")`
+  - Example: 60cm × 70cm → `60cm x 70cm (24" x 28")`.
+
 ## Variant price
 
 Computed **per variant** from the size's dimensions:
