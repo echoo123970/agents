@@ -208,6 +208,12 @@ Analyze the product image and assign **all** matching subject categories.
     `Parrot`, `Owl`, `Doves`.
   - Geometric themes: e.g. `Compass Art`, `Medallion Art`, `Floral Art`,
     `Symmetric Art`, `Rug Art`.
+  - Nautical themes: e.g. `Underwater Scene`, `Anchor`, `Mermaid`, `Wave`,
+    `Octopus`, `Fish`, `Sea Turtle`, `Koi Fish`, `Boat`, `Seashell`, `Seahorse`,
+    `Starfish`, `Sunset`, `Coo`, `Sea View`, `Scenery View`, `Dolphin`.
+  - Other themes: e.g. `Celestial`, `US Flag`, `Logo`, `Musical Instruments`.
+  - Portrait themes: e.g. `Monaliza`, `Marilyn Monroe`, `Mermaid`, `Van Gogh`,
+    `Banksy`, `Johannes Vermeer`, `Gustav Klimt`, `Giuseppe Arcimboldo`.
   - (and others as they arise.)
 
 ## Google Shopping
