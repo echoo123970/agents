@@ -182,6 +182,13 @@ Analyze the product image and assign **all** matching subject categories.
   - `Cool Colors` — calming, refreshing, serene (blue, green, purple)
   - `Warm Colors` — energetic, inviting, vibrant (red, orange, yellow)
 
+- **Application Filter** — `product.metafields.custom.application_filter`
+  (list). **All applications apply to every product:**
+  `Ceiling Art`, `Floor Art`, `Indoor Art`, `Outdoor Art`, `Pool Art`,
+  `Tabletop Art`, `Wall Art`.
+  - **Exception:** **Religious** products exclude `Floor Art` (cannot be
+    installed on the floor) → they get the other 6.
+
 ## Google Shopping
 
 - **Google Product Category:** `6829`.
