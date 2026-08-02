@@ -62,8 +62,21 @@ applied to **every** product unless the user overrides them for a specific item.
 - **Image Position:** `1`.
 - **Image Alt Text:** same as the product **Title**.
 
-## Size variant format
+## Size variants
 
+- **5 sizes per product.** The user gives the **first** size in cm; the other 4
+  are **derived from the first** by scaling **both** dimensions by a fixed ratio:
+
+  | Size | Multiplier | Example (base 60×70) |
+  |------|-----------|----------------------|
+  | 1    | ×1 (base) | 60 × 70 cm           |
+  | 2    | ×1.3      | 78 × 91 cm           |
+  | 3    | ×1.5      | 90 × 105 cm          |
+  | 4    | ×1.8      | 108 × 126 cm         |
+  | 5    | ×2        | 120 × 140 cm         |
+
+  Scaled cm dimensions are rounded to the nearest whole cm. Each size then gets
+  its own inch conversion, price, and weight (grams).
 - Sizes are given in **cm**; convert to **inches** (`inches = cm / 2.54`, rounded
   to the nearest whole inch).
 - Variant value format: `{W}cm x {H}cm ({W_in}" x {H_in}")`
