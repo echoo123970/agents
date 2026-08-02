@@ -62,6 +62,14 @@ applied to **every** product unless the user overrides them for a specific item.
 - **Image Position:** `1`.
 - **Image Alt Text:** same as the product **Title**.
 
+## Variant price
+
+Computed **per variant** from the size's dimensions:
+
+1. `sqm  = (width_cm * height_cm) / 10000`
+2. `sqft = sqm * 11`
+3. `price = (sqft * 70) + 120 + 300`  *(i.e. sqft × $70, plus $120, plus $300)*
+
 ## Variant weight (grams)
 
 - Set each variant's **Grams** using the size's dimensions:
