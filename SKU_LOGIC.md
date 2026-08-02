@@ -170,6 +170,12 @@ Analyze the product image and assign **all** matching subject categories.
   also add it to the **Glass Mosaic Art** collection (in addition to setting the
   style_filter metafield).
 
+- **Shape Filter** — `product.metafields.custom.shape_filter`, one of:
+  - `Square` → width = height
+  - `Rectangular Tall` → height > width (portrait)
+  - `Rectangular Wide` → width > height (landscape)
+  - `Round` → circular piece (detected from the image)
+
 ## Google Shopping
 
 - **Google Product Category:** `6829`.
