@@ -178,9 +178,12 @@ Analyze the product image and assign **all** matching subject categories.
 
 - **Dominant Color Filter** — `product.metafields.custom.dominant_color`,
   detected from the image's dominant color, one of:
-  - `Earth Tones` — natural, muted, grounded (brown, beige, gray)
-  - `Cool Colors` — calming, refreshing, serene (blue, green, purple)
-  - `Warm Colors` — energetic, inviting, vibrant (red, orange, yellow)
+  - `Earth Tones` — natural, muted, grounded. Examples: browns (chocolate, tan),
+    beiges, grays, ochres, terracotta.
+  - `Cool Colors` — calming, refreshing, serene. Examples: blues (navy, sky
+    blue), greens (emerald, mint), purples (lavender, violet).
+  - `Warm Colors` — energetic, inviting, vibrant. Examples: reds, oranges,
+    yellows, and variations like coral, amber, gold.
 
 - **Application Filter** — `product.metafields.custom.application_filter`
   (list). **All applications apply to every product:**
