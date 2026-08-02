@@ -29,7 +29,7 @@ applied to **every** product unless the user overrides them for a specific item.
 | Animal    | `MAA075`  |
 | Bird      | `MB111`   |
 | Flower    | `MF355`   |
-| Food      | `MAD035`  |
+| Food      | `MAD041`  |
 | Geometric | `MAG257`  |
 | Landmark  | `MAL022`  |
 | Landscape | `MAS291`  |
@@ -239,13 +239,18 @@ Analyze the product image and assign **all** matching subject categories.
 ## Handle
 
 - Format: `{category}_{title}`
+- **`{category}` = the exact Shopify collection TITLE of the primary category,
+  lowercased with words joined by `-`** (always includes "mosaics"):
+  - Food Mosaics → `food-mosaics`
+  - Abstract Mosaics → `abstract-mosaics`
+  - Geometric Mosaics → `geometric-mosaics`
 - All lowercase.
 - Words **within** the category and **within** the title are joined with `-`.
 - A single `_` separates the category block from the title block.
 - Nothing is auto-appended (`mosaic-tile-art` appears only if it is actually
   part of the product title).
-- Example: title "Symphony Mosaic Tile Art" in Geometric →
-  `geometric_symphony-mosaic-tile-art`.
+- Example: "Pouring Red Wine Mosaic Art" in Food →
+  `food-mosaics_pouring-red-wine-mosaic-art`.
 
 ## Title & Body (generated)
 
