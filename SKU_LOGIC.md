@@ -160,7 +160,12 @@ Analyze the product image and assign **all** matching subject categories.
 - **Included / United States:** `TRUE`
 - **Included / International:** `TRUE`
 
-## Metafields
+## Metafields (storefront filters)
+
+> These filter attributes are stored as **metafields** (`product.metafields.custom.*`),
+> **not as tags**. They power the storefront filtering (Application, Dominant
+> Color, Landmark Place, Shape, Space, Style, Theme, etc.). Product **Tags** are
+> separate (SEO keywords) and are not used for these filters.
 
 - **Style Filter** — `product.metafields.custom.style_filter`:
   - `Handcrafted Marble Art` → marble-material products
