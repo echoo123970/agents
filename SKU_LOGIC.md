@@ -116,6 +116,7 @@ Analyze the product image and assign **all** matching subject categories.
   `Arts & Entertainment > Hobbies & Creative Arts > Arts & Crafts > Art & Craft Kits > Mosaic Kits` (always)
 - **Published:** `TRUE` (product goes live / ACTIVE)
 - **Option1 Name:** `Size`
+- **Gift Card:** `FALSE`
 
 ## Type
 
@@ -144,7 +145,9 @@ For every product, generate (do not expect the user to supply):
   opening, features/benefits, materials & craftsmanship (handmade tile/glass),
   use cases (wall art, backsplash, tabletop), with keywords and long-tail terms
   woven in naturally.
-- **SEO meta title & meta description** — optimized for the search snippet.
+- **SEO Title** — format: `{Product Title} | {Collection name} | iMosaicArt`
+  (Collection name = the primary/main category collection).
+- **SEO meta description** — optimized for the search snippet.
 - **Tags** — relevant keyword tags.
 
 Always incorporate relevant **handmade mosaic art** keywords.
