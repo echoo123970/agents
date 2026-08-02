@@ -214,6 +214,8 @@ Analyze the product image and assign **all** matching subject categories.
   - Other themes: e.g. `Celestial`, `US Flag`, `Logo`, `Musical Instruments`.
   - Portrait themes: e.g. `Monaliza`, `Marilyn Monroe`, `Mermaid`, `Van Gogh`,
     `Banksy`, `Johannes Vermeer`, `Gustav Klimt`, `Giuseppe Arcimboldo`.
+  - Roman themes: e.g. `Cave Canem`, `Versace`, `Creation Of Adam`,
+    `Birth Of Venus`.
   - (and others as they arise.)
 
 ## Google Shopping
