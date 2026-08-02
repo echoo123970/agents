@@ -25,7 +25,7 @@ applied to **every** product unless the user overrides them for a specific item.
 
 | Category  | Next SKU  |
 |-----------|-----------|
-| Abstract  | `MK019`   |
+| Abstract  | `MK020`   |
 | Animal    | `MAA075`  |
 | Bird      | `MB111`   |
 | Flower    | `MF355`   |
