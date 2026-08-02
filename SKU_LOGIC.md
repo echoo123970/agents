@@ -147,7 +147,7 @@ For every product, generate (do not expect the user to supply):
   woven in naturally.
 - **SEO Title** — format: `{Product Title} | {Collection name} | iMosaicArt`
   (Collection name = the primary/main category collection).
-- **SEO meta description** — optimized for the search snippet.
+- **SEO Description** — same as the product **Body / description**.
 - **Tags** — relevant keyword tags.
 
 Always incorporate relevant **handmade mosaic art** keywords.
