@@ -69,6 +69,15 @@ Computed **per variant** from the size's dimensions:
 1. `sqm  = (width_cm * height_cm) / 10000`
 2. `sqft = sqm * 11`
 3. `price = (sqft * 70) + 120 + 300`  *(i.e. sqft × $70, plus $120, plus $300)*
+4. **Always round UP** (ceiling) to the next whole dollar.
+
+Single expression:
+
+```
+price = ceil( (width_cm * height_cm * 0.077) + 420 )
+```
+
+Example — 60×60 cm: (3600 × 0.077) + 420 = 697.20 → **698**.
 
 ## Variant weight (grams)
 
