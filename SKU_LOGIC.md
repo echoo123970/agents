@@ -27,7 +27,7 @@ applied to **every** product unless the user overrides them for a specific item.
 |-----------|-----------|
 | Abstract  | `MK020`   |
 | Animal    | `MAA075`  |
-| Bird      | `MB113`   |
+| Bird      | `MB115`   |
 | Flower    | `MF355`   |
 | Food      | `MAD041`  |
 | Geometric | `MAG257`  |
@@ -39,7 +39,7 @@ applied to **every** product unless the user overrides them for a specific item.
 | Portrait  | `MAP064`  |
 | Religious | `MAR085`  |
 | Roman     | `MAM036`  |
-| Tree      | `MAT062`  |
+| Tree      | `MAT063`  |
 
 > Update the "Next SKU" value for a category after each product is created so
 > the counter stays accurate across sessions.
