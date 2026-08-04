@@ -26,18 +26,18 @@ applied to **every** product unless the user overrides them for a specific item.
 | Category  | Next SKU  |
 |-----------|-----------|
 | Abstract  | `MK020`   |
-| Animal    | `MAA076`  |
-| Bird      | `MB118`   |
-| Flower    | `MF357`   |
+| Animal    | `MAA077`  |
+| Bird      | `MB119`   |
+| Flower    | `MF360`   |
 | Food      | `MAD042`  |
 | Geometric | `MAG259`  |
 | Landmark  | `MAL022`  |
-| Landscape | `MAS292`  |
+| Landscape | `MAS293`  |
 | Nautical  | `MAN113`  |
-| Other     | `MAO033`  |
+| Other     | `MAO034`  |
 | Pattern   | `MAC009`  |
 | Portrait  | `MAP065`  |
-| Religious | `MAR091`  |
+| Religious | `MAR095`  |
 | Roman     | `MAM036`  |
 | Tree      | `MAT066`  |
 
