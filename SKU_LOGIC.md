@@ -28,7 +28,7 @@ applied to **every** product unless the user overrides them for a specific item.
 | Abstract  | `MK020`   |
 | Animal    | `MAA075`  |
 | Bird      | `MB116`   |
-| Flower    | `MF355`   |
+| Flower    | `MF356`   |
 | Food      | `MAD041`  |
 | Geometric | `MAG257`  |
 | Landmark  | `MAL022`  |
