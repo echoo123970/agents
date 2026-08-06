@@ -56,7 +56,14 @@
           "description": "iMosaicArt is a premium US-based studio creating handcrafted natural stone and glass mosaic art — custom portraits, wall art, backsplashes, tabletops, and architectural installations. Every piece is made to order and shipped free worldwide.",
           "email": "info@imosaicart.com",
           "telephone": "+1-315-217-5538",
-          "address": "28 Liberty St, New York, NY 10005, United States",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "28 Liberty St",
+            "addressLocality": "New York",
+            "addressRegion": "NY",
+            "postalCode": "10005",
+            "addressCountry": "US"
+          },
           "sameAs": [
             {%- assign social_links = "" -%}
             {%- if settings.social_instagram_link != blank -%}{%- assign social_links = social_links | append: settings.social_instagram_link | append: "|" -%}{%- endif -%}
@@ -77,7 +84,14 @@
           "priceRange": "$$$",
           "email": "info@imosaicart.com",
           "telephone": "+1-315-217-5538",
-          "address": "28 Liberty St, New York, NY 10005, United States",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "28 Liberty St",
+            "addressLocality": "New York",
+            "addressRegion": "NY",
+            "postalCode": "10005",
+            "addressCountry": "US"
+          },
           "areaServed": "Worldwide"
         },
         {
