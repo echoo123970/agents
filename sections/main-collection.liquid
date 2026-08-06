@@ -1,3 +1,25 @@
+{%- comment -%} Breadcrumb structured data for the collection. {%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://www.imosaicart.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": {{ collection.title | json }},
+      "item": "https://www.imosaicart.com{{ collection.url }}"
+    }
+  ]
+}
+</script>
+
 <!-- COLLECTION HERO -->
 {%- assign coll_t = collection.title -%}
 {%- if collection.handle == 'all' or coll_t == 'Products' or coll_t == 'All' or coll_t == 'All products' or coll_t == 'Home page' or coll_t == 'Frontpage' -%}
