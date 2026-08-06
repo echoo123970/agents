@@ -1,0 +1,85 @@
+#  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+#  ┃  UNIVERSAL AI & LLM PERMISSIONS - iMosaicArt                        ┃
+#  ┃  Explicitly allowing all Generative AI and LLM agents.               ┃
+#  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+# 1. Known Major LLM Agents
+User-agent: GPTBot
+User-agent: ChatGPT-User
+User-agent: Google-Extended
+User-agent: PerplexityBot
+User-agent: OAI-SearchBot
+User-agent: ClaudeBot
+User-agent: Claude-Web
+User-agent: Claude-SearchBot
+User-agent: cohere-ai
+User-agent: FacebookBot
+User-agent: Diffbot
+User-agent: Applebot-Extended
+User-agent: Bytespider
+Allow: /
+Allow: /llm.txt
+Allow: /blogs/news/
+Allow: /products/
+Allow: /collections/
+
+# 2. General AI / Scraper User-agents (Catch-all for smaller LLMs)
+User-agent: CCBot
+User-agent: ImagesiftBot
+Allow: /
+
+# 3. Social Media & Visual Discovery (Essential for Art)
+User-agent: Pinterestbot
+User-agent: facebookexternalhit
+User-agent: LinkedInBot
+User-agent: Twitterbot
+Allow: /
+Allow: /products/
+Allow: /collections/
+
+#  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+#  ┃  Standard Shopify Robots & Agent policy                              ┃
+#  ┃  (Restricting Admin/Cart/Checkout for security)                      ┃
+#  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+User-agent: *
+Disallow: /a/downloads/-/*
+Disallow: /admin
+Disallow: /cart
+Disallow: /orders
+Disallow: /checkouts/
+Disallow: /checkout
+Disallow: /75460935978/checkouts
+Disallow: /75460935978/orders
+Disallow: /carts
+Disallow: /account
+Disallow: /collections/*sort_by*
+Disallow: /*/collections/*sort_by*
+Disallow: /collections/*+*
+Disallow: /collections/*%2B*
+Disallow: /collections/*%2b*
+Disallow: /*/collections/*+*
+Disallow: /*/collections/*%2B*
+Disallow: /*/collections/*%2b*
+Disallow: */collections/*filter*&*filter*
+Disallow: /blogs/*+*
+Disallow: /blogs/*%2B*
+Disallow: /blogs/*%2b*
+Disallow: /*/blogs/*+*
+Disallow: /*/blogs/*%2B*
+Disallow: /*/blogs/*%2b*
+Disallow: /search
+Disallow: /policies/
+Disallow: /apple-app-site-association
+Disallow: /.well-known/shopify/monorail
+
+# Google adsbot (Necessary for your PMax Campaign)
+User-agent: adsbot-google
+Disallow: /checkouts/
+Disallow: /checkout
+Disallow: /carts
+Disallow: /orders
+
+# Sitemaps
+Sitemap: https://www.imosaicart.com/sitemap.xml
+Sitemap: https://www.imosaicart.com/llm.txt

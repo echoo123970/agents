@@ -1,0 +1,103 @@
+<style>
+  .wl-hero { background: var(--color-panel); border-bottom: 1px solid rgba(22,51,94,.08); }
+  .wl-hero__crumb-wrap { padding-top: 30px; }
+  .wl-hero__crumb { display: flex; align-items: center; gap: 9px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-soft); }
+  .wl-hero__crumb-sep { color: #B7C0D2; }
+  .wl-hero__crumb-current { color: var(--color-navy); }
+  .wl-hero__title-wrap { padding-top: 40px; padding-bottom: 44px; }
+  .wl-hero__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(38px,4.6vw,60px); line-height: 1.02; color: var(--color-navy); }
+  .wl-hero__count { font-style: italic; color: var(--color-blue); font-size: .6em; }
+
+  .wl { padding-top: 56px; padding-bottom: 100px; }
+  .wl__empty { text-align: center; padding: 70px 20px 90px; }
+  .wl__empty-icon { width: 80px; height: 80px; border-radius: 50%; background: var(--color-panel); display: flex; align-items: center; justify-content: center; margin: 0 auto 28px; }
+  .wl__empty-title { font-family: var(--font-display); font-weight: 500; font-size: 34px; margin-bottom: 12px; color: var(--color-navy); }
+  .wl__empty-text { font-size: 16px; line-height: 1.6; color: var(--color-text-muted); margin-bottom: 30px; }
+  .wl__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px 24px; }
+  .wl-card { display: flex; flex-direction: column; }
+  .wl-card__media { position: relative; overflow: hidden; aspect-ratio: 4/5; background: var(--color-light-text); margin-bottom: 16px; }
+  .wl-card__media img { width: 100%; height: 100%; object-fit: cover; }
+  .wl-card__remove { position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,.92); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--color-blue); }
+  .wl-card__sub { font-family: var(--font-accent); font-size: 10.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--color-text-faint); margin-bottom: 6px; }
+  .wl-card__title { font-family: var(--font-display); font-size: 22px; line-height: 1.15; color: var(--color-navy); margin-bottom: 6px; }
+  .wl-card__price { font-size: 14px; color: var(--color-text-muted); margin-bottom: 16px; }
+  .wl-card__btn { margin-top: auto; width: 100%; text-align: center; background: var(--color-navy); color: #fff; font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; padding: 13px; transition: background .2s ease; }
+  .wl-card__btn:hover { background: #224A82; }
+  .wl__continue-wrap { margin-top: 50px; display: flex; justify-content: center; }
+  @media (max-width: 990px) { .wl__grid { grid-template-columns: repeat(2, 1fr); } }
+</style>
+
+<section class="wl-hero">
+  <div class="page-width wl-hero__crumb-wrap">
+    <div class="wl-hero__crumb">
+      <a href="{{ routes.root_url }}" class="nav-link">Home</a>
+      <span class="wl-hero__crumb-sep">/</span>
+      <span class="wl-hero__crumb-current">Wishlist</span>
+    </div>
+  </div>
+  <div class="page-width wl-hero__title-wrap">
+    <h1 class="wl-hero__title">My Wishlist <span class="wl-hero__count" data-wl-count></span></h1>
+  </div>
+</section>
+
+<section class="wl page-width" data-wishlist-page>
+  <div class="wl__empty" data-wl-empty hidden>
+    <div class="wl__empty-icon">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#2B7BE8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>
+    </div>
+    <h2 class="wl__empty-title">Your wishlist is empty</h2>
+    <p class="wl__empty-text">Tap the heart on any mosaic to save it here for later.</p>
+    <a href="{{ routes.all_products_collection_url }}" class="btn btn--dark">Browse Mosaics</a>
+  </div>
+
+  <div class="wl__grid" data-wl-grid hidden></div>
+  <div class="wl__continue-wrap" data-wl-continue hidden>
+    <a href="{{ routes.all_products_collection_url }}" class="btn btn--ghost">Continue Shopping</a>
+  </div>
+</section>
+
+<script>
+  (function () {
+    var page = document.querySelector('[data-wishlist-page]');
+    if (!page) return;
+    function readWL(){ try { return JSON.parse(localStorage.getItem('ima_wishlist') || '[]') || []; } catch (e) { return []; } }
+    var grid = page.querySelector('[data-wl-grid]');
+    var empty = page.querySelector('[data-wl-empty]');
+    var cont = page.querySelector('[data-wl-continue]');
+    var countEl = document.querySelector('[data-wl-count]');
+
+    function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
+
+    function render() {
+      var items = readWL();
+      countEl.textContent = items.length ? items.length + (items.length === 1 ? ' item' : ' items') : '';
+      if (!items.length) { empty.hidden = false; grid.hidden = true; cont.hidden = true; return; }
+      empty.hidden = true; grid.hidden = false; cont.hidden = false;
+      grid.innerHTML = items.map(function (it) {
+        return '<div class="wl-card">' +
+          '<div class="wl-card__media">' +
+            '<a href="' + esc(it.url || '#') + '">' + (it.image ? '<img src="' + esc(it.image) + '" alt="' + esc(it.title) + '" loading="lazy">' : '') + '</a>' +
+            '<button type="button" class="wl-card__remove" data-wl-remove="' + esc(it.handle) + '" aria-label="Remove">' +
+              '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.4"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>' +
+            '</button>' +
+          '</div>' +
+          (it.sub ? '<div class="wl-card__sub">' + esc(it.sub) + '</div>' : '') +
+          '<a href="' + esc(it.url || '#') + '" class="wl-card__title">' + esc(it.title) + '</a>' +
+          (it.price ? '<div class="wl-card__price">' + esc(it.price) + '</div>' : '') +
+          '<a href="' + esc(it.url || '#') + '" class="wl-card__btn">View Mosaic</a>' +
+        '</div>';
+      }).join('');
+    }
+
+    grid.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-wl-remove]');
+      if (!btn) return;
+      var h = btn.getAttribute('data-wl-remove');
+      var l = readWL().filter(function (x) { return (x.handle || x) !== h; });
+      try { localStorage.setItem('ima_wishlist', JSON.stringify(l)); } catch (e) {}
+      render();
+    });
+    render();
+  })();
+</script>
+

@@ -1,0 +1,23 @@
+<style>
+  .static-page { padding-top: 64px; padding-bottom: 96px; max-width: 860px; }
+  .static-page__head { text-align: center; margin-bottom: 40px; }
+  .static-page__body { font-size: 17px; line-height: 1.8; color: var(--color-text-muted); }
+  .static-page__body :is(h2,h3) { font-family: var(--font-display); color: var(--color-navy); margin: 32px 0 12px; }
+  @media (max-width: 600px) {
+    .static-page { padding-top: 40px; padding-bottom: 64px; }
+    .static-page__body { font-size: 16px; overflow-wrap: break-word; }
+    .static-page__body table, .static-page__body pre, .static-page__body iframe { display: block; max-width: 100%; overflow-x: auto; }
+  }
+</style>
+
+<section class="static-page page-width">
+  <div class="static-page__head">
+    <h1 class="section-title">{{ page.title }}</h1>
+  </div>
+  <div class="static-page__body rte">{{ page.content }}</div>
+</section>
+
+
+{% schema %}
+{ "name": "Page", "settings": [] }
+{% endschema %}

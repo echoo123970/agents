@@ -1,0 +1,250 @@
+  <style>
+    .ig { background:#F4F6FA; color:#16335E; overflow-x:clip; }
+    .ig-i { font-style:italic; color:#2B7BE8; }
+    .ig-kicker { font-family:'Marcellus',serif; font-size:13px; letter-spacing:.36em; text-transform:uppercase; color:#16335E; margin-bottom:14px; }
+    .ig-kicker--blue { color:#2B7BE8; font-size:12px; letter-spacing:.28em; margin-bottom:10px; }
+    .ig-h2 { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(32px,3.6vw,48px); line-height:1.06; margin:0 0 16px; color:#16335E; }
+    .ig-lead { font-size:16px; line-height:1.7; color:#5E6B85; max-width:560px; margin:0 auto; }
+    .ig-center { text-align:center; margin-bottom:50px; }
+
+    .ig-hero { background:#EEF1F6; border-bottom:1px solid rgba(22,51,94,.08); }
+    .ig-hero__crumb { max-width:1320px; margin:0 auto; padding:30px 40px 0; display:flex; align-items:center; gap:9px; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:#7E8AA0; }
+    .ig-hero__crumb a:hover { color:#2B7BE8; }
+    .ig-sep { color:#B7C0D2; } .ig-cur { color:#16335E; }
+    .ig-hero__grid { max-width:1320px; margin:0 auto; padding:54px 40px 60px; display:grid; grid-template-columns:1.1fr 1fr; gap:64px; align-items:center; }
+    .ig-eyebrow { display:flex; align-items:center; gap:12px; margin-bottom:22px; font-family:'Marcellus',serif; font-size:13px; letter-spacing:.36em; text-transform:uppercase; color:#16335E; }
+    .ig-eyebrow__ln { width:38px; height:1px; background:#2B7BE8; }
+    .ig-hero__title { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(40px, 4.8vw, 63px); line-height:1.04; letter-spacing:-.01em; margin:0 0 22px; color:#16335E; }
+    .ig-hero__sub { font-size:17px; line-height:1.7; color:#5E6B85; max-width:520px; margin:0 0 18px; }
+    .ig-hero__note { font-size:15px; line-height:1.7; color:#5E6B85; font-style:italic; margin:0 0 34px; }
+    .ig-hero__stats { display:flex; gap:64px; flex-wrap:wrap; border-top:1px solid rgba(22,51,94,.12); padding-top:26px; }
+    .ig-hero__stats .ig-stat:nth-child(2) { text-align:center; }
+    .ig-stat__n { font-family:'Cormorant Garamond',serif; font-size:30px; line-height:1; color:#16335E; font-variant-numeric:lining-nums; font-feature-settings:"lnum" 1; }
+    .ig-stat__l { font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:#7E8AA0; margin-top:6px; }
+    .ig-hero__media { position:relative; aspect-ratio:4/3.4; overflow:hidden; background:#DCE6F5; }
+    .ig-hero__media img { width:100%; height:100%; object-fit:cover; transition:transform .7s cubic-bezier(.2,.7,.2,1); }
+    .ig-hero__media:hover img { transform:scale(1.05); }
+
+    .ig-tools { max-width:1320px; margin:0 auto; padding:90px 40px 30px; }
+    .ig-tools__grid { display:grid; grid-template-columns:repeat(2,1fr); gap:14px 40px; max-width:920px; margin:0 auto; }
+    .ig-tool { display:flex; align-items:flex-start; gap:16px; padding:18px 0; border-bottom:1px solid rgba(22,51,94,.1); }
+    .ig-tool__n { flex-shrink:0; width:30px; height:30px; border-radius:50%; background:#EEF1F6; color:#2B7BE8; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; margin-top:1px; }
+    .ig-tool__name { font-size:16px; font-weight:600; color:#16335E; margin-bottom:3px; }
+    .ig-tool__desc { font-size:13.5px; line-height:1.5; color:#7E8AA0; }
+
+    .ig-steps { max-width:1320px; margin:0 auto; padding:80px 40px 40px; }
+    .ig-flow { max-width:1100px; margin:0 auto 72px; padding:40px 30px; background:#fff; border:1px solid rgba(22,51,94,.1); }
+    .ig-flow__row { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; position:relative; }
+    .ig-flow__item { flex:1; display:flex; flex-direction:column; align-items:center; text-align:center; position:relative; }
+    .ig-flow__line { position:absolute; top:27px; left:-50%; width:100%; height:2px; background:linear-gradient(to right, rgba(43,123,232,.25), rgba(43,123,232,.45)); z-index:0; }
+    .ig-flow__ic { position:relative; z-index:1; width:56px; height:56px; border-radius:50%; background:#16335E; color:#7BB0F4; display:flex; align-items:center; justify-content:center; margin-bottom:16px; }
+    .ig-flow__step { font-family:'Marcellus',serif; font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:#2B7BE8; margin-bottom:6px; }
+    .ig-flow__label { font-size:13.5px; font-weight:600; line-height:1.3; color:#16335E; max-width:120px; }
+
+    .ig-steps__list { max-width:920px; margin:0 auto; display:flex; flex-direction:column; }
+    .ig-step { display:grid; grid-template-columns:96px 1fr; gap:36px; padding:44px 0; border-top:1px solid rgba(22,51,94,.12); }
+    .ig-step__n { font-family:'Cormorant Garamond',serif; font-size:64px; line-height:.9; color:#2B7BE8; font-weight:500; font-variant-numeric:lining-nums; font-feature-settings:"lnum" 1; }
+    .ig-step__t { font-family:'Cormorant Garamond',serif; font-weight:600; font-size:28px; line-height:1.15; margin:0 0 14px; color:#16335E; }
+    .ig-step__b { font-size:16px; line-height:1.75; color:#5E6B85; margin:0; }
+    .ig-step__img { margin-top:24px; overflow:hidden; aspect-ratio:16/9; background:#DCE6F5; max-width:520px; }
+    .ig-step__img img { width:100%; height:100%; object-fit:cover; display:block; }
+    .ig-tip { margin-top:24px; background:#EEF1F6; border-left:3px solid #2B7BE8; padding:18px 22px; }
+    .ig-tip__label { font-family:'Marcellus',serif; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:#2B7BE8; }
+    .ig-tip__t { font-size:14.5px; line-height:1.65; color:#46546E; margin:8px 0 0; }
+    .ig-step--small { padding:26px 0; background:#F4F6FA; }
+    .ig-step__n--small { font-size:30px; line-height:1; color:#7E8AA0; text-align:right; }
+    .ig-step__t--small { font-family:'Marcellus',serif; font-weight:400; font-size:15px; letter-spacing:.04em; line-height:1.3; margin:0 0 12px; color:#16335E; }
+    .ig-step__b--small { font-size:13.5px; line-height:1.7; color:#5E6B85; margin:0; }
+
+    .ig-tlsec { max-width:1320px; margin:0 auto; padding:50px 40px 30px; }
+    .ig-tl { max-width:920px; margin:0 auto; background:#EEF1F6; padding:46px 48px; }
+    .ig-tl__head { margin-bottom:40px; }
+    .ig-tl__title { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(26px,2.8vw,34px); line-height:1.1; margin:0; color:#16335E; }
+    .ig-tl__rows { display:flex; flex-direction:column; gap:22px; }
+    .ig-tl__row { display:grid; grid-template-columns:130px 1fr 96px; gap:20px; align-items:center; }
+    .ig-tl__phase { font-size:13px; font-weight:600; color:#16335E; }
+    .ig-tl__bar { position:relative; height:12px; background:rgba(22,51,94,.1); border-radius:6px; overflow:hidden; }
+    .ig-tl__fill { position:absolute; top:0; bottom:0; left:0; border-radius:6px; }
+    .ig-tl__time { font-size:13px; color:#5E6B85; text-align:right; }
+    .ig-tl__foot { text-align:center; font-size:13px; color:#7E8AA0; margin:34px 0 0; font-style:italic; }
+
+    .ig-cta { max-width:1320px; margin:0 auto; padding:60px 40px 100px; }
+    .ig-cta__panel { background:#16335E; color:#EAE1D2; display:grid; grid-template-columns:1fr 1fr; align-items:stretch; overflow:hidden; }
+    .ig-cta__copy { padding:72px 56px; display:flex; flex-direction:column; justify-content:center; }
+    .ig-cta__eyebrow { font-family:'Marcellus',serif; font-size:13px; letter-spacing:.32em; text-transform:uppercase; color:#7BB0F4; margin-bottom:18px; }
+    .ig-cta__title { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(30px,3.4vw,44px); line-height:1.1; margin:0 0 18px; color:#fff; }
+    .ig-cta__text { font-size:16px; line-height:1.7; color:#9AA4B8; margin:0 0 32px; max-width:420px; }
+    .ig-cta__btns { display:flex; gap:14px; flex-wrap:wrap; }
+    .ig-cta__btn { font-size:13px; letter-spacing:.12em; text-transform:uppercase; padding:16px 32px; transition:all .25s ease; }
+    .ig-cta__btn--blue { background:#2B7BE8; color:#fff; }
+    .ig-cta__btn--blue:hover { background:#5C9AF0; }
+    .ig-cta__btn--ghost { background:transparent; border:1px solid rgba(220,230,245,.35); color:#F4F6FA; }
+    .ig-cta__btn--ghost:hover { background:rgba(255,255,255,.1); }
+    .ig-cta__media { position:relative; min-height:340px; background:#DCE6F5; }
+    .ig-cta__media img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+
+    @media (max-width:990px) {
+      .ig-hero__grid { grid-template-columns:1fr; gap:40px; }
+      .ig-tools__grid { grid-template-columns:1fr; }
+      .ig-flow__row { flex-wrap:wrap; gap:24px 8px; }
+      .ig-flow__item { flex:0 0 30%; }
+      .ig-flow__line { display:none; }
+      .ig-cta__panel { grid-template-columns:1fr; }
+      .ig-cta__media { min-height:280px; order:-1; }
+    }
+    @media (max-width:600px) {
+      .ig-hero__crumb, .ig-hero__grid, .ig-tools, .ig-steps, .ig-tlsec, .ig-cta { padding-left:22px; padding-right:22px; }
+      .ig-hero__stats { flex-wrap:nowrap; gap:12px; justify-content:space-between; }
+      .ig-stat__n { font-size:21px; }
+      .ig-stat__l { font-size:10px; letter-spacing:.04em; }
+      .ig-step { grid-template-columns:56px 1fr; gap:20px; }
+      .ig-step__n { font-size:44px; }
+      .ig-flow__item { flex:0 0 45%; }
+      .ig-tl { padding:32px 22px; }
+      .ig-tl__row { grid-template-columns:90px 1fr 70px; gap:12px; }
+      .ig-cta__copy { padding:44px 28px; }
+    }
+  </style>
+
+  <div class="ig">
+    <section class="ig-hero">
+      <div class="ig-hero__crumb"><a href="{{ routes.root_url }}">Home</a><span class="ig-sep">/</span><span class="ig-cur">Installation Guide</span></div>
+      <div class="ig-hero__grid">
+        <div class="ig-hero__copy">
+          <div class="ig-eyebrow"><span class="ig-eyebrow__ln"></span>Step-by-Step Guide</div>
+          <h1 class="ig-hero__title">Installing Your <span class="ig-i">iMosaicArt</span> Masterpiece</h1>
+          <p class="ig-hero__sub">Turn any space into a stunning work of art. This beginner-friendly guide walks you through every step — from prep to polish — for a flawless, professional finish.</p>
+          <p class="ig-hero__note">No prior experience needed — your walls and floors are the canvas, and every tile a brushstroke.</p>
+          <div class="ig-hero__stats">
+            <div class="ig-stat"><div class="ig-stat__n">Beginner</div><div class="ig-stat__l">Skill Level</div></div>
+            <div class="ig-stat"><div class="ig-stat__n">6 Steps</div><div class="ig-stat__l">Start to Finish</div></div>
+            <div class="ig-stat"><div class="ig-stat__n">1–2 Days</div><div class="ig-stat__l">Incl. Curing</div></div>
+          </div>
+        </div>
+        <div class="ig-hero__media"><img src="{{ 'install-hero-tree.png' | asset_url }}" alt="iMosaicArt team installing a tree mosaic mural" loading="eager"></div>
+      </div>
+    </section>
+
+    <section class="ig-tools">
+      <div class="ig-center">
+        <div class="ig-kicker">Before You Begin</div>
+        <h2 class="ig-h2">What You'll Need</h2>
+        <p class="ig-lead">We provide the mosaic artistry — you'll just need a few trusty tools, all available at your local hardware store or online.</p>
+      </div>
+      <div class="ig-tools__grid">
+          <div class="ig-tool"><span class="ig-tool__n">1</span><div><div class="ig-tool__name">Safety Gear</div><div class="ig-tool__desc">Gloves, safety glasses and a dust mask to protect yourself.</div></div></div>
+          <div class="ig-tool"><span class="ig-tool__n">2</span><div><div class="ig-tool__name">Adhesive</div><div class="ig-tool__desc">A high-quality mosaic adhesive suited to your surface.</div></div></div>
+          <div class="ig-tool"><span class="ig-tool__n">3</span><div><div class="ig-tool__name">Trowel</div><div class="ig-tool__desc">For spreading the adhesive evenly.</div></div></div>
+          <div class="ig-tool"><span class="ig-tool__n">4</span><div><div class="ig-tool__name">Notched Trowel</div><div class="ig-tool__desc">Creates ridges in the adhesive for better tile grip.</div></div></div>
+          <div class="ig-tool"><span class="ig-tool__n">5</span><div><div class="ig-tool__name">Grout</div><div class="ig-tool__desc">A color that complements your mosaic and space.</div></div></div>
+          <div class="ig-tool"><span class="ig-tool__n">6</span><div><div class="ig-tool__name">Grout Float</div><div class="ig-tool__desc">To apply and smooth grout between the tiles.</div></div></div>
+          <div class="ig-tool"><span class="ig-tool__n">7</span><div><div class="ig-tool__name">Bucket &amp; Sponge</div><div class="ig-tool__desc">For mixing grout and cleaning as you go.</div></div></div>
+          <div class="ig-tool"><span class="ig-tool__n">8</span><div><div class="ig-tool__name">Level</div><div class="ig-tool__desc">Ensures your mosaic is perfectly aligned.</div></div></div>
+          <div class="ig-tool"><span class="ig-tool__n">9</span><div><div class="ig-tool__name">Utility Knife</div><div class="ig-tool__desc">For any necessary cuts to the mesh backing.</div></div></div>
+          <div class="ig-tool"><span class="ig-tool__n">10</span><div><div class="ig-tool__name">Rubber Mallet</div><div class="ig-tool__desc">Gently taps tiles firmly into place.</div></div></div>
+      </div>
+    </section>
+
+    <section class="ig-steps">
+      <div class="ig-center">
+        <div class="ig-kicker">The Process in Detail</div>
+        <h2 class="ig-h2">Six Steps to a Flawless Finish</h2>
+      </div>
+      <div class="ig-flow">
+        <div class="ig-flow__row">
+          <div class="ig-flow__item"><span class="ig-flow__ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/></svg></span><span class="ig-flow__step">Step 1</span><span class="ig-flow__label">Prep Surface</span></div>
+          <div class="ig-flow__item"><span class="ig-flow__line"></span><span class="ig-flow__ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h13l5 5-9 9-9-9z"/><line x1="7" y1="11" x2="13" y2="17"/></svg></span><span class="ig-flow__step">Step 2</span><span class="ig-flow__label">Spread Adhesive</span></div>
+          <div class="ig-flow__item"><span class="ig-flow__line"></span><span class="ig-flow__ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="1"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg></span><span class="ig-flow__step">Step 3</span><span class="ig-flow__label">Place Mosaic</span></div>
+          <div class="ig-flow__item"><span class="ig-flow__line"></span><span class="ig-flow__ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg></span><span class="ig-flow__step">Step 4</span><span class="ig-flow__label">Let It Cure</span></div>
+          <div class="ig-flow__item"><span class="ig-flow__line"></span><span class="ig-flow__ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14h16v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M7 14V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v8"/></svg></span><span class="ig-flow__step">Step 5</span><span class="ig-flow__label">Apply Grout</span></div>
+          <div class="ig-flow__item"><span class="ig-flow__line"></span><span class="ig-flow__ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.6L18.5 9l-4.6 1.9L12 15l-1.9-4.1L5.5 9l4.6-1.4z"/><path d="M18 15l.9 2.1L21 18l-2.1.9L18 21l-.9-2.1L15 18l2.1-.9z"/></svg></span><span class="ig-flow__step">Step 6</span><span class="ig-flow__label">Buff &amp; Reveal</span></div>
+        </div>
+      </div>
+      <div class="ig-steps__list">
+          <div class="ig-step">
+            <div class="ig-step__n">1</div>
+            <div class="ig-step__c">
+              <h3 class="ig-step__t">Prepare Your Surface</h3>
+              <p class="ig-step__b">Give your chosen surface a thorough cleaning with a damp sponge and soapy water. Remove any dust, dirt or grime to ensure the adhesive bonds optimally.</p>
+              <div class="ig-tip"><span class="ig-tip__label">Pro Tip</span><p class="ig-tip__t">For uneven surfaces, apply a leveling compound first to create a smooth, even base.</p></div>
+            </div>
+          </div>
+          <div class="ig-step ig-step--small">
+            <div class="ig-step__n ig-step__n--small">↳</div>
+            <div class="ig-step__c">
+              <h3 class="ig-step__t--small">Prepare Your Mosaic for Application</h3>
+              <p class="ig-step__b--small">Once your surface is prepared, turn to the mosaic: it arrives rolled like a rug — large designs come as numbered sections you assemble like a puzzle; simply unroll it flat (design side down), peel off the backing plastic sheet and any leftover glue, then flip it over and clean the tile surface before installing. If any tiles are missing, use the spare extra tiles we always include in the package — trim the long spare tiles to size and add them as you install.</p>
+            </div>
+          </div>
+          <div class="ig-step">
+            <div class="ig-step__n">2</div>
+            <div class="ig-step__c">
+              <h3 class="ig-step__t">Spread the Adhesive</h3>
+              <p class="ig-step__b">Using your trowel, spread a thin, even layer of adhesive onto the prepared surface. Follow the manufacturer’s instructions for drying time before moving on.</p>
+              <div class="ig-step__img"><img src="https://cdn.shopify.com/s/files/1/0754/6093/5978/files/tile-adhesive-web_480x480_be247ec6-492a-4efc-a07a-e41d7fd961cc_480x480.jpg" alt="Spread the Adhesive" loading="lazy"></div>
+            </div>
+          </div>
+          <div class="ig-step">
+            <div class="ig-step__n">3</div>
+            <div class="ig-step__c">
+              <h3 class="ig-step__t">Embrace the Mosaic Magic</h3>
+              <p class="ig-step__b">Now the fun part. Starting from the center or a corner, gently press your mosaic into the adhesive, keeping proper alignment and spacing. Check with your level regularly to maintain a flawless finish.</p>
+            </div>
+          </div>
+          <div class="ig-step">
+            <div class="ig-step__n">4</div>
+            <div class="ig-step__c">
+              <h3 class="ig-step__t">Let the Art Settle</h3>
+              <p class="ig-step__b">Once your mosaic is in place, allow the adhesive to cure completely according to the manufacturer’s recommendations — this typically takes 24 to 48 hours.</p>
+            </div>
+          </div>
+          <div class="ig-step">
+            <div class="ig-step__n">5</div>
+            <div class="ig-step__c">
+              <h3 class="ig-step__t">Grout Your Masterpiece</h3>
+              <p class="ig-step__b">Mix your grout per the package instructions and apply it with the grout float, working diagonally across the mosaic, then wipe away any excess with a damp sponge. Once it dries, seal the grout to protect it from moisture — unless you used epoxy grout, which is already non-porous and needs no sealing.</p>
+              <div class="ig-step__img"><img src="https://cdn.shopify.com/s/files/1/0754/6093/5978/files/DSCN4804-600x450_480x480.jpg" alt="Grout Your Masterpiece" loading="lazy"></div>
+              <div class="ig-tip"><span class="ig-tip__label">Important</span><p class="ig-tip__t">Grout is optional for indoor, dry installations — but essential for exterior, pool and wet areas, where it seals the joints and protects the mosaic from moisture. Choose a light grout for light-toned designs and a dark grout for darker ones, so the joints blend naturally.</p></div>
+            </div>
+          </div>
+          <div class="ig-step">
+            <div class="ig-step__n">6</div>
+            <div class="ig-step__c">
+              <h3 class="ig-step__t">Reveal Your Creation</h3>
+              <p class="ig-step__b">After the grout dries completely (usually 24 to 72 hours), buff the surface with a soft cloth to bring out its shine and reveal your stunning finished masterpiece.</p>
+            </div>
+          </div>
+      </div>
+    </section>
+
+    <section class="ig-tlsec">
+      <div class="ig-tl">
+        <div class="ig-center ig-tl__head">
+          <div class="ig-kicker ig-kicker--blue">Timing at a Glance</div>
+          <h3 class="ig-tl__title">Plan for Patience, Not Effort</h3>
+        </div>
+        <div class="ig-tl__rows">
+          <div class="ig-tl__row"><span class="ig-tl__phase">Hands-on Work</span><span class="ig-tl__bar"><span class="ig-tl__fill" style="right:64%; background:#2B7BE8;"></span></span><span class="ig-tl__time">2–4 hrs</span></div>
+          <div class="ig-tl__row"><span class="ig-tl__phase">Adhesive Cure</span><span class="ig-tl__bar"><span class="ig-tl__fill" style="right:30%; background:#7BB0F4;"></span></span><span class="ig-tl__time">24–48 hrs</span></div>
+          <div class="ig-tl__row"><span class="ig-tl__phase">Grout Dry</span><span class="ig-tl__bar"><span class="ig-tl__fill" style="right:8%; background:#16335E;"></span></span><span class="ig-tl__time">24–72 hrs</span></div>
+        </div>
+        <p class="ig-tl__foot">Hands-on work is just a few hours — most of the timeline is letting adhesive and grout cure.</p>
+      </div>
+    </section>
+
+    <section class="ig-cta">
+      <div class="ig-cta__panel">
+        <div class="ig-cta__copy">
+          <div class="ig-cta__eyebrow">Reveal Your Creation</div>
+          <h2 class="ig-cta__title">A Masterpiece, Admired for Years</h2>
+          <p class="ig-cta__text">You've transformed your space into a unique work of art. Ready for your next? Explore new patterns, bold colors and endless possibilities.</p>
+          <div class="ig-cta__btns">
+            <a href="{{ routes.all_products_collection_url }}" class="ig-cta__btn ig-cta__btn--blue">Shop Mosaics</a>
+            <a href="/pages/frequently-asked-questions" class="ig-cta__btn ig-cta__btn--ghost">Read the FAQ</a>
+          </div>
+        </div>
+        <div class="ig-cta__media"><img src="{{ 'install-finish-hands.jpg' | asset_url }}" alt="Hands placing mosaic tesserae" loading="lazy"></div>
+      </div>
+    </section>
+  </div>
+

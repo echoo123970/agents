@@ -1,0 +1,128 @@
+<style>
+  .showcase { padding-top: 128px; padding-bottom: 40px; }
+  .showcase__head { text-align: center; margin-bottom: 54px; }
+  .showcase__head .section-title { margin-bottom: 16px; }
+  .showcase__intro { font-size: 16px; line-height: 1.7; color: var(--color-text-muted); max-width: 560px; margin: 0 auto; }
+  .showcase__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+  .col-card { position: relative; display: block; overflow: hidden; height: 440px; background: var(--color-light-text); transition: transform .5s ease; }
+  .col-card:hover { transform: scale(1.015); }
+  .showcase__scrim { position: absolute; inset: 0; background: linear-gradient(110deg, rgba(11,28,53,.74) 0%, rgba(11,28,53,.25) 55%, rgba(11,28,53,0) 100%); }
+  .showcase__caption { position: absolute; left: 36px; top: 36px; right: 36px; bottom: 36px; display: flex; flex-direction: column; justify-content: flex-end; color: var(--color-bg); }
+  .showcase__name { font-family: var(--font-display); font-size: 30px; line-height: 1.1; margin-bottom: 8px; }
+  .showcase__desc { font-size: 14.5px; color: #E0D6C6; margin-bottom: 18px; max-width: 300px; }
+  .showcase__cta { font-size: 12.5px; letter-spacing: .16em; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,.5); padding-bottom: 5px; width: fit-content; }
+  @media (max-width: 990px) { .showcase { padding-top: 80px; } }
+  @media (max-width: 600px) { .showcase__grid { grid-template-columns: 1fr; } .col-card { height: 360px; } }
+</style>
+
+<section id="collections" class="showcase page-width">
+  <div class="showcase__head">
+    {%- if section.settings.eyebrow != blank -%}<div class="eyebrow">{{ section.settings.eyebrow }}</div>{%- endif -%}
+    {%- if section.settings.heading != blank -%}<h2 class="section-title">{{ section.settings.heading }}</h2>{%- endif -%}
+    {%- if section.settings.text != blank -%}<p class="showcase__intro">{{ section.settings.text }}</p>{%- endif -%}
+  </div>
+  <div class="showcase__grid">
+    {%- comment -%} Per-card cover override URLs (pipe-separated, same order). Used by BOTH the block and default branches. {%- endcomment -%}
+    {%- assign d_covers = section.settings.default_covers | split: '|' -%}
+    {%- if section.blocks.size > 0 -%}
+      {%- for block in section.blocks -%}
+        {%- assign coll = block.settings.collection -%}
+        {%- if coll != blank -%}
+          {%- assign card_url = coll.url -%}
+          {%- assign card_name = block.settings.title | default: coll.title -%}
+          {%- assign card_image = block.settings.image | default: coll.featured_image -%}
+        {%- else -%}
+          {%- assign card_url = block.settings.link -%}
+          {%- assign card_name = block.settings.title -%}
+          {%- assign card_image = block.settings.image -%}
+        {%- endif -%}
+        {%- assign cover = d_covers[forloop.index0] -%}
+        <a href="{{ card_url | default: '#' }}" class="col-card" {{ block.shopify_attributes }}>
+          {%- if cover != blank -%}
+            <img src="{{ cover }}" alt="{{ card_name | escape }}" width="900" height="600" class="col-zoom cover-img" loading="lazy" referrerpolicy="no-referrer"{% if card_image != blank %} onerror="this.onerror=null;this.src='{{ card_image | image_url: width: 900 }}'"{% endif %}>
+          {%- elsif card_image != blank -%}
+            <img src="{{ card_image | image_url: width: 900 }}" alt="{{ card_name | escape }}" width="900" height="600" class="col-zoom cover-img" loading="lazy">
+          {%- else -%}
+            {{ 'collection-2' | placeholder_svg_tag: 'col-zoom cover-img' }}
+          {%- endif -%}
+          <span class="showcase__scrim"></span>
+          <span class="showcase__caption">
+            <span class="showcase__name">{{ card_name }}</span>
+            {%- if block.settings.description != blank -%}<span class="showcase__desc">{{ block.settings.description }}</span>{%- endif -%}
+            <span class="showcase__cta">{{ block.settings.cta | default: 'Explore Collection' }}</span>
+          </span>
+        </a>
+      {%- endfor -%}
+    {%- else -%}
+      {%- assign d_handles = section.settings.default_handles | split: ',' -%}
+      {%- assign d_titles = section.settings.default_titles | split: '|' -%}
+      {%- assign d_descs = section.settings.default_descs | split: '|' -%}
+      {%- for h in d_handles -%}
+        {%- assign hh = h | strip -%}
+        {%- assign coll = collections[hh] -%}
+        {%- assign card_name = d_titles[forloop.index0] | strip | default: coll.title -%}
+        {%- if coll != empty and coll.url != blank -%}{%- assign card_url = coll.url -%}{%- else -%}{%- capture card_url -%}{{ routes.search_url }}?q={{ card_name | url_encode }}&type=product{%- endcapture -%}{%- endif -%}
+        {%- assign cover = d_covers[forloop.index0] -%}
+        {%- if coll.featured_image != blank -%}{%- assign fb = coll.featured_image | image_url: width: 900 -%}{%- else -%}{%- assign fb = 'about-hands-tesserae.png' | asset_url -%}{%- endif -%}
+        <a href="{{ card_url }}" class="col-card">
+          {%- if cover != blank -%}
+            <img src="{{ cover }}" alt="{{ card_name | escape }}" width="900" height="600" class="col-zoom cover-img" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='{{ fb }}'">
+          {%- elsif coll.featured_image != blank -%}
+            <img src="{{ fb }}" alt="{{ card_name | escape }}" width="900" height="600" class="col-zoom cover-img" loading="lazy">
+          {%- else -%}
+            {{ 'collection-2' | placeholder_svg_tag: 'col-zoom cover-img' }}
+          {%- endif -%}
+          <span class="showcase__scrim"></span>
+          <span class="showcase__caption">
+            <span class="showcase__name">{{ card_name }}</span>
+            {%- assign cd = d_descs[forloop.index0] | strip -%}
+            {%- if cd != blank -%}<span class="showcase__desc">{{ cd }}</span>{%- endif -%}
+            <span class="showcase__cta">Explore Collection</span>
+          </span>
+        </a>
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+</section>
+
+
+{% schema %}
+{
+  "name": "Collection showcase",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Signature Collections" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Curated Worlds In Stone" },
+    { "type": "textarea", "id": "text", "label": "Intro text", "default": "Themed collections hand-assembled by master artisans — timeless investments designed to anchor a room for generations." },
+    { "type": "paragraph", "content": "Shown when no Collection blocks are added. Handles comma-separated; titles & descriptions pipe-separated (|), in matching order." },
+    { "type": "textarea", "id": "default_handles", "label": "Default collection handles", "default": "mosaic-tile-backsplash, table-countertop-mosaics, van-gogh-mosaics, glass-mosaic-art" },
+    { "type": "textarea", "id": "default_titles", "label": "Default titles", "default": "Mosaic Kitchen Backsplash|Mosaic Tabletops|The Van Gogh Collection|Glass Mosaic Art" },
+    { "type": "textarea", "id": "default_descs", "label": "Default descriptions", "default": "Stylish. Durable. Handcrafted.|Artfully crafted for everyday elegance.|Mosaic art inspired by timeless genius.|Light, color and craftsmanship in every piece." },
+    { "type": "textarea", "id": "default_covers", "label": "Cover image URLs (pipe-separated, in the same order). Leave blank to use each collection's own image.", "default": "https://cdn.shopify.com/s/files/1/0754/6093/5978/files/1_Mosaic_Kitchen_Backsplash.jpg?v=1783066821&width=900|https://cdn.shopify.com/s/files/1/0754/6093/5978/files/2_Mosaic_Tabletops.png?v=1783066824&width=900|https://cdn.shopify.com/s/files/1/0754/6093/5978/files/3_The_Van_Gogh_Collection.png?v=1783066828&width=900|https://cdn.shopify.com/s/files/1/0754/6093/5978/files/4_Glass_Mosaic_Art.jpg?v=1783066831&width=900" }
+  ],
+  "blocks": [
+    {
+      "type": "showcase",
+      "name": "Collection",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "text", "id": "title", "label": "Title override" },
+        { "type": "text", "id": "description", "label": "Description", "default": "Stylish. Durable. Handcrafted." },
+        { "type": "text", "id": "cta", "label": "CTA text", "default": "Explore Collection" },
+        { "type": "image_picker", "id": "image", "label": "Image override" },
+        { "type": "url", "id": "link", "label": "Link (if no collection)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection showcase",
+      "blocks": [
+        { "type": "showcase", "settings": { "collection": "mosaic-tile-backsplash", "title": "Mosaic Kitchen Backsplash", "description": "Stylish. Durable. Handcrafted.", "cta": "Explore Collection" } },
+        { "type": "showcase", "settings": { "collection": "table-countertop-mosaics", "title": "Mosaic Tabletops", "description": "Artfully crafted for everyday elegance.", "cta": "Shop Now" } },
+        { "type": "showcase", "settings": { "collection": "van-gogh-mosaics", "title": "The Van Gogh Collection", "description": "Mosaic art inspired by timeless genius.", "cta": "Shop Now" } },
+        { "type": "showcase", "settings": { "collection": "glass-mosaic-art", "title": "Glass Mosaic Art", "description": "Light, color and craftsmanship in every piece.", "cta": "Explore Collection" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

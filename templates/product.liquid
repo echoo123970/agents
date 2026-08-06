@@ -1,0 +1,458 @@
+{%- comment -%} Product structured data — enables rich results (price/availability) and AI shopping agents. {%- endcomment -%}
+{%- assign pdp_desc = product.description | strip_html | strip_newlines | truncatewords: 60 -%}
+{%- if pdp_desc == blank -%}{%- assign pdp_desc = product.title | append: ' — handcrafted marble and glass mosaic art by iMosaicArt, made to order.' -%}{%- endif -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "description": {{ pdp_desc | json }},
+  "url": "https://www.imosaicart.com{{ product.url }}",
+  "brand": { "@type": "Brand", "name": "iMosaicArt" },
+  "image": [
+    {%- for image in product.images limit: 6 -%}
+      {%- assign img_src = image | image_url: width: 1200 -%}
+      {%- unless img_src contains 'http' -%}{%- assign img_src = 'https:' | append: img_src -%}{%- endunless -%}
+      {{ img_src | json }}{%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  ],
+  {%- if product.selected_or_first_available_variant.sku != blank -%}
+  "sku": {{ product.selected_or_first_available_variant.sku | json }},
+  {%- endif -%}
+  "offers": [
+    {%- for variant in product.variants -%}
+    {
+      "@type": "Offer",
+      {%- if variant.sku != blank -%}"sku": {{ variant.sku | json }},{%- endif -%}
+      "price": "{{ variant.price | divided_by: 100.0 }}",
+      "priceCurrency": {{ shop.currency | json }},
+      "availability": "https://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}",
+      "itemCondition": "https://schema.org/NewCondition",
+      "url": "https://www.imosaicart.com{{ product.url }}?variant={{ variant.id }}",
+      "seller": { "@type": "Organization", "name": "iMosaicArt" }
+    }{%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  ]
+}
+</script>
+
+{%- comment -%} Breadcrumb structured data for the product. {%- endcomment -%}
+{%- assign pdp_coll = product.collections | where: 'handle', 'mosaic-tile-art' | first -%}
+{%- unless pdp_coll -%}{%- assign pdp_coll = product.collections.first -%}{%- endunless -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://www.imosaicart.com/"
+    },
+    {%- if pdp_coll and pdp_coll.handle != blank -%}
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": {{ pdp_coll.title | json }},
+      "item": "https://www.imosaicart.com{{ pdp_coll.url }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": {{ product.title | json }},
+      "item": "https://www.imosaicart.com{{ product.url }}"
+    }
+    {%- else -%}
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": {{ product.title | json }},
+      "item": "https://www.imosaicart.com{{ product.url }}"
+    }
+    {%- endif -%}
+  ]
+}
+</script>
+
+<style>
+  .pdp { padding-top: 24px; padding-bottom: 90px; }
+  .pdp__crumb { display: flex; align-items: center; gap: 9px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-soft); padding-bottom: 24px; flex-wrap: wrap; }
+  .pdp__crumb-sep { color: #B7C0D2; }
+  .pdp__crumb-current { color: var(--color-navy); }
+  .pdp__grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 60px; align-items: start; }
+
+  .pdp-stage { position: relative; overflow: hidden; background: #fff; aspect-ratio: 4/5; cursor: zoom-in; }
+  .pdp-main { width: 100%; height: 100%; object-fit: contain; padding: 18px; transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+  .pdp-stage:hover .pdp-main { transform: scale(1.6); }
+  .pdp-stage__badge { position: absolute; top: 16px; left: 16px; background: rgba(255,255,255,.92); color: var(--color-navy); font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; padding: 7px 12px; display: flex; align-items: center; gap: 7px; }
+  .pdp__thumbs { display: flex; gap: 12px; margin-top: 14px; flex-wrap: wrap; }
+  .pdp__thumb { width: 84px; aspect-ratio: 4/5; overflow: hidden; border: 1px solid transparent; background: var(--color-light-text); padding: 0; cursor: pointer; }
+  .pdp__thumb.is-active { border-color: var(--color-blue); }
+  .pdp__thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+  .pdp__accordion { margin-top: 36px; }
+  .pdp-acc { border-top: 1px solid var(--color-line); }
+  .pdp-acc__head { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 20px 2px; cursor: pointer; background: none; border: none; text-align: left; }
+  .pdp-acc__title { font-family: var(--font-accent); font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-navy); }
+  .pdp-acc__icon { font-size: 20px; line-height: 1; color: var(--color-blue); transition: transform .3s ease; }
+  .pdp-acc[data-open] .pdp-acc__icon { transform: rotate(45deg); }
+  .pdp-acc__body { overflow: hidden; max-height: 0; opacity: 0; transition: max-height .4s ease, opacity .3s ease; }
+  .pdp-acc[data-open] .pdp-acc__body { max-height: 600px; opacity: 1; }
+  .pdp-acc--options { margin-bottom: 22px; border-top: none; }
+  .pdp-acc--options .pdp-acc__head { cursor: pointer; transition: color .2s ease; }
+  .pdp-acc--options .pdp-acc__head:hover .pdp-acc__title { color: var(--color-blue); }
+  .pdp-acc__hint { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-body); font-size: 12px; letter-spacing: .04em; text-transform: none; color: var(--color-text-soft); }
+  .pdp-acc__hint svg { transition: transform .3s ease; }
+  .pdp-acc--options[data-open] .pdp-acc__hint svg { transform: rotate(180deg); }
+  .pdp-acc--options .pdp-acc__head:hover .pdp-acc__hint { color: var(--color-blue); }
+  .pdp-acc__icon--chev { display: flex; align-items: center; }
+  .pdp-acc--options[data-open] .pdp-acc__icon--chev { transform: rotate(180deg); }
+  .pdp-acc--options[data-open] .pdp-acc__body { max-height: 1400px; }
+  .pdp-opt-list { display: flex; flex-direction: column; gap: 10px; padding-bottom: 6px; }
+  .pdp-acc__body-inner { font-size: 15px; line-height: 1.75; color: var(--color-text-muted); padding: 0 2px 22px; }
+  .pdp-rush { display: flex; align-items: flex-start; gap: 10px; margin-top: 14px; padding: 13px 16px; background: #EEF4FD; border-left: 3px solid var(--color-blue); font-size: 14px; line-height: 1.55; color: var(--color-navy); }
+  .pdp-rush svg { flex-shrink: 0; margin-top: 2px; color: var(--color-blue); }
+  .pdp-rush a { color: var(--color-blue); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+  .pdp-rush a:hover { color: var(--color-navy); }
+
+  .pdp__info { position: sticky; top: 100px; }
+  .pdp__meta { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .pdp__type { font-family: var(--font-accent); font-size: 12px; letter-spacing: .26em; text-transform: uppercase; color: var(--color-blue); }
+  .pdp__dot { width: 4px; height: 4px; border-radius: 50%; background: #C4CDDC; }
+  .pdp__sku { font-size: 12px; letter-spacing: .08em; color: var(--color-text-faint); }
+  .pdp__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(32px, 3.6vw, 48px); line-height: 1.08; letter-spacing: -.01em; margin-bottom: 16px; color: var(--color-navy); }
+  .pdp__rating { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+  .pdp__stars { color: var(--color-blue); letter-spacing: 2px; font-size: 14px; }
+  .pdp__rating-text { font-size: 13.5px; color: var(--color-text-soft); }
+  .pdp__rating-score { color: var(--color-navy); font-weight: 600; }
+  .pdp__rating-link { color: var(--color-blue); text-decoration: underline; text-underline-offset: 2px; transition: color .2s ease; }
+  .pdp__rating-link:hover { color: var(--color-navy); }
+  .pdp__price-row { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; }
+  .pdp__price { font-family: var(--font-display); font-size: 40px; line-height: 1; color: var(--color-navy); }
+  .pdp__size-label { font-size: 13px; color: var(--color-text-soft); }
+  .pdp__status { font-size: 13px; color: #1F8A5B; margin-bottom: 28px; display: flex; align-items: center; gap: 7px; }
+  .pdp__status-dot { width: 7px; height: 7px; border-radius: 50%; background: #1F8A5B; }
+  .pdp__quote-banner { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--color-panel); border: 1px solid rgba(43,123,232,.25); padding: 14px 18px; margin-bottom: 24px; transition: all .2s ease; }
+  .pdp__quote-banner:hover { border-color: var(--color-blue); background: #E6EEFA; }
+  .pdp__quote-banner-text { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--color-navy); }
+  .pdp__quote-banner-cta { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--color-blue); font-weight: 600; white-space: nowrap; }
+
+  .pdp__sizes { margin-bottom: 26px; }
+  .pdp__sizes-label { font-family: var(--font-accent); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--color-navy); margin-bottom: 13px; }
+  .pdp__sizes-list { display: flex; flex-direction: column; gap: 9px; }
+  .size-btn { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 20px; cursor: pointer; font-family: var(--font-body); text-align: left; transition: all .2s ease; background: #fff; color: var(--color-navy); border: 1px solid rgba(22,51,94,.18); }
+  .size-btn.is-active { background: var(--color-navy); color: #fff; border-color: var(--color-navy); }
+  .size-btn.is-unavailable { opacity: .45; }
+  .size-btn__name { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; }
+  .size-btn__inch { font-size: 14.5px; font-weight: 600; }
+  .size-btn__cm { font-size: 12px; opacity: .7; }
+  .size-btn__price { font-family: var(--font-display); font-size: 22px; }
+
+  .pdp__buy { display: flex; gap: 14px; margin-bottom: 18px; }
+  .pdp__qty { display: flex; align-items: center; border: 1px solid rgba(22,51,94,.2); }
+  .pdp__qty-btn { width: 46px; height: 54px; background: transparent; border: none; cursor: pointer; color: var(--color-navy); font-size: 20px; transition: background .2s ease; }
+  .pdp__qty-btn:hover { background: var(--color-panel); }
+  .pdp__qty-input { width: 44px; text-align: center; font-size: 15px; color: var(--color-navy); border: none; outline: none; -moz-appearance: textfield; }
+  .pdp__qty-input::-webkit-outer-spin-button, .pdp__qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .pdp__add { flex: 1; border: none; cursor: pointer; font-family: var(--font-body); font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding: 0 28px; transition: background .25s ease; background: var(--color-blue); color: #fff; }
+  .pdp__add:hover { background: #1E63C4; }
+  .pdp__add[disabled] { background: var(--color-text-faint); cursor: not-allowed; }
+  .pdp__add.is-added { background: #1F8A5B; }
+
+  .pdp__wish { width: 100%; background: transparent; border: 1px solid rgba(22,51,94,.25); color: var(--color-navy); font-family: var(--font-body); font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase; padding: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 28px; transition: all .2s ease; }
+  .pdp__wish:hover { border-color: var(--color-blue); color: var(--color-blue); }
+  .pdp__wish.is-saved svg { fill: var(--color-blue); }
+
+  .pdp__trust { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 22px; padding: 24px 0; border-top: 1px solid var(--color-line); border-bottom: 1px solid var(--color-line); margin-bottom: 26px; }
+  .pdp__trust-item { display: flex; align-items: center; gap: 12px; }
+  .pdp__trust-icon { flex-shrink: 0; color: var(--color-blue); display: flex; }
+  .pdp__trust-icon svg { width: 20px; height: 20px; }
+  .pdp__trust-label { font-size: 13.5px; line-height: 1.4; color: #46546E; }
+
+  .pdp__pay { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; flex-wrap: wrap; }
+  .pdp__pay-label { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-faint); }
+  .pdp__pay-icons { display: flex; gap: 7px; flex-wrap: wrap; }
+  .pdp__pay-icon { height: 24px; width: auto; }
+
+  /* Finishing / framing add-on options */
+  .pdp__addons { display: flex; flex-direction: column; gap: 10px; padding-top: 28px; border-top: 1px solid var(--color-line); }
+  .pdp__addons-label { font-family: var(--font-accent); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--color-navy); margin-bottom: 3px; }
+  .pdp__addons-opt { color: var(--color-text-faint); }
+  .pdp-opt { position: relative; display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; background: #fff; border: 1px solid rgba(22,51,94,.18); cursor: pointer; transition: border-color .2s ease, background .2s ease, box-shadow .2s ease; }
+  .pdp-opt:hover { border-color: rgba(43,123,232,.55); }
+  .pdp-opt.is-on { background: #F4F8FE; border-color: var(--color-blue); box-shadow: inset 0 0 0 1px var(--color-blue); }
+  .pdp-opt__check { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+  .pdp-opt__tick { flex-shrink: 0; width: 22px; height: 22px; margin-top: 1px; border: 1.5px solid rgba(22,51,94,.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; transition: background .2s ease, border-color .2s ease; }
+  .pdp-opt__tick svg { width: 13px; height: 13px; opacity: 0; transition: opacity .15s ease; }
+  .pdp-opt.is-on .pdp-opt__tick { background: var(--color-blue); border-color: var(--color-blue); }
+  .pdp-opt.is-on .pdp-opt__tick svg { opacity: 1; }
+  .pdp-opt__body { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+  .pdp-opt__title { font-size: 15px; font-weight: 600; color: var(--color-navy); }
+  .pdp-opt__desc { font-size: 13px; line-height: 1.5; color: var(--color-text-muted); }
+  .pdp-opt__flag { flex-shrink: 0; align-self: flex-start; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--color-text-soft); background: var(--color-panel); padding: 4px 9px; }
+  .pdp-opt--frame { flex-direction: column; align-items: stretch; gap: 0; padding: 0; }
+  .pdp-opt--frame .pdp-opt__main { display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; cursor: pointer; }
+  .pdp-opt__contact { display: flex; align-items: center; gap: 9px; padding: 13px 18px; border-top: 1px dashed rgba(43,123,232,.45); background: #EEF4FD; color: var(--color-blue); font-size: 12.5px; font-weight: 600; letter-spacing: .03em; transition: background .2s ease; }
+  .pdp-opt__contact:hover { background: #E2ECFB; }
+  .pdp-opt__contact-arrow { margin-left: auto; }
+
+  @media (max-width: 990px) {
+    .pdp__grid { grid-template-columns: 1fr; gap: 36px; }
+    .pdp__info { position: static; }
+  }
+  @media (max-width: 600px) {
+    .pdp__price-row { flex-wrap: wrap; }
+  }
+</style>
+
+{%- comment -%} PDP inlined directly into the template so it always reaches the theme (section sync is unreliable on this store). {%- endcomment -%}
+{%- assign rating_text = 'Handcrafted reproduction · 4.9 (38 reviews)' -%}
+{%- assign availability_note = 'Made to order · ships free worldwide' -%}
+{%- assign quote_banner_text = 'Want a custom size or subject?' -%}
+{%- assign acc_titles_str = 'Materials & Craft|Shipping & Returns' -%}
+{%- assign acc_bodies_str = 'Hand-cut from natural stone or glass tesserae and assembled tile by tile by master artisans, then mounted on a fiber-mesh backing for easy installation. Each piece is unique; slight variation in colour and texture is part of its handmade character.|Made to order with a 4–5 week production time, then shipped free worldwide via UPS, FedEx or DHL Express with full tracking — around 10 days in transit. Covered by our 14-day returns policy and lifetime warranty.' -%}
+{%- assign trust_labels_str = 'Free worldwide shipping|14-day returns policy|Lifetime warranty|Hand-cut by master artisans' -%}
+
+<section class="pdp page-width" data-product>
+  <!-- BREADCRUMB -->
+  <nav class="pdp__crumb">
+    <a href="{{ routes.root_url }}" class="nav-link">Home</a>
+    <span class="pdp__crumb-sep">/</span>
+    {%- if product.collections.first -%}
+      <a href="{{ product.collections.first.url }}" class="nav-link">{{ product.collections.first.title }}</a>
+      <span class="pdp__crumb-sep">/</span>
+    {%- endif -%}
+    <span class="pdp__crumb-current">{{ product.title }}</span>
+  </nav>
+
+  <div class="pdp__grid">
+    <!-- GALLERY -->
+    <div class="pdp__gallery">
+      <div class="pdp-stage" data-zoom-stage>
+        {%- if product.featured_media -%}
+          <img src="{{ product.featured_media | image_url: width: 1100 }}" alt="{{ product.title | escape }}" width="1100" height="1375" class="pdp-main" id="PdpMainImage">
+        {%- else -%}
+          {{ 'product-1' | placeholder_svg_tag: 'pdp-main' }}
+        {%- endif -%}
+        <span class="pdp-stage__badge">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2B7BE8" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+          Hover to Zoom
+        </span>
+      </div>
+      {%- if product.media.size > 1 -%}
+        <div class="pdp__thumbs">
+          {%- for media in product.media limit: 8 -%}
+            <button type="button" class="pdp__thumb{% if forloop.first %} is-active{% endif %}" data-thumb="{{ media | image_url: width: 1100 }}">
+              <img src="{{ media | image_url: width: 200 }}" alt="" width="84" height="105" loading="lazy">
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      <!-- ACCORDION -->
+      <div class="pdp__accordion">
+        {%- if product.description != blank -%}
+          <div class="pdp-acc" data-accordion data-open>
+            <button type="button" class="pdp-acc__head" data-accordion-toggle>
+              <span class="pdp-acc__title">Description</span>
+              <span class="pdp-acc__icon">+</span>
+            </button>
+            <div class="pdp-acc__body"><div class="pdp-acc__body-inner rte">{{ product.description }}</div></div>
+          </div>
+        {%- endif -%}
+        {%- assign acc_titles = acc_titles_str | split: '|' -%}
+        {%- assign acc_bodies = acc_bodies_str | split: '|' -%}
+        {%- for t in acc_titles -%}
+          <div class="pdp-acc" data-accordion{% if forloop.first and product.description == blank %} data-open{% endif %}>
+            <button type="button" class="pdp-acc__head" data-accordion-toggle>
+              <span class="pdp-acc__title">{{ t | strip }}</span>
+              <span class="pdp-acc__icon">+</span>
+            </button>
+            <div class="pdp-acc__body"><div class="pdp-acc__body-inner rte"><p>{{ acc_bodies[forloop.index0] | strip }}</p>
+              {%- if t contains 'Shipping' -%}
+                <p class="pdp-rush"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg><span>In a hurry? A <strong>2-week rush production</strong> is available — <a href="#quote-form">just contact us</a>.</span></p>
+              {%- endif -%}
+            </div></div>
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+
+    <!-- INFO -->
+    <div class="pdp__info">
+      <div class="pdp__meta">
+        {%- if product.type != blank -%}<span class="pdp__type">{{ product.type }}</span>{%- endif -%}
+        {%- if product.selected_or_first_available_variant.sku != blank -%}
+          <span class="pdp__dot"></span>
+          <span class="pdp__sku">SKU: {{ product.selected_or_first_available_variant.sku }}</span>
+        {%- endif -%}
+      </div>
+      <h1 class="pdp__title">{{ product.title }}</h1>
+
+      <div class="pdp__rating">
+        <span class="pdp__stars">★★★★★</span>
+        <span class="pdp__rating-text">Handcrafted Reproduction · <strong class="pdp__rating-score">4.9</strong> · <a href="/pages/all-reviews" class="pdp__rating-link">38 reviews</a></span>
+      </div>
+
+      <div class="pdp__price-row">
+        <span class="pdp__price" data-price>{{ product.selected_or_first_available_variant.price | money }}</span>
+        {%- assign svp = product.selected_or_first_available_variant.title | split: '(' -%}
+        <span class="pdp__size-label" data-size-label>{%- if svp.size > 1 -%}{{ svp[1] | remove: ')' | strip }} ({{ svp[0] | strip }}){%- else -%}{{ product.selected_or_first_available_variant.title }}{%- endif -%}</span>
+      </div>
+      <p class="pdp__status"><span class="pdp__status-dot"></span>{{ availability_note }}</p>
+
+      <a href="#quote-form" class="pdp__quote-banner">
+        <span class="pdp__quote-banner-text">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2B7BE8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h13l5 5-9 9-9-9z"/><line x1="7" y1="11" x2="13" y2="17"/></svg>
+          {{ quote_banner_text }}
+        </span>
+        <span class="pdp__quote-banner-cta">Request a Quote</span>
+      </a>
+
+      {%- form 'product', product, class: 'pdp__form', id: 'ProductForm' -%}
+        {%- unless product.has_only_default_variant -%}
+          <div class="pdp__sizes">
+            <div class="pdp__sizes-label">Select Size</div>
+            <div class="pdp__sizes-list" data-variant-picker>
+              {%- for variant in product.variants -%}
+                {%- assign vparts = variant.title | split: '(' -%}
+                {%- if vparts.size > 1 -%}{%- capture v_disp -%}{{ vparts[1] | remove: ')' | strip }} ({{ vparts[0] | strip }}){%- endcapture -%}{%- else -%}{%- assign v_disp = variant.title -%}{%- endif -%}
+                <button type="button"
+                  class="size-btn{% if variant.id == product.selected_or_first_available_variant.id %} is-active{% endif %}{% unless variant.available %} is-unavailable{% endunless %}"
+                  data-variant-id="{{ variant.id }}"
+                  data-variant-price="{{ variant.price | money }}"
+                  data-variant-title="{{ v_disp | escape }}"
+                  {% unless variant.available %}aria-disabled="true"{% endunless %}>
+                  <span class="size-btn__name">
+                    {%- if vparts.size > 1 -%}
+                      <span class="size-btn__inch">{{ vparts[1] | remove: ')' | strip }}{% unless variant.available %} — Sold out{% endunless %}</span>
+                      <span class="size-btn__cm">{{ vparts[0] | strip }}</span>
+                    {%- else -%}
+                      <span class="size-btn__inch">{{ vparts[0] | strip }}{% unless variant.available %} — Sold out{% endunless %}</span>
+                    {%- endif -%}
+                  </span>
+                  <span class="size-btn__price">{{ variant.price | money }}</span>
+                </button>
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endunless -%}
+        <div class="pdp-acc pdp-acc--options" data-accordion>
+          <button type="button" class="pdp-acc__head pdp-acc__head--options" data-accordion-toggle>
+            <span class="pdp-acc__title">Bespoke Options</span>
+            <span class="pdp-acc__hint">Polished · Framing · Old Roman Technique<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="pdp-acc__body">
+            <div class="pdp-acc__body-inner">
+              <div class="pdp-opt-list">
+                <div class="pdp-opt pdp-opt--frame" data-addon>
+                  <label class="pdp-opt__main">
+                    <input type="checkbox" class="pdp-opt__check" form="ProductForm" name="properties[Finish]" value="Polished — requested, please contact me for a quote" data-frame-check>
+                    <span class="pdp-opt__tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12.5 10 17.5 19 7"/></svg></span>
+                    <span class="pdp-opt__body">
+                      <span class="pdp-opt__title">Polished Finish</span>
+                      <span class="pdp-opt__desc">A hand-applied seal that deepens colour and lends a refined, museum-grade sheen.</span>
+                    </span>
+                    <span class="pdp-opt__flag">By request</span>
+                  </label>
+                  <a class="pdp-opt__contact" href="#quote-form" data-frame-contact hidden>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v13H7l-3 3z"/></svg>
+                    Contact us about a polished finish
+                    <span class="pdp-opt__contact-arrow">→</span>
+                  </a>
+                </div>
+
+                <div class="pdp-opt pdp-opt--frame" data-addon>
+                  <label class="pdp-opt__main">
+                    <input type="checkbox" class="pdp-opt__check" form="ProductForm" name="properties[Framing]" value="Requested — please contact me for a bespoke framing quote" data-frame-check>
+                    <span class="pdp-opt__tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12.5 10 17.5 19 7"/></svg></span>
+                    <span class="pdp-opt__body">
+                      <span class="pdp-opt__title">Add a Handcrafted Frame</span>
+                      <span class="pdp-opt__desc">Bespoke framing tailored to your piece. Priced individually — our team will guide you through the options.</span>
+                    </span>
+                    <span class="pdp-opt__flag">By request</span>
+                  </label>
+                  <a class="pdp-opt__contact" href="#quote-form" data-frame-contact hidden>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v13H7l-3 3z"/></svg>
+                    Contact us about framing
+                    <span class="pdp-opt__contact-arrow">→</span>
+                  </a>
+                </div>
+
+                <div class="pdp-opt pdp-opt--frame" data-addon>
+                  <label class="pdp-opt__main">
+                    <input type="checkbox" class="pdp-opt__check" form="ProductForm" name="properties[Technique]" value="Old Roman technique — requested, please contact me for a quote" data-frame-check>
+                    <span class="pdp-opt__tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12.5 10 17.5 19 7"/></svg></span>
+                    <span class="pdp-opt__body">
+                      <span class="pdp-opt__title">Old Roman Technique</span>
+                      <span class="pdp-opt__desc">Hand-laid in the ancient Roman method with irregular natural tesserae, for an authentic, timeworn character.</span>
+                    </span>
+                    <span class="pdp-opt__flag">By request</span>
+                  </label>
+                  <a class="pdp-opt__contact" href="#quote-form" data-frame-contact hidden>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v13H7l-3 3z"/></svg>
+                    Contact us about the Old Roman technique
+                    <span class="pdp-opt__contact-arrow">→</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-variant-input>
+
+        <div class="pdp__buy">
+          <div class="pdp__qty">
+            <button type="button" class="pdp__qty-btn" data-qty-dec aria-label="Decrease">−</button>
+            <input type="number" name="quantity" value="1" min="1" class="pdp__qty-input" data-qty-input aria-label="{{ 'products.product.quantity' | t }}">
+            <button type="button" class="pdp__qty-btn" data-qty-inc aria-label="Increase">+</button>
+          </div>
+          <button type="submit" name="add" class="pdp__add" data-add-btn {% unless product.available %}disabled{% endunless %}>
+            {%- if product.available -%}{{ 'products.product.add_to_cart' | t }}{%- else -%}{{ 'products.product.sold_out' | t }}{%- endif -%}
+          </button>
+        </div>
+      {%- endform -%}
+
+      <button type="button" class="pdp__wish" data-wishlist data-product-handle="{{ product.handle }}" data-wish-title="{{ product.title | escape }}" data-wish-url="{{ product.url }}" data-wish-image="{% if product.featured_media %}{{ product.featured_media | image_url: width: 600 }}{% endif %}" data-wish-price="{% if product.price_varies %}From {{ product.price_min | money }}{% else %}{{ product.price | money }}{% endif %}" data-wish-sub="{{ product.type | default: product.vendor | escape }}">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>
+        <span data-wishlist-label>Add to Wishlist</span>
+      </button>
+
+      <div class="pdp__trust">
+        {%- assign trust_labels = trust_labels_str | split: '|' -%}
+        {%- for lbl in trust_labels -%}
+          <div class="pdp__trust-item">
+            <span class="pdp__trust-icon">
+              {%- case forloop.index -%}
+                {%- when 1 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19"/><path d="M12 2.5c2.7 2.6 4.2 5.9 4.2 9.5s-1.5 6.9-4.2 9.5c-2.7-2.6-4.2-5.9-4.2-9.5s1.5-6.9 4.2-9.5z"/></svg>
+                {%- when 2 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-2.4-5.9"/><path d="M20.7 3.6V9.1H15.2"/></svg>
+                {%- when 3 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l8 3v5.5c0 5-3.4 8.6-8 10.5-4.6-1.9-8-5.5-8-10.5V5.5z"/><path d="M9 12l2 2 4-4.5"/></svg>
+                {%- when 4 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0l-7.2-7.2a2 2 0 0 1-.6-1.4V4a1.5 1.5 0 0 1 1.5-1.5h8a2 2 0 0 1 1.4.6l7.2 7.2a2 2 0 0 1 0 2.8z"/><circle cx="7.6" cy="7.6" r="1.3" fill="currentColor" stroke="none"/></svg>
+              {%- endcase -%}
+            </span>
+            <span class="pdp__trust-label">{{ lbl | strip }}</span>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {%- if shop.enabled_payment_types.size > 0 -%}
+        <div class="pdp__pay">
+          <span class="pdp__pay-label">Secure payment</span>
+          <div class="pdp__pay-icons">
+            {%- for type in shop.enabled_payment_types -%}
+              {{ type | payment_type_svg_tag: class: 'pdp__pay-icon' }}
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+
+{% section 'custom-quote-form' %}
+{% section 'faq' %}
+{% section 'related-products' %}

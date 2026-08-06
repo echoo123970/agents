@@ -1,0 +1,70 @@
+<style>
+  .account { padding-top: 64px; padding-bottom: 96px; }
+  .account__head { text-align: center; margin-bottom: 56px; position: relative; }
+  .account__head .eyebrow { margin-bottom: 14px; }
+  .account__logout { display: inline-block; margin-top: 16px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--color-blue); }
+  .account__grid { display: grid; grid-template-columns: 1fr 320px; gap: 48px; align-items: start; }
+  .account__subtitle { font-family: var(--font-display); font-size: 26px; color: var(--color-navy); margin-bottom: 24px; }
+  .account__table { width: 100%; border-collapse: collapse; }
+  .account__table th { text-align: left; font-family: var(--font-accent); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--color-text-faint); padding: 0 0 14px; border-bottom: 1px solid var(--color-line); }
+  .account__table td { padding: 18px 0; border-bottom: 1px solid rgba(22,51,94,.08); font-size: 15px; color: var(--color-text-muted); }
+  .account__order-link { color: var(--color-blue); }
+  .account__details { background: var(--color-panel); padding: 32px 28px; }
+  .account__name { font-size: 16px; color: var(--color-navy); margin-bottom: 4px; }
+  .account__email { font-size: 14px; color: var(--color-text-soft); margin-bottom: 18px; }
+  .account__address { font-size: 14px; line-height: 1.6; color: var(--color-text-muted); margin-bottom: 20px; }
+  .account__addr-btn { width: 100%; }
+  @media (max-width: 900px) { .account__grid { grid-template-columns: 1fr; } }
+  @media (max-width: 600px) {
+    .account__table { display: block; overflow-x: auto; white-space: nowrap; }
+    .account__details { padding: 26px 22px; }
+  }
+</style>
+
+<section class="account page-width">
+  <div class="account__head">
+    <div class="eyebrow">My Account</div>
+    <h1 class="section-title">Hello, {{ customer.first_name | default: customer.email }}</h1>
+    <a href="{{ routes.account_logout_url }}" class="account__logout">Log out</a>
+  </div>
+
+  <div class="account__grid">
+    <div class="account__orders">
+      <h2 class="account__subtitle">Order History</h2>
+      {%- paginate customer.orders by 20 -%}
+        {%- if customer.orders.size > 0 -%}
+          <table class="account__table">
+            <thead><tr><th>Order</th><th>Date</th><th>Total</th><th>Status</th></tr></thead>
+            <tbody>
+              {%- for order in customer.orders -%}
+                <tr>
+                  <td><a href="{{ order.customer_url }}" class="account__order-link">{{ order.name }}</a></td>
+                  <td>{{ order.created_at | date: '%b %d, %Y' }}</td>
+                  <td>{{ order.total_price | money }}</td>
+                  <td>{{ order.financial_status_label }}</td>
+                </tr>
+              {%- endfor -%}
+            </tbody>
+          </table>
+        {%- else -%}
+          <p class="account__empty">You haven't placed any orders yet.</p>
+        {%- endif -%}
+      {%- endpaginate -%}
+    </div>
+
+    <aside class="account__details">
+      <h2 class="account__subtitle">Account Details</h2>
+      <p class="account__name">{{ customer.name }}</p>
+      <p class="account__email">{{ customer.email }}</p>
+      {%- if customer.default_address -%}
+        <div class="account__address">{{ customer.default_address | format_address }}</div>
+      {%- endif -%}
+      <a href="{{ routes.account_addresses_url }}" class="btn btn--ghost account__addr-btn">View Addresses</a>
+    </aside>
+  </div>
+</section>
+
+
+{% schema %}
+{ "name": "Account", "settings": [] }
+{% endschema %}

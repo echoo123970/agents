@@ -1,0 +1,109 @@
+<style>
+  .process { background: var(--color-navy); color: var(--color-light-text); }
+  .process__grid { padding-top: 128px; padding-bottom: 128px; display: grid; grid-template-columns: 1fr 1fr; gap: 70px; align-items: center; }
+  .process__eyebrow { font-family: var(--font-accent); font-size: 13px; letter-spacing: .26em; text-transform: uppercase; color: var(--color-blue-light); margin-bottom: 18px; }
+  .process__heading { font-family: var(--font-display); font-weight: 500; font-size: clamp(34px, 4vw, 54px); line-height: 1.06; margin-bottom: 22px; color: #fff; }
+  .process__text { font-size: 16px; line-height: 1.75; color: var(--color-text-faint); max-width: 460px; margin-bottom: 44px; }
+  .process__step { display: flex; gap: 24px; align-items: flex-start; padding: 22px 0; border-top: 1px solid rgba(220,230,245,.14); }
+  .process__step-n { font-family: var(--font-display); font-size: 30px; color: var(--color-blue-light); line-height: 1; min-width: 46px; }
+  .process__step-title { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 5px; }
+  .process__step-desc { font-size: 14px; line-height: 1.6; color: var(--color-text-faint); }
+  .process__btn { margin-top: 36px; gap: 10px; }
+  .process__media { position: relative; aspect-ratio: 4/5; overflow: hidden; }
+  .process__media-veil { position: absolute; inset: auto 0 0 0; height: 40%; background: linear-gradient(to top, rgba(11,28,53,.55), transparent); }
+  .process__media-caption { position: absolute; left: 24px; bottom: 22px; font-family: var(--font-display); font-style: italic; font-size: 24px; color: #fff; }
+  @media (max-width: 990px) {
+    .process__grid { grid-template-columns: 1fr; gap: 48px; padding-top: 80px; padding-bottom: 80px; }
+  }
+</style>
+
+<section class="process">
+  <div class="page-width process__grid">
+    <div class="process__content">
+      {%- if section.settings.eyebrow != blank -%}<div class="process__eyebrow">{{ section.settings.eyebrow }}</div>{%- endif -%}
+      {%- if section.settings.heading != blank -%}<h2 class="process__heading">{{ section.settings.heading }}</h2>{%- endif -%}
+      {%- if section.settings.text != blank -%}<p class="process__text">{{ section.settings.text }}</p>{%- endif -%}
+      <div class="process__steps">
+        {%- assign steps = section.blocks | where: 'type', 'step' -%}
+        {%- if steps.size > 0 -%}
+          {%- for block in steps -%}
+            <div class="process__step" {{ block.shopify_attributes }}>
+              <span class="process__step-n">{{ block.settings.number }}</span>
+              <div>
+                <div class="process__step-title">{{ block.settings.title }}</div>
+                <div class="process__step-desc">{{ block.settings.desc }}</div>
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          {%- assign s_titles = section.settings.default_titles | split: '|' -%}
+          {%- assign s_descs = section.settings.default_descs | split: '|' -%}
+          {%- for t in s_titles -%}
+            <div class="process__step">
+              <span class="process__step-n">0{{ forloop.index }}</span>
+              <div>
+                <div class="process__step-title">{{ t | strip }}</div>
+                <div class="process__step-desc">{{ s_descs[forloop.index0] | strip }}</div>
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+      {%- if section.settings.button_label != blank -%}
+        <a href="{{ section.settings.button_link | default: '/pages/custom-mosaics' }}" class="btn btn--blue process__btn">{{ section.settings.button_label }}</a>
+      {%- endif -%}
+    </div>
+    <div class="process__media cm-zoom">
+      {%- if section.settings.image != blank -%}
+        <img src="{{ section.settings.image | image_url: width: 1000 }}" alt="{{ section.settings.heading | escape }}" width="1000" height="1250" class="cover-img">
+      {%- else -%}
+        <img src="https://cdn.shopify.com/s/files/1/0754/6093/5978/files/task_01kj2wagj3fkprt5j15gw5w899_1771770855_img_1.webp?v=1783095603" alt="{{ section.settings.heading | escape }}" width="1000" height="1250" class="cover-img" referrerpolicy="no-referrer">
+      {%- endif -%}
+      <span class="process__media-veil"></span>
+      {%- if section.settings.image_caption != blank -%}
+        <span class="process__media-caption">{{ section.settings.image_caption }}</span>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+
+{% schema %}
+{
+  "name": "Custom process",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Custom Mosaics" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Your vision, Hand-cut in Stone" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "From a single photograph to a finished masterpiece. Share your idea and our studio will craft a one-of-a-kind mosaic, tailored to your exact dimensions." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Start Your Custom Mosaic Piece" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "image_caption", "label": "Image caption", "default": "Artistry in motion." },
+    { "type": "paragraph", "content": "Steps shown when no Step blocks are added. Pipe-separated (|), numbered automatically." },
+    { "type": "textarea", "id": "default_titles", "label": "Default step titles", "default": "Share Your Vision|Design & Quote|Hand-Cut In Stone|Delivered To You" },
+    { "type": "textarea", "id": "default_descs", "label": "Default step descriptions", "default": "Send a photo, sketch or idea and your desired dimensions.|Our artisans draft your piece and confirm materials & price.|Thousands of tesserae placed by hand in our studio.|Crated, insured and shipped free, anywhere in the world." }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        { "type": "text", "id": "number", "label": "Number", "default": "01" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Share Your Vision" },
+        { "type": "textarea", "id": "desc", "label": "Description", "default": "Send a photo, sketch or idea and your desired dimensions." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom process",
+      "blocks": [
+        { "type": "step", "settings": { "number": "01", "title": "Share Your Vision", "desc": "Send a photo, sketch or idea and your desired dimensions." } },
+        { "type": "step", "settings": { "number": "02", "title": "Design & Quote", "desc": "Our artisans draft your piece and confirm materials & price." } },
+        { "type": "step", "settings": { "number": "03", "title": "Hand-Cut In Stone", "desc": "Thousands of tesserae placed by hand in our studio." } },
+        { "type": "step", "settings": { "number": "04", "title": "Delivered To You", "desc": "Crated, insured and shipped free, anywhere in the world." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

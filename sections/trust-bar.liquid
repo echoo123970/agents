@@ -1,0 +1,92 @@
+<style>
+  .trust-bar { background: var(--color-navy); color: var(--color-light-text); }
+  .trust-bar__grid { padding-top: 30px; padding-bottom: 30px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .trust-bar__item { display: flex; align-items: center; gap: 14px; justify-content: center; }
+  .trust-bar__icon { color: var(--color-blue-light); display: flex; align-items: center; flex-shrink: 0; font-size: 22px; line-height: 1; }
+  .trust-bar__icon svg { width: 24px; height: 24px; }
+  .trust-bar__title { font-size: 13.5px; font-weight: 600; color: var(--color-bg); }
+  .trust-bar__sub { font-size: 12px; color: var(--color-text-faint); margin-top: 2px; }
+  @media (max-width: 750px) { .trust-bar__grid { grid-template-columns: 1fr 1fr; gap: 20px 24px; } }
+</style>
+
+<section class="trust-bar">
+  <div class="page-width trust-bar__grid">
+    {%- assign items = section.blocks | where: 'type', 'item' -%}
+    {%- if items.size > 0 -%}
+      {%- assign t_titles = '' -%}{%- assign t_subs = '' -%}
+      {%- for block in items -%}
+        {%- assign t_titles = t_titles | append: block.settings.title | append: '~' -%}
+        {%- assign t_subs = t_subs | append: block.settings.sub | append: '~' -%}
+      {%- endfor -%}
+      {%- assign titles = t_titles | split: '~' -%}
+      {%- assign subs = t_subs | split: '~' -%}
+    {%- else -%}
+      {%- capture t_titles -%}{{ section.settings.item1_title }}~{{ section.settings.item2_title }}~{{ section.settings.item3_title }}~{{ section.settings.item4_title }}{%- endcapture -%}
+      {%- capture t_subs -%}{{ section.settings.item1_sub }}~{{ section.settings.item2_sub }}~{{ section.settings.item3_sub }}~{{ section.settings.item4_sub }}{%- endcapture -%}
+      {%- assign titles = t_titles | split: '~' -%}
+      {%- assign subs = t_subs | split: '~' -%}
+    {%- endif -%}
+    {%- for ti in titles -%}
+      {%- if ti != blank -%}
+        <div class="trust-bar__item">
+          <span class="trust-bar__icon">
+            {%- case forloop.index -%}
+              {%- when 1 -%}✦
+              {%- when 2 -%}↺
+              {%- when 3 -%}✈
+              {%- when 4 -%}🔒
+            {%- endcase -%}
+          </span>
+          <div>
+            <div class="trust-bar__title">{{ ti }}</div>
+            <div class="trust-bar__sub">{{ subs[forloop.index0] }}</div>
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+
+{% schema %}
+{
+  "name": "Trust bar",
+  "settings": [
+    { "type": "paragraph", "content": "Leave the blocks empty to show these four defaults; add Item blocks to override." },
+    { "type": "text", "id": "item1_icon", "label": "Item 1 icon", "default": "✦" },
+    { "type": "text", "id": "item1_title", "label": "Item 1 title", "default": "Hand-cut Craftsmanship" },
+    { "type": "text", "id": "item1_sub", "label": "Item 1 subtitle", "default": "Finest natural stone & glass" },
+    { "type": "text", "id": "item2_icon", "label": "Item 2 icon", "default": "↺" },
+    { "type": "text", "id": "item2_title", "label": "Item 2 title", "default": "Satisfaction Guarantee" },
+    { "type": "text", "id": "item2_sub", "label": "Item 2 subtitle", "default": "100% love it or your money back" },
+    { "type": "text", "id": "item3_icon", "label": "Item 3 icon", "default": "✈" },
+    { "type": "text", "id": "item3_title", "label": "Item 3 title", "default": "Fast & Safe Delivery" },
+    { "type": "text", "id": "item3_sub", "label": "Item 3 subtitle", "default": "Carefully packed, worldwide" },
+    { "type": "text", "id": "item4_icon", "label": "Item 4 icon", "default": "🔒" },
+    { "type": "text", "id": "item4_title", "label": "Item 4 title", "default": "Secure Payments" },
+    { "type": "text", "id": "item4_sub", "label": "Item 4 subtitle", "default": "Trusted, encrypted checkout" }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [
+        { "type": "text", "id": "icon", "label": "Icon (emoji/symbol)", "default": "✦" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Hand-cut Craftsmanship" },
+        { "type": "text", "id": "sub", "label": "Subtitle", "default": "Finest natural stone & glass" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trust bar",
+      "blocks": [
+        { "type": "item", "settings": { "icon": "✦", "title": "Hand-cut Craftsmanship", "sub": "Finest natural stone & glass" } },
+        { "type": "item", "settings": { "icon": "↺", "title": "Satisfaction Guarantee", "sub": "100% love it or your money back" } },
+        { "type": "item", "settings": { "icon": "✈", "title": "Fast & Safe Delivery", "sub": "Carefully packed, worldwide" } },
+        { "type": "item", "settings": { "icon": "🔒", "title": "Secure Payments", "sub": "Trusted, encrypted checkout" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

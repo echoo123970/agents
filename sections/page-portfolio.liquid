@@ -1,0 +1,169 @@
+<style>
+  .pf-hero { background: var(--color-panel); border-bottom: 1px solid rgba(22,51,94,.08); }
+  .pf-hero__crumb-wrap { padding-top: 30px; }
+  .pf-hero__crumb { display: flex; align-items: center; gap: 9px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-soft); }
+  .pf-hero__crumb-sep { color: #B7C0D2; }
+  .pf-hero__crumb-current { color: var(--color-navy); }
+  .pf-hero__inner { max-width: 860px; margin: 0 auto; padding: 46px 40px 56px; text-align: center; }
+  .pf-hero__eyebrow { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 22px; }
+  .pf-hero__rule { width: 38px; height: 1px; background: var(--color-blue); }
+  .pf-hero__eyebrow-text { font-family: var(--font-accent); font-size: 13px; letter-spacing: .36em; text-transform: uppercase; color: var(--color-navy); }
+  .pf-hero__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(44px,5.4vw,72px); line-height: 1.02; letter-spacing: -.01em; margin-bottom: 22px; color: var(--color-navy); }
+  .pf-hero__title em, .pf-hero__title i { font-style: italic; color: var(--color-blue); }
+  .pf-hero__text { font-size: 17px; line-height: 1.7; color: var(--color-text-muted); max-width: 600px; margin: 0 auto; }
+
+  .pf-tabs-wrap { position: sticky; top: 78px; z-index: 40; border-bottom: 1px solid rgba(22,51,94,.08); background: rgba(244,246,250,.94); backdrop-filter: blur(10px); }
+  .pf-tabs { padding-top: 18px; padding-bottom: 18px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .pf-tab { white-space: nowrap; font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase; padding: 10px 20px; border: 1px solid rgba(22,51,94,.18); background: transparent; color: #46546E; cursor: pointer; transition: all .2s ease; }
+  .pf-tab:hover { border-color: var(--color-blue); color: var(--color-navy); }
+  .pf-tab.is-active { background: var(--color-navy); color: #fff; border-color: var(--color-navy); }
+
+  .pf-gallery { padding-top: 50px; padding-bottom: 90px; }
+  .pf-more-wrap { text-align: center; padding-top: 46px; }
+  .pf-more { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-body); font-size: 12px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--color-navy); background: none; border: 1px solid rgba(22,51,94,.28); padding: 15px 40px; cursor: pointer; transition: color .25s ease, border-color .25s ease, background-color .25s ease; }
+  .pf-more:hover { border-color: var(--color-navy); background: var(--color-navy); color: #fff; }
+  .pf-masonry { column-count: var(--pf-cols, 4); column-gap: 16px; }
+  .pf-tile { margin: 0 0 16px; position: relative; overflow: hidden; background: var(--color-light-text); cursor: zoom-in; break-inside: avoid; }
+  .pf-tile__img { width: 100%; height: auto; display: block; transition: transform .65s cubic-bezier(.2,.7,.2,1); }
+  .pf-tile:hover .pf-tile__img { transform: scale(1.05); }
+  .pf-tile__cap { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 18px; background: linear-gradient(to top, rgba(11,28,53,.78) 0%, rgba(11,28,53,.12) 55%, transparent 100%); }
+  .pf-tile__cat { font-family: var(--font-accent); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--color-blue-lighter); margin-bottom: 5px; }
+  .pf-tile__title { font-family: var(--font-display); font-size: 19px; line-height: 1.2; color: #fff; }
+
+  .pf-lightbox { position: fixed; inset: 0; z-index: 100; background: rgba(8,20,38,.92); display: flex; align-items: center; justify-content: center; padding: 40px; cursor: zoom-out; }
+  .pf-lightbox[hidden] { display: none; }
+  .pf-lightbox__close { position: absolute; top: 24px; right: 30px; color: var(--color-light-text); font-size: 34px; font-weight: 300; line-height: 1; cursor: pointer; background: none; border: none; }
+  .pf-lightbox__inner { max-width: min(1100px,92vw); max-height: 88vh; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+  .pf-lightbox__img { max-width: 100%; max-height: 78vh; object-fit: contain; }
+  .pf-lightbox__meta { text-align: center; }
+  .pf-lightbox__cat { font-family: var(--font-accent); font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--color-blue-light); margin-bottom: 7px; }
+  .pf-lightbox__title { font-family: var(--font-display); font-size: 24px; color: #fff; }
+
+  .pf-cta { background: var(--color-navy); color: #EAE1D2; }
+  .pf-cta__inner { max-width: 860px; margin: 0 auto; padding: 96px 40px; text-align: center; }
+  .pf-cta__eyebrow { font-family: var(--font-accent); font-size: 13px; letter-spacing: .36em; text-transform: uppercase; color: var(--color-blue-light); margin-bottom: 20px; }
+  .pf-cta__heading { font-family: var(--font-display); font-weight: 500; font-size: clamp(34px,4vw,52px); line-height: 1.08; margin-bottom: 20px; color: #fff; }
+  .pf-cta__text { font-size: 17px; line-height: 1.7; color: var(--color-text-faint); max-width: 540px; margin: 0 auto 38px; }
+
+  @media (max-width: 990px) { .pf-masonry { column-count: 2 !important; } }
+  @media (max-width: 600px) { .pf-masonry { column-count: 1 !important; } }
+  @media (max-width: 749px) {
+    .pf-tabs { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; gap: 8px; scroll-padding-left: 18px; scroll-snap-type: x proximity; }
+    .pf-tabs::-webkit-scrollbar { display: none; }
+    .pf-tab { flex: 0 0 auto; scroll-snap-align: start; font-size: 12px; letter-spacing: .06em; padding: 9px 16px; }
+  }
+</style>
+
+{%- assign items = section.blocks | where: 'type', 'item' -%}
+<section class="pf-hero">
+  <div class="page-width pf-hero__crumb-wrap">
+    <div class="pf-hero__crumb">
+      <a href="{{ routes.root_url }}" class="nav-link">Home</a>
+      <span class="pf-hero__crumb-sep">/</span>
+      <span class="pf-hero__crumb-current">{{ page.title | default: 'Portfolio' }}</span>
+    </div>
+  </div>
+  <div class="pf-hero__inner">
+    <div class="pf-hero__eyebrow"><span class="pf-hero__rule"></span><span class="pf-hero__eyebrow-text">{{ section.settings.eyebrow }}</span><span class="pf-hero__rule"></span></div>
+    {%- if section.settings.heading != blank -%}<h1 class="pf-hero__title">{{ section.settings.heading }}</h1>{%- endif -%}
+    {%- if section.settings.text != blank -%}<p class="pf-hero__text">{{ section.settings.text }}</p>{%- endif -%}
+  </div>
+</section>
+
+<section class="pf-gallery-section" data-portfolio>
+  {%- if section.settings.show_tabs -%}
+    <div class="pf-tabs-wrap">
+      <div class="page-width pf-tabs">
+        <button type="button" class="pf-tab is-active" data-pf-filter="all">All</button>
+        {%- assign cats = section.settings.categories | split: ',' -%}
+        {%- for cat in cats -%}
+          {%- assign c = cat | strip -%}
+          <button type="button" class="pf-tab" data-pf-filter="{{ c | handle }}">{{ c }}</button>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  <div class="page-width pf-gallery">
+    <div class="pf-masonry" style="--pf-cols: {{ section.settings.columns }};">
+      {%- for block in items -%}
+        <figure class="pf-tile" data-pf-cat="{{ block.settings.category | handle }}" data-pf-full="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1400 }}{% endif %}" data-pf-title="{{ block.settings.title | escape }}" data-pf-catlabel="{{ block.settings.category | escape }}" {{ block.shopify_attributes }}>
+          {%- if block.settings.image != blank -%}
+            <img src="{{ block.settings.image | image_url: width: 700 }}" alt="{{ block.settings.title | escape }}" width="700" height="900" class="pf-tile__img" loading="lazy">
+          {%- else -%}{{ 'image' | placeholder_svg_tag: 'pf-tile__img' }}{%- endif -%}
+          <figcaption class="pf-tile__cap">
+            {%- if block.settings.category != blank -%}<span class="pf-tile__cat">{{ block.settings.category }}</span>{%- endif -%}
+            {%- if block.settings.title != blank -%}<span class="pf-tile__title">{{ block.settings.title }}</span>{%- endif -%}
+          </figcaption>
+        </figure>
+      {%- endfor -%}
+    </div>
+    <div class="pf-more-wrap">
+      <button type="button" class="pf-more" data-pf-more>Show More</button>
+    </div>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="pf-lightbox" data-pf-lightbox hidden>
+  <button type="button" class="pf-lightbox__close" data-pf-close aria-label="Close">&times;</button>
+  <div class="pf-lightbox__inner">
+    <img src="" alt="" width="1400" height="1000" class="pf-lightbox__img" data-pf-lightbox-img>
+    <div class="pf-lightbox__meta">
+      <div class="pf-lightbox__cat" data-pf-lightbox-cat></div>
+      <div class="pf-lightbox__title" data-pf-lightbox-title></div>
+    </div>
+  </div>
+</div>
+
+{%- if section.settings.cta_heading != blank -%}
+<section class="pf-cta">
+  <div class="pf-cta__inner">
+    <div class="pf-cta__eyebrow">{{ section.settings.cta_eyebrow }}</div>
+    <h2 class="pf-cta__heading">{{ section.settings.cta_heading }}</h2>
+    {%- if section.settings.cta_text != blank -%}<p class="pf-cta__text">{{ section.settings.cta_text }}</p>{%- endif -%}
+    {%- if section.settings.cta_button_label != blank -%}<a href="{{ section.settings.cta_button_link }}" class="btn btn--blue">{{ section.settings.cta_button_label }}</a>{%- endif -%}
+  </div>
+</section>
+{%- endif -%}
+
+
+{% schema %}
+{
+  "name": "Portfolio page",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Our Portfolio" },
+    { "type": "richtext", "id": "heading", "label": "Heading", "default": "<p>Handcrafted Mosaics, <em>Real Spaces</em></p>" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "A gallery of finished installations — kitchens, pools, baths and beyond — where our hand-cut marble and glass mosaics live and breathe." },
+    { "type": "checkbox", "id": "show_tabs", "label": "Show category tabs", "default": true },
+    { "type": "text", "id": "categories", "label": "Categories (comma separated)", "default": "Kitchen, Pool, Bath, Wall Art, Floor, Outdoor" },
+    { "type": "range", "id": "columns", "min": 2, "max": 5, "step": 1, "label": "Columns", "default": 4 },
+    { "type": "header", "content": "CTA band" },
+    { "type": "text", "id": "cta_eyebrow", "label": "Eyebrow", "default": "Start Your Project" },
+    { "type": "text", "id": "cta_heading", "label": "Heading", "default": "Imagine Your Space in Mosaic" },
+    { "type": "textarea", "id": "cta_text", "label": "Text", "default": "From a single photograph to a finished masterpiece — commission a one-of-a-kind mosaic tailored to your exact space." },
+    { "type": "text", "id": "cta_button_label", "label": "Button label", "default": "Request a Custom Quote" },
+    { "type": "url", "id": "cta_button_link", "label": "Button link" }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Gallery item",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Mosaic Installation" },
+        { "type": "text", "id": "category", "label": "Category", "default": "Wall Art" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Portfolio page",
+      "blocks": [
+        { "type": "item" }, { "type": "item" }, { "type": "item" }, { "type": "item" },
+        { "type": "item" }, { "type": "item" }, { "type": "item" }, { "type": "item" }
+      ]
+    }
+  ]
+}
+{% endschema %}

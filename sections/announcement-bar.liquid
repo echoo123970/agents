@@ -1,0 +1,49 @@
+<style>
+  .announcement-bar {
+    background: var(--color-navy);
+    color: var(--color-light-text);
+    font-size: 12.5px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 9px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .announcement-bar__star { color: var(--color-blue-light); }
+  @media (max-width: 750px) {
+    .announcement-bar { font-size: 11px; gap: 8px; }
+    .announcement-bar__star { font-size: 10px; }
+  }
+</style>
+
+{%- if section.settings.show_announcement and section.settings.text != blank -%}
+  <div class="announcement-bar">
+    <span class="announcement-bar__star">✦</span>
+    <span class="announcement-bar__text">{{ section.settings.text }}</span>
+    <span class="announcement-bar__star">✦</span>
+  </div>
+{%- endif -%}
+
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_announcement",
+      "label": "Show announcement",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Announcement text",
+      "default": "Free worldwide shipping · Handcrafted to order in natural marble & glass · Lifetime warranty"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,108 @@
+<style>
+  .instagram { padding-bottom: 28px; }
+  .instagram__head { padding-bottom: 30px; text-align: center; }
+  .instagram__head .section-title { margin-bottom: 14px; font-size: clamp(30px, 3.4vw, 44px); }
+  .instagram__handle { display: inline-block; font-family: var(--font-accent); font-size: 13px; letter-spacing: .36em; text-transform: uppercase; color: var(--color-navy); }
+  .instagram__grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
+  .ig-tile { position: relative; display: block; aspect-ratio: 1/1; overflow: hidden; background: var(--color-light-text); }
+  .ig-tile .cover-img { transition: transform .5s ease; }
+  .ig-tile:hover .cover-img { transform: scale(1.06); }
+  .ig-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(11,28,53,.42); opacity: 0; transition: opacity .3s ease; }
+  .ig-tile:hover .ig-overlay { opacity: 1; }
+  .ig-tile--hidden { display: block; }
+  .instagram__more-wrap { display: none; text-align: center; padding-top: 30px; }
+  .instagram__more { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-body); font-size: 12px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--color-navy); background: none; border: 1px solid rgba(22,51,94,.28); padding: 15px 34px; cursor: pointer; transition: color .25s ease, border-color .25s ease, background-color .25s ease; }
+  .instagram__more:hover { border-color: var(--color-navy); background: var(--color-navy); color: #fff; }
+  .instagram__more svg { transition: transform .3s ease; }
+  .instagram.is-expanded .instagram__more svg { transform: rotate(180deg); }
+  @media (max-width: 990px) { .instagram__grid { grid-template-columns: repeat(4, 1fr); } }
+  @media (max-width: 749px) {
+    .instagram__grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .ig-tile--hidden { display: none; }
+    .instagram.is-expanded .ig-tile--hidden { display: block; }
+    .instagram__more-wrap { display: block; }
+  }
+</style>
+
+<section class="instagram">
+  <div class="page-width instagram__head">
+    {%- if section.settings.heading != blank -%}<h2 class="section-title">{{ section.settings.heading }}</h2>{%- endif -%}
+    {%- if section.settings.handle != blank -%}
+      <a href="{{ settings.social_instagram_link | default: 'https://www.instagram.com/i.mosaicart/' }}" target="_blank" rel="noopener" class="instagram__handle nav-link">{{ section.settings.handle }}</a>
+    {%- endif -%}
+  </div>
+  <div class="instagram__grid">
+    {%- if section.blocks.size > 0 -%}
+      {%- for block in section.blocks -%}
+        <a href="{{ block.settings.link | default: settings.social_instagram_link | default: '#' }}" target="_blank" rel="noopener" class="ig-tile{% if forloop.index0 >= 6 %} ig-tile--hidden{% endif %}" {{ block.shopify_attributes }}>
+          {%- if block.settings.image != blank -%}
+            <img src="{{ block.settings.image | image_url: width: 400 }}" alt="" width="400" height="400" class="cover-img" loading="lazy">
+          {%- else -%}
+            {{ 'image' | placeholder_svg_tag: 'cover-img' }}
+          {%- endif -%}
+          <span class="ig-overlay"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="#fff" stroke="none"/></svg></span>
+        </a>
+      {%- endfor -%}
+    {%- else -%}
+      {%- assign ig_link = settings.social_instagram_link | default: 'https://www.instagram.com/i.mosaicart/' -%}
+      {%- assign ig_files = 'https://www.imosaicart.com/cdn/shop/files/515501868_615409964937269_775212130695605232_n.jpg?width=400~https://www.imosaicart.com/cdn/shop/files/514882040_615540671590865_3345350083595333582_n.jpg?width=400~https://www.imosaicart.com/cdn/shop/files/516852109_615515628260036_3096541827106973933_n.jpg?width=400~https://www.imosaicart.com/cdn/shop/files/514400651_615567438254855_8814883425095282072_n.jpg?width=400~https://www.imosaicart.com/cdn/shop/files/514401429_615555868256012_7277352567540283300_n.jpg?width=400~https://www.imosaicart.com/cdn/shop/files/514411828_615527788258820_7592897271738552265_n.jpg?width=400~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/621810838_781882231623374_496888880247343135_n_2.jpg?v=1783095842&width=400~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/679734387_856806290797634_7865074308133012280_n.jpg?v=1783095854&width=400~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/648647457_816654978146099_8775654724342216104_n.jpg?v=1783095854&width=400~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/476903491_503133216164945_2148512837859859465_n.jpg?v=1783095864&width=400~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/623010824_18062067056661663_3184083138705620222_n.jpg?v=1783095860&width=400~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/533458375_650436118101320_7051282570105863344_n_1.jpg?v=1783095878&width=400~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/481187958_514782964999970_6262535155055260633_n_1.jpg?v=1783095877&width=400~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/480084436_503681622776771_8920433629371083708_n.jpg?v=1783095869&width=400~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/619562615_781878388290425_2842481256035671099_n_1.jpg?v=1783095917&width=400~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/582695010_728452473633017_4431294266214909288_n_9a1f08eb-0a14-45fe-b88a-52c47c232e5e.jpg?v=1783095920&width=400~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/476965787_503132109498389_185324572147789058_n.jpg?v=1783095918&width=400~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/480001188_503682562776677_2786660879193327811_n.jpg?v=1783095919&width=400~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/582963584_728428673635397_8171060334060740678_n_1.jpg?v=1783095920&width=400~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/ChatGPT_Image_Jun_28_2026_06_41_06_PM.png?v=1783096545&width=400~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/515439784_615575004920765_7385452597354002979_n.jpg?v=1783096541&width=400~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/533920171_650438561434409_1977646914201034103_n.jpg?v=1783096580&width=400~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/565872039_704110852733846_8225889521419502249_n_1.jpg?v=1783093645&width=400~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/533831908_650399968104935_7707809059320807507_n.jpg?v=1783096546&width=400' | split: '~' -%}
+      {%- comment -%} Per-tile links (same order as ig_files). '#' = fall back to the Instagram profile. {%- endcomment -%}
+      {%- assign ig_links = 'https://www.instagram.com/i.mosaicart/p/DLu9ScaSg8W/~https://www.instagram.com/i.mosaicart/p/DMDjpemtF5W/~https://www.instagram.com/i.mosaicart/p/DL5QaWbNe_F/~https://www.instagram.com/i.mosaicart/p/DMlCAvjPGvz/~https://www.instagram.com/i.mosaicart/p/DMQbq7VPn9F/~https://www.instagram.com/i.mosaicart/p/DMA-378oReF/~https://www.instagram.com/i.mosaicart/p/DULzCykDVHI/~https://www.instagram.com/i.mosaicart/p/DXpIurNjS1l/~https://www.instagram.com/i.mosaicart/p/DV9M5LDiNSl/~https://www.instagram.com/i.mosaicart/p/C43iOopPzJj/~https://www.instagram.com/i.mosaicart/p/C4EAlqUtazj/~https://www.instagram.com/i.mosaicart/p/DOWOF7mjUs0/~https://www.instagram.com/i.mosaicart/p/DDCPObCMBUD/~https://www.instagram.com/i.mosaicart/p/C5tf-euCgpn/~https://www.instagram.com/i.mosaicart/p/DUBf2oIjdnb/~https://www.instagram.com/i.mosaicart/p/DRj5Fh_CZbD/~https://www.instagram.com/i.mosaicart/p/C4WD071StV-/~https://www.instagram.com/i.mosaicart/p/C6ErHcUtv-N/~https://www.instagram.com/i.mosaicart/p/DRuMQtIlRB5/~https://www.instagram.com/i.mosaicart/p/C4JL4b-ikmX/~https://www.instagram.com/i.mosaicart/p/DOd8oPBij2N/~https://www.instagram.com/i.mosaicart/p/DMvVIVeOekM/~https://www.instagram.com/i.mosaicart/p/DQkDhI-gYXm/~https://www.instagram.com/p/DMVlNjrNm71/' | split: '~' -%}
+      {%- for f in ig_files -%}
+        {%- assign tile_link = ig_links[forloop.index0] -%}
+        {%- if tile_link == blank or tile_link == '#' -%}{%- assign tile_link = ig_link -%}{%- endif -%}
+        <a href="{{ tile_link }}" target="_blank" rel="noopener" class="ig-tile{% if forloop.index0 >= 6 %} ig-tile--hidden{% endif %}">
+          {%- if f contains '://' -%}
+            <img src="{{ f }}" alt="" width="400" height="400" class="cover-img" loading="lazy" referrerpolicy="no-referrer">
+          {%- else -%}
+            <img src="{{ f | asset_url }}" alt="" width="400" height="400" class="cover-img" loading="lazy">
+          {%- endif -%}
+          <span class="ig-overlay"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="#fff" stroke="none"/></svg></span>
+        </a>
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+  <div class="instagram__more-wrap">
+    <button type="button" class="instagram__more" data-ig-more aria-expanded="false">
+      <span data-ig-more-label>Show More</span>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+  </div>
+</section>
+
+<script>
+  (function () {
+    var btn = document.currentScript.previousElementSibling.querySelector('[data-ig-more]');
+    if (!btn) return;
+    var section = btn.closest('.instagram');
+    var label = btn.querySelector('[data-ig-more-label]');
+    btn.addEventListener('click', function () {
+      var open = section.classList.toggle('is-expanded');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (label) label.textContent = open ? 'Show Less' : 'Show More';
+    });
+  })();
+</script>
+
+
+{% schema %}
+{
+  "name": "Instagram grid",
+  "max_blocks": 24,
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Follow The Mosaic Studio" },
+    { "type": "text", "id": "handle", "label": "Handle", "default": "@i.mosaicart" }
+  ],
+  "blocks": [
+    {
+      "type": "post",
+      "name": "Post",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "url", "id": "link", "label": "Post link" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Instagram grid" }]
+}
+{% endschema %}

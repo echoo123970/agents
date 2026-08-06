@@ -1,0 +1,37 @@
+{%- comment -%}
+  Default page template. The FAQ page renders the full designed FAQ experience
+  (hero + search + category filter + accordion + contact panel), identical to the
+  Claude design, matched by handle so no admin template change is required.
+{%- endcomment -%}
+{%- assign ph = page.handle -%}
+{%- if ph == 'frequently-asked-questions' or ph == 'faq' or ph == 'faqs' -%}
+  {% render 'pg-faq' %}
+{%- elsif ph == 'about-us' or ph == 'about' -%}
+  {% render 'pg-about' %}
+{%- elsif ph == 'custom-mosaics' or ph == 'custom-mosaic-art' or ph == 'custom-mosaic' -%}
+  {% render 'pg-custom-mosaics' %}
+{%- elsif ph == 'shipping-policy' or ph == 'shipping' -%}
+  {% render 'pg-shipping' %}
+{%- elsif ph == 'terms-conditions' or ph == 'terms-of-service' or ph == 'terms-and-conditions' or ph == 'terms' -%}
+  {% render 'pg-terms' %}
+{%- elsif ph == 'returns-refunds' or ph == 'refund-policy' or ph == 'returns-and-refunds' or ph == 'returns' -%}
+  {% render 'pg-returns' %}
+{%- elsif ph == 'privacy-policy' or ph == 'privacy' -%}
+  {% render 'pg-privacy' %}
+{%- elsif ph == 'billing-terms' or ph == 'billing-terms-conditions' or ph == 'billing-and-conditions' or ph == 'billing' -%}
+  {% render 'pg-billing' %}
+{%- elsif ph == 'installation-guide' or ph == 'installation' or ph == 'install-guide' -%}
+  {% render 'pg-install' %}
+{%- elsif ph == 'wishlist' or ph == 'my-wishlist' -%}
+  {% render 'pg-wishlist' %}
+{%- elsif ph == 'reward-program' or ph == 'rewards-program' or ph == 'reward-programs' or ph == 'imosaicart-rewards-program' or ph == 'imosaicart-loyalty-program' or ph == 'loyalty-program' or ph == 'rewards' -%}
+  {% render 'pg-rewards' %}
+{%- elsif ph == 'color-palette' or ph == 'colour-palette' or ph == 'colors' or ph == 'colours' -%}
+  {% render 'pg-color-palette' %}
+{%- elsif ph == 'all-reviews' or ph == 'reviews' or ph == 'testimonials' or ph == 'all-review' or ph == 'imosaicart-testimonials' -%}
+  {% render 'pg-reviews' %}
+{%- elsif ph == 'portfolio-mosaics' or ph == 'portfolio' or ph == 'our-portfolio' -%}
+  {% render 'pg-portfolio' %}
+{%- else -%}
+  {% section 'main-page' %}
+{%- endif -%}

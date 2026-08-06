@@ -1,0 +1,198 @@
+<style>
+  .cat-grid { padding-top: 128px; padding-bottom: 90px; }
+  .cat-grid__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 48px; flex-wrap: wrap; }
+  .cat-grid__title { max-width: 640px; }
+  .cat-grid__grid { display: grid; gap: 18px; }
+  .cat-card { position: relative; display: block; overflow: hidden; aspect-ratio: 3/4; background: var(--color-light-text); container-type: inline-size; }
+  .cat-card .cat-img--zoom { transform: scale(1.08); }
+  .cat-card:hover .cat-img--zoom { transform: scale(1.16); }
+  .cat-grid__scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(11,28,53,.72), rgba(11,28,53,0) 55%); transition: background .4s ease; z-index: 1; }
+  .cat-card:hover .cat-grid__scrim { background: linear-gradient(to top, rgba(11,28,53,.82), rgba(11,28,53,.14) 72%); }
+  .cat-card::after { content: ""; position: absolute; inset: 18px; border: 1px solid rgba(255,255,255,.85); opacity: 0; transform: scale(1.03); transition: opacity .4s ease, transform .4s ease; pointer-events: none; z-index: 2; }
+  .cat-card:hover::after { opacity: 1; transform: scale(1); }
+  .cat-label { position: absolute; left: 32px; bottom: 38px; right: 32px; color: var(--color-bg); font-family: var(--font-display); font-weight: 500; font-size: clamp(18px, 7cqw, 23px); line-height: 1; letter-spacing: .01em; z-index: 3; }
+  .cat-cta { position: absolute; left: 32px; bottom: 22px; color: #fff; font-size: clamp(9px, 3.4cqw, 10.5px); letter-spacing: .18em; text-transform: uppercase; z-index: 3; opacity: 0; transform: translateY(8px); transition: opacity .4s ease, transform .4s ease; pointer-events: none; }
+  .cat-card:hover .cat-cta { opacity: 1; transform: translateY(0); }
+  .cat-grid__foot-btn { display: none; }
+  @media (max-width: 990px) { .cat-grid { padding-top: 80px; } .cat-grid__grid { grid-template-columns: repeat(3, 1fr) !important; } }
+  @media (max-width: 749px) {
+    .cat-grid__head-btn { display: none; }
+    .cat-grid__foot-btn { display: flex; justify-content: center; margin-top: 34px; }
+  }
+  @media (max-width: 600px) {
+    .cat-grid__grid { grid-template-columns: repeat(2, 1fr) !important; }
+    .cat-label { left: 18px; right: 18px; bottom: 20px; }
+    .cat-cta { display: none; }
+  }
+</style>
+
+{% section 'hero' %}
+{% section 'trust-bar' %}
+{% section 'quote-banner' %}
+{%- comment -%} Shop by Subject inlined so the corrected collection links always render. {%- endcomment -%}
+<section id="categories" class="cat-grid page-width">
+  <div class="cat-grid__head">
+    <div>
+      <div class="eyebrow">Shop by Subject</div>
+      <h2 class="section-title cat-grid__title">Artisanal Mosaic Designs In Natural Marble &amp; Glass</h2>
+    </div>
+    <a href="{{ routes.all_products_collection_url }}" class="btn btn--ghost cat-grid__head-btn">View All Subjects</a>
+  </div>
+  <div class="cat-grid__grid" style="grid-template-columns: repeat(5, 1fr);">
+    {%- assign cat_handles = 'portrait-mosaics~nautical-mosaics~flower-mosaics~landscape-mosaics~food-mosaics~geometric-mosaics~animal-mosaics~bird-mosaics~patterns-mosaics~tree-mosaics' | split: '~' -%}
+    {%- assign cat_titles = 'Portrait~Nautical~Flower~Landscape~Food~Geometric~Animal~Bird~Pattern~Tree' | split: '~' -%}
+    {%- comment -%} Curated cover per subject (Claude design). Falls back to the collection image if a URL 404s. {%- endcomment -%}
+    {%- assign cat_covers = 'https://cdn.shopify.com/s/files/1/0754/6093/5978/files/531940352_650417854769813_2187590960952528220_n.jpg?v=1783092409&width=900~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/MAN109_853fdf63-73dd-4709-8093-902c7e4019e8.jpg?width=900~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/583193247_728435566968041_8138594533913820532_n.jpg?v=1783092636&width=900~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/MAS067_1.jpg?v=1783266689&width=900~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/648799005_816643624813901_1367152435762012710_n.jpg?v=1783092689&width=900~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/514400651_615567438254855_8814883425095282072_n_1.jpg?v=1783093351&width=900~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/MAA027_18870db9-5311-4ca3-b501-568ce55fc4a2.jpg?width=900~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/649074667_816661288145468_7505485542115891627_n.jpg?v=1783093570&width=900~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/MAC002_cd082ef4-8102-4190-a3b6-1595259c5062.webp?width=900~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/582681900_728396683638596_4818200741197311103_n_1.jpg?v=1783093634&width=900' | split: '~' -%}
+    {%- comment -%} For subjects whose curated photo did not resolve, pull a specific product's image instead (always valid). {%- endcomment -%}
+    {%- assign cat_products = '~~~~~~~~~' | split: '~' -%}
+    {%- for h in cat_handles -%}
+      {%- assign coll = collections[h] -%}
+      {%- assign card_name = cat_titles[forloop.index0] -%}
+      {%- if coll != empty and coll.url != blank -%}
+        {%- assign card_url = coll.url -%}
+      {%- else -%}
+        {%- capture card_url -%}{{ routes.search_url }}?q={{ card_name | url_encode }}&type=product{%- endcapture -%}
+      {%- endif -%}
+      {%- assign cover = cat_covers[forloop.index0] -%}
+      {%- assign cover_product = cat_products[forloop.index0] -%}
+      {%- if cover_product != blank and all_products[cover_product] != empty and all_products[cover_product].featured_image != blank -%}{%- assign cover = all_products[cover_product].featured_image | image_url: width: 900 -%}{%- endif -%}
+      {%- if coll.featured_image != blank -%}{%- assign fb = coll.featured_image | image_url: width: 900 -%}{%- else -%}{%- assign fb = 'about-hands-tesserae.png' | asset_url -%}{%- endif -%}
+      <a href="{{ card_url }}" class="cat-card">
+        {%- if cover != blank -%}
+          <img src="{{ cover }}" alt="{{ card_name | escape }}" width="900" height="1200" class="cat-img cover-img{% if h == 'landscape-mosaics' %} cat-img--zoom{% endif %}" loading="lazy" referrerpolicy="no-referrer"{% if h == 'portrait-mosaics' %} style="object-position:center 28%"{% endif %} onerror="this.onerror=null;this.src='{{ fb }}'">
+        {%- elsif coll.featured_image != blank -%}
+          <img src="{{ fb }}" alt="{{ card_name | escape }}" width="900" height="1200" class="cat-img cover-img" loading="lazy">
+        {%- else -%}
+          {{ 'collection-1' | placeholder_svg_tag: 'cat-img cover-img' }}
+        {%- endif -%}
+        <span class="cat-grid__scrim"></span>
+        <span class="cat-label">{{ card_name }}</span>
+        <span class="cat-cta">View Collection</span>
+      </a>
+    {%- endfor -%}
+  </div>
+  <div class="cat-grid__foot-btn">
+    <a href="{{ routes.all_products_collection_url }}" class="btn btn--ghost">View All Subjects</a>
+  </div>
+</section>
+{% section 'marquee' %}
+{%- comment -%} Signature Collections inlined so the curated cover images always render (no section-settings/blocks dependency). {%- endcomment -%}
+<section id="collections" class="showcase page-width">
+  <div class="showcase__head">
+    <div class="eyebrow">Signature Collections</div>
+    <h2 class="section-title">Curated Worlds In Stone</h2>
+    <p class="showcase__intro">Themed collections hand-assembled by master artisans — timeless investments designed to anchor a room for generations.</p>
+  </div>
+  <div class="showcase__grid">
+    {%- assign s_handles = 'mosaic-tile-backsplash~table-countertop-mosaics~van-gogh-mosaics~glass-mosaic-art' | split: '~' -%}
+    {%- assign s_titles = 'Mosaic Kitchen Backsplash~Mosaic Tabletops~The Van Gogh Collection~Glass Mosaic Art' | split: '~' -%}
+    {%- assign s_descs = 'Stylish. Durable. Handcrafted.~Artfully crafted for everyday elegance.~Mosaic art inspired by timeless genius.~Light, color and craftsmanship in every piece.' | split: '~' -%}
+    {%- assign s_covers = 'https://cdn.shopify.com/s/files/1/0754/6093/5978/files/1_Mosaic_Kitchen_Backsplash.jpg?v=1783066821&width=900~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/2_Mosaic_Tabletops.png?v=1783066824&width=900~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/3_The_Van_Gogh_Collection.png?v=1783066828&width=900~https://cdn.shopify.com/s/files/1/0754/6093/5978/files/4_Glass_Mosaic_Art.jpg?v=1783066831&width=900' | split: '~' -%}
+    {%- for h in s_handles -%}
+      {%- assign card_name = s_titles[forloop.index0] -%}
+      {%- comment -%} All four Signature Collection cards land on the shared mosaic-tile-art collection. {%- endcomment -%}
+      {%- assign shared_coll = collections['mosaic-tile-art'] -%}
+      {%- if shared_coll != empty and shared_coll.url != blank -%}{%- assign card_url = shared_coll.url -%}{%- else -%}{%- assign card_url = '/collections/mosaic-tile-art' -%}{%- endif -%}
+      <a href="{{ card_url }}" class="col-card">
+        <img src="{{ s_covers[forloop.index0] }}" alt="{{ card_name | escape }}" width="900" height="600" class="col-zoom cover-img" loading="lazy" referrerpolicy="no-referrer">
+        <span class="showcase__scrim"></span>
+        <span class="showcase__caption">
+          <span class="showcase__name">{{ card_name }}</span>
+          <span class="showcase__desc">{{ s_descs[forloop.index0] }}</span>
+          <span class="showcase__cta">Explore Collection</span>
+        </span>
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+<style>
+  .showcase { padding-top: 128px; padding-bottom: 40px; }
+  .showcase__head { text-align: center; margin-bottom: 54px; }
+  .showcase__head .section-title { margin-bottom: 16px; }
+  .showcase__intro { font-size: 16px; line-height: 1.7; color: var(--color-text-muted); max-width: 560px; margin: 0 auto; }
+  .showcase__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+  .col-card { position: relative; display: block; overflow: hidden; height: 440px; background: var(--color-light-text); transition: transform .5s ease; }
+  .col-card:hover { transform: scale(1.015); }
+  .showcase__scrim { position: absolute; inset: 0; background: linear-gradient(110deg, rgba(11,28,53,.74) 0%, rgba(11,28,53,.25) 55%, rgba(11,28,53,0) 100%); }
+  .showcase__caption { position: absolute; left: 36px; top: 36px; right: 36px; bottom: 36px; display: flex; flex-direction: column; justify-content: flex-end; color: var(--color-bg); }
+  .showcase__name { font-family: var(--font-display); font-size: 30px; line-height: 1.1; margin-bottom: 8px; }
+  .showcase__desc { font-size: 14.5px; color: #E0D6C6; margin-bottom: 18px; max-width: 300px; }
+  .showcase__cta { font-size: 12.5px; letter-spacing: .16em; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,.5); padding-bottom: 5px; width: fit-content; }
+  @media (max-width: 990px) { .showcase { padding-top: 80px; } }
+  @media (max-width: 749px) {
+    .showcase__grid { display: flex; grid-template-columns: none; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin: 0 -18px 0 0; padding: 2px 18px 8px 0; }
+    .showcase__grid::-webkit-scrollbar { display: none; }
+    .col-card { flex: 0 0 47%; scroll-snap-align: start; height: 300px; }
+    .showcase__caption { left: 20px; right: 20px; top: 20px; bottom: 20px; }
+    .showcase__name { font-size: 21px; }
+    .showcase__desc { font-size: 12.5px; margin-bottom: 12px; max-width: none; }
+  }
+</style>
+{%- comment -%} Bestsellers inlined here (not a separate section) so it renders even if the store's GitHub sync fails to create new section files. {%- endcomment -%}
+<section class="bestsellers page-width">
+  <div class="bestsellers__head">
+    <div>
+      <div class="eyebrow">Collector's Favorites</div>
+      <h2 class="section-title">Our Iconic Mosaic Masterpieces</h2>
+    </div>
+    <a href="{{ routes.all_products_collection_url }}" class="btn btn--ghost bestsellers__head-btn">View All Mosaics</a>
+  </div>
+  <div class="bestsellers__grid" style="grid-template-columns: repeat(4, 1fr);">
+    {%- assign d_images = 'nautical-sunset.jpg~flower-vase.jpg~https://www.imosaicart.com/cdn/shop/files/MAS081_b2d557a7-36fa-418b-b736-ec6f27f75af3.jpg?width=600~bird-peacock.jpg~https://www.imosaicart.com/cdn/shop/files/MAT053_-_60cm_x_85cm_8343d742-e897-4c91-b648-f7480e0e8ee5.jpg?width=600~religious-lady-jesus.png~https://www.imosaicart.com/cdn/shop/files/MAA034_55b3da2e-eb16-4125-9de5-fcd9a5899e57.jpg?width=600~portrait-pearl.png' | split: '~' -%}
+    {%- assign d_subs = 'Nautical Mosaic~Floral Mosaic~Landscape Mosaic~Bird Mosaic~Tree Mosaic~Religious Mosaic~Animal Mosaic~Portrait Mosaic' | split: '~' -%}
+    {%- assign d_titles = 'Sunset Solitude Mosaic~Luxury Mosaic Flower Vase~Landscape Mosaic Wall Art~Vivid Colorful Peacock Mosaic~Lemon Tree Mosaic Design~Our Lady &amp; Baby Jesus Mosaic~The Cheetah Mosaic Art~Girl with a Pearl Earring Mosaic' | split: '~' -%}
+    {%- assign d_prices = 'From $1,680~From $1,150~From $2,200~From $980~From $1,260~From $1,320~From $1,890~From $1,640' | split: '~' -%}
+    {%- assign d_links = '/products/nautical-mosaics-sunset-solitude-handmade-sailboat-mosaic-nautical-landscape-wall-art~/products/flower-mosaics-luxury-mosaic-flowers-vase~/products/landscape-mosaics-landscape-mosaic-wall-art-for-home-decor~/products/bird-mosaics-vivid-colorful-mosaic-mosaic-wall-art~/products/tree-mosaics-lemon-tree-a-fresh-and-vibrant-mosaic-design~/products/religious-mosaics-religious-mosaic-art-our-lady-baby-jesus~/products/animal-mosaics-cheeta-wild-life-art-mosaic-art~/products/portrait-mosaics-elegance-in-mosaic-girl-with-a-pearl-earring-reproduction-johannes-vermeer' | split: '~' -%}
+    {%- for t in d_titles -%}
+      {%- assign im = d_images[forloop.index0] -%}
+      {%- assign lk = d_links[forloop.index0] -%}
+      {%- comment -%} Lemon Grove product photo has a border/matte — zoom in slightly to crop it out. {%- endcomment -%}
+      {%- assign zoom_style = '' -%}
+      {%- if t == 'Lemon Tree Mosaic Design' -%}{%- assign zoom_style = 'transform:scale(1.12);transform-origin:center;' -%}{%- endif -%}
+      {%- assign lk_parts = lk | split: '/' -%}
+      {%- if lk_parts[1] == 'products' and all_products[lk_parts[2]] != empty -%}{%- assign card_href = lk -%}
+      {%- elsif lk_parts[1] == 'collections' and collections[lk_parts[2]] != empty -%}{%- assign card_href = lk -%}
+      {%- else -%}{%- capture card_href -%}{{ routes.search_url }}?q={{ t | url_encode }}{%- endcapture -%}{%- endif -%}
+      <a href="{{ card_href }}" class="prod-card">
+        <div class="prod-card__media">
+          {%- if im contains '://' -%}
+            <img src="{{ im }}" alt="{{ t | escape }}" width="600" height="750" class="prod-img cover-img" loading="lazy" referrerpolicy="no-referrer" style="{{ zoom_style }}">
+          {%- else -%}
+            <img src="{{ im | asset_url }}" alt="{{ t | escape }}" width="600" height="750" class="prod-img cover-img" loading="lazy" style="{{ zoom_style }}">
+          {%- endif -%}
+        </div>
+        <div class="prod-card__sub">{{ d_subs[forloop.index0] }}</div>
+        <div class="prod-title prod-card__title">{{ t }}</div>
+      </a>
+    {%- endfor -%}
+  </div>
+  <div class="bestsellers__foot-btn">
+    <a href="{{ routes.all_products_collection_url }}" class="btn btn--ghost">View All Mosaics</a>
+  </div>
+</section>
+<style>
+  .bestsellers { padding-top: 90px; padding-bottom: 100px; }
+  .bestsellers__foot-btn { display: none; }
+  .bestsellers__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 46px; flex-wrap: wrap; }
+  .bestsellers__grid { display: grid; gap: 28px 22px; }
+  .prod-card { display: block; }
+  .prod-card__media { position: relative; overflow: hidden; aspect-ratio: 4/5; background: var(--color-light-text); margin-bottom: 16px; }
+  .prod-card__sub { font-family: var(--font-accent); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--color-text-faint); margin-bottom: 6px; }
+  .prod-card__title { font-family: var(--font-display); font-size: 23px; line-height: 1.15; color: var(--color-navy); margin-bottom: 8px; }
+  .prod-card__price { font-size: 14px; color: var(--color-text-muted); letter-spacing: .02em; }
+  @media (max-width: 990px) and (min-width: 750px) { .bestsellers__grid { grid-template-columns: repeat(2, 1fr) !important; } }
+  @media (max-width: 749px) {
+    .bestsellers { padding-top: 60px; padding-bottom: 70px; }
+    .bestsellers__grid { display: flex !important; grid-template-columns: none !important; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin: 0 -18px 0 0; padding: 2px 18px 8px 0; }
+    .bestsellers__grid::-webkit-scrollbar { display: none; }
+    .prod-card { flex: 0 0 62%; scroll-snap-align: start; }
+    .bestsellers__head-btn { display: none; }
+    .bestsellers__foot-btn { display: flex; justify-content: center; margin-top: 30px; }
+  }
+</style>
+{% section 'custom-process' %}
+{% section 'promises' %}
+{% section 'testimonials' %}
+{% section 'blog-posts' %}
+{% section 'instagram-grid' %}
+{% section 'newsletter' %}

@@ -1,0 +1,108 @@
+<style>
+  .auth { display: grid; grid-template-columns: 1.05fr 1fr; min-height: 620px; }
+  .auth__panel { position: relative; background: var(--color-navy); overflow: hidden; min-height: 560px; }
+  .auth__panel-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .55; }
+  .auth__panel-veil { position: absolute; inset: 0; background: linear-gradient(120deg, rgba(16,42,79,.85) 0%, rgba(22,51,94,.5) 100%); }
+  .auth__panel-content { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; padding: 60px 56px; }
+  .auth__panel-eyebrow { font-family: var(--font-accent); font-size: 13px; letter-spacing: .32em; text-transform: uppercase; color: var(--color-blue-light); margin-bottom: 18px; }
+  .auth__panel-heading { font-family: var(--font-display); font-weight: 500; font-size: clamp(30px,3vw,44px); line-height: 1.12; margin-bottom: 16px; color: #fff; }
+  .auth__panel-text { font-size: 16px; line-height: 1.7; color: #C7CFDD; max-width: 380px; }
+
+  .auth__form-wrap { display: flex; align-items: center; justify-content: center; padding: 64px 40px; }
+  .auth__form { width: 100%; max-width: 420px; }
+  .auth__tabs { display: flex; margin-bottom: 38px; border-bottom: 1px solid rgba(22,51,94,.14); }
+  .auth__tab { padding: 0 4px 16px; margin-right: 28px; font-family: var(--font-body); font-size: 14px; font-weight: 600; letter-spacing: .04em; color: var(--color-text-soft); background: none; border: none; cursor: pointer; }
+  .auth__tab.is-active { color: var(--color-navy); border-bottom: 2px solid var(--color-blue); margin-bottom: -1px; }
+  .auth__title { font-family: var(--font-display); font-weight: 500; font-size: 34px; line-height: 1.1; margin-bottom: 8px; color: var(--color-navy); }
+  .auth__subtitle { font-size: 15px; line-height: 1.6; color: var(--color-text-muted); margin-bottom: 30px; }
+  .auth__label { display: block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--color-text-soft); margin-bottom: 9px; }
+  .auth__field { width: 100%; background: #fff; border: 1px solid rgba(22,51,94,.18); outline: none; color: var(--color-navy); font-family: var(--font-body); font-size: 15px; padding: 15px 18px; margin-bottom: 18px; transition: border-color .2s ease; }
+  .auth__field:focus { border-color: var(--color-blue); }
+  .auth__forgot { text-align: right; margin-bottom: 24px; margin-top: -6px; }
+  .auth__forgot-btn, .auth__switch-btn { background: none; border: none; cursor: pointer; font-family: var(--font-body); font-size: 13px; color: var(--color-blue); }
+  .auth__submit { width: 100%; background: var(--color-blue); color: #fff; border: none; font-family: var(--font-body); font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding: 17px; cursor: pointer; transition: background .25s ease; }
+  .auth__submit:hover { background: #1E63C4; }
+  .auth__switch { text-align: center; font-size: 14px; color: var(--color-text-muted); margin-top: 28px; }
+  .auth__switch-link { color: var(--color-blue); font-weight: 600; }
+  .auth__error, .auth__notice { font-size: 13px; margin-bottom: 18px; padding: 12px 14px; }
+  .auth__error { color: #C0432F; background: rgba(192,67,47,.08); }
+  .auth__notice { color: #1F8A5B; background: rgba(31,138,91,.08); }
+
+  @media (max-width: 900px) {
+    .auth { grid-template-columns: 1fr; }
+    .auth__panel { min-height: 280px; }
+    .auth__panel-content { padding: 36px 28px; }
+  }
+</style>
+
+<section class="auth">
+  <div class="auth__panel">
+    {%- if section.settings.image != blank -%}
+      <img src="{{ section.settings.image | image_url: width: 1100 }}" alt="" width="1100" height="1100" class="auth__panel-img">
+    {%- else -%}
+      <img src="https://cdn.shopify.com/s/files/1/0754/6093/5978/files/582681900_728396683638596_4818200741197311103_n_1.jpg?v=1783093634&width=1100" alt="Handcrafted mosaic" loading="lazy" class="auth__panel-img">
+    {%- endif -%}
+    <div class="auth__panel-veil"></div>
+    <div class="auth__panel-content">
+      <div class="auth__panel-eyebrow">{{ section.settings.panel_eyebrow }}</div>
+      <h2 class="auth__panel-heading">{{ section.settings.panel_heading }}</h2>
+      <p class="auth__panel-text">{{ section.settings.panel_text }}</p>
+    </div>
+  </div>
+
+  <div class="auth__form-wrap">
+    <div class="auth__form">
+      <div class="auth__tabs">
+        <a href="{{ routes.account_login_url }}" class="auth__tab">Sign In</a>
+        <span class="auth__tab is-active">Create Account</span>
+      </div>
+      <h1 class="auth__title">{{ section.settings.form_heading }}</h1>
+      <p class="auth__subtitle">{{ section.settings.form_subtitle }}</p>
+      {%- form 'create_customer' -%}
+        {%- if form.errors -%}<div class="auth__error">{{ form.errors | default_errors }}</div>{%- endif -%}
+        <label class="auth__label">Full Name</label>
+        <input type="text" class="auth__field" placeholder="Jane Doe" autocomplete="name" data-fullname>
+        <input type="hidden" name="customer[first_name]" data-first>
+        <input type="hidden" name="customer[last_name]" data-last>
+        <label class="auth__label">Email Address</label>
+        <input type="email" name="customer[email]" class="auth__field" placeholder="you@email.com" required>
+        <label class="auth__label">Password</label>
+        <input type="password" name="customer[password]" class="auth__field" placeholder="••••••••" required>
+        <button type="submit" class="auth__submit">Create Account</button>
+      {%- endform -%}
+      <p class="auth__switch">Already have an account? <a href="{{ routes.account_login_url }}" class="auth__switch-link">Sign in</a></p>
+    </div>
+  </div>
+</section>
+
+
+<script>
+  (function () {
+    var full = document.querySelector('[data-fullname]');
+    if (!full) return;
+    var form = full.closest('form');
+    if (!form) return;
+    form.addEventListener('submit', function () {
+      var parts = (full.value || '').trim().split(/\s+/);
+      var first = parts.shift() || '';
+      var last = parts.join(' ');
+      var fe = form.querySelector('[data-first]'), le = form.querySelector('[data-last]');
+      if (fe) fe.value = first;
+      if (le) le.value = last;
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Register",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Panel image" },
+    { "type": "text", "id": "panel_eyebrow", "label": "Panel eyebrow", "default": "Welcome to the Home of Mosaics" },
+    { "type": "text", "id": "panel_heading", "label": "Panel heading", "default": "Where Art Meets Elegance" },
+    { "type": "textarea", "id": "panel_text", "label": "Panel text", "default": "Create an account to track orders, save your favorite mosaics, and earn rewards on every handcrafted piece." },
+    { "type": "text", "id": "form_heading", "label": "Form heading", "default": "Create Your Account" },
+    { "type": "text", "id": "form_subtitle", "label": "Form subtitle", "default": "Join the Home of Mosaics and start earning rewards." }
+  ]
+}
+{% endschema %}
