@@ -130,6 +130,38 @@
       <meta name="description" content="{{ page_description | escape }}">
     {%- endif -%}
 
+    {%- comment -%} Open Graph & Twitter Card meta — controls link previews on Facebook, Pinterest, WhatsApp, iMessage, X, LinkedIn. {%- endcomment -%}
+    {%- assign og_default_img = 'https://cdn.shopify.com/s/files/1/0754/6093/5978/files/imosaicart-tile-ink_22592187-c72f-491a-8167-46c80ce7a3d6.png?v=1786045537' -%}
+    {%- capture og_image -%}
+      {%- if request.page_type == 'product' and product.featured_media -%}{%- assign src = product.featured_media | image_url: width: 1200 -%}{%- unless src contains 'http' -%}{%- assign src = 'https:' | append: src -%}{%- endunless -%}{{ src }}
+      {%- elsif request.page_type == 'collection' and collection.image -%}{%- assign src = collection.image | image_url: width: 1200 -%}{%- unless src contains 'http' -%}{%- assign src = 'https:' | append: src -%}{%- endunless -%}{{ src }}
+      {%- elsif request.page_type == 'article' and article.image -%}{%- assign src = article.image | image_url: width: 1200 -%}{%- unless src contains 'http' -%}{%- assign src = 'https:' | append: src -%}{%- endunless -%}{{ src }}
+      {%- else -%}{{ og_default_img }}{%- endif -%}
+    {%- endcapture -%}
+    {%- assign og_image = og_image | strip -%}
+    {%- if request.page_type == 'product' -%}{%- assign og_type = 'product' -%}{%- elsif request.page_type == 'article' -%}{%- assign og_type = 'article' -%}{%- else -%}{%- assign og_type = 'website' -%}{%- endif -%}
+    {%- capture og_desc -%}{%- if page_description -%}{{ page_description }}{%- else -%}Handcrafted natural stone and glass mosaic art — custom portraits, wall art, backsplashes, and tabletops. Made to order, shipped free worldwide.{%- endif -%}{%- endcapture -%}
+
+    <meta property="og:site_name" content="{{ shop.name }}">
+    <meta property="og:type" content="{{ og_type }}">
+    <meta property="og:title" content="{{ page_title | escape }}">
+    <meta property="og:description" content="{{ og_desc | strip_html | strip_newlines | escape }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ og_image }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="1200">
+    <meta property="og:locale" content="{{ request.locale.iso_code }}">
+    {%- if request.page_type == 'product' and product.selected_or_first_available_variant -%}
+      <meta property="product:price:amount" content="{{ product.selected_or_first_available_variant.price | divided_by: 100.0 }}">
+      <meta property="product:price:currency" content="{{ shop.currency }}">
+      <meta property="product:availability" content="{% if product.available %}in stock{% else %}out of stock{% endif %}">
+    {%- endif -%}
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ page_title | escape }}">
+    <meta name="twitter:description" content="{{ og_desc | strip_html | strip_newlines | escape }}">
+    <meta name="twitter:image" content="{{ og_image }}">
+
     {{ content_for_header }}
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
