@@ -37,6 +37,79 @@
       })();
     </script>
     <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- comment -%} Organization + LocalBusiness structured data (sitewide) — helps Google Knowledge Panel and LLM understanding. {%- endcomment -%}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://www.imosaicart.com/#organization",
+          "name": "iMosaicArt",
+          "url": "https://www.imosaicart.com/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "{{ 'mark-color.png' | asset_url }}"
+          },
+          "image": "{{ 'mark-color.png' | asset_url }}",
+          "description": "iMosaicArt is a premium US-based studio creating handcrafted natural stone and glass mosaic art — custom portraits, wall art, backsplashes, tabletops, and architectural installations. Every piece is made to order and shipped free worldwide.",
+          "email": "info@imosaicart.com",
+          "telephone": "+1-315-217-5538",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "28 Liberty St",
+            "addressLocality": "New York",
+            "addressRegion": "NY",
+            "postalCode": "10005",
+            "addressCountry": "US"
+          },
+          "sameAs": [
+            {%- assign social_links = "" -%}
+            {%- if settings.social_instagram_link != blank -%}{%- assign social_links = social_links | append: settings.social_instagram_link | append: "|" -%}{%- endif -%}
+            {%- if settings.social_facebook_link != blank -%}{%- assign social_links = social_links | append: settings.social_facebook_link | append: "|" -%}{%- endif -%}
+            {%- if settings.social_pinterest_link != blank -%}{%- assign social_links = social_links | append: settings.social_pinterest_link | append: "|" -%}{%- endif -%}
+            {%- if settings.social_youtube_link != blank -%}{%- assign social_links = social_links | append: settings.social_youtube_link | append: "|" -%}{%- endif -%}
+            {%- assign social_arr = social_links | split: "|" -%}
+            {%- for link in social_arr -%}"{{ link }}"{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}
+          ]
+        },
+        {
+          "@type": "Store",
+          "@id": "https://www.imosaicart.com/#store",
+          "name": "iMosaicArt",
+          "url": "https://www.imosaicart.com/",
+          "image": "{{ 'mark-color.png' | asset_url }}",
+          "parentOrganization": { "@id": "https://www.imosaicart.com/#organization" },
+          "priceRange": "$$$",
+          "email": "info@imosaicart.com",
+          "telephone": "+1-315-217-5538",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "28 Liberty St",
+            "addressLocality": "New York",
+            "addressRegion": "NY",
+            "postalCode": "10005",
+            "addressCountry": "US"
+          },
+          "areaServed": "Worldwide"
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://www.imosaicart.com/#website",
+          "url": "https://www.imosaicart.com/",
+          "name": "iMosaicArt",
+          "publisher": { "@id": "https://www.imosaicart.com/#organization" },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://www.imosaicart.com/search?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        }
+      ]
+    }
+    </script>
+
     <link rel="icon" type="image/png" href="https://cdn.shopify.com/s/files/1/0754/6093/5978/files/favicon-32.png?v=1783243826">
     <link rel="apple-touch-icon" href="https://cdn.shopify.com/s/files/1/0754/6093/5978/files/favicon-32.png?v=1783243826">
 
