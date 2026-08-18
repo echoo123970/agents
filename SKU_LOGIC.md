@@ -32,7 +32,7 @@ applied to **every** product unless the user overrides them for a specific item.
 | Food      | `MAD042`  |
 | Geometric | `MAG267`  |
 | Landmark  | `MAL022`  |
-| Landscape | `MAS294`  |
+| Landscape | `MAS295`  |
 | Nautical  | `MAN113`  |
 | Other     | `MAO036`  |
 | Pattern   | `MAC009`  |
