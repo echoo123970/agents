@@ -33,7 +33,7 @@ applied to **every** product unless the user overrides them for a specific item.
 | Geometric | `MAG267`  |
 | Landmark  | `MAL022`  |
 | Landscape | `MAS295`  |
-| Nautical  | `MAN113`  |
+| Nautical  | `MAN114`  |
 | Other     | `MAO036`  |
 | Pattern   | `MAC009`  |
 | Portrait  | `MAP067`  |
