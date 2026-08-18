@@ -34,7 +34,7 @@ applied to **every** product unless the user overrides them for a specific item.
 | Landmark  | `MAL022`  |
 | Landscape | `MAS293`  |
 | Nautical  | `MAN113`  |
-| Other     | `MAO035`  |
+| Other     | `MAO036`  |
 | Pattern   | `MAC009`  |
 | Portrait  | `MAP067`  |
 | Religious | `MAR098`  |
