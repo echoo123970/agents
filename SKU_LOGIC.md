@@ -37,7 +37,7 @@ applied to **every** product unless the user overrides them for a specific item.
 | Other     | `MAO035`  |
 | Pattern   | `MAC009`  |
 | Portrait  | `MAP067`  |
-| Religious | `MAR095`  |
+| Religious | `MAR096`  |
 | Roman     | `MAM036`  |
 | Tree      | `MAT067`  |
 
