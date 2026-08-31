@@ -39,7 +39,7 @@ applied to **every** product unless the user overrides them for a specific item.
 | Portrait  | `MAP067`  |
 | Religious | `MAR103`  |
 | Roman     | `MAM036`  |
-| Tree      | `MAT070`  |
+| Tree      | `MAT071`  |
 
 > Update the "Next SKU" value for a category after each product is created so
 > the counter stays accurate across sessions.
