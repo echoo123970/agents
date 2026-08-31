@@ -30,7 +30,7 @@ applied to **every** product unless the user overrides them for a specific item.
 | Bird      | `MB122`   |
 | Flower    | `MF390`   |
 | Food      | `MAD042`  |
-| Geometric | `MAG273`  |
+| Geometric | `MAG274`  |
 | Landmark  | `MAL022`  |
 | Landscape | `MAS300`  |
 | Nautical  | `MAN114`  |
