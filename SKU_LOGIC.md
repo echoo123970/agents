@@ -61,6 +61,12 @@ applied to **every** product unless the user overrides them for a specific item.
   link as the product's image source. Do not use local paths or external hosts.
 - **Image Position:** `1`.
 - **Image Alt Text:** same as the product **Title**.
+- **Watermark check (required before publishing).** Inspect every product image
+  for watermarks, logos, supplier stamps, or overlaid text (e.g. maker marks
+  such as "SAIC", Chinese/other characters, URLs, signatures) **before** the
+  product goes live. If any watermark is present, **do not publish** with that
+  image — flag it to the user and request a clean, watermark-free version, then
+  swap it in. Only watermark-free images may be published.
 
 ## Size variants
 
