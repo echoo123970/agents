@@ -26,9 +26,9 @@ applied to **every** product unless the user overrides them for a specific item.
 | Category  | Next SKU  |
 |-----------|-----------|
 | Abstract  | `MK024`   |
-| Animal    | `MAA079`  |
+| Animal    | `MAA081`  |
 | Bird      | `MB123`   |
-| Flower    | `MF398`   |
+| Flower    | `MF401`   |
 | Food      | `MAD042`  |
 | Geometric | `MAG274`  |
 | Landmark  | `MAL022`  |
