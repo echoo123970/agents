@@ -1,39 +1,53 @@
 #!/usr/bin/env node
 /**
  * Bulk-upload a folder of images to Shopify (Content > Files) and print/save
- * the resulting CDN URLs.
+ * the resulting CDN URLs.  Cross-platform: works on Windows, macOS, Linux.
  *
  * Flow per file:  stagedUploadsCreate  ->  upload bytes to staged target
  *                 ->  fileCreate       ->  poll until READY  ->  CDN url
  *
- * ── Setup (one time) ────────────────────────────────────────────────────
- * 1. Requires Node.js 18+ (uses built-in fetch / FormData / Blob).
- *      node --version   # must be >= 18
- * 2. In Shopify admin: Settings > Apps and sales channels > Develop apps
- *      > Create an app > Configuration > Admin API scopes: enable
- *      `write_files` (and `read_files`). Install it, then copy the
- *      "Admin API access token" (starts with shpat_...).
- * 3. Set environment variables (do NOT hard-code the token):
- *      export SHOPIFY_STORE="your-store.myshopify.com"
- *      export SHOPIFY_ADMIN_TOKEN="shpat_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
- *      # optional: export SHOPIFY_API_VERSION="2025-01"
+ * ── Requirements ─────────────────────────────────────────────────────────
+ *   • Node.js 18 or newer.  Check with:   node --version
+ *     (Download from https://nodejs.org if you don't have it.)
+ *   • A Shopify Admin API access token with the `write_files` and
+ *     `read_files` scopes:
+ *       Shopify admin > Settings > Apps and sales channels > Develop apps
+ *       > Create an app > Configuration > Admin API scopes: enable
+ *       write_files + read_files > Save > Install app
+ *       > API credentials > reveal/copy "Admin API access token" (shpat_...)
  *
- * ── Run ─────────────────────────────────────────────────────────────────
- *      node upload-images-to-shopify.mjs /path/to/your/image/folder
- *   or default to ./images if no folder is given:
- *      node upload-images-to-shopify.mjs
+ * ── How to run (Windows PowerShell) ───────────────────────────────────────
+ *   1. Open PowerShell and change into the folder that holds this script:
+ *          cd C:\path\to\scripts
+ *   2. Run it:
+ *          node upload-images-to-shopify.mjs "C:\path\to\your\image\folder"
+ *   3. If you didn't set the env vars below, it will simply ASK you for the
+ *      store domain and the token (token input is hidden). That's it.
  *
- * Output: prints a table and writes cdn-urls.csv in the current directory.
+ *   (macOS / Linux is identical, just with forward-slash paths.)
+ *
+ * ── Optional: skip the prompts by setting env vars first ──────────────────
+ *   PowerShell:
+ *          $env:SHOPIFY_STORE="your-store.myshopify.com"
+ *          $env:SHOPIFY_ADMIN_TOKEN="shpat_xxxxxxxxxxxxxxxxxxxx"
+ *          node upload-images-to-shopify.mjs "C:\path\to\images"
+ *   macOS/Linux:
+ *          export SHOPIFY_STORE="your-store.myshopify.com"
+ *          export SHOPIFY_ADMIN_TOKEN="shpat_xxxxxxxxxxxxxxxxxxxx"
+ *          node upload-images-to-shopify.mjs /path/to/images
+ *
+ * Output: prints a table and writes cdn-urls.csv in the current folder.
  */
 
 import { readdir, readFile, writeFile, stat } from "node:fs/promises";
-import { join, basename, extname } from "node:path";
+import { join, basename, extname, resolve } from "node:path";
+import readline from "node:readline";
 
-// ── Config ────────────────────────────────────────────────────────────────
-const STORE = process.env.SHOPIFY_STORE;
-const TOKEN = process.env.SHOPIFY_ADMIN_TOKEN;
+// ── Config from env (may be filled in by prompts below) ─────────────────────
+let STORE = process.env.SHOPIFY_STORE;
+let TOKEN = process.env.SHOPIFY_ADMIN_TOKEN;
 const API_VERSION = process.env.SHOPIFY_API_VERSION || "2025-01";
-const IMAGE_DIR = process.argv[2] || "./images";
+let IMAGE_DIR = process.argv[2] || process.env.SHOPIFY_IMAGE_DIR || "";
 
 const IMAGE_EXTS = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg", ".bmp", ".tiff"]);
 const MIME = {
@@ -42,23 +56,55 @@ const MIME = {
   ".bmp": "image/bmp", ".tiff": "image/tiff",
 };
 
-if (!STORE || !TOKEN) {
-  console.error("ERROR: set SHOPIFY_STORE and SHOPIFY_ADMIN_TOKEN env vars first. See the header of this file.");
-  process.exit(1);
+// ── Interactive prompt helpers (used only if a value is missing) ─────────────
+function prompt(query, { hidden = false } = {}) {
+  return new Promise((res) => {
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+    if (hidden) {
+      rl.stdoutMuted = false;
+      rl._writeToOutput = (s) => { if (!rl.stdoutMuted) process.stdout.write(s); };
+    }
+    rl.question(query, (ans) => {
+      rl.close();
+      if (hidden) process.stdout.write("\n");
+      res(ans.trim());
+    });
+    if (hidden) rl.stdoutMuted = true; // mute echo AFTER the query prints
+  });
 }
 
-const ENDPOINT = `https://${STORE}/admin/api/${API_VERSION}/graphql.json`;
+async function ensureConfig() {
+  if (!STORE) {
+    STORE = await prompt("Shopify store domain (e.g. your-store.myshopify.com): ");
+  }
+  // normalise: strip protocol / trailing slash, tolerate bare handle
+  STORE = STORE.replace(/^https?:\/\//, "").replace(/\/.*$/, "").trim();
+  if (STORE && !STORE.includes(".")) STORE = `${STORE}.myshopify.com`;
+
+  if (!TOKEN) {
+    TOKEN = await prompt("Admin API access token (shpat_...): ", { hidden: true });
+  }
+  if (!IMAGE_DIR) {
+    IMAGE_DIR = await prompt("Path to the image folder: ");
+  }
+  IMAGE_DIR = IMAGE_DIR.replace(/^["']|["']$/g, ""); // strip quotes if pasted
+
+  if (!STORE || !TOKEN || !IMAGE_DIR) {
+    console.error("\nERROR: store, token and folder are all required.");
+    process.exit(1);
+  }
+}
 
 // ── GraphQL helper ──────────────────────────────────────────────────────────
 async function gql(query, variables) {
-  const res = await fetch(ENDPOINT, {
+  const res = await fetch(`https://${STORE}/admin/api/${API_VERSION}/graphql.json`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Shopify-Access-Token": TOKEN,
-    },
+    headers: { "Content-Type": "application/json", "X-Shopify-Access-Token": TOKEN },
     body: JSON.stringify({ query, variables }),
   });
+  if (res.status === 401 || res.status === 403) {
+    throw new Error(`auth failed (${res.status}) — check the store domain and that the token has write_files scope`);
+  }
   const json = await res.json();
   if (json.errors) throw new Error("GraphQL: " + JSON.stringify(json.errors));
   return json.data;
@@ -66,7 +112,6 @@ async function gql(query, variables) {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-// ── Step 1: ask Shopify for a staged upload target ──────────────────────────
 async function createStagedTarget(filename, mimeType, fileSize) {
   const data = await gql(
     `mutation stagedUploadsCreate($input: [StagedUploadInput!]!) {
@@ -75,27 +120,17 @@ async function createStagedTarget(filename, mimeType, fileSize) {
          userErrors { field message }
        }
      }`,
-    {
-      input: [{
-        filename,
-        mimeType,
-        resource: "FILE",
-        fileSize: String(fileSize),
-        httpMethod: "POST",
-      }],
-    }
+    { input: [{ filename, mimeType, resource: "FILE", fileSize: String(fileSize), httpMethod: "POST" }] }
   );
   const errs = data.stagedUploadsCreate.userErrors;
   if (errs.length) throw new Error("stagedUploadsCreate: " + JSON.stringify(errs));
   return data.stagedUploadsCreate.stagedTargets[0];
 }
 
-// ── Step 2: upload the raw bytes to the staged target ───────────────────────
 async function uploadBytes(target, buffer, filename, mimeType) {
   const form = new FormData();
   for (const p of target.parameters) form.append(p.name, p.value);
   form.append("file", new Blob([buffer], { type: mimeType }), filename);
-
   const res = await fetch(target.url, { method: "POST", body: form });
   if (!res.ok) {
     const body = await res.text().catch(() => "");
@@ -103,7 +138,6 @@ async function uploadBytes(target, buffer, filename, mimeType) {
   }
 }
 
-// ── Step 3: register the file in Content > Files ─────────────────────────────
 async function fileCreate(resourceUrl, alt) {
   const data = await gql(
     `mutation fileCreate($files: [FileCreateInput!]!) {
@@ -119,15 +153,10 @@ async function fileCreate(resourceUrl, alt) {
   return data.fileCreate.files[0].id;
 }
 
-// ── Step 4: poll until the file is READY and has a CDN url ───────────────────
 async function waitForCdnUrl(fileId, { tries = 30, delayMs = 2000 } = {}) {
   for (let i = 0; i < tries; i++) {
     const data = await gql(
-      `query($id: ID!) {
-         node(id: $id) {
-           ... on MediaImage { id fileStatus image { url } }
-         }
-       }`,
+      `query($id: ID!) { node(id: $id) { ... on MediaImage { id fileStatus image { url } } } }`,
       { id: fileId }
     );
     const node = data.node;
@@ -138,65 +167,57 @@ async function waitForCdnUrl(fileId, { tries = 30, delayMs = 2000 } = {}) {
   throw new Error("timed out waiting for CDN url");
 }
 
+function csvCell(v) {
+  const s = String(v ?? "");
+  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+
 // ── Main ────────────────────────────────────────────────────────────────────
 async function main() {
+  await ensureConfig();
+
   const dirStat = await stat(IMAGE_DIR).catch(() => null);
   if (!dirStat?.isDirectory()) {
-    console.error(`ERROR: "${IMAGE_DIR}" is not a folder. Pass a folder path as the first argument.`);
+    console.error(`\nERROR: "${IMAGE_DIR}" is not a folder.`);
     process.exit(1);
   }
 
   const entries = await readdir(IMAGE_DIR);
-  const files = entries
-    .filter((f) => IMAGE_EXTS.has(extname(f).toLowerCase()))
-    .sort();
-
+  const files = entries.filter((f) => IMAGE_EXTS.has(extname(f).toLowerCase())).sort();
   if (!files.length) {
-    console.error(`No images found in "${IMAGE_DIR}".`);
+    console.error(`\nNo images found in "${IMAGE_DIR}".`);
     process.exit(1);
   }
 
-  console.log(`Found ${files.length} image(s) in ${IMAGE_DIR}\n`);
-  const results = [];
+  console.log(`\nStore:  ${STORE}`);
+  console.log(`Folder: ${resolve(IMAGE_DIR)}`);
+  console.log(`Found ${files.length} image(s).\n`);
 
+  const results = [];
   for (const [i, name] of files.entries()) {
     const label = `[${i + 1}/${files.length}] ${name}`;
     try {
       const ext = extname(name).toLowerCase();
       const mimeType = MIME[ext] || "application/octet-stream";
       const buffer = await readFile(join(IMAGE_DIR, name));
-
       const target = await createStagedTarget(name, mimeType, buffer.length);
       await uploadBytes(target, buffer, name, mimeType);
       const fileId = await fileCreate(target.resourceUrl, basename(name, ext));
       const url = await waitForCdnUrl(fileId);
-
-      console.log(`✅ ${label}\n   ${url}`);
+      console.log(`OK  ${label}\n    ${url}`);
       results.push({ file: name, url, status: "ok" });
     } catch (err) {
-      console.error(`❌ ${label}\n   ${err.message}`);
+      console.error(`ERR ${label}\n    ${err.message}`);
       results.push({ file: name, url: "", status: "error: " + err.message });
     }
   }
 
-  // Write CSV
-  const csv =
-    "filename,cdn_url,status\n" +
-    results
-      .map((r) => `${csvCell(r.file)},${csvCell(r.url)},${csvCell(r.status)}`)
-      .join("\n");
+  const csv = "filename,cdn_url,status\n" +
+    results.map((r) => `${csvCell(r.file)},${csvCell(r.url)},${csvCell(r.status)}`).join("\n");
   await writeFile("cdn-urls.csv", csv, "utf8");
 
   const ok = results.filter((r) => r.status === "ok").length;
-  console.log(`\nDone: ${ok}/${results.length} uploaded. Saved cdn-urls.csv`);
+  console.log(`\nDone: ${ok}/${results.length} uploaded. Saved cdn-urls.csv in ${resolve(".")}`);
 }
 
-function csvCell(v) {
-  const s = String(v ?? "");
-  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-}
-
-main().catch((e) => {
-  console.error("Fatal:", e);
-  process.exit(1);
-});
+main().catch((e) => { console.error("Fatal:", e); process.exit(1); });
