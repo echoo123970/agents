@@ -26,13 +26,13 @@ applied to **every** product unless the user overrides them for a specific item.
 | Category  | Next SKU  |
 |-----------|-----------|
 | Abstract  | `MK024`   |
-| Animal    | `MAA081`  |
+| Animal    | `MAA082`  |
 | Bird      | `MB123`   |
-| Flower    | `MF401`   |
+| Flower    | `MF408`   |
 | Food      | `MAD042`  |
-| Geometric | `MAG274`  |
+| Geometric | `MAG275`  |
 | Landmark  | `MAL022`  |
-| Landscape | `MAS300`  |
+| Landscape | `MAS301`  |
 | Nautical  | `MAN117`  |
 | Other     | `MAO037`  |
 | Pattern   | `MAC010`  |
