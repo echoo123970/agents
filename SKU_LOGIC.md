@@ -26,20 +26,20 @@ applied to **every** product unless the user overrides them for a specific item.
 | Category  | Next SKU  |
 |-----------|-----------|
 | Abstract  | `MK024`   |
-| Animal    | `MAA082`  |
-| Bird      | `MB123`   |
-| Flower    | `MF408`   |
+| Animal    | `MAA083`  |
+| Bird      | `MB126`   |
+| Flower    | `MF411`   |
 | Food      | `MAD042`  |
 | Geometric | `MAG275`  |
 | Landmark  | `MAL022`  |
-| Landscape | `MAS301`  |
+| Landscape | `MAS303`  |
 | Nautical  | `MAN117`  |
 | Other     | `MAO037`  |
 | Pattern   | `MAC010`  |
 | Portrait  | `MAP067`  |
 | Religious | `MAR103`  |
 | Roman     | `MAM036`  |
-| Tree      | `MAT074`  |
+| Tree      | `MAT075`  |
 
 > Update the "Next SKU" value for a category after each product is created so
 > the counter stays accurate across sessions.
