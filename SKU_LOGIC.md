@@ -28,12 +28,12 @@ applied to **every** product unless the user overrides them for a specific item.
 | Abstract  | `MK026`   |
 | Animal    | `MAA084`  |
 | Bird      | `MB128`   |
-| Flower    | `MF427`   |
+| Flower    | `MF428`   |
 | Food      | `MAD043`  |
-| Geometric | `MAG296`  |
+| Geometric | `MAG301`  |
 | Landmark  | `MAL022`  |
 | Landscape | `MAS303`  |
-| Nautical  | `MAN118`  |
+| Nautical  | `MAN119`  |
 | Other     | `MAO042`  |
 | Pattern   | `MAC012`  |
 | Portrait  | `MAP067`  |
