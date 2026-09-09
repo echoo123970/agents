@@ -38,7 +38,7 @@ applied to **every** product unless the user overrides them for a specific item.
 | Pattern   | `MAC012`  |
 | Portrait  | `MAP067`  |
 | Religious | `MAR103`  |
-| Roman     | `MAM053`  |
+| Roman     | `MAM056`  |
 | Tree      | `MAT078`  |
 
 > Update the "Next SKU" value for a category after each product is created so
