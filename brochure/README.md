@@ -1,6 +1,6 @@
 # Bespoke Mosaic — Trade & Specification Portfolio
 
-A 16-page, print-ready A4 PDF for B2B use (architects, interior designers,
+An 18-page, print-ready A4 PDF for B2B use (architects, interior designers,
 developers, contractors). No brand name appears anywhere in the document —
 it is written to sit under whatever letterhead, logo or cover sheet you add.
 
@@ -19,15 +19,20 @@ it is written to sit under whatever letterhead, logo or cover sheet you add.
 | 05 | Customisation matrix + what the client approves before production |
 | 06 | Colour chart I — marble, natural stone & quartz (30 swatches) |
 | 07 | Colour chart II — hand-poured glass & metal leaf (30 swatches) |
-| 08 | Technical specification (for the specifier's file) |
-| 09 | Process — seven stages from brief to installation |
-| 10 | Work in progress |
-| 11 | Completed commissions |
-| 12 | Installed on site (full bleed) |
-| 13 | Applications by sector |
-| 14 | Trade & specification programme |
-| 15 | Beginning a commission |
-| 16 | Back cover — enquiries |
+| 08 | Technical I — product data |
+| 09 | Technical II — installation, site & care |
+| 10 | Process — seven stages from brief to installation |
+| 11 | Work in progress |
+| 12 | Completed commissions |
+| 13 | Installed on site (full bleed) |
+| 14 | Applications by sector |
+| 15 | Trade & specification programme |
+| 16 | Asked by specifiers — eight questions |
+| 17 | Beginning a commission |
+| 18 | Back cover — enquiries |
+
+Page numbers in the footer are generated from document order, so inserting or
+reordering a page never leaves a stale number behind.
 
 ## Adding photography
 
@@ -72,9 +77,19 @@ with `url(../images/swatch-name.jpg)`.
 ## Still to confirm
 
 Figures rendered with a small ring (e.g. `2–3 weeks ◦`) are placeholders awaiting
-confirmed studio data — standard sheet size, tolerances, adhesive class, slip
-classification, lead times, minimum order, warranty period, and the contact block
-on page 16. Everything else is fixed: 5 mm marble, 4 mm glass, mesh backing as
+confirmed studio data:
+
+- standard sheet size (assumed 300 × 300 mm) and maximum single panel size
+- joint width and panel outline tolerance
+- adhesive and epoxy classes (assumed C2TE S1 / R2T)
+- curing period before grouting and before filling pools
+- site temperature range during fixing
+- slip classification, freeze–thaw exposure, density / water absorption / fire class
+- re-sealing interval
+- lead times, sample dispatch, minimum order, warranty period
+- the contact block on the back cover
+
+Everything else is fixed: 5 mm stone and quartz, 4 mm glass, mesh backing as
 standard, and the stated panel weights.
 
 ## How it is built

@@ -85,3 +85,11 @@ function paint(id, rows, kind) {
 
 paint("marble-chart", MARBLE, "stone");
 paint("glass-chart", GLASS, "glass");
+
+/* ---- folio numbers ---------------------------------------------------
+   Page numbers follow document order, so inserting or reordering a page
+   never leaves a stale number behind.                                    */
+document.querySelectorAll(".page").forEach((page, i) => {
+  const folio = page.querySelector(".folio");
+  if (folio) folio.lastElementChild.textContent = String(i + 1).padStart(2, "0");
+});
