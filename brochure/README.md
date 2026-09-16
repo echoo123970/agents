@@ -1,6 +1,6 @@
 # Bespoke Mosaic — Trade & Specification Portfolio
 
-A 21-page, print-ready A4 PDF for B2B use (architects, interior designers,
+A 22-page, print-ready A4 PDF for B2B use (architects, interior designers,
 developers, contractors). No brand name appears anywhere in the document —
 it is written to sit under whatever letterhead, logo or cover sheet you add.
 
@@ -67,7 +67,7 @@ small; `--full` keeps the originals.
 
 ## Changing the colours
 
-Every colour comes from `src/tokens.css`. Replace the hex values there and all 21
+Every colour comes from `src/tokens.css`. Replace the hex values there and all 22
 pages update — no other file needs touching.
 
 Current brand palette:
@@ -90,10 +90,16 @@ material colours (real marble, real glass), not brand colours.
 
 ## Changing the colour charts
 
-`src/charts.js` holds two arrays, `MARBLE` and `GLASS`, each row being
-`["Name", "note under the name", "<CSS fill>"]`. Reorder, rename or extend them.
-To use photographed samples instead of rendered fills, replace the third value
-with `url(../images/swatch-name.jpg)`.
+`src/charts.js` holds three arrays — `MARBLE` (42 natural stones), `ENGINEERED`
+(6) and `GLASS` (30) — each row being `["Name", "reference", "#base"]`. Swatches
+are drawn as fields of hand-cut tesserae with deterministic tonal variation, so
+a rebuild always produces the same swatch. Reorder, rename or extend the arrays;
+`tesserae()` does the rest.
+
+The stone names were transcribed from the studio's palette page and should be
+checked against it — `Verde Suez` (41) and `Perlatto Royal` (14) in particular.
+
+The glass range is indicative and still needs the studio's current pour list.
 
 ## Confirmed data
 

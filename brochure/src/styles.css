@@ -160,6 +160,18 @@ strong { font-weight: 500; color: var(--ink); }
 .dark .sw .nm { color: var(--on-dark); }
 .sw .mt { font-family: var(--sans); font-size: 5.6pt; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-light); margin-top: .8mm; }
 .dark .sw .mt { color: var(--on-dark-soft); }
+/* tesserae swatch — a field of hand-cut squares */
+.sw .chip.tess {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 7), 1fr);
+  gap: .3mm;
+  height: auto;
+  background: rgba(0,0,0,.28);
+  padding: .3mm;
+}
+.sw .chip.tess i { display: block; aspect-ratio: 1; }
+.dark .sw .chip.tess { background: rgba(255,255,255,.14); }
+
 /* glass gloss overlay */
 .chip.glass::after {
   content: ""; position: absolute; inset: 0;

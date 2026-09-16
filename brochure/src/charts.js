@@ -1,90 +1,156 @@
 /* ============================================================
-   COLOUR CHARTS — marble and glass
-   Edit the arrays below to change, reorder or extend the charts.
-   `css` is the swatch fill: replace any entry with
-   `url(images/swatch-name.jpg)` once photographed samples exist.
+   COLOUR CHARTS
+
+   Each row is ["Name", "reference", "#base"]. The swatch is drawn
+   as real tesserae — a small field of hand-cut squares with the
+   tonal variation natural stone actually has — rather than a flat
+   block of colour.
+
+   To use photographed samples instead, replace the chip markup in
+   paint() with a background-image.
    ============================================================ */
 
+/* 42 natural marbles, numbered as in the studio palette */
 const MARBLE = [
-  ["Bianco Carrara", "Italy · honed",      "linear-gradient(118deg,#F4F2EE 0%,#E9E7E2 46%,#F6F5F2 100%)"],
-  ["Statuario",      "Italy · polished",   "linear-gradient(112deg,#FAF9F6 0%,#EFEEEA 52%,#F7F6F3 100%)"],
-  ["Calacatta Oro",  "Italy · polished",   "linear-gradient(120deg,#F7F3E9 0%,#EFE6D2 40%,#D8C49A 62%,#F5F1E6 100%)"],
-  ["Thassos White",  "Greece · honed",     "linear-gradient(110deg,#FCFCFA 0%,#F4F4F1 60%,#FAFAF8 100%)"],
-  ["Crema Marfil",   "Spain · polished",   "linear-gradient(116deg,#F0E4CE 0%,#E5D5B8 54%,#EFE3CC 100%)"],
-  ["Bianco Perlino", "Italy · brushed",    "linear-gradient(114deg,#EFE9DE 0%,#E0D7C7 55%,#EDE7DB 100%)"],
-  ["Travertino Navona","Italy · filled",   "linear-gradient(118deg,#EBDCC4 0%,#DCC7A6 50%,#E7D6BC 100%)"],
-  ["Botticino",      "Italy · polished",   "linear-gradient(112deg,#EDE1CB 0%,#DCCBAD 58%,#E8DCC4 100%)"],
-  ["Giallo Siena",   "Italy · polished",   "linear-gradient(120deg,#E3C177 0%,#C99E4C 48%,#DCB868 100%)"],
-  ["Onice Miele",    "Iran · polished",    "linear-gradient(122deg,#E8C98F 0%,#D4A85F 38%,#F0DCB4 74%,#DCB878 100%)"],
-  ["Rosa Portogallo","Portugal · polished","linear-gradient(116deg,#E8CFC8 0%,#D3ADA4 52%,#E4C8C0 100%)"],
-  ["Rosso Verona",   "Italy · honed",      "linear-gradient(118deg,#B06A58 0%,#8E4A3C 50%,#A66052 100%)"],
-  ["Marrone Imperiale","Italy · polished", "linear-gradient(114deg,#7C5744 0%,#573828 52%,#6E4B39 100%)"],
-  ["Emperador Dark", "Spain · polished",   "linear-gradient(120deg,#5A3E2E 0%,#3C2618 48%,#523726 100%)"],
-  ["Noce Travertine","Turkey · honed",     "linear-gradient(112deg,#9D7A59 0%,#7C5B3E 54%,#95724F 100%)"],
-  ["Pietra Grey",    "Iran · honed",       "linear-gradient(118deg,#4A4A4C 0%,#2E2E30 52%,#434345 100%)"],
-  ["Bardiglio",      "Italy · honed",      "linear-gradient(116deg,#8D9092 0%,#6E7275 54%,#85898C 100%)"],
-  ["Grigio Carnico", "Italy · polished",   "linear-gradient(120deg,#5E6164 0%,#3D4043 50%,#565A5D 100%)"],
-  ["Nero Marquina",  "Spain · polished",   "linear-gradient(118deg,#1E1E20 0%,#0E0E10 52%,#1A1A1C 100%)"],
-  ["Verde Alpi",     "Italy · polished",   "linear-gradient(116deg,#2C5147 0%,#17342C 50%,#27483F 100%)"],
-  ["Verde Guatemala","India · polished",   "linear-gradient(120deg,#25463A 0%,#122A21 48%,#1F3C31 100%)"],
-  ["Breccia Oniciata","Italy · polished",  "linear-gradient(118deg,#E0C4B0 0%,#C39C82 46%,#EBD6C6 100%)"],
-  ["Azul Macaubas",  "Brazil · polished",  "linear-gradient(116deg,#4C6C86 0%,#2E4D68 52%,#42627C 100%)"],
-  ["Sodalite Blue",  "Bolivia · polished", "linear-gradient(120deg,#2A3F63 0%,#172946 50%,#243858 100%)"],
-  ["Quartz Bianco",  "quartz · polished",  "linear-gradient(118deg,#FAFAF8 0%,#F0F0EC 54%,#F7F7F4 100%)"],
-  ["Quartz Calacatta","quartz · polished",  "linear-gradient(120deg,#F8F5EE 0%,#EDE7D9 42%,#D9C9A6 64%,#F6F3EC 100%)"],
-  ["Quartz Grigio",  "quartz · honed",     "linear-gradient(118deg,#C9C7C2 0%,#AEACA6 54%,#C0BEB8 100%)"],
-  ["Quartz Sabbia",  "quartz · polished",  "linear-gradient(118deg,#E9DFCC 0%,#D6C8AC 54%,#E3D8C3 100%)"],
-  ["Quartz Antracite","quartz · honed",    "linear-gradient(118deg,#46464A 0%,#2C2C30 54%,#3E3E42 100%)"],
-  ["Quartz Nero",    "quartz · polished",  "linear-gradient(118deg,#1C1C1E 0%,#0C0C0E 54%,#18181A 100%)"]
+  ["Nero Marquina",     "01", "#1A1A1C"],
+  ["Bardiglio Gray",    "02", "#8A8C8E"],
+  ["Thassos White",     "03", "#F2F0EB"],
+  ["Carrara White",     "04", "#E4E0D6"],
+  ["Giallo Siena",      "05", "#D9A02E"],
+  ["Rosso Verona",      "06", "#A8431F"],
+  ["Giallo Reale",      "07", "#C97E27"],
+  ["Rojo Alicante",     "08", "#8E2C1E"],
+  ["Emperador Dark",    "09", "#3B2418"],
+  ["Emperador Red",     "10", "#4A1E16"],
+  ["Crema Marfil",      "11", "#E2CFAA"],
+  ["Pink Rose",         "12", "#C79184"],
+  ["Lilac",             "13", "#9E9298"],
+  ["Perlatto Royal",    "14", "#BFB5A6"],
+  ["Honey Onyx",        "15", "#C98B2C"],
+  ["Beige Marfil",      "16", "#D7BC90"],
+  ["Rojo Valencia",     "17", "#B4562A"],
+  ["Toast Beige",       "18", "#C29A73"],
+  ["Noce",              "19", "#7A5231"],
+  ["Amarillo Triana",   "20", "#C08B34"],
+  ["Marron Emperador",  "21", "#3D2A18"],
+  ["Walnut",            "22", "#6E4B31"],
+  ["Light Taupe",       "23", "#9A8874"],
+  ["Silver Grey",       "24", "#A9A9A6"],
+  ["Light Beige",       "25", "#DCC49A"],
+  ["Ivory Cream",       "26", "#E6D6B6"],
+  ["Snow White",        "27", "#EFEEE9"],
+  ["Bianco Thassos",    "28", "#F4F3EF"],
+  ["Bianco Carrara",    "29", "#E9E8E3"],
+  ["Cloud Grey",        "30", "#B8BAB8"],
+  ["Lavender",          "31", "#9B8F93"],
+  ["Grey Marble",       "32", "#8E8E8C"],
+  ["Tundra Grey",       "33", "#5F6058"],
+  ["Graphite",          "34", "#3A3E3C"],
+  ["Dark Grey",         "35", "#4B4E4C"],
+  ["Black Absolute",    "36", "#121212"],
+  ["Sahara Verde",      "37", "#A38A5C"],
+  ["Verde Alpi",        "38", "#2C4032"],
+  ["Verde Oliva",       "39", "#4A4F32"],
+  ["Verde Guatemala",   "40", "#24402F"],
+  ["Verde Suez",        "41", "#2A3A2C"],
+  ["Verde Imperiale",   "42", "#33463A"],
 ];
 
+/* 6 engineered stones */
+const ENGINEERED = [
+  ["Cream",       "43", "#D9B98A"],
+  ["Ruby Red",    "44", "#9B1020"],
+  ["Sky Blue",    "45", "#3E7F9E"],
+  ["Ocean Blue",  "46", "#134A6B"],
+  ["Turquoise",   "47", "#128494"],
+  ["Cobalt Blue", "48", "#0B4EA0"],
+];
+
+/* Hand-poured glass and metal leaf — indicative range */
 const GLASS = [
-  ["Oro 24k",        "24k gold leaf",      "linear-gradient(118deg,#8A6A32 0%,#E6C98A 26%,#C9A458 50%,#F0DCAE 72%,#8F6F36 100%)"],
-  ["Oro Bianco",     "white gold leaf",    "linear-gradient(118deg,#8E8C86 0%,#E4E2DA 28%,#BFBDB4 52%,#F0EFE9 74%,#918F88 100%)"],
-  ["Rame",           "copper leaf",        "linear-gradient(118deg,#7A4326 0%,#C97B4A 30%,#A05C31 54%,#DA9464 76%,#7E4527 100%)"],
-  ["Gold Fleck",     "fleck glass",        "linear-gradient(118deg,#6B4A1E 0%,#A97C36 48%,#7D5822 100%)"],
-  ["Bianco Latte",   "opaque",             "linear-gradient(118deg,#FBFAF6 0%,#EFEDE6 54%,#F8F7F2 100%)"],
-  ["Avorio",         "opaque",             "linear-gradient(118deg,#F3E9D6 0%,#E4D6BC 54%,#EFE4CE 100%)"],
-  ["Sabbia",         "opaque",             "linear-gradient(118deg,#E0CFB2 0%,#CDB891 54%,#DAC8A8 100%)"],
-  ["Miele",          "transparent",        "linear-gradient(118deg,#E4BD77 0%,#D19C42 54%,#E9C376 100%)"],
-  ["Ambra",          "transparent",        "linear-gradient(118deg,#D89B3C 0%,#B4761F 54%,#D2963A 100%)"],
-  ["Corallo",        "opaque",             "linear-gradient(118deg,#DE7E5E 0%,#C25C3C 54%,#D67457 100%)"],
-  ["Rubino",         "transparent",        "linear-gradient(118deg,#A81F32 0%,#7C0D1D 54%,#9C1B2C 100%)"],
-  ["Melograno",      "opaque",             "linear-gradient(118deg,#8E2036 0%,#611022 54%,#831D31 100%)"],
-  ["Rosa Antico",    "opaque",             "linear-gradient(118deg,#E5BFB7 0%,#CE9B92 54%,#DEB4AB 100%)"],
-  ["Lilla",          "opaque",             "linear-gradient(118deg,#C0AFC8 0%,#A48FAE 54%,#B7A5C0 100%)"],
-  ["Violetto",       "transparent",        "linear-gradient(118deg,#5C3A73 0%,#3E2251 54%,#553469 100%)"],
-  ["Turchese",       "opaque",             "linear-gradient(118deg,#63B7B5 0%,#3B9997 54%,#57AEAC 100%)"],
-  ["Acquamarina",    "transparent",        "linear-gradient(118deg,#9FD0D6 0%,#76B5BE 54%,#93C8CF 100%)"],
-  ["Blu Turchino",   "opaque",             "linear-gradient(118deg,#2E7C9B 0%,#1C5C77 54%,#28718E 100%)"],
-  ["Blu Cobalto",    "transparent",        "linear-gradient(118deg,#1E4C96 0%,#12336C 54%,#1A4386 100%)"],
-  ["Blu Notte",      "opaque",             "linear-gradient(118deg,#1B2A47 0%,#101B31 54%,#17243D 100%)"],
-  ["Verde Salvia",   "opaque",             "linear-gradient(118deg,#93A88C 0%,#748A6D 54%,#879C80 100%)"],
-  ["Verde Smeraldo", "transparent",        "linear-gradient(118deg,#1B6B52 0%,#0E4A37 54%,#175E49 100%)"],
-  ["Grigio Perla",   "opaque",             "linear-gradient(118deg,#D6D3CC 0%,#BFBBB3 54%,#CFCCC5 100%)"],
-  ["Antracite",      "opaque",             "linear-gradient(118deg,#3A3A3C 0%,#232325 54%,#323234 100%)"],
-  ["Nero Specchio",  "mirror glass",       "linear-gradient(118deg,#26262A 0%,#4A4A50 24%,#141416 52%,#3C3C42 76%,#1C1C1F 100%)"],
-  ["Iridescente",    "surface-fired",      "linear-gradient(118deg,#C7D8CF 0%,#D9C7D6 26%,#C9D2E2 50%,#E0D5C2 74%,#C6D7D0 100%)"],
-  ["Terracotta",     "opaque",             "linear-gradient(118deg,#C4714C 0%,#A2512F 54%,#B96945 100%)"],
-  ["Bronzo",         "metallic",           "linear-gradient(118deg,#6E5430 0%,#A98A56 30%,#7E6338 56%,#BFA173 78%,#6B5230 100%)"],
-  ["Verde Menta",    "opaque",             "linear-gradient(118deg,#AFCDBB 0%,#8FB39D 54%,#A4C4B1 100%)"],
-  ["Ghiaccio",       "transparent",        "linear-gradient(118deg,#DCE7EA 0%,#BFD2D8 54%,#D2E0E4 100%)"]
+  ["Oro 24k",       "24k gold leaf",    "#C9A458"],
+  ["Oro Bianco",    "white gold leaf",  "#C6C4BC"],
+  ["Rame",          "copper leaf",      "#A05C31"],
+  ["Gold Fleck",    "fleck glass",      "#8B6527"],
+  ["Bianco Latte",  "opaque",           "#F4F2EC"],
+  ["Avorio",        "opaque",           "#EADEC6"],
+  ["Sabbia",        "opaque",           "#D6C4A2"],
+  ["Miele",         "transparent",      "#D9AA55"],
+  ["Ambra",         "transparent",      "#C4862C"],
+  ["Corallo",       "opaque",           "#D06C4C"],
+  ["Rubino",        "transparent",      "#951A2A"],
+  ["Melograno",     "opaque",           "#77192C"],
+  ["Rosa Antico",   "opaque",           "#DCB0A7"],
+  ["Lilla",         "opaque",           "#B2A1BB"],
+  ["Violetto",      "transparent",      "#4D2C62"],
+  ["Turchese",      "opaque",           "#4EA5A3"],
+  ["Acquamarina",   "transparent",      "#88C1C9"],
+  ["Blu Turchino",  "opaque",           "#256C89"],
+  ["Blu Cobalto",   "transparent",      "#1A4084"],
+  ["Blu Notte",     "opaque",           "#16223C"],
+  ["Verde Salvia",  "opaque",           "#849979"],
+  ["Verde Smeraldo","transparent",      "#145A45"],
+  ["Grigio Perla",  "opaque",           "#C9C6BF"],
+  ["Antracite",     "opaque",           "#2F2F31"],
+  ["Nero Specchio", "mirror glass",     "#232327"],
+  ["Iridescente",   "surface-fired",    "#C9D5D6"],
+  ["Terracotta",    "opaque",           "#B3613D"],
+  ["Bronzo",        "metallic",         "#8B7044"],
+  ["Verde Menta",   "opaque",           "#9FC0AC"],
+  ["Ghiaccio",      "transparent",      "#CBDCE1"],
 ];
 
-function paint(id, rows, kind) {
+/* ---- colour helpers -------------------------------------------------- */
+const hexToHsl = (hex) => {
+  const n = parseInt(hex.slice(1), 16);
+  const r = ((n >> 16) & 255) / 255, g = ((n >> 8) & 255) / 255, b = (n & 255) / 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
+  let h = 0, s = 0;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    h = max === r ? (g - b) / d + (g < b ? 6 : 0) : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    h *= 60;
+  }
+  return [h, s * 100, l * 100];
+};
+
+/* deterministic jitter, so a rebuild always draws the same swatch */
+const rng = (seed) => () => (seed = (seed * 1664525 + 1013904223) % 4294967296) / 4294967296;
+
+/* a field of hand-cut tesserae in one tone */
+const tesserae = (hex, seed, cols = 7, rows = 4) => {
+  const [h, s, l] = hexToHsl(hex);
+  const rand = rng(seed);
+  let out = "";
+  for (let i = 0; i < cols * rows; i++) {
+    const r = rand();
+    const vein = r > 0.88;                                  // the occasional bright vein
+    const dl = vein ? 9 + rand() * 7 : (rand() - 0.5) * 9;  // tonal spread
+    const dh = (rand() - 0.5) * 6;
+    const ds = (rand() - 0.5) * 8;
+    out += `<i style="background:hsl(${(h + dh + 360) % 360} ${Math.max(0, Math.min(100, s + ds))}% ${
+      Math.max(2, Math.min(98, l + dl))}%)"></i>`;
+  }
+  return out;
+};
+
+function paint(id, rows, cols) {
   const host = document.getElementById(id);
   if (!host) return;
-  host.innerHTML = rows.map(([name, note, css], i) => `
-    <div class="sw">
-      <div class="chip ${kind}" style="background-image:${css};--va:${98 + ((i * 37) % 44)}deg;--vb:${
-        18 + ((i * 23) % 58)}%"></div>
-      <div class="nm">${name}</div>
-      <div class="mt">${note}</div>
-    </div>`).join("");
+  host.innerHTML = rows
+    .map(([name, note, hex], i) => `
+      <div class="sw">
+        <div class="chip tess" style="--cols:${cols}">${tesserae(hex, i * 7919 + 13, cols)}</div>
+        <div class="nm">${name}</div>
+        <div class="mt">${note}</div>
+      </div>`)
+    .join("");
 }
 
-paint("marble-chart", MARBLE, "stone");
-paint("glass-chart", GLASS, "glass");
+paint("marble-chart", MARBLE, 7);
+paint("engineered-chart", ENGINEERED, 7);
+paint("glass-chart", GLASS, 7);
 
 /* ---- folio numbers ---------------------------------------------------
    Page numbers follow document order, so inserting or reordering a page
