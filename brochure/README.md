@@ -1,6 +1,6 @@
 # Bespoke Mosaic — Trade & Specification Portfolio
 
-A 22-page, print-ready A4 PDF for B2B use (architects, interior designers,
+A 24-page, print-ready A4 PDF for B2B use (architects, interior designers,
 developers, contractors). No brand name appears anywhere in the document —
 it is written to sit under whatever letterhead, logo or cover sheet you add.
 
@@ -45,7 +45,8 @@ automatically and the photograph fills the frame. `.jpg`, `.jpeg`, `.png`,
 
 | File name | What the page needs | Crop |
 |---|---|---|
-| `cover` | Best finished mosaic, raking light on the gold | portrait / square, ≥3000 px |
+| `cover` | Pool floor at dusk — the full-bleed cover | portrait, ≥2000 px |
+| `studio-hero` | The horse — the studio page, page 2 | portrait, ≥2000 px |
 | `craft-hands` | Hands cutting or setting at the bench | 3:4, ≥2400 px |
 | `craft-macro` | Macro where marble meets glass and gold | 3:4, ≥2400 px |
 | `custom-artwork` | The client's reference image — the "before" | 4:3, ≥2000 px |
@@ -68,7 +69,7 @@ small; `--full` keeps the originals.
 
 ## Changing the colours
 
-Every colour comes from `src/tokens.css`. Replace the hex values there and all 22
+Every colour comes from `src/tokens.css`. Replace the hex values there and all 24
 pages update — no other file needs touching.
 
 Current brand palette:
@@ -169,7 +170,7 @@ placeholder note disappears.
 | The photograph | File name |
 |---|---|
 | Pool floor at dusk, wave bands, fire bowls | `cover.jpg` — and `collection-geometric-mosaics.jpg` |
-| The horse, figurative glass and stone | `craft-macro.jpg` |
+| The horse, figurative glass and stone | `studio-hero.jpg` |
 | White flowers in the marble shower enclosure | `collection-flower-mosaics.jpg` — also suits `installed-hero.jpg` |
 | Klimt "The Kiss" in gold, framed between sconces | `collection-portrait-mosaics.jpg` |
 | Tall ship in marble | `collection-nautical-mosaics.jpg` |
