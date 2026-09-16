@@ -1,6 +1,6 @@
 # Bespoke Mosaic — Trade & Specification Portfolio
 
-An 18-page, print-ready A4 PDF for B2B use (architects, interior designers,
+A 21-page, print-ready A4 PDF for B2B use (architects, interior designers,
 developers, contractors). No brand name appears anywhere in the document —
 it is written to sit under whatever letterhead, logo or cover sheet you add.
 
@@ -20,16 +20,19 @@ it is written to sit under whatever letterhead, logo or cover sheet you add.
 | 06 | Colour chart I — marble, natural stone & quartz (30 swatches) |
 | 07 | Colour chart II — hand-poured glass & metal leaf (30 swatches) |
 | 08 | Technical I — product data |
-| 09 | Technical II — installation, site & care |
-| 10 | Process — seven stages from brief to installation |
-| 11 | Work in progress |
-| 12 | Completed commissions |
-| 13 | Installed on site (full bleed) |
-| 14 | Applications by sector |
-| 15 | Trade & specification programme |
-| 16 | Asked by specifiers — eight questions |
-| 17 | Beginning a commission |
-| 18 | Back cover — enquiries |
+| 09 | Technical II — performance: marble & quartz |
+| 10 | Technical III — performance: hand-poured glass |
+| 11 | Technical IV — installation & site |
+| 12 | Technical V — care & maintenance |
+| 13 | Process — seven stages from brief to installation |
+| 14 | Work in progress |
+| 15 | Completed commissions |
+| 16 | Installed on site (full bleed) |
+| 17 | Applications by sector |
+| 18 | Trade & specification programme |
+| 19 | Asked by specifiers — eight questions |
+| 20 | Beginning a commission |
+| 21 | Back cover — enquiries |
 
 Page numbers in the footer are generated from document order, so inserting or
 reordering a page never leaves a stale number behind.
@@ -64,7 +67,7 @@ small; `--full` keeps the originals.
 
 ## Changing the colours
 
-Every colour comes from `src/tokens.css`. Replace the hex values there and all 18
+Every colour comes from `src/tokens.css`. Replace the hex values there and all 21
 pages update — no other file needs touching.
 
 Current brand palette:
@@ -92,23 +95,41 @@ material colours (real marble, real glass), not brand colours.
 To use photographed samples instead of rendered fills, replace the third value
 with `url(../images/swatch-name.jpg)`.
 
+## Confirmed data
+
+Materials, dimensions and performance come from the studio's own specification
+sheets:
+
+- marble and natural stone 5 mm, hand-poured glass 4 mm, engineered quartz 8 mm
+- fibreglass netted mesh backing on every sheet and panel
+- sheet size 300 × 300 mm, joint approximately 1 mm
+- weight approximately 10 kg/m² in glass and 13–15 kg/m² in 5 mm stone
+- marble: absorption ≤ 0.7% (ASTM C373), flexural ≥ 15 MPa (ASTM C880/C1161),
+  compressive ≥ 90 MPa (ASTM C170), Mohs 3–6, thermal expansion 8–12 × 10⁻⁶/°C
+  (ASTM C531), chemical resistance (ASTM C650), slip R10 polished / R11 honed
+  (DIN 51130), frost resistance (ASTM C1026)
+- glass: zero absorption (UNI EN ISO 10545-3 / ASTM C373), chemical resistance
+  (10545-13), thermal shock (10545-9 / ASTM C484), frost resistance, colour
+  fastness (10545-12 / DIN 51094), bond strength (ASTM C482), crazing (ASTM C424)
+- quartz: Mohs 7, absorption ~0.02% by volume, dense and non-porous
+- installation: epoxy adhesive and grout in wet/outdoor/submerged work, mandatory
+  movement joints with silicone at changes of plane, DCOF ≥ 0.42 interior wet and
+  ≥ 0.60 exterior, sealing required on marble
+- care: pH-neutral cleaners, annual enhancer/sealer, no acids, abrasives, bleach
+  or ammonia
+- commercial: free worldwide shipping, lifetime warranty
+
 ## Still to confirm
 
-Figures rendered with a small ring (e.g. `2–3 weeks ◦`) are placeholders awaiting
-confirmed studio data:
+Figures rendered with a small ring (e.g. `14–28 days ◦`) are still open:
 
-- standard sheet size (assumed 300 × 300 mm) and maximum single panel size
-- joint width and panel outline tolerance
-- adhesive and epoxy classes (assumed C2TE S1 / R2T)
-- curing period before grouting and before filling pools
-- site temperature range during fixing
-- slip classification, freeze–thaw exposure, density / water absorption / fire class
-- re-sealing interval
-- lead times, sample dispatch, minimum order, warranty period
+- maximum single panel size
+- panel outline tolerance (assumed ±1 mm)
+- curing time before grouting and before filling pools (assumed 14–28 days)
+- whether brushed and tumbled finishes are offered alongside polished and honed
+- lead times — design approval, standard production, sample dispatch
+- minimum order
 - the contact block on the back cover
-
-Everything else is fixed: 5 mm stone and quartz, 4 mm glass, mesh backing as
-standard, and the stated panel weights.
 
 ## How it is built
 
