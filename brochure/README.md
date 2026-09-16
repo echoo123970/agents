@@ -163,3 +163,20 @@ quickest route, with no local checkout:
 
 Then `git pull` and `node build.mjs` — every uploaded slot fills itself and its
 placeholder note disappears.
+
+## Image assignments agreed with the studio
+
+| The photograph | File name |
+|---|---|
+| Pool floor at dusk, wave bands, fire bowls | `cover.jpg` — and `collection-geometric-mosaics.jpg` |
+| The horse, figurative glass and stone | `craft-macro.jpg` |
+| White flowers in the marble shower enclosure | `collection-flower-mosaics.jpg` — also suits `installed-hero.jpg` |
+| Klimt "The Kiss" in gold, framed between sconces | `collection-portrait-mosaics.jpg` |
+| Tall ship in marble | `collection-nautical-mosaics.jpg` |
+| Tree canopy behind the sofa | `collection-tree-mosaics.jpg` — also suits `app-01.jpg` |
+| Banana leaves behind the range | `collection-mosaic-tile-backsplash.jpg` — also suits `app-02.jpg` |
+| Hands setting the peacock's tesserae | `collection-bird-mosaics.jpg` — also suits `craft-hands.jpg` and `wip-02.jpg` |
+| Wine pouring, in the cellar | `collection-food-mosaics.jpg` |
+| Round table top, blue and rose | `collection-table-countertop-mosaics.jpg` — also suits `app-04.jpg` |
+
+The same photograph can be uploaded twice under two names to fill two slots.

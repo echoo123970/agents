@@ -11,32 +11,52 @@
 <!-- ============================================================
      01 — COVER
      ============================================================ -->
-<div class="page dark marble-dark grain">
-  <div class="photo bleed" data-slot="cover" style="inset:0">
-    <div class="bleed" style="inset:0;background:linear-gradient(180deg,rgba(8,20,42,.72) 0%,rgba(8,20,42,.35) 42%,rgba(8,20,42,.92) 100%)"></div>
-    <div class="slotinfo high">
+<div class="page" style="background:var(--light)">
+  <div class="photo bleed" data-slot="cover" style="left:98mm;right:0;top:0;bottom:0">
+    <div class="slotinfo">
       <div class="tag">Cover photograph</div>
-      <div class="desc">The pool floor at dusk — wave bands in marble,<br>fire bowls, blue water</div>
-      <div class="spec">Upload as images/cover.jpg · portrait 4:5 · min 2000 px</div>
+      <div class="desc">The pool floor at dusk — wave bands<br>in marble, fire bowls, blue water</div>
+      <div class="spec">images/cover.jpg · portrait · min 2000 px</div>
     </div>
   </div>
-  <div class="frame-in"></div>
 
-  <div class="pad" style="display:flex;flex-direction:column;justify-content:space-between">
-    <div>
-      <div class="eyebrow">Atelier announcement &nbsp;·&nbsp; MMXXVI</div>
-      <div class="rule-accent" style="margin-top:6mm"></div>
+  <!-- the detail card, overlapping the image edge -->
+  <div style="position:absolute;left:76mm;bottom:62mm;width:62mm;background:#fff;padding:5.5mm 6.5mm;box-shadow:0 2mm 9mm rgba(13,33,70,.16)">
+    <div class="eyebrow on-light">The detail</div>
+    <p class="lead script" style="font-size:12.5pt;margin:2.5mm 0 0;line-height:1.35">Thousands of tesserae,<br>placed by hand.</p>
+  </div>
+
+  <div class="pad" style="right:auto;width:98mm;display:flex;flex-direction:column;justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:5mm">
+      <div style="width:12mm;height:1pt;background:var(--accent)"></div>
+      <div class="eyebrow on-light" style="letter-spacing:.24em">Mosaic art studio &nbsp;·&nbsp; est. New York</div>
     </div>
 
-    <div style="margin-bottom:26mm">
-      <h1 style="color:var(--on-dark);font-size:42pt;line-height:1.06">Handcrafted<br>Natural Marble &amp;<br>Glass Mosaics for<br><span class="script" style="color:var(--accent-light)">Luxury Interiors.</span></h1>
-      <p class="lead" style="max-width:124mm;margin-top:8mm;color:var(--on-dark)">
+    <div>
+      <h1 style="color:var(--ink);font-size:40pt;line-height:1.08">Handcrafted<br>Natural Marble &amp;<br>Glass Mosaics for<br><span class="script" style="color:var(--accent)">Luxury Interiors.</span></h1>
+      <p class="lead" style="max-width:82mm;margin-top:7mm;font-size:11.5pt;color:var(--ink-soft)">
         Timeless, artisanal tile art hand-cut by master artisans — bespoke designs,
         tailored to your space, delivered worldwide with complimentary shipping.
       </p>
-      <div class="rule" style="margin:10mm 0 6mm;max-width:132mm"></div>
-      <div class="micro" style="color:var(--accent-light);font-size:6.6pt;letter-spacing:.19em;white-space:nowrap">Free worldwide shipping &nbsp;·&nbsp; Handcrafted to order in natural marble &amp; glass &nbsp;·&nbsp; Lifetime warranty</div>
-      <div class="micro" style="margin-top:4mm">Trade &amp; specification portfolio &nbsp;·&nbsp; Customisation, materials, technical data</div>
+    </div>
+
+    <div>
+      <div class="rule" style="margin-bottom:6mm"></div>
+      <div class="grid g3" style="gap:5mm">
+        <div>
+          <div style="font-family:var(--display);font-size:19pt;color:var(--ink);line-height:1"><span class="tbc">00</span></div>
+          <div class="micro" style="margin-top:2mm">Years of experience</div>
+        </div>
+        <div>
+          <div style="font-family:var(--display);font-size:19pt;color:var(--ink);line-height:1">100%</div>
+          <div class="micro" style="margin-top:2mm">Hand-cut stone</div>
+        </div>
+        <div>
+          <div style="font-family:var(--display);font-size:19pt;color:var(--ink);line-height:1">Worldwide</div>
+          <div class="micro" style="margin-top:2mm">Free shipping</div>
+        </div>
+      </div>
+      <div class="micro" style="margin-top:7mm">Trade &amp; specification portfolio &nbsp;·&nbsp; MMXXVI</div>
     </div>
   </div>
 </div>
