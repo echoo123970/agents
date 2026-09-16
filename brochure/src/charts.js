@@ -152,6 +152,49 @@ paint("marble-chart", MARBLE, 7);
 paint("engineered-chart", ENGINEERED, 7);
 paint("glass-chart", GLASS, 7);
 
+/* ============================================================
+   COLLECTIONS — pulled from the studio's live catalogue.
+   ["Title", "handle", "range note"] — the handle is also the
+   image slot, so images/collection-<handle>.jpg fills the frame.
+   ============================================================ */
+const COLLECTIONS = [
+  ["Flower",        "flower-mosaics",          "450+ designs"],
+  ["Geometric",     "geometric-mosaics",       "360+ designs"],
+  ["Landscape",     "landscape-mosaics",       "290+ designs"],
+  ["Bird",          "bird-mosaics",            "120+ designs"],
+  ["Nautical",      "nautical-mosaics",        "110+ designs"],
+  ["Religious",     "religious-mosaics",       "100+ designs"],
+  ["Animal",        "animal-mosaics",          "85 designs"],
+  ["Tree",          "tree-mosaics",            "80+ designs"],
+  ["Portrait",      "portrait-mosaics",        "75 designs"],
+  ["Roman",         "roman-mosaics",           "60+ designs"],
+  ["Abstract",      "abstract",                "43 designs"],
+  ["Food &amp; wine",   "food-mosaics",            "35 designs"],
+  ["Landmark",      "landmark-mosaics",        "19 designs"],
+  ["Pattern",       "patterns-mosaics",        "19 designs"],
+  ["Van Gogh",      "van-gogh-mosaics",        "16 reproductions"],
+  ["Glass mosaic art","glass-mosaic-art",      "1,600+ designs"],
+  ["Backsplash",    "mosaic-tile-backsplash",  "100+ designs"],
+  ["Table top",     "table-countertop-mosaics","89 designs"],
+  ["Limited edition","limited-edition",        "hand-signed series"],
+  ["Studio specials","studio-specials",        "one-of-a-kind"],
+];
+
+function paintCollections(id) {
+  const host = document.getElementById(id);
+  if (!host) return;
+  host.innerHTML = COLLECTIONS.map(([title, handle, note]) => `
+    <div class="sw">
+      <div class="photo coll" data-slot="collection-${handle}">
+        <div class="slotinfo"><div class="desc" style="font-size:7.5pt">${title}</div></div>
+      </div>
+      <div class="nm" style="font-size:8pt">${title}</div>
+      <div class="mt">${note}</div>
+    </div>`).join("");
+}
+
+paintCollections("collections-grid");
+
 /* ---- folio numbers ---------------------------------------------------
    Page numbers follow document order, so inserting or reordering a page
    never leaves a stale number behind.                                    */

@@ -148,6 +148,7 @@ strong { font-weight: 500; color: var(--ink); }
    ============================================================ */
 .chart { display: grid; gap: 4mm; }
 .chart.c5 { grid-template-columns: repeat(5, 1fr); }
+.chart.c4 { grid-template-columns: repeat(4, 1fr); }
 .chart.c6 { grid-template-columns: repeat(6, 1fr); }
 .sw { text-align: left; }
 .sw .chip {
@@ -253,3 +254,32 @@ ul.ticks li::before {
 .dark .photo .slotinfo .tag { color: var(--accent-light); }
 .dark .photo::after       { border-color: rgba(127,178,240,.45); }
 .dark .panel.accent       { border-color: rgba(127,178,240,.55); }
+
+/* ============================================================
+   TRUST BAND — the three promises, as a full-bleed strip
+   ============================================================ */
+.band {
+  position: absolute; left: 0; right: 0; top: 0; height: 26mm;
+  background: var(--dark); display: flex; align-items: center;
+  padding: 0 var(--margin);
+}
+.band .items { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8mm; width: 100%; }
+.band .it { display: flex; gap: 3.5mm; align-items: flex-start; }
+.band .mark { color: var(--accent-light); font-size: 9pt; line-height: 1.1; }
+.band .t { font-family: var(--sans); font-size: 8pt; font-weight: 500; color: var(--on-dark); letter-spacing: .02em; }
+.band .d { font-family: var(--sans); font-size: 7pt; font-weight: 300; color: var(--on-dark-soft); margin-top: 1mm; }
+
+/* Centred statement line, flanked by marks */
+.statement {
+  display: flex; align-items: center; justify-content: center; gap: 5mm;
+  font-family: var(--display); font-style: italic; font-size: 12.5pt;
+  color: var(--ink); text-align: center;
+}
+.dark .statement { color: var(--on-dark); }
+.statement .mark { color: var(--accent); font-size: 9pt; font-style: normal; }
+.dark .statement .mark { color: var(--accent-light); }
+
+/* Collection tiles */
+.photo.coll { width: 100%; aspect-ratio: 4 / 3; }
+.photo.coll::after { inset: 1.4mm; }
+.photo.coll .slotinfo { padding: 3mm; }

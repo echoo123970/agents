@@ -60,6 +60,7 @@ automatically and the photograph fills the frame. `.jpg`, `.jpeg`, `.png`,
 | `done-03` | A second commission, contrasting palette | 4:3, ≥2000 px |
 | `installed-hero` | The mosaic in its finished room | portrait, ≥3000 px |
 | `app-01…04` | Hospitality / bathroom / pool / floor medallion | 1:1 |
+| `collection-<handle>` | One image per collection on the collections page — `collection-flower-mosaics`, `collection-portrait-mosaics`, `collection-geometric-mosaics`, `collection-nautical-mosaics`, and so on for the other sixteen | 4:3 |
 | `closing` | Quiet closing shot — samples, hands, the studio | 3:4, ≥2400 px |
 
 Photographs are re-encoded at 2000 px / JPEG 88 during the build so the PDF stays
