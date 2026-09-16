@@ -1,0 +1,44 @@
+/* ============================================================
+   BRAND TOKENS — the only file you need to edit to re-colour
+   the whole document. Replace the hex values and all 18 pages
+   follow.
+
+   Brand colours in use:
+     #F4F6FA  porcelain — light ground
+     #16335E  navy      — dark ground
+     #2B7BE8  blue      — accent
+   The remaining values are tints and shades derived from those
+   three, so the document holds together in print.
+   ============================================================ */
+:root {
+  /* Grounds */
+  --deep:       #0D2146;  /* deepest navy — covers, full-bleed panels */
+  --dark:       #16335E;  /* brand navy — dark pages */
+  --dark-alt:   #1E4478;  /* raised panels on dark */
+  --light:      #F4F6FA;  /* brand porcelain — light pages */
+  --light-alt:  #E6ECF6;  /* photo wells, secondary light ground */
+  --hairline:   #D2DCEB;  /* rules on light grounds */
+
+  /* Accent — the signature blue */
+  --accent:       #2B7BE8;
+  --accent-light: #7FB2F0;  /* accent on dark grounds */
+  --accent-deep:  #1B5CB8;  /* accent on light grounds */
+  --accent-pale:  #A9C9F6;
+
+  /* Ink */
+  --ink:         #0F2340;
+  --ink-soft:    #47597A;
+  --ink-light:   #8A9AB3;
+  --on-dark:     #EAF0FA;
+  --on-dark-soft:#AEC2DE;
+
+  /* Type */
+  --display: "Cormorant Garamond", "Liberation Serif", Georgia, serif;
+  --sans:    "Jost", "Liberation Sans", Helvetica, Arial, sans-serif;
+
+  /* Geometry */
+  --page-w: 210mm;
+  --page-h: 297mm;
+  --margin: 18mm;
+  --hair: 0.5pt;
+}
