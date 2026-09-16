@@ -148,3 +148,17 @@ locally in `src/fonts/` so the build is reproducible offline.
 
 Cormorant Garamond and Jost are bundled in `src/fonts/` and are licensed under
 the SIL Open Font License 1.1, which permits embedding and redistribution.
+
+## Getting photography into the build
+
+The build reads `images/`, so the files have to reach the repository. The
+quickest route, with no local checkout:
+
+1. Open the folder on the working branch:
+   `https://github.com/echoo123970/agents/tree/claude/optimistic-mccarthy-gkgahp/brochure/images`
+2. **Add file → Upload files**, drag the photographs in, named for their slot
+   (`cover.jpg`, `wip-02.jpg`, `installed-hero.jpg` …).
+3. Commit **to `claude/optimistic-mccarthy-gkgahp`**, not to a new branch.
+
+Then `git pull` and `node build.mjs` — every uploaded slot fills itself and its
+placeholder note disappears.
