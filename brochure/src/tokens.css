@@ -1,0 +1,41 @@
+/* ============================================================
+   BRAND TOKENS — the only file you need to edit to re-colour
+   the whole document. Replace the hex values with the exact
+   brand hexes and every page updates.
+   ============================================================ */
+:root {
+  /* Core neutrals */
+  --noir:        #12100E;  /* deepest ground — covers, full-bleed panels */
+  --onyx:        #1B1714;  /* secondary dark ground */
+  --graphite:    #332C26;  /* dark rules, dark captions */
+  --alabaster:   #F7F3ED;  /* primary light ground (marble white) */
+  --ivory:       #EFE7DB;  /* secondary light ground, photo wells */
+  --vein:        #DCD2C3;  /* hairlines on light grounds */
+
+  /* Metallics — the signature accent */
+  --brass:       #B18F5A;
+  --brass-light: #DCC094;
+  --brass-deep:  #7E6136;
+
+  /* Glass accents (used sparingly, for data and diagrams) */
+  --emerald:     #1C4A41;
+  --lapis:       #1F3A57;
+  --rose:        #C09C8E;
+
+  /* Ink */
+  --ink:         #1A1613;
+  --ink-soft:    #5B524A;
+  --ink-light:   #8C8178;
+  --on-dark:     #F3EDE4;
+  --on-dark-soft:#B9AEA0;
+
+  /* Type */
+  --display: "Cormorant Garamond", "Liberation Serif", Georgia, serif;
+  --sans:    "Jost", "Liberation Sans", Helvetica, Arial, sans-serif;
+
+  /* Geometry */
+  --page-w: 210mm;
+  --page-h: 297mm;
+  --margin: 18mm;
+  --hair: 0.5pt;
+}
