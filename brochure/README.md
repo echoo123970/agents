@@ -7,6 +7,8 @@ it is written to sit under whatever letterhead, logo or cover sheet you add.
     node build.mjs          # → dist/bespoke-mosaic-portfolio.pdf
     node build.mjs --png    # + page images in dist/preview/ for quick review
     node build.mjs --full   # embed photography at original resolution
+    node contact-sheet.mjs  # → dist/contact-sheet.png, every page at a glance
+                            # (run after build.mjs --png)
 
 ## What is in it
 
