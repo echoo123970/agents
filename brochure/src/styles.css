@@ -15,32 +15,32 @@ body { font-family: var(--sans); color: var(--ink); font-weight: 300; }
   width: var(--page-w);
   height: var(--page-h);
   overflow: hidden;
-  background: var(--alabaster);
+  background: var(--light);
   page-break-after: always;
   break-after: page;
 }
 .page:last-child { page-break-after: auto; break-after: auto; }
-.page.dark { background: var(--noir); color: var(--on-dark); }
+.page.dark { background: var(--dark); color: var(--on-dark); }
 .pad { position: absolute; inset: var(--margin); }
 
 /* ============================================================
    SURFACES — marble, glass and metal rendered in pure CSS
    ============================================================ */
 .marble-light {
-  background-color: var(--alabaster);
+  background-color: var(--light);
   background-image:
     radial-gradient(120% 80% at 12% 8%, rgba(255,255,255,.95) 0%, rgba(255,255,255,0) 55%),
-    linear-gradient(112deg, transparent 38%, rgba(190,178,160,.16) 39.4%, transparent 40.2%),
-    linear-gradient(104deg, transparent 56%, rgba(178,164,144,.11) 57%, transparent 58.2%),
-    linear-gradient(126deg, transparent 71%, rgba(203,192,175,.17) 72%, transparent 73%),
-    radial-gradient(90% 60% at 88% 96%, rgba(222,210,195,.30) 0%, rgba(222,210,195,0) 60%);
+    linear-gradient(112deg, transparent 38%, rgba(148,168,198,.11) 39.4%, transparent 40.2%),
+    linear-gradient(104deg, transparent 56%, rgba(138,158,190,.08) 57%, transparent 58.2%),
+    linear-gradient(126deg, transparent 71%, rgba(158,176,204,.11) 72%, transparent 73%),
+    radial-gradient(90% 60% at 88% 96%, rgba(196,211,234,.26) 0%, rgba(196,211,234,0) 60%);
 }
 .marble-dark {
-  background-color: var(--noir);
+  background-color: var(--deep);
   background-image:
-    radial-gradient(120% 90% at 78% 6%, rgba(177,143,90,.20) 0%, rgba(177,143,90,0) 58%),
-    linear-gradient(108deg, transparent 32%, rgba(220,192,148,.16) 33%, transparent 34.2%),
-    linear-gradient(118deg, transparent 61%, rgba(220,192,148,.10) 62%, transparent 63.4%),
+    radial-gradient(120% 90% at 78% 6%, rgba(43,123,232,.24) 0%, rgba(43,123,232,0) 58%),
+    linear-gradient(108deg, transparent 32%, rgba(127,178,240,.15) 33%, transparent 34.2%),
+    linear-gradient(118deg, transparent 61%, rgba(127,178,240,.10) 62%, transparent 63.4%),
     linear-gradient(96deg, transparent 80%, rgba(255,255,255,.06) 81%, transparent 82%),
     radial-gradient(100% 70% at 4% 100%, rgba(255,255,255,.05) 0%, rgba(255,255,255,0) 62%);
 }
@@ -51,7 +51,7 @@ body { font-family: var(--sans); color: var(--ink); font-weight: 300; }
   background-size: 22mm 22mm;
 }
 .foil {
-  background-image: linear-gradient(96deg, var(--brass-deep) 0%, var(--brass-light) 26%, var(--brass) 48%, var(--brass-light) 68%, var(--brass-deep) 100%);
+  background-image: linear-gradient(96deg, var(--accent-deep) 0%, var(--accent-light) 26%, var(--accent) 48%, var(--accent-light) 68%, var(--accent-deep) 100%);
 }
 
 /* ============================================================
@@ -59,9 +59,9 @@ body { font-family: var(--sans); color: var(--ink); font-weight: 300; }
    ============================================================ */
 .eyebrow {
   font-family: var(--sans); font-size: 7.2pt; font-weight: 400;
-  letter-spacing: .34em; text-transform: uppercase; color: var(--brass);
+  letter-spacing: .34em; text-transform: uppercase; color: var(--accent);
 }
-.eyebrow.on-light { color: var(--brass-deep); }
+.eyebrow.on-light { color: var(--accent-deep); }
 h1, h2, h3, h4 { font-family: var(--display); font-weight: 300; margin: 0; }
 h1 { font-size: 46pt; line-height: 1.02; letter-spacing: -.008em; }
 h2 { font-size: 27pt; line-height: 1.1; }
@@ -74,19 +74,19 @@ p { font-size: 9.2pt; line-height: 1.72; margin: 0 0 7pt; color: var(--ink-soft)
 .dark .lead { color: var(--on-dark); }
 .micro { font-family: var(--sans); font-size: 6.6pt; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-light); }
 .dark .micro { color: var(--on-dark-soft); }
-.num { font-family: var(--display); font-size: 30pt; color: var(--brass); line-height: 1; }
+.num { font-family: var(--display); font-size: 30pt; color: var(--accent); line-height: 1; }
 strong { font-weight: 500; color: var(--ink); }
 .dark strong { color: var(--on-dark); }
 
 /* Rules and marks */
-.rule { height: var(--hair); background: var(--vein); border: 0; }
-.dark .rule { background: rgba(220,192,148,.28); }
-.rule-brass { height: 1pt; width: 34mm; background: var(--brass); }
+.rule { height: var(--hair); background: var(--hairline); border: 0; }
+.dark .rule { background: rgba(127,178,240,.26); }
+.rule-accent { height: 1pt; width: 34mm; background: var(--accent); }
 .frame-in {
-  position: absolute; inset: 9mm; border: var(--hair) solid rgba(177,143,90,.55); pointer-events: none;
+  position: absolute; inset: 9mm; border: var(--hair) solid rgba(43,123,232,.50); pointer-events: none;
 }
-.dark .frame-in { border-color: rgba(220,192,148,.42); }
-.corner { position: absolute; width: 7mm; height: 7mm; border: 1pt solid var(--brass); }
+.dark .frame-in { border-color: rgba(127,178,240,.40); }
+.corner { position: absolute; width: 7mm; height: 7mm; border: 1pt solid var(--accent); }
 
 /* Footer */
 .folio {
@@ -96,8 +96,8 @@ strong { font-weight: 500; color: var(--ink); }
   text-transform: uppercase; color: var(--ink-light);
 }
 .dark .folio { color: rgba(185,174,160,.8); }
-.folio .line { flex: 1; height: var(--hair); background: var(--vein); margin: 0 6mm; }
-.dark .folio .line { background: rgba(220,192,148,.24); }
+.folio .line { flex: 1; height: var(--hair); background: var(--hairline); margin: 0 6mm; }
+.dark .folio .line { background: rgba(127,178,240,.22); }
 
 /* ============================================================
    LAYOUT HELPERS
@@ -114,15 +114,16 @@ strong { font-weight: 500; color: var(--ink); }
    ============================================================ */
 .photo {
   position: relative; overflow: hidden;
-  background-color: var(--ivory);
+  background-color: var(--light-alt);
   background-size: cover; background-position: center;
   background-repeat: no-repeat;
 }
 .dark .photo { background-color: #221E1A; }
 .photo::after {
-  content: ""; position: absolute; inset: 2.2mm; border: var(--hair) solid rgba(177,143,90,.5);
+  content: ""; position: absolute; inset: 2.2mm; border: var(--hair) solid rgba(43,123,232,.45);
 }
 .photo.filled::after { border-color: rgba(255,255,255,.34); }
+.photo .slotinfo.high { justify-content: flex-start; padding-top: 46mm; }
 /* .photo sets position:relative; full-bleed slots must stay absolute */
 .photo.bleed { position: absolute; }
 .photo .slotinfo {
@@ -132,7 +133,7 @@ strong { font-weight: 500; color: var(--ink); }
 }
 .photo.filled .slotinfo { display: none; }
 .photo .slotinfo .tag {
-  font-family: var(--sans); font-size: 6pt; letter-spacing: .3em; text-transform: uppercase; color: var(--brass);
+  font-family: var(--sans); font-size: 6pt; letter-spacing: .3em; text-transform: uppercase; color: var(--accent);
 }
 .photo .slotinfo .desc {
   font-family: var(--display); font-size: 10.5pt; line-height: 1.35; color: var(--ink-soft); font-style: italic;
@@ -177,31 +178,31 @@ strong { font-weight: 500; color: var(--ink); }
    ============================================================ */
 table.spec { width: 100%; border-collapse: collapse; }
 table.spec th, table.spec td {
-  text-align: left; padding: 2.6mm 3mm; border-bottom: var(--hair) solid var(--vein);
+  text-align: left; padding: 2.6mm 3mm; border-bottom: var(--hair) solid var(--hairline);
   font-size: 8pt; line-height: 1.5; vertical-align: top;
 }
 table.spec th {
   font-family: var(--sans); font-size: 6.4pt; letter-spacing: .24em; text-transform: uppercase;
-  color: var(--brass-deep); font-weight: 400; border-bottom: .8pt solid var(--brass);
+  color: var(--accent-deep); font-weight: 400; border-bottom: .8pt solid var(--accent);
 }
 table.spec td:first-child { font-family: var(--display); font-size: 9.4pt; color: var(--ink); width: 33%; }
 table.spec td { color: var(--ink-soft); }
 .dark table.spec td:first-child { color: var(--on-dark); }
-.dark table.spec td { color: var(--on-dark-soft); border-bottom-color: rgba(220,192,148,.2); }
+.dark table.spec td { color: var(--on-dark-soft); border-bottom-color: rgba(127,178,240,.20); }
 
 /* to-be-confirmed marker for values awaiting the technical sheet */
-.tbc { color: var(--brass-deep); border-bottom: .4pt dotted var(--brass); }
+.tbc { color: var(--accent-deep); border-bottom: .4pt dotted var(--accent); }
 .tbc::after { content: " \25E6"; }
 
 /* Boxed panels */
-.panel { border: var(--hair) solid var(--vein); padding: 6mm; }
-.dark .panel { border-color: rgba(220,192,148,.28); }
-.panel.brass { border-color: rgba(177,143,90,.6); }
+.panel { border: var(--hair) solid var(--hairline); padding: 6mm; }
+.dark .panel { border-color: rgba(127,178,240,.26); }
+.panel.accent { border-color: rgba(43,123,232,.55); }
 .panel-title { font-family: var(--display); font-size: 12pt; margin-bottom: 2.5mm; }
 
 /* Numbered process steps */
 .step { display: grid; grid-template-columns: 13mm 1fr; gap: 4mm; align-items: start; }
-.step .idx { font-family: var(--display); font-size: 17pt; color: var(--brass); line-height: 1; padding-top: 1mm; }
+.step .idx { font-family: var(--display); font-size: 17pt; color: var(--accent); line-height: 1; padding-top: 1mm; }
 .step h4 { margin-bottom: 1.4mm; }
 .step p { margin: 0; font-size: 8.4pt; line-height: 1.6; }
 
@@ -213,7 +214,7 @@ ul.ticks li {
 }
 ul.ticks li::before {
   content: ""; position: absolute; left: 0; top: 2.1mm;
-  width: 2.4mm; height: 2.4mm; border: .8pt solid var(--brass); transform: rotate(45deg);
+  width: 2.4mm; height: 2.4mm; border: .8pt solid var(--accent); transform: rotate(45deg);
 }
 .dark ul.ticks li { color: var(--on-dark-soft); }
 
@@ -223,3 +224,20 @@ ul.ticks li::before {
 
 /* Marble page carries 30 swatches — slightly shorter chips */
 .chart.compact .sw .chip { height: 19mm; }
+
+/* ============================================================
+   ACCENT ON DARK GROUNDS
+   #2B7BE8 on #16335E sits at about 3:1 — fine for rules and
+   large figures, too dim for 7pt caps. Small accent elements
+   step up to the lighter tint on dark pages.
+   ============================================================ */
+.dark .eyebrow            { color: var(--accent-light); }
+.dark .tbc                { color: var(--accent-light); border-bottom-color: var(--accent-light); }
+.dark .num                { color: var(--accent-light); }
+.dark .step .idx          { color: var(--accent-light); }
+.dark .rule-accent        { background: var(--accent-light); }
+.dark table.spec th       { color: var(--accent-light); border-bottom-color: var(--accent-light); }
+.dark ul.ticks li::before { border-color: var(--accent-light); }
+.dark .photo .slotinfo .tag { color: var(--accent-light); }
+.dark .photo::after       { border-color: rgba(127,178,240,.45); }
+.dark .panel.accent       { border-color: rgba(127,178,240,.55); }

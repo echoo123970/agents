@@ -64,8 +64,26 @@ small; `--full` keeps the originals.
 
 ## Changing the colours
 
-Every colour in the document comes from `src/tokens.css`. Replace the hex values
-there and all 16 pages update — no other file needs touching.
+Every colour comes from `src/tokens.css`. Replace the hex values there and all 18
+pages update — no other file needs touching.
+
+Current brand palette:
+
+| Token | Hex | Role |
+|---|---|---|
+| `--light` | `#F4F6FA` | porcelain — light pages |
+| `--dark` | `#16335E` | navy — dark pages |
+| `--accent` | `#2B7BE8` | blue — rules, figures, eyebrows |
+| `--deep` | `#0D2146` | deepest navy — full-bleed overlays |
+| `--accent-light` | `#7FB2F0` | accent on dark grounds |
+| `--accent-deep` | `#1B5CB8` | accent on light grounds |
+
+The last three are derived from the brand blues. `#2B7BE8` on `#16335E` is about
+3:1, so small accent text on dark pages steps up to `--accent-light` — see the
+"accent on dark grounds" block at the end of `src/styles.css`.
+
+The colour charts are deliberately **not** re-skinned: those swatches are
+material colours (real marble, real glass), not brand colours.
 
 ## Changing the colour charts
 

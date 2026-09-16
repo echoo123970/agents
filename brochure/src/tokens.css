@@ -1,33 +1,36 @@
 /* ============================================================
    BRAND TOKENS — the only file you need to edit to re-colour
-   the whole document. Replace the hex values with the exact
-   brand hexes and every page updates.
+   the whole document. Replace the hex values and all 18 pages
+   follow.
+
+   Brand colours in use:
+     #F4F6FA  porcelain — light ground
+     #16335E  navy      — dark ground
+     #2B7BE8  blue      — accent
+   The remaining values are tints and shades derived from those
+   three, so the document holds together in print.
    ============================================================ */
 :root {
-  /* Core neutrals */
-  --noir:        #12100E;  /* deepest ground — covers, full-bleed panels */
-  --onyx:        #1B1714;  /* secondary dark ground */
-  --graphite:    #332C26;  /* dark rules, dark captions */
-  --alabaster:   #F7F3ED;  /* primary light ground (marble white) */
-  --ivory:       #EFE7DB;  /* secondary light ground, photo wells */
-  --vein:        #DCD2C3;  /* hairlines on light grounds */
+  /* Grounds */
+  --deep:       #0D2146;  /* deepest navy — covers, full-bleed panels */
+  --dark:       #16335E;  /* brand navy — dark pages */
+  --dark-alt:   #1E4478;  /* raised panels on dark */
+  --light:      #F4F6FA;  /* brand porcelain — light pages */
+  --light-alt:  #E6ECF6;  /* photo wells, secondary light ground */
+  --hairline:   #D2DCEB;  /* rules on light grounds */
 
-  /* Metallics — the signature accent */
-  --brass:       #B18F5A;
-  --brass-light: #DCC094;
-  --brass-deep:  #7E6136;
-
-  /* Glass accents (used sparingly, for data and diagrams) */
-  --emerald:     #1C4A41;
-  --lapis:       #1F3A57;
-  --rose:        #C09C8E;
+  /* Accent — the signature blue */
+  --accent:       #2B7BE8;
+  --accent-light: #7FB2F0;  /* accent on dark grounds */
+  --accent-deep:  #1B5CB8;  /* accent on light grounds */
+  --accent-pale:  #A9C9F6;
 
   /* Ink */
-  --ink:         #1A1613;
-  --ink-soft:    #5B524A;
-  --ink-light:   #8C8178;
-  --on-dark:     #F3EDE4;
-  --on-dark-soft:#B9AEA0;
+  --ink:         #0F2340;
+  --ink-soft:    #47597A;
+  --ink-light:   #8A9AB3;
+  --on-dark:     #EAF0FA;
+  --on-dark-soft:#AEC2DE;
 
   /* Type */
   --display: "Cormorant Garamond", "Liberation Serif", Georgia, serif;
