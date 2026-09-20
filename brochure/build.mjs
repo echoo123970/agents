@@ -67,8 +67,9 @@ await page.emulateMedia({ media: "print" });
 await page.evaluate(() => document.fonts.ready);
 
 // ---- downscale supplied photography ------------------------------------
-// Camera and phone files are far larger than a page needs; re-encoding at
-// 2000 px / JPEG 88 keeps the PDF small with no visible loss in print.
+// Camera and phone files are far larger than a page needs, and WebP has no
+// PDF equivalent; re-encoding every image at 2000 px / JPEG 88 keeps the file
+// small with no visible loss in print.
 // Pass --full to embed the originals untouched.
 if (found.length && !FULL_RES) {
   const shrunk = await page.evaluate(async (maxEdge) => {
@@ -86,8 +87,9 @@ if (found.length && !FULL_RES) {
           i.onerror = rej;
           i.src = url;
         });
+        // always re-encode: PDF has no WebP, so an un-touched .webp is
+        // embedded as a raw bitmap and costs megabytes a page
         const scale = Math.min(1, maxEdge / Math.max(img.width, img.height));
-        if (scale === 1) continue;
         const c = document.createElement("canvas");
         c.width = Math.round(img.width * scale);
         c.height = Math.round(img.height * scale);
