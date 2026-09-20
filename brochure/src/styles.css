@@ -30,17 +30,17 @@ body { font-family: var(--sans); color: var(--ink); font-weight: 300; }
   background-color: var(--light);
   background-image:
     radial-gradient(120% 80% at 12% 8%, rgba(255,255,255,.95) 0%, rgba(255,255,255,0) 55%),
-    linear-gradient(112deg, transparent 38%, rgba(148,168,198,.09) 39.4%, transparent 40.2%),
-    linear-gradient(104deg, transparent 56%, rgba(138,158,190,.07) 57%, transparent 58.2%),
-    linear-gradient(126deg, transparent 71%, rgba(158,176,204,.09) 72%, transparent 73%),
-    radial-gradient(90% 60% at 88% 96%, rgba(196,211,234,.22) 0%, rgba(196,211,234,0) 60%);
+    linear-gradient(112deg, transparent 38%, rgba(168,132,44,.07) 39.4%, transparent 40.2%),
+    linear-gradient(104deg, transparent 56%, rgba(18,58,42,.05) 57%, transparent 58.2%),
+    linear-gradient(126deg, transparent 71%, rgba(168,132,44,.08) 72%, transparent 73%),
+    radial-gradient(90% 60% at 88% 96%, rgba(222,214,196,.30) 0%, rgba(222,214,196,0) 60%);
 }
 .marble-dark {
   background-color: var(--tint);
   background-image:
-    radial-gradient(120% 90% at 78% 6%, rgba(43,123,232,.10) 0%, rgba(43,123,232,0) 58%),
-    linear-gradient(108deg, transparent 32%, rgba(127,178,240,.26) 33%, transparent 34.2%),
-    linear-gradient(118deg, transparent 61%, rgba(127,178,240,.20) 62%, transparent 63.4%),
+    radial-gradient(120% 90% at 78% 6%, rgba(168,132,44,.12) 0%, rgba(168,132,44,0) 58%),
+    linear-gradient(108deg, transparent 32%, rgba(18,58,42,.10) 33%, transparent 34.2%),
+    linear-gradient(118deg, transparent 61%, rgba(18,58,42,.08) 62%, transparent 63.4%),
     linear-gradient(96deg, transparent 80%, rgba(255,255,255,.55) 81%, transparent 82%),
     radial-gradient(100% 70% at 4% 100%, rgba(255,255,255,.45) 0%, rgba(255,255,255,0) 62%);
 }
@@ -83,9 +83,9 @@ strong { font-weight: 500; color: var(--ink); }
 .dark .rule { background: var(--hairline); }
 .rule-accent { height: 1pt; width: 34mm; background: var(--accent); }
 .frame-in {
-  position: absolute; inset: 9mm; border: var(--hair) solid rgba(43,123,232,.50); pointer-events: none;
+  position: absolute; inset: 9mm; border: var(--hair) solid rgba(168,132,44,.50); pointer-events: none;
 }
-.dark .frame-in { border-color: rgba(43,123,232,.40); }
+.dark .frame-in { border-color: rgba(168,132,44,.45); }
 .corner { position: absolute; width: 7mm; height: 7mm; border: 1pt solid var(--accent); }
 
 /* Footer */
@@ -120,7 +120,7 @@ strong { font-weight: 500; color: var(--ink); }
 }
 .dark .photo { background-color: var(--light-alt); }
 .photo::after {
-  content: ""; position: absolute; inset: 2.2mm; border: var(--hair) solid rgba(43,123,232,.45);
+  content: ""; position: absolute; inset: 2.2mm; border: var(--hair) solid rgba(168,132,44,.45);
 }
 .photo.filled::after { border-color: rgba(255,255,255,.34); }
 .photo .slotinfo.high { justify-content: flex-start; padding-top: 46mm; }
@@ -155,7 +155,7 @@ strong { font-weight: 500; color: var(--ink); }
   position: relative; width: 100%; height: 22mm; overflow: hidden;
   border: var(--hair) solid rgba(0,0,0,.14);
 }
-.dark .sw .chip { border-color: rgba(22,51,94,.14); }
+.dark .sw .chip { border-color: rgba(18,58,42,.14); }
 .sw .chip.round { border-radius: 50%; height: 0; padding-bottom: 100%; }
 .sw .nm { font-family: var(--display); font-size: 8.6pt; color: var(--ink); margin-top: 2mm; line-height: 1.2; }
 .dark .sw .nm { color: var(--ink); }
@@ -171,7 +171,7 @@ strong { font-weight: 500; color: var(--ink); }
   padding: .3mm;
 }
 .sw .chip.tess i { display: block; aspect-ratio: 1; }
-.dark .sw .chip.tess { background: rgba(22,51,94,.16); }
+.dark .sw .chip.tess { background: rgba(18,58,42,.16); }
 
 /* glass gloss overlay */
 .chip.glass::after {
@@ -210,7 +210,7 @@ table.spec td { color: var(--ink-soft); }
 /* Boxed panels */
 .panel { border: var(--hair) solid var(--hairline); padding: 6mm; }
 .dark .panel { border-color: var(--hairline); }
-.panel.accent { border-color: rgba(43,123,232,.55); }
+.panel.accent { border-color: rgba(168,132,44,.55); }
 .panel-title { font-family: var(--display); font-size: 12pt; margin-bottom: 2.5mm; }
 
 /* Numbered process steps */
@@ -239,10 +239,10 @@ ul.ticks li::before {
 .chart.compact .sw .chip { height: 19mm; }
 
 /* ============================================================
-   ACCENT ON DARK GROUNDS
-   #2B7BE8 on #16335E sits at about 3:1 — fine for rules and
-   large figures, too dim for 7pt caps. Small accent elements
-   step up to the lighter tint on dark pages.
+   ACCENT ON TINTED GROUNDS
+   Gold (#A8842C) on the emerald tint sits at about 3:1 — fine for
+   rules and large figures, too dim for 7pt caps. Small accent
+   elements step down to the deeper gold on tinted pages.
    ============================================================ */
 .dark .eyebrow            { color: var(--accent-deep); }
 .dark .tbc                { color: var(--accent-deep); border-bottom-color: var(--accent-deep); }
@@ -252,8 +252,8 @@ ul.ticks li::before {
 .dark table.spec th       { color: var(--accent-deep); border-bottom-color: var(--accent-deep); }
 .dark ul.ticks li::before { border-color: var(--accent-deep); }
 .dark .photo .slotinfo .tag { color: var(--accent-deep); }
-.dark .photo::after       { border-color: rgba(43,123,232,.45); }
-.dark .panel.accent       { border-color: rgba(43,123,232,.55); }
+.dark .photo::after       { border-color: rgba(168,132,44,.45); }
+.dark .panel.accent       { border-color: rgba(168,132,44,.55); }
 
 /* ============================================================
    TRUST BAND — the three promises, as a full-bleed strip
@@ -283,3 +283,27 @@ ul.ticks li::before {
 .photo.coll { width: 100%; aspect-ratio: 4 / 3; }
 .photo.coll::after { inset: 1.4mm; }
 .photo.coll .slotinfo { padding: 3mm; }
+
+
+/* ============================================================
+   EMERALD GROUND — the deep pages: back cover and any page that
+   should close on colour. Gold and cream carry the type.
+   ============================================================ */
+.page.emerald { background: #0F4430; color: #F2EFE6; }
+.page.emerald h1, .page.emerald h2, .page.emerald h3, .page.emerald h4,
+.page.emerald .lead, .page.emerald strong { color: #F6F2E7; }
+.page.emerald p, .page.emerald .body { color: #C9D8CD; }
+.page.emerald .eyebrow, .page.emerald .num, .page.emerald .statement .mark { color: var(--accent-light); }
+.page.emerald .rule { background: rgba(217,188,114,.34); }
+.page.emerald .rule-accent { background: var(--accent-light); }
+.page.emerald .micro, .page.emerald .caption { color: #A9BCB0; }
+.page.emerald .folio { color: #A9BCB0; }
+.page.emerald .folio .line { background: rgba(217,188,114,.28); }
+.page.emerald .frame-in { border-color: rgba(217,188,114,.42); }
+.page.emerald .tbc { color: var(--accent-light); border-bottom-color: var(--accent-light); }
+.page.emerald .panel { border-color: rgba(217,188,114,.34); }
+.page.emerald .photo { background-color: #123A2A; }
+.page.emerald .photo .slotinfo .tag { color: var(--accent-light); }
+.page.emerald .photo .slotinfo .desc { color: #C9D8CD; }
+.page.emerald .photo .slotinfo .spec { color: #A9BCB0; }
+.page.emerald .photo::after { border-color: rgba(217,188,114,.42); }
