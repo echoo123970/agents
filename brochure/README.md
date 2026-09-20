@@ -15,15 +15,15 @@ it is written to sit under whatever letterhead, logo or cover sheet you add.
 | Page | Content |
 |-----:|---------|
 | 01 | Cover |
-| 02 | The studio — split hero, stats, detail card |
+| 02 | The studio |
 | 03 | The craft |
 | 04 | What we make — hand-cut · Roman technique, polished · framed |
 | 05 | Customisation — the statement page |
 | 06 | Customisation — four ways in, and the matrix |
 | 07 | Installed — twelve placements, four to a row |
-| 08 | From our workshop |
-| 09 | The collections — twenty |
-| 10 | Applications by sector |
+| 08 | Table tops |
+| 09 | From our workshop |
+| 10 | The collections — twenty |
 | 11 | The materials — 42 natural marbles |
 | 12 | The materials — engineered stone & glass |
 | 13 | Technical I — product data |
