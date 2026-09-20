@@ -1,6 +1,6 @@
 # Bespoke Mosaic — Trade & Specification Portfolio
 
-A 24-page, print-ready A4 PDF for B2B use (architects, interior designers,
+A 20-page, print-ready A4 PDF for B2B use (architects, interior designers,
 developers, contractors). No brand name appears anywhere in the document —
 it is written to sit under whatever letterhead, logo or cover sheet you add.
 
@@ -15,26 +15,25 @@ it is written to sit under whatever letterhead, logo or cover sheet you add.
 | Page | Content |
 |-----:|---------|
 | 01 | Cover |
-| 02 | The announcement — three new capabilities |
-| 03 | The craft — stone, glass, setting |
-| 04 | Customisation: the premise, and the six variables |
-| 05 | Customisation matrix + what the client approves before production |
-| 06 | Colour chart I — marble, natural stone & quartz (30 swatches) |
-| 07 | Colour chart II — hand-poured glass & metal leaf (30 swatches) |
-| 08 | Technical I — product data |
-| 09 | Technical II — performance: marble & quartz |
-| 10 | Technical III — performance: hand-poured glass |
-| 11 | Technical IV — installation & site |
-| 12 | Technical V — care & maintenance |
-| 13 | Process — seven stages from brief to installation |
-| 14 | Work in progress |
-| 15 | Completed commissions |
-| 16 | Installed on site (full bleed) |
-| 17 | Applications by sector |
-| 18 | Trade & specification programme |
-| 19 | Asked by specifiers — eight questions |
-| 20 | Beginning a commission |
-| 21 | Back cover — enquiries |
+| 02 | The studio — split hero, stats, detail card |
+| 03 | The craft |
+| 04 | What we make — hand-cut · Roman technique, polished · framed |
+| 05 | Customisation — the statement page |
+| 06 | Customisation — four ways in, and the matrix |
+| 07 | Installed — twelve placements, four to a row |
+| 08 | From our workshop |
+| 09 | The collections — twenty |
+| 10 | Applications by sector |
+| 11 | The materials — 42 natural marbles |
+| 12 | The materials — engineered stone & glass |
+| 13 | Technical I — product data |
+| 14 | Technical II — performance |
+| 15 | Technical III — installation, site & care |
+| 16 | Process |
+| 17 | Trade & specification programme |
+| 18 | Asked by specifiers |
+| 19 | Beginning a commission |
+| 20 | Back cover |
 
 Page numbers in the footer are generated from document order, so inserting or
 reordering a page never leaves a stale number behind.
@@ -71,7 +70,7 @@ small; `--full` keeps the originals.
 
 ## Changing the colours
 
-Every colour comes from `src/tokens.css`. Replace the hex values there and all 24
+Every colour comes from `src/tokens.css`. Replace the hex values there and all 20
 pages update — no other file needs touching.
 
 Current brand palette:
@@ -171,15 +170,32 @@ placeholder note disappears.
 
 | The photograph | File name |
 |---|---|
-| Pool floor at dusk, wave bands, fire bowls | `cover.jpg` — and `collection-geometric-mosaics.jpg` |
-| The horse, figurative glass and stone | `studio-hero.jpg` |
-| White flowers in the marble shower enclosure | `collection-flower-mosaics.jpg` — also suits `installed-hero.jpg` |
-| Klimt "The Kiss" in gold, framed between sconces | `collection-portrait-mosaics.jpg` |
-| Tall ship in marble | `collection-nautical-mosaics.jpg` |
-| Tree canopy behind the sofa | `collection-tree-mosaics.jpg` — also suits `app-01.jpg` |
-| Banana leaves behind the range | `collection-mosaic-tile-backsplash.jpg` — also suits `app-02.jpg` |
-| Hands setting the peacock's tesserae | `collection-bird-mosaics.jpg` — also suits `craft-hands.jpg` and `wip-02.jpg` |
-| Wine pouring, in the cellar | `collection-food-mosaics.jpg` |
-| Round table top, blue and rose | `collection-table-countertop-mosaics.jpg` — also suits `app-04.jpg` |
+| Pool floor at dusk, wave bands | `cover.jpg` ✓ placed |
+| Peacock pool (from the villa film) | `installed-01.jpg` ✓ placed |
+| Mosaic seat at dusk (from the outdoor film) | `installed-07.jpg` ✓ placed |
+| Black glass step and coping detail | `installed-08.jpg` ✓ placed |
+| The horse | `studio-hero.jpg` |
+| Hand-cut, Roman-technique and framed examples | `make-standard.jpg`, `make-roman.jpg`, `make-framed.jpg` |
+| White flowers / marble shower | `installed-04.jpg` and `collection-flower-mosaics.jpg` |
+| Banana leaves, kitchen | `installed-05.jpg` and `collection-mosaic-tile-backsplash.jpg` |
+| Tree behind the sofa | `installed-02.jpg` and `collection-tree-mosaics.jpg` |
+| Round table top | `installed-09.jpg` and `collection-table-countertop-mosaics.jpg` |
+| Klimt "The Kiss" | `collection-portrait-mosaics.jpg` |
+| Tall ship | `collection-nautical-mosaics.jpg` |
+| Wine pour, cellar | `collection-food-mosaics.jpg` |
+| Hands setting the peacock | `collection-bird-mosaics.jpg`, `craft-hands.jpg`, `wip-02.jpg` |
 
 The same photograph can be uploaded twice under two names to fill two slots.
+
+## Video
+
+Two studio films were supplied. They are not embedded: a PDF can only carry
+video through a RichMedia annotation, which plays in Adobe Acrobat and nowhere
+else — not in Chrome's viewer, Preview, or any phone — and it would take the
+file from under a megabyte to roughly seven. Stills were pulled from them
+instead and used as photography. To extract more:
+
+    ffmpeg -ss <seconds> -i <film.mp4> -frames:v 1 -q:v 2 images/<slot>.jpg
+
+Playwright's bundled ffmpeg cannot decode H.264; `pip install imageio-ffmpeg`
+provides a build that can.
