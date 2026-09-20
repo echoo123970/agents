@@ -20,8 +20,8 @@ it is written to sit under whatever letterhead, logo or cover sheet you add.
 | 04 | What we make — hand-cut · Roman technique, polished · framed |
 | 05 | Customisation — the statement page |
 | 06 | Customisation — four ways in, and the matrix |
-| 07 | Installed — twelve placements, four to a row |
-| 08 | Table tops |
+| 07 | Pools & water |
+| 08 | Furniture — table tops & benches |
 | 09 | From our workshop |
 | 10 | The collections — twenty |
 | 11 | The materials — 42 natural marbles |
