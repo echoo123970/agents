@@ -26,7 +26,8 @@ const SRC = join(ROOT, "src");
 const IMAGES = join(ROOT, "images");
 const DIST = join(ROOT, "dist");
 const CLEAN = process.argv.includes("--clean");
-const OUT = join(DIST, CLEAN ? "bespoke-mosaic-portfolio-client.pdf" : "bespoke-mosaic-portfolio.pdf");
+const LIGHT = process.argv.includes("--light");   // smaller file, for email and slow viewers
+const OUT = join(DIST, CLEAN ? (LIGHT ? "bespoke-mosaic-portfolio-client-light.pdf" : "bespoke-mosaic-portfolio-client.pdf") : "bespoke-mosaic-portfolio.pdf");
 const EXT = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif"]);
 
 mkdirSync(DIST, { recursive: true });
@@ -75,7 +76,7 @@ await page.evaluate(() => document.fonts.ready);
 // small with no visible loss in print.
 // Pass --full to embed the originals untouched.
 if (found.length && !FULL_RES) {
-  const shrunk = await page.evaluate(async (maxEdge) => {
+  const shrunk = await page.evaluate(async ([maxEdge, quality]) => {
     const nodes = [...document.querySelectorAll("[data-slot]")].filter(
       (n) => getComputedStyle(n).backgroundImage !== "none"
     );
@@ -97,12 +98,12 @@ if (found.length && !FULL_RES) {
         c.width = Math.round(img.width * scale);
         c.height = Math.round(img.height * scale);
         c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
-        node.style.setProperty("background-image", `url("${c.toDataURL("image/jpeg", 0.88)}")`, "important");
+        node.style.setProperty("background-image", `url("${c.toDataURL("image/jpeg", quality)}")`, "important");
         count++;
       } catch { /* leave the original in place */ }
     }
     return count;
-  }, 2000);
+  }, [LIGHT ? 1100 : 2000, LIGHT ? 0.72 : 0.88]);
   if (shrunk) console.log(`photography: ${shrunk} image(s) re-encoded for size`);
 }
 

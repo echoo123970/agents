@@ -15,6 +15,9 @@ three points a page, with the photography carrying the argument.
     node build.mjs --clean  # dist/…-client.pdf — frames still waiting on a
                             # photograph fill with a quiet tessera field
                             # instead of printing their upload note
+    node build.mjs --clean --light
+                            # dist/…-client-light.pdf — photography at
+                            # 1100 px / JPEG 72 for email and slow viewers
     node contact-sheet.mjs  # → dist/contact-sheet.png, every page at a glance
                             # (run after build.mjs --png)
 
