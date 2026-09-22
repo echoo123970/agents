@@ -373,5 +373,6 @@ ul.ticks li::before {
 .lead { max-width: 104mm; }
 .split > .col .lead, .split > .col p { max-width: none; }
 
+.run.r7 { grid-template-columns: repeat(7, 1fr); }
 .run.r10 { grid-template-columns: repeat(10, 1fr); }
 .run.sq .photo { aspect-ratio: 1; }
