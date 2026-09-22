@@ -340,7 +340,8 @@ ul.ticks li::before {
                 flex-direction: column; justify-content: center; }
 .split > .col.tight { justify-content: flex-start; }
 .split > .art { position: relative; overflow: hidden; }
-.split > .art .photo { position: absolute; inset: 0; }
+/* only a lone photo fills the column; a stack inside it lays out normally */
+.split > .art > .photo:only-child { position: absolute; inset: 0; }
 
 /* a run of frames across the foot of a page */
 .run { display: grid; gap: 4mm; }
