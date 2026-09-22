@@ -56,15 +56,10 @@ automatically and the photograph fills the frame. `.jpg`, `.jpeg`, `.png`,
 |---|---|---|
 | `cover` | Pool floor at dusk — the full-bleed cover | portrait, ≥2000 px |
 | `studio-hero` | The horse — the studio page, page 2 | portrait, ≥2000 px |
-| `craft-hands` | Hands cutting or setting at the bench | 3:4, ≥2400 px |
-| `craft-macro` | Macro where marble meets glass and gold | 3:4, ≥2400 px |
 | `custom-artwork` | The client's reference image — the "before" | 4:3, ≥2000 px |
 | `custom-result` | The same subject finished in mosaic — the "after" | 4:3, ≥2000 px |
 | `layup` | Sample board / material lay-up for approval | 4:3, ≥2000 px |
-| `wip-01` | Design set out at full size before cutting | 4:3, ≥2000 px |
-| `wip-02` | Cutting and nipping at the bench | 4:3, ≥2000 px |
-| `wip-03` | Half-set panel showing bare mesh beside set tesserae | 4:3, ≥2000 px |
-| `wip-04` | Panels numbered and crated | 4:3, ≥2000 px |
+| `wip-01`–`wip-05` | The five workshop frames on page 3 — work on the mesh, photographed at the bench | portrait, ≥2000 px |
 | `done-01` | Hero finished piece, square-on, evenly lit | 3:2, ≥3000 px |
 | `done-02` | Macro detail of the same piece | 4:3, ≥2000 px |
 | `done-03` | A second commission, contrasting palette | 4:3, ≥2000 px |
@@ -191,7 +186,7 @@ placeholder note disappears.
 | Klimt "The Kiss" | `collection-portrait-mosaics.jpg` |
 | Tall ship | `collection-nautical-mosaics.jpg` |
 | Wine pour, cellar | `collection-food-mosaics.jpg` |
-| Hands setting the peacock | `collection-bird-mosaics.jpg`, `craft-hands.jpg`, `wip-02.jpg` |
+| Hands setting the peacock | `collection-bird-mosaics.jpg` |
 
 The same photograph can be uploaded twice under two names to fill two slots.
 
