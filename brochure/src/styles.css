@@ -373,23 +373,3 @@ ul.ticks li::before {
 .lead { max-width: 104mm; }
 .split > .col .lead, .split > .col p { max-width: none; }
 
-/* ============================================================
-   DETAIL LOUPE — a circular blow-up of one region of a
-   photograph, drawn from the same file at a larger background
-   size. No second image, and it enlarges with the page.
-   ============================================================ */
-.loupe {
-  position: absolute; border-radius: 50%; overflow: hidden;
-  background-repeat: no-repeat;
-  border: 1.1pt solid var(--accent);
-  box-shadow: 0 3mm 12mm rgba(10,42,30,.28);
-}
-.loupe::after {
-  content: ""; position: absolute; inset: 0; border-radius: 50%;
-  border: .5pt solid rgba(255,253,248,.55);
-  background: radial-gradient(60% 45% at 30% 16%, rgba(255,255,255,.20) 0%, rgba(255,255,255,0) 60%);
-}
-.loupe-note {
-  position: absolute; font-family: var(--sans); font-size: 6.2pt;
-  letter-spacing: .2em; text-transform: uppercase; color: var(--accent-deep);
-}

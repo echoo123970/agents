@@ -212,7 +212,6 @@ window.fillEmptyFrames = (tone) => {
   let n = 0;
   document.querySelectorAll("[data-slot]").forEach((frame, i) => {
     if (getComputedStyle(frame).backgroundImage !== "none") return;
-    if (frame.classList.contains("loupe")) return;   // a loupe has no placeholder of its own
     // a full-bleed frame carries the page's type; leave it as flat ground
     if (frame.classList.contains("bleed")) { frame.replaceChildren(); frame.classList.add("tessblank"); n++; return; }
     const grid = document.createElement("div");
