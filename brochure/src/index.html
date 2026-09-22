@@ -57,18 +57,20 @@
       </div>
     </div>
     <div class="art">
-      <div class="photo" data-slot="studio-hero">
+      <!-- the head sits high in the frame, so bias the crop upward -->
+      <div class="photo" data-slot="studio-hero" style="background-position:center 28%">
         <div class="slotinfo">
           <div class="tag">Studio photograph</div>
           <div class="desc">The horse — figurative glass and stone</div>
           <div class="spec">images/studio-hero.jpg</div>
         </div>
       </div>
-      <div class="capsule" style="left:-38mm;bottom:22mm;max-width:74mm">
-        <div class="eyebrow on-light">The detail</div>
-        <p class="lead script" style="font-size:12.5pt;margin:2.5mm 0 0;line-height:1.35">Thousands of tesserae,<br>placed by hand.</p>
-      </div>
     </div>
+  </div>
+  <!-- outside .art, which clips its photography -->
+  <div class="capsule" style="left:112mm;bottom:26mm;width:74mm">
+    <div class="eyebrow on-light">The detail</div>
+    <p class="lead script" style="font-size:12.5pt;margin:2.5mm 0 0;line-height:1.35">Thousands of tesserae,<br>placed by hand.</p>
   </div>
 </div>
 
