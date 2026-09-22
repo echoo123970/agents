@@ -119,16 +119,16 @@ const hexToHsl = (hex) => {
 const rng = (seed) => () => (seed = (seed * 1664525 + 1013904223) % 4294967296) / 4294967296;
 
 /* a field of hand-cut tesserae in one tone */
-const tesserae = (hex, seed, cols = 7, rows = 4) => {
+const tesserae = (hex, seed, cols = 7, rows = 4, amp = 1) => {
   const [h, s, l] = hexToHsl(hex);
   const rand = rng(seed);
   let out = "";
   for (let i = 0; i < cols * rows; i++) {
     const r = rand();
-    const vein = r > 0.88;                                  // the occasional bright vein
-    const dl = vein ? 9 + rand() * 7 : (rand() - 0.5) * 9;  // tonal spread
-    const dh = (rand() - 0.5) * 6;
-    const ds = (rand() - 0.5) * 8;
+    const vein = r > 0.88;                                        // the occasional bright vein
+    const dl = (vein ? 9 + rand() * 7 : (rand() - 0.5) * 9) * amp; // tonal spread
+    const dh = (rand() - 0.5) * 6 * amp;
+    const ds = (rand() - 0.5) * 8 * amp;
     out += `<i style="background:hsl(${(h + dh + 360) % 360} ${Math.max(0, Math.min(100, s + ds))}% ${
       Math.max(2, Math.min(98, l + dl))}%)"></i>`;
   }
@@ -148,9 +148,9 @@ function paint(id, rows, cols) {
     .join("");
 }
 
-paint("marble-chart", MARBLE, 7);
-paint("engineered-chart", ENGINEERED, 7);
-paint("glass-chart", GLASS, 7);
+paint("marble-chart", MARBLE, 5);
+paint("engineered-chart", ENGINEERED, 5);
+paint("glass-chart", GLASS, 5);
 
 /* ============================================================
    COLLECTIONS — pulled from the studio's live catalogue.
@@ -202,3 +202,25 @@ document.querySelectorAll(".page").forEach((page, i) => {
   const folio = page.querySelector(".folio");
   if (folio) folio.lastElementChild.textContent = String(i + 1).padStart(2, "0");
 });
+
+/* ---- unphotographed frames -------------------------------------------
+   With --clean, a frame still waiting on its photograph drops the upload
+   note and fills with a quiet field of tesserae instead, so a document
+   sent to a client reads as designed rather than unfinished. The studio's
+   own build keeps the notes — they are the shot list.                    */
+window.fillEmptyFrames = (tone) => {
+  let n = 0;
+  document.querySelectorAll("[data-slot]").forEach((frame, i) => {
+    if (getComputedStyle(frame).backgroundImage !== "none") return;
+    // a full-bleed frame carries the page's type; leave it as flat ground
+    if (frame.classList.contains("bleed")) { frame.replaceChildren(); frame.classList.add("tessblank"); n++; return; }
+    const grid = document.createElement("div");
+    grid.className = "tessfill";
+    grid.style.setProperty("--cols", "16");
+    grid.innerHTML = tesserae(tone, i * 7919 + 101, 16, 22, 0.45);
+    frame.replaceChildren(grid);
+    frame.classList.add("tessfilled");
+    n++;
+  });
+  return n;
+};

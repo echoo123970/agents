@@ -2,9 +2,11 @@
 @import url("tokens.css");
 
 /* ============================================================
-   PAGE SET-UP — A4 portrait, full-bleed capable
+   PAGE SET-UP — 16:9 landscape (338.7 × 190.5 mm), the standard
+   widescreen slide size, so it fills a laptop or a projector with no
+   letterboxing and still prints cleanly. Full-bleed capable.
    ============================================================ */
-@page { size: 210mm 297mm; margin: 0; }
+@page { size: 338.7mm 190.5mm; margin: 0; }
 
 * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 html, body { margin: 0; padding: 0; background: #fff; }
@@ -90,7 +92,7 @@ strong { font-weight: 500; color: var(--ink); }
 
 /* Footer */
 .folio {
-  position: absolute; left: var(--margin); right: var(--margin); bottom: 10mm;
+  position: absolute; left: var(--margin); right: var(--margin); bottom: 8mm;
   display: flex; justify-content: space-between; align-items: center;
   font-family: var(--sans); font-size: 6.4pt; letter-spacing: .24em;
   text-transform: uppercase; color: var(--ink-light);
@@ -147,6 +149,7 @@ strong { font-weight: 500; color: var(--ink); }
    COLOUR CHART SWATCHES
    ============================================================ */
 .chart { display: grid; gap: 4mm; }
+.chart > * { min-width: 0; }
 .chart.c5 { grid-template-columns: repeat(5, 1fr); }
 .chart.c4 { grid-template-columns: repeat(4, 1fr); }
 .chart.c6 { grid-template-columns: repeat(6, 1fr); }
@@ -164,6 +167,7 @@ strong { font-weight: 500; color: var(--ink); }
 /* tesserae swatch — a field of hand-cut squares */
 .sw .chip.tess {
   display: grid;
+  min-width: 0;
   grid-template-columns: repeat(var(--cols, 7), 1fr);
   gap: .3mm;
   height: auto;
@@ -236,7 +240,7 @@ ul.ticks li::before {
 .tessera i { display: block; aspect-ratio: 1; }
 
 /* Marble page carries 30 swatches — slightly shorter chips */
-.chart.compact .sw .chip { height: 19mm; }
+.chart.compact .sw .chip { height: 15mm; }
 
 /* ============================================================
    ACCENT ON TINTED GROUNDS
@@ -307,3 +311,64 @@ ul.ticks li::before {
 .page.emerald .photo .slotinfo .desc { color: #C9D8CD; }
 .page.emerald .photo .slotinfo .spec { color: #A9BCB0; }
 .page.emerald .photo::after { border-color: rgba(217,188,114,.42); }
+
+/* a frame still waiting on its photograph, under --clean */
+.photo .tessfill {
+  position: absolute; inset: 0;
+  display: grid; grid-template-columns: repeat(var(--cols, 14), 1fr);
+  grid-auto-rows: 1fr; gap: .22mm; padding: .22mm;
+  background: rgba(18,58,42,.10);
+}
+.photo .tessfill i { display: block; }
+.photo.tessfilled::after { border-color: rgba(168,132,44,.30); }
+.photo.tessblank { background: transparent; }
+.photo.tessblank::after { border: 0; }
+
+/* ============================================================
+   LANDSCAPE COMPOSITIONS
+   A wide page wants a vertical division and a horizontal run of
+   frames — not the stacked blocks a portrait page uses. These are
+   the only compositions the deck needs.
+   ============================================================ */
+
+/* a page split into a text column and a photography column */
+.split { position: absolute; inset: 0; display: grid; }
+.split.half   { grid-template-columns: 1fr 1fr; }
+.split.third  { grid-template-columns: 1fr 1.9fr; }   /* text | photography */
+.split.wide   { grid-template-columns: 1.9fr 1fr; }   /* photography | text */
+.split > .col { position: relative; padding: var(--margin) var(--margin) 20mm; display: flex;
+                flex-direction: column; justify-content: center; }
+.split > .col.tight { justify-content: flex-start; }
+.split > .art { position: relative; overflow: hidden; }
+.split > .art .photo { position: absolute; inset: 0; }
+
+/* a run of frames across the foot of a page */
+.run { display: grid; gap: 4mm; }
+.run > * { min-width: 0; }
+.run.r2 { grid-template-columns: repeat(2, 1fr); }
+.run.r3 { grid-template-columns: repeat(3, 1fr); }
+.run.r4 { grid-template-columns: repeat(4, 1fr); }
+.run.r5 { grid-template-columns: repeat(5, 1fr); }
+.run.r6 { grid-template-columns: repeat(6, 1fr); }
+.run .photo { aspect-ratio: 3 / 4; }
+.run.land .photo { aspect-ratio: 4 / 3; }
+/* frames that fill their cell instead of holding a ratio */
+.run.fill .photo { aspect-ratio: auto; height: 100%; }
+
+/* one hero frame beside a run of smaller ones */
+.lede { display: grid; grid-template-columns: 1.55fr 1fr; gap: 4mm; }
+.lede .photo.hero { aspect-ratio: auto; height: 100%; }
+.lede .side { display: grid; grid-template-rows: 1fr 1fr; gap: 4mm; }
+.lede .side .photo { aspect-ratio: auto; height: 100%; }
+
+/* a caption panel floating over full-bleed photography */
+.capsule {
+  position: absolute; background: var(--light);
+  padding: 6mm 7mm; box-shadow: 0 2mm 9mm rgba(10,42,30,.16); max-width: 92mm;
+}
+
+/* wide page, tighter type — the eye travels further per line */
+.page h1 { font-size: 34pt; }
+.page h2 { font-size: 21pt; line-height: 1.12; }
+.lead { max-width: 104mm; }
+.split > .col .lead, .split > .col p { max-width: none; }

@@ -3,6 +3,8 @@
 
      node build.mjs            → dist/bespoke-mosaic-portfolio.pdf
      node build.mjs --png      → also writes dist/preview/page-NN.png
+     node build.mjs --clean    → dist/…-client.pdf, no upload notes on
+                                 frames that are still waiting on a photo
 
    PHOTOGRAPHY DROP-IN
    Any file placed in images/ whose name matches a slot is used
@@ -23,7 +25,8 @@ const ROOT = import.meta.dirname;
 const SRC = join(ROOT, "src");
 const IMAGES = join(ROOT, "images");
 const DIST = join(ROOT, "dist");
-const OUT = join(DIST, "bespoke-mosaic-portfolio.pdf");
+const CLEAN = process.argv.includes("--clean");
+const OUT = join(DIST, CLEAN ? "bespoke-mosaic-portfolio-client.pdf" : "bespoke-mosaic-portfolio.pdf");
 const EXT = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif"]);
 
 mkdirSync(DIST, { recursive: true });
@@ -101,6 +104,15 @@ if (found.length && !FULL_RES) {
     return count;
   }, 2000);
   if (shrunk) console.log(`photography: ${shrunk} image(s) re-encoded for size`);
+}
+
+// ---- frames still waiting on photography -------------------------------
+// The studio build keeps each empty frame's shot note: it is the shot list.
+// --clean fills them with a quiet tessera field instead, so the document can
+// go to a client today without reading as unfinished.
+if (CLEAN) {
+  const filled = await page.evaluate((tone) => window.fillEmptyFrames(tone), "#CBDACE");
+  console.log(`unphotographed: ${filled} frame(s) filled with tesserae (--clean)`);
 }
 
 await page.waitForTimeout(400);

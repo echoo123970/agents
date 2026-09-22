@@ -12,7 +12,7 @@ const tmp = join(SRC, ".qa.html");
 writeFileSync(tmp, readFileSync(join(SRC, "index.html"), "utf8").replace("<!--PHOTO_INJECT-->", ""));
 
 const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
-const page = await browser.newPage({ viewport: { width: 1240, height: 1754 } });
+const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
 await page.goto("file://" + tmp, { waitUntil: "load" });
 await page.emulateMedia({ media: "print" });
 await page.evaluate(() => document.fonts.ready);

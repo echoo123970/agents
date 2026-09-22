@@ -1,12 +1,20 @@
 # Bespoke Mosaic — Trade & Specification Portfolio
 
-A 20-page, print-ready A4 PDF for B2B use (architects, interior designers,
+A 20-page PDF for B2B use (architects, interior designers,
 developers, contractors). No brand name appears anywhere in the document —
 it is written to sit under whatever letterhead, logo or cover sheet you add.
+
+**Format:** 16:9 landscape, 338.7 × 190.5 mm — the standard widescreen slide
+size, so it fills a laptop or projector with no letterboxing and still prints
+cleanly on A4 landscape. Copy is deliberately short: a heading and at most
+three points a page, with the photography carrying the argument.
 
     node build.mjs          # → dist/bespoke-mosaic-portfolio.pdf
     node build.mjs --png    # + page images in dist/preview/ for quick review
     node build.mjs --full   # embed photography at original resolution
+    node build.mjs --clean  # dist/…-client.pdf — frames still waiting on a
+                            # photograph fill with a quiet tessera field
+                            # instead of printing their upload note
     node contact-sheet.mjs  # → dist/contact-sheet.png, every page at a glance
                             # (run after build.mjs --png)
 
