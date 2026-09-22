@@ -103,7 +103,7 @@ if (found.length && !FULL_RES) {
       } catch { /* leave the original in place */ }
     }
     return count;
-  }, [LIGHT ? 1100 : 2000, LIGHT ? 0.72 : 0.88]);
+  }, [LIGHT ? 1400 : 2600, LIGHT ? 0.82 : 0.92]);
   if (shrunk) console.log(`photography: ${shrunk} image(s) re-encoded for size`);
 }
 

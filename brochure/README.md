@@ -17,7 +17,7 @@ three points a page, with the photography carrying the argument.
                             # instead of printing their upload note
     node build.mjs --clean --light
                             # dist/…-client-light.pdf — photography at
-                            # 1100 px / JPEG 72 for email and slow viewers
+                            # 1400 px / JPEG 82 for email and slow viewers
     node contact-sheet.mjs  # → dist/contact-sheet.png, every page at a glance
                             # (run after build.mjs --png)
 
