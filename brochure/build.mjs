@@ -71,16 +71,18 @@ await page.emulateMedia({ media: "print" });
 await page.evaluate(() => document.fonts.ready);
 
 // ---- downscale supplied photography ------------------------------------
-// Camera and phone files are far larger than a page needs, and WebP has no
-// PDF equivalent; re-encoding every image at 2000 px / JPEG 88 keeps the file
-// small with no visible loss in print.
+// Camera files carry far more pixels than a frame can show, and WebP has no
+// PDF equivalent, so every image is re-encoded. The target is set per frame
+// from the size it is actually drawn at — a 41mm square needs a fraction of
+// what a full-page photograph does — which is where the file size goes.
 // Pass --full to embed the originals untouched.
 if (found.length && !FULL_RES) {
-  const shrunk = await page.evaluate(async ([maxEdge, quality]) => {
+  const shrunk = await page.evaluate(async ([dpi, quality]) => {
+    const PX_PER_MM = 96 / 25.4;             // CSS px in a millimetre
     const nodes = [...document.querySelectorAll("[data-slot]")].filter(
       (n) => getComputedStyle(n).backgroundImage !== "none"
     );
-    let count = 0;
+    let count = 0, before = 0, after = 0;
     for (const node of nodes) {
       const url = getComputedStyle(node).backgroundImage.slice(5, -2);
       if (!url.startsWith("file://")) continue;
@@ -91,20 +93,28 @@ if (found.length && !FULL_RES) {
           i.onerror = rej;
           i.src = url;
         });
-        // always re-encode: PDF has no WebP, so an un-touched .webp is
-        // embedded as a raw bitmap and costs megabytes a page
-        const scale = Math.min(1, maxEdge / Math.max(img.width, img.height));
+        // the frame's printed size, and the pixels that size can actually show
+        const r = node.getBoundingClientRect();
+        const mm = Math.max(r.width, r.height) / PX_PER_MM;
+        const want = Math.max(320, Math.round((mm / 25.4) * dpi));
+        // background-size: cover means the long edge may be cropped away, so
+        // scale on the short edge to keep the visible area at full quality
+        const shortEdge = Math.min(img.width, img.height);
+        const scale = Math.min(1, want / shortEdge);
         const c = document.createElement("canvas");
         c.width = Math.round(img.width * scale);
         c.height = Math.round(img.height * scale);
         c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        before += img.width * img.height;
+        after += c.width * c.height;
         node.style.setProperty("background-image", `url("${c.toDataURL("image/jpeg", quality)}")`, "important");
         count++;
       } catch { /* leave the original in place */ }
     }
-    return count;
-  }, [LIGHT ? 1400 : 2600, LIGHT ? 0.82 : 0.92]);
-  if (shrunk) console.log(`photography: ${shrunk} image(s) re-encoded for size`);
+    return { count, saved: before ? Math.round((1 - after / before) * 100) : 0 };
+  }, [LIGHT ? 150 : 220, LIGHT ? 0.76 : 0.88]);
+  if (shrunk.count)
+    console.log(`photography: ${shrunk.count} image(s) re-encoded to frame size (${shrunk.saved}% fewer pixels)`);
 }
 
 // ---- frames still waiting on photography -------------------------------
