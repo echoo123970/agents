@@ -198,17 +198,19 @@
       </ul>
     </div>
 
-    <div class="run r3 fill" style="margin-top:7mm;height:69mm">
-      <div class="photo" data-slot="table-01"><div class="slotinfo"><div class="desc" style="font-size:7pt">Dining table — geometric in navy, green and rose</div></div></div>
-      <div class="photo" data-slot="bench-01"><div class="slotinfo"><div class="desc" style="font-size:7pt">Garden bench — lilies in glass</div></div></div>
-      <div class="photo" data-slot="table-04"><div class="slotinfo"><div class="desc" style="font-size:7pt">Dining table — rosette</div></div></div>
+    <!-- each frame's width is its photograph's own proportion, so the row
+         fills the page without squaring everything off to the same tile -->
+    <div style="display:flex;gap:4mm;height:82mm;margin-top:7mm">
+      <div class="photo" data-slot="table-03" style="flex:1.75"><div class="slotinfo"><div class="desc" style="font-size:7pt">Coffee table</div></div></div>
+      <div class="photo" data-slot="bench-01" style="flex:1.37"><div class="slotinfo"><div class="desc" style="font-size:7pt">Garden bench — lilies in glass</div></div></div>
+      <div class="photo" data-slot="table-02" style="flex:0.75"><div class="slotinfo"><div class="desc" style="font-size:7pt">Side table, on a forged base</div></div></div>
     </div>
 
-    <div class="run r4 fill" style="margin-top:4mm;height:52mm">
-      <div class="photo" data-slot="table-02"><div class="slotinfo"><div class="desc" style="font-size:6.6pt">Side table, on a forged base</div></div></div>
-      <div class="photo" data-slot="table-03"><div class="slotinfo"><div class="desc" style="font-size:6.6pt">Coffee table</div></div></div>
-      <div class="photo" data-slot="table-05"><div class="slotinfo"><div class="desc" style="font-size:6.6pt">Terrace table, olive wreath</div></div></div>
-      <div class="photo" data-slot="bench-02"><div class="slotinfo"><div class="desc" style="font-size:6.6pt">Bench, night-lit</div></div></div>
+    <div style="display:flex;gap:4mm;height:44mm;margin-top:4mm">
+      <div class="photo" data-slot="table-01" style="flex:1"><div class="slotinfo"><div class="desc" style="font-size:6.2pt">Dining table — geometric</div></div></div>
+      <div class="photo" data-slot="table-04" style="flex:0.8"><div class="slotinfo"><div class="desc" style="font-size:6.2pt">Dining table — rosette</div></div></div>
+      <div class="photo" data-slot="table-05" style="flex:1"><div class="slotinfo"><div class="desc" style="font-size:6.2pt">Terrace table</div></div></div>
+      <div class="photo" data-slot="bench-02" style="flex:1.33"><div class="slotinfo"><div class="desc" style="font-size:6.2pt">Bench, night-lit</div></div></div>
     </div>
   </div>
   <div class="folio"><span>Table tops &amp; benches &nbsp;·&nbsp; installed</span><span class="line"></span><span>05</span></div>
@@ -237,15 +239,16 @@
       </div>
     </div>
 
-    <div class="run r3 fill" style="margin-top:7mm;height:69mm">
-      <div class="photo" data-slot="bath-05"><div class="slotinfo"><div class="desc" style="font-size:7pt">Shower enclosure, magnolia on black</div></div></div>
-      <div class="photo" data-slot="bath-03"><div class="slotinfo"><div class="desc" style="font-size:7pt">Feature wall, scrolling arabesque</div></div></div>
-      <div class="photo" data-slot="bath-04"><div class="slotinfo"><div class="desc" style="font-size:7pt">Shower, walls and ceiling — branches and birds</div></div></div>
-    </div>
-
-    <div class="run r2 fill" style="margin-top:4mm;height:56mm">
-      <div class="photo" data-slot="bath-01"><div class="slotinfo"><div class="desc" style="font-size:6.6pt">Floor spiral, bath to shower</div></div></div>
-      <div class="photo" data-slot="bath-02"><div class="slotinfo"><div class="desc" style="font-size:6.6pt">Greek-key border, bath surround</div></div></div>
+    <!-- two tall frames carry the two tall photographs at their own
+         proportions — the 543x1012 shower would lose four fifths of itself in
+         a landscape cell — and the wide bathroom takes a wide one -->
+    <div style="display:grid;grid-template-columns:88mm 58mm 1fr 1fr;grid-template-rows:1fr 1fr;
+                gap:4mm;margin-top:6mm;flex:1">
+      <div class="photo" data-slot="bath-05" style="grid-row:1 / span 2"><div class="slotinfo"><div class="desc" style="font-size:7pt">Shower enclosure, magnolia on black</div></div></div>
+      <div class="photo" data-slot="bath-04" style="grid-row:1 / span 2"><div class="slotinfo"><div class="desc" style="font-size:6.4pt">Shower lined to the ceiling — branches and birds</div></div></div>
+      <div class="photo" data-slot="bath-03"><div class="slotinfo"><div class="desc" style="font-size:6.4pt">Feature wall, scrolling arabesque</div></div></div>
+      <div class="photo" data-slot="bath-01"><div class="slotinfo"><div class="desc" style="font-size:6.4pt">Floor spiral, bath to shower</div></div></div>
+      <div class="photo" data-slot="bath-02" style="grid-column:3 / span 2"><div class="slotinfo"><div class="desc" style="font-size:6.4pt">Greek-key border, bath surround</div></div></div>
     </div>
   </div>
   <div class="folio"><span>Bathrooms &amp; wet rooms &nbsp;·&nbsp; installed</span><span class="line"></span><span>06</span></div>
@@ -269,13 +272,12 @@
       </ul>
     </div>
 
-    <div class="run r3 fill" style="margin-top:7mm;height:69mm">
-      <div class="photo" data-slot="kitchen-05"><div class="slotinfo"><div class="desc" style="font-size:7pt">Banana palm, behind the hob</div></div></div>
-      <div class="photo" data-slot="kitchen-02"><div class="slotinfo"><div class="desc" style="font-size:7pt">Full run and overmantel, botanical</div></div></div>
-      <div class="photo" data-slot="kitchen-04"><div class="slotinfo"><div class="desc" style="font-size:7pt">Coastal landscape, under a carved arch</div></div></div>
-    </div>
-
-    <div class="run r2 fill" style="margin-top:4mm;height:56mm">
+    <!-- the palm runs full height at its own 4:5; the rooms sit beside it -->
+    <div style="display:grid;grid-template-columns:92mm 1fr 1fr;grid-template-rows:1fr 1fr;
+                gap:4mm;margin-top:6mm;flex:1">
+      <div class="photo" data-slot="kitchen-05" style="grid-row:1 / span 2"><div class="slotinfo"><div class="desc" style="font-size:7pt">Banana palm, behind the hob</div></div></div>
+      <div class="photo" data-slot="kitchen-02"><div class="slotinfo"><div class="desc" style="font-size:6.6pt">Full run and overmantel, botanical</div></div></div>
+      <div class="photo" data-slot="kitchen-04"><div class="slotinfo"><div class="desc" style="font-size:6.6pt">Coastal landscape, under a carved arch</div></div></div>
       <div class="photo" data-slot="kitchen-01"><div class="slotinfo"><div class="desc" style="font-size:6.6pt">Lilies in mother-of-pearl and glass</div></div></div>
       <div class="photo" data-slot="kitchen-03"><div class="slotinfo"><div class="desc" style="font-size:6.6pt">Blossom in blue, full wall</div></div></div>
     </div>
