@@ -28,17 +28,17 @@ applied to **every** product unless the user overrides them for a specific item.
 | Abstract  | `MK027`   |
 | Animal    | `MAA085`  |
 | Bird      | `MB128`   |
-| Flower    | `MF441`   |
+| Flower    | `MF445`   |
 | Food      | `MAD043`  |
-| Geometric | `MAG385`  |
+| Geometric | `MAG393`  |
 | Landmark  | `MAL022`  |
 | Landscape | `MAS303`  |
 | Nautical  | `MAN119`  |
-| Other     | `MAO042`  |
+| Other     | `MAO043`  |
 | Pattern   | `MAC012`  |
 | Portrait  | `MAP067`  |
 | Religious | `MAR103`  |
-| Roman     | `MAM062`  |
+| Roman     | `MAM064`  |
 | Tree      | `MAT078`  |
 
 > Update the "Next SKU" value for a category after each product is created so
