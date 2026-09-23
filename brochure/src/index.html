@@ -114,13 +114,13 @@
 <div class="page dark marble-dark grain">
   <div class="pad" style="display:flex;flex-direction:column;justify-content:space-between;padding-bottom:11mm">
     <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:14mm">
-      <div>
+      <div style="flex:none">
         <div class="eyebrow">Inside the atelier</div>
-        <h2 style="margin-top:5mm">A rare look into the making<br>of each commission.</h2>
+        <h2 style="margin-top:5mm;font-size:19pt;white-space:nowrap">A rare look into the making of each commission.</h2>
       </div>
-      <p style="margin:0;text-align:right;max-width:132mm">Every mosaic is meticulously cut and set by hand by our
-        artisans. Throughout the process, we document the work at the bench and share progress photographs with our
-        clients — offering an intimate view of the craftsmanship as each piece takes form.</p>
+      <p style="margin:0;max-width:112mm;font-size:8.8pt;line-height:1.75">Every mosaic is meticulously cut and set by
+        hand by our artisans. Throughout the process, we document the work at the bench and share progress photographs
+        with our clients — an intimate view of the craftsmanship as each piece takes form.</p>
     </div>
 
     <div>
@@ -141,7 +141,7 @@
     </div>
     </div>
 
-    <div class="micro" style="margin-top:4mm;letter-spacing:.2em">Hand-cut &nbsp;•&nbsp; Hand-set &nbsp;•&nbsp; Made to order &nbsp;•&nbsp; Documented throughout</div>
+    <div class="micro" style="margin-top:5mm;font-size:8.6pt;letter-spacing:.24em;color:var(--accent-deep);text-align:center">Hand-cut &nbsp;&nbsp;•&nbsp;&nbsp; Hand-set &nbsp;&nbsp;•&nbsp;&nbsp; Made to order &nbsp;&nbsp;•&nbsp;&nbsp; Documented throughout</div>
   </div>
   <div class="folio"><span>Inside the atelier</span><span class="line"></span><span>03</span></div>
 </div>
@@ -164,17 +164,18 @@
       </ul>
     </div>
 
-    <!-- the peacock floor centred and whole: `contain` guarantees nothing is
-         lost top or bottom. The fountain shares its 3:4, so it fills its frame
-         uncropped too; the nautilus is centred in its own photograph, so a
-         squarer frame keeps the medallion whole. -->
-    <div style="display:grid;grid-template-columns:1fr 92mm 1.28fr;gap:5mm;margin-top:7mm;flex:1">
-      <div class="photo" data-slot="pool-05"><div class="slotinfo"><div class="desc" style="font-size:6.8pt">Wall fountain</div></div></div>
+    <!-- peacock centred and whole — `contain` keeps it uncropped top to
+         bottom — with two stacked frames either side -->
+    <div style="display:grid;grid-template-columns:1fr 95mm 1fr;grid-template-rows:1fr 1fr;
+                gap:4mm;margin-top:7mm;flex:1">
+      <div class="photo" data-slot="pool-02"><div class="slotinfo"><div class="desc" style="font-size:6.6pt">Steps, wave border</div></div></div>
       <div class="photo" data-slot="pool-01"
-           style="background-size:contain;background-repeat:no-repeat;background-position:center;background-color:transparent">
+           style="grid-column:2;grid-row:1 / span 2;background-size:contain;background-repeat:no-repeat;background-position:center;background-color:transparent">
         <div class="slotinfo"><div class="desc" style="font-size:7pt">Peacock pool floor</div></div>
       </div>
-      <div class="photo" data-slot="pool-06"><div class="slotinfo"><div class="desc" style="font-size:6.8pt">Nautilus medallion, pool floor</div></div></div>
+      <div class="photo" data-slot="pool-06"><div class="slotinfo"><div class="desc" style="font-size:6.6pt">Nautilus medallion, pool floor</div></div></div>
+      <div class="photo" data-slot="pool-05"><div class="slotinfo"><div class="desc" style="font-size:6.6pt">Wall fountain</div></div></div>
+      <div class="photo" data-slot="pool-04"><div class="slotinfo"><div class="desc" style="font-size:6.6pt">Coping, floral border</div></div></div>
     </div>
   </div>
   <div class="folio"><span>Pools &amp; water &nbsp;·&nbsp; installed</span><span class="line"></span><span>04</span></div>
