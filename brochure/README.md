@@ -62,7 +62,7 @@ automatically and the photograph fills the frame. `.jpg`, `.jpeg`, `.png`,
 | `custom-artwork` | The client's reference image — the "before" | 4:3, ≥2000 px |
 | `custom-result` | The same subject finished in mosaic — the "after" | 4:3, ≥2000 px |
 | `layup` | Sample board / material lay-up for approval | 4:3, ≥2000 px |
-| `wip-01`–`wip-20` | The twenty square frames on page 3 — work on the mesh, photographed at the bench. Five supplied; fifteen open | square, ≥1200 px |
+| `wip-01`–`wip-10` | The ten square frames on page 3 — work on the mesh, photographed at the bench. All ten supplied | square, ≥1200 px |
 | `done-01` | Hero finished piece, square-on, evenly lit | 3:2, ≥3000 px |
 | `done-02` | Macro detail of the same piece | 4:3, ≥2000 px |
 | `done-03` | A second commission, contrasting palette | 4:3, ≥2000 px |
