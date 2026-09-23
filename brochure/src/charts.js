@@ -10,7 +10,7 @@
    paint() with a background-image.
    ============================================================ */
 
-/* 42 natural marbles, numbered as in the studio palette */
+/* 42 natural marbles, numbered as in the atelier palette */
 const MARBLE = [
   ["Nero Marquina",     "01", "#1A1A1C"],
   ["Bardiglio Gray",    "02", "#8A8C8E"],
@@ -153,7 +153,7 @@ paint("engineered-chart", ENGINEERED, 5);
 paint("glass-chart", GLASS, 5);
 
 /* ============================================================
-   COLLECTIONS — pulled from the studio's live catalogue.
+   COLLECTIONS — pulled from the atelier's live catalogue.
    ["Title", "handle", "range note"] — the handle is also the
    image slot, so images/collection-<handle>.jpg fills the frame.
    ============================================================ */
@@ -177,7 +177,7 @@ const COLLECTIONS = [
   ["Backsplash",    "mosaic-tile-backsplash",  "100+ designs"],
   ["Table top",     "table-countertop-mosaics","89 designs"],
   ["Limited edition","limited-edition",        "hand-signed series"],
-  ["Studio specials","studio-specials",        "one-of-a-kind"],
+  ["Atelier specials","studio-specials",       "one-of-a-kind"],
 ];
 
 function paintCollections(id) {
@@ -206,7 +206,7 @@ document.querySelectorAll(".page").forEach((page, i) => {
 /* ---- unphotographed frames -------------------------------------------
    With --clean, a frame still waiting on its photograph drops the upload
    note and fills with a quiet field of tesserae instead, so a document
-   sent to a client reads as designed rather than unfinished. The studio's
+   sent to a client reads as designed rather than unfinished. The atelier's
    own build keeps the notes — they are the shot list.                    */
 window.fillEmptyFrames = (tone) => {
   let n = 0;
