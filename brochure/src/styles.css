@@ -205,6 +205,27 @@ table.spec td { color: var(--ink-soft); }
 .panel.accent { border-color: rgba(168,132,44,.55); }
 .panel-title { font-family: var(--display); font-size: 12pt; margin-bottom: 2.5mm; }
 
+/* Process chain — the seven stages linked in sequence rather than set out
+   as a grid, so the order reads as one run of work */
+.chain .link {
+  position: relative; display: grid; grid-template-columns: 9mm 1fr;
+  gap: 5mm; align-items: start; padding-bottom: 5.5mm;
+}
+.chain .link:last-child { padding-bottom: 0; }
+.chain .link:not(:last-child)::before {
+  content: ""; position: absolute; left: 4.5mm; top: 9.6mm; bottom: 0;
+  border-left: .5pt solid var(--accent); opacity: .45;
+}
+.chain .idx {
+  width: 9mm; height: 9mm; border-radius: 50%;
+  border: .7pt solid var(--accent); display: flex; align-items: center; justify-content: center;
+  font-family: var(--display); font-size: 8pt; color: var(--accent-deep);
+}
+/* on a genuinely dark ground the deep gold goes muddy */
+.page.emerald .chain .idx, .page.dark.marble-dark.grain.on-dark .chain .idx { color: var(--accent-light); }
+.chain h4 { margin: .6mm 0 1mm; font-size: 9.6pt; }
+.chain p { margin: 0; font-size: 7pt; line-height: 1.5; }
+
 /* Numbered process steps */
 .step { display: grid; grid-template-columns: 13mm 1fr; gap: 4mm; align-items: start; }
 .step .idx { font-family: var(--display); font-size: 17pt; color: var(--accent); line-height: 1; padding-top: 1mm; }
