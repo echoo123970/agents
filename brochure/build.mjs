@@ -76,6 +76,10 @@ await page.evaluate(() => document.fonts.ready);
 // from the size it is actually drawn at — a 41mm square needs a fraction of
 // what a full-page photograph does — which is where the file size goes.
 // Pass --full to embed the originals untouched.
+// Most of the supplied photography is 720-800px on the short edge, so the
+// min(1, …) cap leaves it at native size in the standard build: 260dpi is
+// more than a 90mm frame can draw from a 720px file. The light build's
+// 200dpi is the lowest that still reads as sharp on screen.
 if (found.length && !FULL_RES) {
   const shrunk = await page.evaluate(async ([dpi, quality]) => {
     const PX_PER_MM = 96 / 25.4;             // CSS px in a millimetre
@@ -112,7 +116,7 @@ if (found.length && !FULL_RES) {
       } catch { /* leave the original in place */ }
     }
     return { count, saved: before ? Math.round((1 - after / before) * 100) : 0 };
-  }, [LIGHT ? 150 : 220, LIGHT ? 0.76 : 0.88]);
+  }, [LIGHT ? 200 : 260, LIGHT ? 0.84 : 0.92]);
   if (shrunk.count)
     console.log(`photography: ${shrunk.count} image(s) re-encoded to frame size (${shrunk.saved}% fewer pixels)`);
 }
