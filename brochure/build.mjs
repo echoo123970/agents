@@ -26,8 +26,16 @@ const SRC = join(ROOT, "src");
 const IMAGES = join(ROOT, "images");
 const DIST = join(ROOT, "dist");
 const CLEAN = process.argv.includes("--clean");
-const LIGHT = process.argv.includes("--light");   // smaller file, for email and slow viewers
-const OUT = join(DIST, CLEAN ? (LIGHT ? "bespoke-mosaic-portfolio-client-light.pdf" : "bespoke-mosaic-portfolio-client.pdf") : "bespoke-mosaic-portfolio.pdf");
+// How hard the photography is re-encoded. --light is the screen copy; --mail
+// trades visible sharpness for a file that opens on a phone, where anything
+// much past 5MB has been refusing to.
+const TIER = process.argv.includes("--mail") ? "mail" : process.argv.includes("--light") ? "light" : "full";
+const { dpi: DPI, quality: QUALITY, suffix: SUFFIX } = {
+  full:  { dpi: 260, quality: 0.92, suffix: "" },
+  light: { dpi: 200, quality: 0.84, suffix: "-light" },
+  mail:  { dpi: 120, quality: 0.66, suffix: "-mail" },
+}[TIER];
+const OUT = join(DIST, CLEAN ? `bespoke-mosaic-portfolio-client${SUFFIX}.pdf` : "bespoke-mosaic-portfolio.pdf");
 const EXT = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif"]);
 
 mkdirSync(DIST, { recursive: true });
@@ -78,8 +86,8 @@ await page.evaluate(() => document.fonts.ready);
 // Pass --full to embed the originals untouched.
 // Most of the supplied photography is 720-800px on the short edge, so the
 // min(1, …) cap leaves it at native size in the standard build: 260dpi is
-// more than a 90mm frame can draw from a 720px file. The light build's
-// 200dpi is the lowest that still reads as sharp on screen.
+// more than a 90mm frame can draw from a 720px file. 200dpi is the lowest
+// that still reads as sharp on screen; --mail goes below that on purpose.
 if (found.length && !FULL_RES) {
   const shrunk = await page.evaluate(async ([dpi, quality]) => {
     const PX_PER_MM = 96 / 25.4;             // CSS px in a millimetre
@@ -116,7 +124,7 @@ if (found.length && !FULL_RES) {
       } catch { /* leave the original in place */ }
     }
     return { count, saved: before ? Math.round((1 - after / before) * 100) : 0 };
-  }, [LIGHT ? 200 : 260, LIGHT ? 0.84 : 0.92]);
+  }, [DPI, QUALITY]);
   if (shrunk.count)
     console.log(`photography: ${shrunk.count} image(s) re-encoded to frame size (${shrunk.saved}% fewer pixels)`);
 }
