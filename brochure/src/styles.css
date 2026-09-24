@@ -153,45 +153,12 @@ strong { font-weight: 500; color: var(--ink); }
    ============================================================ */
 .chart { display: grid; gap: 4mm; }
 .chart > * { min-width: 0; }
-.chart.c5 { grid-template-columns: repeat(5, 1fr); }
-.chart.c4 { grid-template-columns: repeat(4, 1fr); }
-.chart.c6 { grid-template-columns: repeat(6, 1fr); }
 .sw { text-align: left; }
-.sw .chip {
-  position: relative; width: 100%; height: 22mm; overflow: hidden;
-  border: var(--hair) solid rgba(0,0,0,.14);
-}
-.dark .sw .chip { border-color: rgba(18,58,42,.14); }
-.sw .chip.round { border-radius: 50%; height: 0; padding-bottom: 100%; }
 .sw .nm { font-family: var(--display); font-size: 8.6pt; color: var(--ink); margin-top: 2mm; line-height: 1.2; }
 .dark .sw .nm { color: var(--ink); }
 .sw .mt { font-family: var(--sans); font-size: 5.6pt; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-light); margin-top: .8mm; }
 .dark .sw .mt { color: var(--ink-light); }
-/* tesserae swatch — a field of hand-cut squares */
-.sw .chip.tess {
-  display: grid;
-  min-width: 0;
-  grid-template-columns: repeat(var(--cols, 7), 1fr);
-  gap: .3mm;
-  height: auto;
-  background: rgba(0,0,0,.28);
-  padding: .3mm;
-}
-.sw .chip.tess i { display: block; aspect-ratio: 1; }
-.dark .sw .chip.tess { background: rgba(18,58,42,.16); }
 
-/* glass gloss overlay */
-.chip.glass::after {
-  content: ""; position: absolute; inset: 0;
-  background-image: linear-gradient(118deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,.55) 32%, rgba(255,255,255,0) 52%),
-                    radial-gradient(70% 40% at 24% 12%, rgba(255,255,255,.5) 0%, rgba(255,255,255,0) 70%);
-}
-.chip.stone::after {
-  content: ""; position: absolute; inset: 0;
-  background-image:
-    linear-gradient(var(--va, 112deg), transparent calc(var(--vb, 44%) - 1%), rgba(255,255,255,.38) var(--vb, 44%), transparent calc(var(--vb, 44%) + 1.4%)),
-    linear-gradient(calc(var(--va, 112deg) + 16deg), transparent 66%, rgba(0,0,0,.09) 67%, transparent 68.2%);
-}
 
 /* ============================================================
    TABLES — technical specification
@@ -242,8 +209,6 @@ ul.ticks li::before {
 .tessera { display: grid; grid-template-columns: repeat(var(--cols, 12), 1fr); gap: .6mm; }
 .tessera i { display: block; aspect-ratio: 1; }
 
-/* Marble page carries 30 swatches — slightly shorter chips */
-.chart.compact .sw .chip { height: 15mm; }
 
 /* ============================================================
    ACCENT ON TINTED GROUNDS
