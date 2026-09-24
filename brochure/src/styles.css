@@ -1,6 +1,16 @@
 @import url("fonts/fonts.css");
 @import url("tokens.css");
 
+/* Icon marks — a captioned row of line drawings, sized to the type */
+.marks {
+  display: flex; justify-content: center; align-items: center;
+  gap: 7mm; font-family: var(--sans); font-size: 8.4pt;
+  letter-spacing: .2em; text-transform: uppercase; color: var(--accent-deep);
+}
+.marks .mark { display: flex; align-items: center; gap: 2.4mm; white-space: nowrap; }
+.marks svg { width: 5mm; height: 5mm; flex: none; }
+.marks .sep { color: var(--accent); opacity: .5; }
+
 /* ============================================================
    PAGE SET-UP — 16:9 landscape (338.7 × 190.5 mm), the standard
    widescreen slide size, so it fills a laptop or a projector with no
