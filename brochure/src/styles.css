@@ -90,16 +90,6 @@ strong { font-weight: 500; color: var(--ink); }
 .dark .frame-in { border-color: rgba(168,132,44,.45); }
 .corner { position: absolute; width: 7mm; height: 7mm; border: 1pt solid var(--accent); }
 
-/* Footer */
-.folio {
-  position: absolute; left: var(--margin); right: var(--margin); bottom: 8mm;
-  display: flex; justify-content: space-between; align-items: center;
-  font-family: var(--sans); font-size: 6.4pt; letter-spacing: .24em;
-  text-transform: uppercase; color: var(--ink-light);
-}
-.dark .folio { color: var(--ink-light); }
-.folio .line { flex: 1; height: var(--hair); background: var(--hairline); margin: 0 6mm; }
-.dark .folio .line { background: var(--hairline); }
 
 /* ============================================================
    LAYOUT HELPERS
@@ -301,8 +291,6 @@ ul.ticks li::before {
 .page.emerald .rule { background: rgba(217,188,114,.34); }
 .page.emerald .rule-accent { background: var(--accent-light); }
 .page.emerald .micro, .page.emerald .caption { color: #A9BCB0; }
-.page.emerald .folio { color: #A9BCB0; }
-.page.emerald .folio .line { background: rgba(217,188,114,.28); }
 .page.emerald .frame-in { border-color: rgba(217,188,114,.42); }
 .page.emerald .tbc { color: var(--accent-light); border-bottom-color: var(--accent-light); }
 .page.emerald .panel { border-color: rgba(217,188,114,.34); }
