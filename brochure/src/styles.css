@@ -177,6 +177,24 @@ table.spec td { color: var(--ink-soft); }
 .dark table.spec td:first-child { color: var(--ink); }
 .dark table.spec td { color: var(--ink-soft); border-bottom-color: var(--hairline); }
 
+/* Technical page — three columns of specification on one sheet, so the type
+   is smaller and the term sits above its value rather than beside it */
+.tech { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9mm; }
+.tech > * { min-width: 0; }
+.tech .grp + .grp { margin-top: 4.5mm; }
+.tech dl { margin: 2.5mm 0 0; }
+.tech dt {
+  font-family: var(--display); font-size: 8.2pt; color: var(--ink); line-height: 1.22;
+  padding-top: 1.5mm; border-top: var(--hair) solid var(--hairline);
+}
+.tech dl > div:first-child dt { border-top: .8pt solid var(--accent); }
+.tech dd {
+  margin: .5mm 0 1.6mm; font-size: 6.4pt; line-height: 1.45; color: var(--ink-soft);
+}
+.tech table.spec th, .tech table.spec td { padding: 1.5mm 1.6mm; font-size: 6.6pt; line-height: 1.4; }
+.tech table.spec th { font-size: 5.6pt; letter-spacing: .18em; }
+.tech table.spec td:first-child { font-size: 7.4pt; width: 40%; }
+
 /* to-be-confirmed marker for values awaiting the technical sheet */
 .tbc { color: var(--accent-deep); border-bottom: .4pt dotted var(--accent); }
 .tbc::after { content: " \25E6"; }
