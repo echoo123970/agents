@@ -177,10 +177,6 @@ table.spec td { color: var(--ink-soft); }
 .dark table.spec td:first-child { color: var(--ink); }
 .dark table.spec td { color: var(--ink-soft); border-bottom-color: var(--hairline); }
 
-/* a table that is the whole page: the rows open up to fill it rather than
-   stacking at the top with a third of the sheet left empty */
-table.spec.airy th, table.spec.airy td { padding: 5.4mm 3mm; }
-
 /* to-be-confirmed marker for values awaiting the technical sheet */
 .tbc { color: var(--accent-deep); border-bottom: .4pt dotted var(--accent); }
 .tbc::after { content: " \25E6"; }
