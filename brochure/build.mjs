@@ -34,7 +34,7 @@ const TIER = process.argv.includes("--mail") ? "mail" : process.argv.includes("-
 const { dpi: DPI, quality: QUALITY, suffix: SUFFIX } = {
   full:  { dpi: 260, quality: 0.92, suffix: "" },
   light: { dpi: 200, quality: 0.84, suffix: "-light" },
-  mail:  { dpi: 120, quality: 0.66, suffix: "-mail" },
+  mail:  { dpi: 100, quality: 0.60, suffix: "-mail" },
 }[TIER];
 // Both documents share tokens.css, styles.css and the fonts; --price just
 // points the same pipeline at the other source file.

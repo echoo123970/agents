@@ -200,7 +200,7 @@ table.rates th {
   color: var(--accent-deep); font-weight: 400; border-bottom: .8pt solid var(--accent);
 }
 table.rates th span { display: block; letter-spacing: .16em; color: var(--ink-light); margin-top: 1mm; }
-table.rates .fig { text-align: right; width: 19%; }
+table.rates .fig { text-align: right; width: 15%; }
 table.rates .cat { font-family: var(--display); font-size: 10.4pt; color: var(--ink); display: block; }
 table.rates .note { font-size: 7pt; color: var(--ink-soft); display: block; margin-top: 1.2mm; }
 table.rates td.fig { font-family: var(--display); font-size: 10.4pt; color: var(--ink); }
