@@ -198,18 +198,18 @@
     <div>
       <div class="eyebrow on-light">Table tops &amp; benches &nbsp;—&nbsp; installed</div>
       <h2 style="margin-top:5mm;font-size:21pt;white-space:nowrap">Functional Art, Made to Endure</h2>
-      <p style="margin:4.5mm 0 0;font-size:8.8pt;line-height:1.75">Bespoke mosaics bring artistry and craftsmanship to benches, tabletops, and custom furniture pieces. Each surface is designed as a unique composition, tailored to the form, scale, and character of its setting.</p>
-      <p style="margin:2.5mm 0 0;font-size:8.8pt;line-height:1.75">From refined decorative patterns to fully custom artwork, every piece transforms a functional surface into a distinctive design statement.</p>
+      <p style="margin:4.5mm 0 0;font-size:8.8pt;line-height:1.75">Bespoke mosaics bring artistry and craftsmanship to benches, tabletops, and custom furniture pieces. Each surface is designed as a unique composition, tailored to the form, scale, and character of its setting. From refined decorative patterns to fully custom artwork, every piece transforms a functional surface into a distinctive design statement.</p>
     </div>
 
-    <!-- three frames left, so the dining table takes the height on its own
-         and the two long pieces stack beside it; 168mm is as wide as the
-         coffee table's 794px file will carry -->
-    <div style="display:grid;grid-template-columns:168mm 1fr;grid-template-rows:1fr 1fr;
-                gap:4mm;margin-top:7mm;flex:1">
-      <div class="photo" data-slot="table-01" style="grid-row:1 / span 2;background-position:center 45%"><div class="slotinfo"><div class="desc" style="font-size:7pt">Dining table — geometric</div></div></div>
-      <div class="photo" data-slot="table-03"><div class="slotinfo"><div class="desc" style="font-size:7pt">Coffee table</div></div></div>
-      <div class="photo" data-slot="bench-02"><div class="slotinfo"><div class="desc" style="font-size:7pt">Bench, night-lit</div></div></div>
+    <!-- the bench is 4:3 and was being cut off in a 2.4:1 letterbox, so the
+         right-hand column is 120mm wide and its lower frame is left to take
+         whatever height remains — at 120x90mm the whole bench is in frame -->
+    <div style="display:grid;grid-template-columns:1fr 120mm;gap:4mm;margin-top:7mm;flex:1">
+      <div class="photo" data-slot="table-01" style="background-position:center 45%"><div class="slotinfo"><div class="desc" style="font-size:7pt">Dining table — geometric</div></div></div>
+      <div style="display:grid;grid-template-rows:44mm 1fr;gap:4mm;min-height:0">
+        <div class="photo" data-slot="table-03"><div class="slotinfo"><div class="desc" style="font-size:7pt">Coffee table</div></div></div>
+        <div class="photo" data-slot="bench-02"><div class="slotinfo"><div class="desc" style="font-size:7pt">Bench, night-lit</div></div></div>
+      </div>
     </div>
 
     <div class="marks tight" style="margin-top:5mm">
