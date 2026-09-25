@@ -67,17 +67,31 @@ const COLLECTIONS = [
   ["Atelier specials","studio-specials",       "one-of-a-kind"],
 ];
 
+/* Three of the twenty have photography. Rather than show seventeen blank
+   frames, those three run as features across the top and the whole set is
+   set as a typographic index beneath. */
+const FEATURED = ["bird-mosaics", "mosaic-tile-backsplash", "table-countertop-mosaics"];
+
 function paintCollections(id) {
   const host = document.getElementById(id);
   if (!host) return;
-  host.innerHTML = COLLECTIONS.map(([title, handle, note]) => `
-    <div class="sw">
-      <div class="photo coll" data-slot="collection-${handle}">
-        <div class="slotinfo"><div class="desc" style="font-size:7.5pt">${title}</div></div>
-      </div>
-      <div class="nm" style="font-size:8pt">${title}</div>
-      <div class="mt">${note}</div>
-    </div>`).join("");
+  const by = Object.fromEntries(COLLECTIONS.map((c) => [c[1], c]));
+  const widths = { "bird-mosaics": "68mm", "mosaic-tile-backsplash": "1fr", "table-countertop-mosaics": "1fr" };
+
+  host.innerHTML = `
+    <div style="display:grid;grid-template-columns:${FEATURED.map((h) => widths[h]).join(" ")};gap:4mm;height:62mm">
+      ${FEATURED.map((h) => `
+        <div class="photo" data-slot="collection-${h}">
+          <div class="slotinfo"><div class="desc" style="font-size:7pt">${by[h][0]}</div></div>
+        </div>`).join("")}
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6mm 6mm;margin-top:8mm">
+      ${COLLECTIONS.map(([title, , note]) => `
+        <div class="idx">
+          <div class="nm">${title}</div>
+          <div class="mt">${note}</div>
+        </div>`).join("")}
+    </div>`;
 }
 
 paintCollections("collections-grid");

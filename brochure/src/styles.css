@@ -177,6 +177,14 @@ table.spec td { color: var(--ink-soft); }
 .dark table.spec td:first-child { color: var(--ink); }
 .dark table.spec td { color: var(--ink-soft); border-bottom-color: var(--hairline); }
 
+/* Collections index — a name and its range, ruled off above */
+.idx { padding-top: 2.4mm; border-top: var(--hair) solid var(--hairline); }
+.idx .nm { font-family: var(--display); font-size: 9.6pt; color: var(--ink); line-height: 1.2; }
+.idx .mt {
+  font-family: var(--sans); font-size: 5.8pt; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--accent-deep); margin-top: 1.2mm;
+}
+
 /* Technical page — three columns of specification on one sheet, so the type
    is smaller and the term sits above its value rather than beside it */
 .tech { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9mm; }
@@ -194,6 +202,10 @@ table.spec td { color: var(--ink-soft); }
 .tech table.spec th, .tech table.spec td { padding: 1.5mm 1.6mm; font-size: 6.6pt; line-height: 1.4; }
 .tech table.spec th { font-size: 5.6pt; letter-spacing: .18em; }
 .tech table.spec td:first-child { font-size: 7.4pt; width: 40%; }
+
+/* a table that is the whole page: the rows open up to fill it rather than
+   stacking at the top with a third of the sheet left empty */
+table.spec.airy th, table.spec.airy td { padding: 5.4mm 3mm; }
 
 /* to-be-confirmed marker for values awaiting the technical sheet */
 .tbc { color: var(--accent-deep); border-bottom: .4pt dotted var(--accent); }
@@ -291,9 +303,6 @@ ul.ticks li::before {
 .dark .statement .mark { color: var(--accent); }
 
 /* Collection tiles */
-.photo.coll { width: 100%; aspect-ratio: 4 / 3; }
-.photo.coll::after { inset: 1.4mm; }
-.photo.coll .slotinfo { padding: 3mm; }
 
 
 /* ============================================================
