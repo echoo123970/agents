@@ -184,10 +184,10 @@ table.spec td { color: var(--ink-soft); }
 .specs dl { margin: 3mm 0 0; }
 .specs dt {
   font-family: var(--display); font-size: 9.6pt; color: var(--ink); line-height: 1.25;
-  padding-top: 6.5mm; border-top: var(--hair) solid var(--hairline);
+  padding-top: 5.8mm; border-top: var(--hair) solid var(--hairline);
 }
 .specs dl > div:first-child dt { border-top: .8pt solid var(--accent); }
-.specs dd { margin: 1.4mm 0 9mm; font-size: 7.8pt; line-height: 1.6; color: var(--ink-soft); }
+.specs dd { margin: 1.4mm 0 8mm; font-size: 7.8pt; line-height: 1.6; color: var(--ink-soft); }
 
 /* to-be-confirmed marker for values awaiting the technical sheet */
 .tbc { color: var(--accent-deep); border-bottom: .4pt dotted var(--accent); }
