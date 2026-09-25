@@ -33,7 +33,7 @@ const TIER = process.argv.includes("--mail") ? "mail" : process.argv.includes("-
 const { dpi: DPI, quality: QUALITY, suffix: SUFFIX } = {
   full:  { dpi: 260, quality: 0.92, suffix: "" },
   light: { dpi: 200, quality: 0.84, suffix: "-light" },
-  mail:  { dpi: 120, quality: 0.66, suffix: "-mail" },
+  mail:  { dpi: 140, quality: 0.73, suffix: "-mail" },
 }[TIER];
 const OUT = join(DIST, CLEAN ? `bespoke-mosaic-portfolio-client${SUFFIX}.pdf` : "bespoke-mosaic-portfolio.pdf");
 const EXT = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif"]);
