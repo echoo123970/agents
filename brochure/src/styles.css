@@ -187,7 +187,27 @@ table.spec td { color: var(--ink-soft); }
   padding-top: 5.8mm; border-top: var(--hair) solid var(--hairline);
 }
 .specs dl > div:first-child dt { border-top: .8pt solid var(--accent); }
-.specs dd { margin: 1.4mm 0 8mm; font-size: 7.8pt; line-height: 1.6; color: var(--ink-soft); }
+.specs dd { margin: 1.4mm 0 7.5mm; font-size: 7.8pt; line-height: 1.6; color: var(--ink-soft); }
+
+/* Price list — the rate table, and what moves a rate */
+table.rates { width: 100%; border-collapse: collapse; }
+table.rates th, table.rates td {
+  text-align: left; padding: 2.2mm 4mm; border-bottom: var(--hair) solid var(--hairline);
+  vertical-align: baseline;
+}
+table.rates th {
+  font-family: var(--sans); font-size: 6.4pt; letter-spacing: .24em; text-transform: uppercase;
+  color: var(--accent-deep); font-weight: 400; border-bottom: .8pt solid var(--accent);
+}
+table.rates th span { display: block; letter-spacing: .16em; color: var(--ink-light); margin-top: 1mm; }
+table.rates .fig { text-align: right; width: 19%; }
+table.rates .cat { font-family: var(--display); font-size: 10.4pt; color: var(--ink); display: block; }
+table.rates .note { font-size: 7pt; color: var(--ink-soft); display: block; margin-top: 1.2mm; }
+table.rates td.fig { font-family: var(--display); font-size: 10.4pt; color: var(--ink); }
+
+.moves { margin: 0; }
+.moves dt { font-family: var(--display); font-size: 9.2pt; color: var(--ink); }
+.moves dd { margin: .8mm 0 4.5mm; font-size: 7.6pt; line-height: 1.55; color: var(--ink-soft); }
 
 /* to-be-confirmed marker for values awaiting the technical sheet */
 .tbc { color: var(--accent-deep); border-bottom: .4pt dotted var(--accent); }

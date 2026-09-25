@@ -9,7 +9,9 @@ import { join } from "node:path";
 
 const SRC = join(import.meta.dirname, "src");
 const tmp = join(SRC, ".qa.html");
-writeFileSync(tmp, readFileSync(join(SRC, "index.html"), "utf8").replace("<!--PHOTO_INJECT-->", ""));
+// --price checks the price list instead; both documents share the stylesheet
+const SOURCE = process.argv.includes("--price") ? "price-list.html" : "index.html";
+writeFileSync(tmp, readFileSync(join(SRC, SOURCE), "utf8").replace("<!--PHOTO_INJECT-->", ""));
 
 const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
 const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });

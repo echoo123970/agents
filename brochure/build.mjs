@@ -1,5 +1,6 @@
 /* ============================================================
-   BUILD — renders src/index.html to a print-ready PDF.
+   BUILD — renders src/index.html, or src/price-list.html with
+   --price, to a print-ready PDF.
 
      node build.mjs            → dist/bespoke-mosaic-portfolio.pdf
      node build.mjs --png      → also writes dist/preview/page-NN.png
@@ -35,7 +36,13 @@ const { dpi: DPI, quality: QUALITY, suffix: SUFFIX } = {
   light: { dpi: 200, quality: 0.84, suffix: "-light" },
   mail:  { dpi: 120, quality: 0.66, suffix: "-mail" },
 }[TIER];
-const OUT = join(DIST, CLEAN ? `bespoke-mosaic-portfolio-client${SUFFIX}.pdf` : "bespoke-mosaic-portfolio.pdf");
+// Both documents share tokens.css, styles.css and the fonts; --price just
+// points the same pipeline at the other source file.
+const PRICE = process.argv.includes("--price");
+const SOURCE = PRICE ? "price-list.html" : "index.html";
+const OUT = join(DIST, PRICE
+  ? `bespoke-mosaic-price-list${SUFFIX}.pdf`
+  : CLEAN ? `bespoke-mosaic-portfolio-client${SUFFIX}.pdf` : "bespoke-mosaic-portfolio.pdf");
 const EXT = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif"]);
 
 mkdirSync(DIST, { recursive: true });
@@ -55,7 +62,7 @@ const css = found
   )
   .join("\n");
 
-const html = readFileSync(join(SRC, "index.html"), "utf8").replace(
+const html = readFileSync(join(SRC, SOURCE), "utf8").replace(
   "<!--PHOTO_INJECT-->",
   css ? `<style>/* supplied photography */${css}\n</style>` : "<!-- no photography supplied yet -->"
 );
