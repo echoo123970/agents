@@ -39,63 +39,6 @@ const tesserae = (hex, seed, cols = 7, rows = 4, amp = 1) => {
   return out;
 };
 
-/* ============================================================
-   COLLECTIONS — pulled from the atelier's live catalogue.
-   ["Title", "handle", "range note"] — the handle is also the
-   image slot, so images/collection-<handle>.jpg fills the frame.
-   ============================================================ */
-const COLLECTIONS = [
-  ["Flower",        "flower-mosaics",          "450+ designs"],
-  ["Geometric",     "geometric-mosaics",       "360+ designs"],
-  ["Landscape",     "landscape-mosaics",       "290+ designs"],
-  ["Bird",          "bird-mosaics",            "120+ designs"],
-  ["Nautical",      "nautical-mosaics",        "110+ designs"],
-  ["Religious",     "religious-mosaics",       "100+ designs"],
-  ["Animal",        "animal-mosaics",          "85 designs"],
-  ["Tree",          "tree-mosaics",            "80+ designs"],
-  ["Portrait",      "portrait-mosaics",        "75 designs"],
-  ["Roman",         "roman-mosaics",           "60+ designs"],
-  ["Abstract",      "abstract",                "43 designs"],
-  ["Food &amp; wine",   "food-mosaics",            "35 designs"],
-  ["Landmark",      "landmark-mosaics",        "19 designs"],
-  ["Pattern",       "patterns-mosaics",        "19 designs"],
-  ["Van Gogh",      "van-gogh-mosaics",        "16 reproductions"],
-  ["Glass mosaic art","glass-mosaic-art",      "1,600+ designs"],
-  ["Backsplash",    "mosaic-tile-backsplash",  "100+ designs"],
-  ["Table top",     "table-countertop-mosaics","89 designs"],
-  ["Limited edition","limited-edition",        "hand-signed series"],
-  ["Atelier specials","studio-specials",       "one-of-a-kind"],
-];
-
-/* Three of the twenty have photography. Rather than show seventeen blank
-   frames, those three run as features across the top and the whole set is
-   set as a typographic index beneath. */
-const FEATURED = ["bird-mosaics", "mosaic-tile-backsplash", "table-countertop-mosaics"];
-
-function paintCollections(id) {
-  const host = document.getElementById(id);
-  if (!host) return;
-  const by = Object.fromEntries(COLLECTIONS.map((c) => [c[1], c]));
-  const widths = { "bird-mosaics": "68mm", "mosaic-tile-backsplash": "1fr", "table-countertop-mosaics": "1fr" };
-
-  host.innerHTML = `
-    <div style="display:grid;grid-template-columns:${FEATURED.map((h) => widths[h]).join(" ")};gap:4mm;height:62mm">
-      ${FEATURED.map((h) => `
-        <div class="photo" data-slot="collection-${h}">
-          <div class="slotinfo"><div class="desc" style="font-size:7pt">${by[h][0]}</div></div>
-        </div>`).join("")}
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6mm 6mm;margin-top:8mm">
-      ${COLLECTIONS.map(([title, , note]) => `
-        <div class="idx">
-          <div class="nm">${title}</div>
-          <div class="mt">${note}</div>
-        </div>`).join("")}
-    </div>`;
-}
-
-paintCollections("collections-grid");
-
 /* ---- unphotographed frames -------------------------------------------
    With --clean, a frame still waiting on its photograph drops the upload
    note and fills with a quiet field of tesserae instead, so a document

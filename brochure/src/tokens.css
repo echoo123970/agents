@@ -20,7 +20,7 @@
   /* Ink — emerald */
   --ink:       #0F4430;
   --ink-soft:  #42604F;
-  --ink-light: #93A398;
+  --ink-light: #6D8578;
 
   /* Inline styles that once forced white now resolve to ink */
   --on-dark:      #0F4430;

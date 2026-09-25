@@ -23,7 +23,7 @@
 
 * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 html, body { margin: 0; padding: 0; background: #fff; }
-body { font-family: var(--sans); color: var(--ink); font-weight: 300; }
+body { font-family: var(--sans); color: var(--ink); font-weight: 400; }
 
 .page {
   position: relative;
@@ -77,20 +77,20 @@ body { font-family: var(--sans); color: var(--ink); font-weight: 300; }
   letter-spacing: .34em; text-transform: uppercase; color: var(--accent);
 }
 .eyebrow.on-light { color: var(--accent-deep); }
-h1, h2, h3, h4 { font-family: var(--display); font-weight: 300; margin: 0; }
+h1, h2, h3, h4 { font-family: var(--display); font-weight: 500; margin: 0; }
 h1 { font-size: 46pt; line-height: 1.02; letter-spacing: -.008em; }
 h2 { font-size: 27pt; line-height: 1.1; }
 h3 { font-size: 15.5pt; line-height: 1.2; }
 h4 { font-size: 11.5pt; line-height: 1.25; }
 .script { font-style: italic; }
-p { font-size: 9.2pt; line-height: 1.72; margin: 0 0 7pt; color: var(--ink-soft); font-weight: 300; }
+p { font-size: 9.2pt; line-height: 1.72; margin: 0 0 7pt; color: var(--ink-soft); font-weight: 400; }
 .dark p, .dark .body { color: var(--ink-soft); }
-.lead { font-family: var(--display); font-size: 13pt; line-height: 1.55; color: var(--ink); font-weight: 300; }
+.lead { font-family: var(--display); font-size: 13pt; line-height: 1.55; color: var(--ink); font-weight: 400; }
 .dark .lead { color: var(--ink); }
 .micro { font-family: var(--sans); font-size: 6.6pt; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-light); }
 .dark .micro { color: var(--ink-light); }
-.num { font-family: var(--display); font-size: 30pt; color: var(--accent); line-height: 1; }
-strong { font-weight: 500; color: var(--ink); }
+.num { font-family: var(--display); font-size: 30pt; color: var(--accent); line-height: 1; font-weight: 500; }
+strong { font-weight: 600; color: var(--ink); }
 .dark strong { color: var(--ink); }
 
 /* Rules and marks */
@@ -176,14 +176,6 @@ table.spec td:first-child { font-family: var(--display); font-size: 9.4pt; color
 table.spec td { color: var(--ink-soft); }
 .dark table.spec td:first-child { color: var(--ink); }
 .dark table.spec td { color: var(--ink-soft); border-bottom-color: var(--hairline); }
-
-/* Collections index — a name and its range, ruled off above */
-.idx { padding-top: 2.4mm; border-top: var(--hair) solid var(--hairline); }
-.idx .nm { font-family: var(--display); font-size: 9.6pt; color: var(--ink); line-height: 1.2; }
-.idx .mt {
-  font-family: var(--sans); font-size: 5.8pt; letter-spacing: .16em;
-  text-transform: uppercase; color: var(--accent-deep); margin-top: 1.2mm;
-}
 
 /* Technical page — three columns of specification on one sheet, so the type
    is smaller and the term sits above its value rather than beside it */
