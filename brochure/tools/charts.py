@@ -114,7 +114,9 @@ def swatch_grid(charts):
     small enough that each swatch lands at a sensible resolution.
     """
     cols = max(1, round((len(charts) * 2.4) ** 0.5))
-    cell = max(c.width for c in charts)
+    # the smallest swatch sets the cell: scaling the others down loses
+    # nothing, where scaling the small ones up only softens them
+    cell = min(c.width for c in charts)
     gap = max(2, cell // 12)
     rows = -(-len(charts) // cols)
     sheet = Image.new("RGB", (gap + cols * (cell + gap), gap + rows * (cell + gap)), "#FFFDF8")
