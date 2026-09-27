@@ -16,7 +16,7 @@ sheet is drawn with `contain`, so no code is ever cropped off the edge.
 import re
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageStat
 
 ROOT = Path(__file__).resolve().parent.parent
 IMAGES = ROOT / "images"
@@ -105,6 +105,46 @@ def rows_of(charts):
     return rows
 
 
+def trim_bands(im):
+    """Crop the pale bands some swatches carry above or below the tile field.
+
+    Variance cannot find them: a flat red or blue field is as smooth as the
+    band itself. What separates them is colour — the band is a neutral strip
+    a long way from the stone it frames — so rows are measured against the
+    swatch's own body colour and cut while they are far from it. After
+    trimming, the largest centred square is taken, so every swatch is the
+    same shape whatever it arrived as.
+    """
+    rgb = im.convert("RGB")
+    w, h = rgb.size
+
+    def mean(box):
+        return ImageStat.Stat(rgb.crop(box)).mean[:3]
+
+    def far(a, b, limit=38):
+        return sum((x - y) ** 2 for x, y in zip(a, b)) ** 0.5 > limit
+
+    body = mean((w // 6, h // 3, w - w // 6, h - h // 3))
+    edge = max(2, h // 4)          # bands live at the edges, not mid-field
+
+    top, bottom = 0, h
+    while top < edge and far(mean((0, top, w, top + 1)), body):
+        top += 1
+    while bottom > h - edge and far(mean((0, bottom - 1, w, bottom)), body):
+        bottom -= 1
+    left, right = 0, w
+    while left < w // 4 and far(mean((left, top, left + 1, bottom)), body):
+        left += 1
+    while right > w - w // 4 and far(mean((right - 1, top, right, bottom)), body):
+        right -= 1
+
+    im = im.crop((left, top, right, bottom))
+    side = min(im.size)
+    x = (im.width - side) // 2
+    y = (im.height - side) // 2
+    return im.crop((x, y, x + side, y + side))
+
+
 def swatch_grid(charts):
     """Lay square swatches in a grid at their own size.
 
@@ -112,6 +152,7 @@ def swatch_grid(charts):
     softens them, so the grid is built at native size and the page draws it
     small enough that each swatch lands at a sensible resolution.
     """
+    charts = [trim_bands(c) for c in charts]
     cols = max(1, round((len(charts) * 2.4) ** 0.5))
     # the smallest swatch sets the cell: scaling the others down loses
     # nothing, where scaling the small ones up only softens them
