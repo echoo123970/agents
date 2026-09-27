@@ -428,3 +428,5 @@ table.rates.tight tr.band td { padding-top: 3mm; }
   font-weight: 600;
   font-variant-numeric: lining-nums; font-feature-settings: "lnum" 1;
 }
+/* four heads, one line each, so the +% sub-lines stay on the same baseline */
+.pricelist table.rates.tight th { white-space: nowrap; letter-spacing: .08em; }
