@@ -26,12 +26,14 @@ IMAGES = ROOT / "images"
 MATERIALS = [
     ("marble", {
         "name": "Marble",
+        "kind": "swatches",
         "headline": "Stone chosen by name, and by the block.",
         "lead": "Natural stone, so colour and vein carry the variation of the block they were cut from. "
                 "Any marble shown can be specified by name.",
     }),
     ("glass", {
         "name": "Glass",
+        "kind": "sheets",
         "headline": "Hundreds of colours, each one specified by its code.",
         "lead": "Colour runs through the body of the glass, so a cut edge matches the face. Iridescent "
                 "and metal-leaf ranges included.",
@@ -104,6 +106,27 @@ def rows_of(charts):
     return rows
 
 
+def swatch_grid(charts):
+    """Lay square swatches in a grid at their own size.
+
+    These are 120px photographs of a tile field; scaling them up only
+    softens them, so the grid is built at native size and the page draws it
+    small enough that each swatch lands at a sensible resolution.
+    """
+    cols = max(1, round((len(charts) * 2.4) ** 0.5))
+    cell = max(c.width for c in charts)
+    gap = max(2, cell // 12)
+    rows = -(-len(charts) // cols)
+    sheet = Image.new("RGB", (gap + cols * (cell + gap), gap + rows * (cell + gap)), "#FFFDF8")
+    for i, c in enumerate(charts):
+        if c.size != (cell, cell):
+            c = c.resize((cell, cell), Image.LANCZOS)
+        x = gap + (i % cols) * (cell + gap)
+        y = gap + (i // cols) * (cell + gap)
+        sheet.paste(c, (x, y))
+    return sheet
+
+
 def composite(prefix):
     """Tile a material's sheets into one contact sheet for its deck slide.
 
@@ -112,6 +135,11 @@ def composite(prefix):
     the frame costs a fraction of it.
     """
     charts = [Image.open(IMAGES / (s + ".jpg")) for s in slots(prefix)]
+    out = IMAGES / ("chartsheet-%s.jpg" % prefix)
+    if dict(MATERIALS)[prefix].get("kind") == "swatches":
+        sheet = swatch_grid(charts)
+        sheet.save(out, quality=92, subsampling=0)
+        return sheet.size
     gap = SHEET_W // 150
     laid, y = [], gap
     for row in rows_of(charts):
@@ -126,7 +154,6 @@ def composite(prefix):
     sheet = Image.new("RGB", (SHEET_W, y), "#FFFDF8")
     for img, x, yy in laid:
         sheet.paste(img, (x, yy))
-    out = IMAGES / ("chartsheet-%s.jpg" % prefix)
     sheet.save(out, quality=92, subsampling=0)
     return sheet.size
 
@@ -146,7 +173,10 @@ def deck_pages():
 def annex_pages():
     body = ""
     for prefix, copy in MATERIALS:
-        names = slots(prefix)
+        if copy.get("kind") == "swatches":
+            names = ["chartsheet-" + prefix] if slots(prefix) else []
+        else:
+            names = slots(prefix)
         for i, slot in enumerate(names, start=1):
             body += ANNEX_PAGE.format(num=0, upper=copy["name"].upper(), name=copy["name"],
                                       n=i, total=len(names), slot=slot,
