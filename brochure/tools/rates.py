@@ -17,9 +17,8 @@ from pathlib import Path
 BANDS = [
     (500, ["Sheets"]),
     (800, ["Abstract", "Animals", "Geometric", "Logos", "Patterns"]),
-    (850, ["Birds & butterflies", "Flowers & trees", "Food", "Landmark",
-           "Landscape", "Nautical"]),
-    (900, ["Borders"]),
+    (900, ["Birds & butterflies", "Borders", "Flowers & trees", "Food",
+           "Landmark", "Landscape", "Nautical"]),
     (950, ["Portrait", "Religious", "Roman", "Rugs"]),
 ]
 UPLIFTS = [("Polished", 20), ("Old technique", 50), ("Custom", 30)]
