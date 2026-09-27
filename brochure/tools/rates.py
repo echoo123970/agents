@@ -22,7 +22,7 @@ BANDS = [
     (900, 750, ["Abstract", "Geometric", "Logos", "Patterns"]),
     (950, 800, ["Animals", "Birds & butterflies", "Borders", "Flowers & trees",
                 "Food", "Landmark", "Landscape", "Nautical"]),
-    (980, 850, ["Portrait", "Religious", "Roman", "Rugs"]),
+    (1000, 850, ["Portrait", "Religious", "Roman", "Rugs"]),
 ]
 UPLIFTS = [("Polished", 20), ("Old technique", 50), ("Custom", 30)]
 
