@@ -1,0 +1,274 @@
+<style>
+  .ig-hero { background: var(--color-panel); border-bottom: 1px solid rgba(22,51,94,.08); }
+  .ig-hero__crumb-wrap { padding-top: 30px; }
+  .ig-hero__crumb { display: flex; align-items: center; gap: 9px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-soft); }
+  .ig-hero__crumb-sep { color: #B7C0D2; }
+  .ig-hero__crumb-current { color: var(--color-navy); }
+  .ig-hero__grid { padding-top: 54px; padding-bottom: 60px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 64px; align-items: center; }
+  .ig-hero__eyebrow { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+  .ig-hero__rule { width: 38px; height: 1px; background: var(--color-blue); }
+  .ig-hero__eyebrow-text { font-family: var(--font-accent); font-size: 13px; letter-spacing: .36em; text-transform: uppercase; color: var(--color-navy); }
+  .ig-hero__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(40px,4.8vw,64px); line-height: 1.04; letter-spacing: -.01em; margin-bottom: 22px; color: var(--color-navy); }
+  .ig-hero__title em, .ig-hero__title i { font-style: italic; color: var(--color-blue); }
+  .ig-hero__text { font-size: 17px; line-height: 1.7; color: var(--color-text-muted); max-width: 520px; margin-bottom: 18px; }
+  .ig-hero__note { font-size: 15px; line-height: 1.7; color: var(--color-text-muted); font-style: italic; margin-bottom: 34px; }
+  .ig-hero__stats { display: flex; gap: 36px; flex-wrap: wrap; border-top: 1px solid rgba(22,51,94,.12); padding-top: 26px; }
+  .ig-hero__stat-val { font-family: var(--font-display); font-size: 30px; line-height: 1; color: var(--color-navy); }
+  .ig-hero__stat-label { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-soft); margin-top: 6px; }
+  .ig-hero__media { position: relative; aspect-ratio: 4/3.4; overflow: hidden; background: var(--color-light-text); }
+
+  .ig-tools { padding-top: 90px; padding-bottom: 30px; }
+  .ig-tools__head { text-align: center; margin-bottom: 50px; }
+  .ig-tools__head .eyebrow { margin-bottom: 14px; }
+  .ig-tools__intro { font-size: 16px; line-height: 1.7; color: var(--color-text-muted); max-width: 560px; margin: 16px auto 0; }
+  .ig-tools__grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px 40px; max-width: 920px; margin: 0 auto; }
+  .ig-tools__item { display: flex; align-items: flex-start; gap: 16px; padding: 18px 0; border-bottom: 1px solid rgba(22,51,94,.1); }
+  .ig-tools__n { flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--color-panel); color: var(--color-blue); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+  .ig-tools__name { font-size: 16px; font-weight: 600; color: var(--color-navy); margin-bottom: 3px; }
+  .ig-tools__desc { font-size: 13.5px; line-height: 1.5; color: var(--color-text-soft); }
+
+  .ig-steps { padding-top: 80px; padding-bottom: 40px; }
+  .ig-steps__head { text-align: center; margin-bottom: 40px; }
+  .ig-steps__head .eyebrow { margin-bottom: 14px; }
+  .ig-steps__list { max-width: 920px; margin: 0 auto; }
+  .ig-step { display: grid; grid-template-columns: 96px 1fr; gap: 36px; padding: 44px 0; border-top: 1px solid rgba(22,51,94,.12); }
+  .ig-step__n { font-family: var(--font-display); font-size: 64px; line-height: .9; color: var(--color-blue); font-weight: 500; }
+  .ig-step__title { font-family: var(--font-display); font-weight: 600; font-size: 28px; line-height: 1.15; margin-bottom: 14px; color: var(--color-navy); }
+  .ig-step__text { font-size: 16px; line-height: 1.75; color: var(--color-text-muted); }
+  .ig-step__img { margin-top: 24px; overflow: hidden; aspect-ratio: 16/9; background: var(--color-light-text); max-width: 520px; }
+  .ig-step__tip { margin-top: 24px; background: var(--color-panel); border-left: 3px solid var(--color-blue); padding: 18px 22px; }
+  .ig-step__tip-label { font-family: var(--font-accent); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--color-blue); }
+  .ig-step__tip-text { font-size: 14.5px; line-height: 1.65; color: #46546E; margin-top: 8px; }
+
+  .ig-timeline { padding-top: 50px; padding-bottom: 30px; }
+  .ig-timeline__card { max-width: 920px; margin: 0 auto; background: var(--color-panel); padding: 46px 48px; }
+  .ig-timeline__head { text-align: center; margin-bottom: 40px; }
+  .ig-timeline__eyebrow { font-family: var(--font-accent); font-size: 12px; letter-spacing: .28em; text-transform: uppercase; color: var(--color-blue); margin-bottom: 10px; }
+  .ig-timeline__heading { font-family: var(--font-display); font-weight: 500; font-size: clamp(26px,2.8vw,34px); line-height: 1.1; color: var(--color-navy); }
+  .ig-timeline__rows { display: flex; flex-direction: column; gap: 22px; }
+  .ig-timeline__row { display: grid; grid-template-columns: 130px 1fr 96px; gap: 20px; align-items: center; }
+  .ig-timeline__phase { font-size: 14px; font-weight: 600; color: var(--color-navy); }
+  .ig-timeline__bar { height: 8px; background: rgba(22,51,94,.1); border-radius: 4px; overflow: hidden; }
+  .ig-timeline__bar-fill { display: block; height: 100%; background: var(--color-blue); border-radius: 4px; }
+  .ig-timeline__time { font-size: 14px; color: var(--color-text-muted); text-align: right; }
+
+  .ig-cta { background: var(--color-navy); color: #EAE1D2; margin-top: 50px; }
+  .ig-cta__inner { max-width: 760px; margin: 0 auto; padding: 84px 40px; text-align: center; }
+  .ig-cta__heading { font-family: var(--font-display); font-weight: 500; font-size: clamp(30px,3.6vw,46px); line-height: 1.1; margin-bottom: 14px; color: #fff; }
+  .ig-cta__text { font-size: 16px; line-height: 1.65; color: var(--color-text-faint); margin-bottom: 32px; }
+
+  @media (max-width: 990px) {
+    .ig-hero__grid { grid-template-columns: 1fr; gap: 40px; }
+    .ig-tools__grid { grid-template-columns: 1fr; }
+    .ig-step { grid-template-columns: 60px 1fr; gap: 20px; }
+    .ig-step__n { font-size: 44px; }
+    .ig-timeline__card { padding: 32px 24px; }
+    .ig-timeline__row { grid-template-columns: 90px 1fr 70px; gap: 12px; }
+  }
+  @media (max-width: 600px) {
+    .ig-hero__stats { flex-wrap: nowrap; gap: 12px; justify-content: space-between; }
+    .ig-hero__stat-val { font-size: 21px; }
+    .ig-hero__stat-label { font-size: 10px; letter-spacing: .04em; }
+  }
+</style>
+
+{%- assign tools = section.blocks | where: 'type', 'tool' -%}
+{%- assign steps = section.blocks | where: 'type', 'step' -%}
+{%- assign timeline = section.blocks | where: 'type', 'timeline' -%}
+
+<section class="ig-hero">
+  <div class="page-width ig-hero__crumb-wrap">
+    <div class="ig-hero__crumb">
+      <a href="{{ routes.root_url }}" class="nav-link">Home</a>
+      <span class="ig-hero__crumb-sep">/</span>
+      <span class="ig-hero__crumb-current">Installation Guide</span>
+    </div>
+  </div>
+  <div class="page-width ig-hero__grid">
+    <div>
+      <div class="ig-hero__eyebrow"><span class="ig-hero__rule"></span><span class="ig-hero__eyebrow-text">{{ section.settings.eyebrow }}</span></div>
+      {%- if section.settings.heading != blank -%}<h1 class="ig-hero__title">{{ section.settings.heading }}</h1>{%- endif -%}
+      {%- if section.settings.text != blank -%}<p class="ig-hero__text">{{ section.settings.text }}</p>{%- endif -%}
+      {%- if section.settings.note != blank -%}<p class="ig-hero__note">{{ section.settings.note }}</p>{%- endif -%}
+      <div class="ig-hero__stats">
+        <div class="ig-hero__stat"><div class="ig-hero__stat-val">{{ section.settings.stat_1_value }}</div><div class="ig-hero__stat-label">{{ section.settings.stat_1_label }}</div></div>
+        <div class="ig-hero__stat"><div class="ig-hero__stat-val">{{ section.settings.stat_2_value }}</div><div class="ig-hero__stat-label">{{ section.settings.stat_2_label }}</div></div>
+        <div class="ig-hero__stat"><div class="ig-hero__stat-val">{{ section.settings.stat_3_value }}</div><div class="ig-hero__stat-label">{{ section.settings.stat_3_label }}</div></div>
+      </div>
+    </div>
+    <div class="cm-zoom ig-hero__media">
+      {%- if section.settings.image != blank -%}
+        <img src="{{ section.settings.image | image_url: width: 900 }}" alt="" width="900" height="765" class="cover-img">
+      {%- else -%}<img src="{{ 'install-hero-tree.png' | asset_url }}" alt="" width="900" height="765" class="cover-img">{%- endif -%}
+    </div>
+  </div>
+</section>
+
+{%- if tools.size > 0 -%}
+<section class="ig-tools page-width">
+  <div class="ig-tools__head">
+    <div class="eyebrow">Before You Begin</div>
+    <h2 class="section-title">{{ section.settings.tools_heading }}</h2>
+    {%- if section.settings.tools_text != blank -%}<p class="ig-tools__intro">{{ section.settings.tools_text }}</p>{%- endif -%}
+  </div>
+  <div class="ig-tools__grid">
+    {%- for block in tools -%}
+      <div class="ig-tools__item" {{ block.shopify_attributes }}>
+        <span class="ig-tools__n">{{ forloop.index }}</span>
+        <div>
+          <div class="ig-tools__name">{{ block.settings.name }}</div>
+          <div class="ig-tools__desc">{{ block.settings.desc }}</div>
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+{%- endif -%}
+
+{%- if steps.size > 0 -%}
+<section class="ig-steps page-width">
+  <div class="ig-steps__head">
+    <div class="eyebrow">The Process in Detail</div>
+    <h2 class="section-title">{{ section.settings.steps_heading }}</h2>
+  </div>
+  <div class="ig-steps__list">
+    {%- for block in steps -%}
+      <div class="ig-step" {{ block.shopify_attributes }}>
+        <div class="ig-step__n">{{ block.settings.number }}</div>
+        <div class="ig-step__body">
+          <h3 class="ig-step__title">{{ block.settings.title }}</h3>
+          {%- if block.settings.body != blank -%}<p class="ig-step__text">{{ block.settings.body }}</p>{%- endif -%}
+          {%- if block.settings.image != blank -%}
+            <div class="ig-step__img"><img src="{{ block.settings.image | image_url: width: 600 }}" alt="" width="520" height="293" class="cover-img" loading="lazy"></div>
+          {%- endif -%}
+          {%- if block.settings.tip != blank -%}
+            <div class="ig-step__tip">
+              <span class="ig-step__tip-label">{{ block.settings.tip_label | default: 'Pro Tip' }}</span>
+              <p class="ig-step__tip-text">{{ block.settings.tip }}</p>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+{%- endif -%}
+
+{%- if timeline.size > 0 -%}
+<section class="ig-timeline page-width">
+  <div class="ig-timeline__card">
+    <div class="ig-timeline__head">
+      <div class="ig-timeline__eyebrow">Timing at a Glance</div>
+      <h3 class="ig-timeline__heading">{{ section.settings.timeline_heading }}</h3>
+    </div>
+    <div class="ig-timeline__rows">
+      {%- for block in timeline -%}
+        <div class="ig-timeline__row" {{ block.shopify_attributes }}>
+          <span class="ig-timeline__phase">{{ block.settings.phase }}</span>
+          <span class="ig-timeline__bar"><span class="ig-timeline__bar-fill" style="width: {{ block.settings.bar_percent }}%;"></span></span>
+          <span class="ig-timeline__time">{{ block.settings.time }}</span>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
+{%- if section.settings.cta_heading != blank -%}
+<section class="ig-cta">
+  <div class="ig-cta__inner">
+    <h2 class="ig-cta__heading">{{ section.settings.cta_heading }}</h2>
+    {%- if section.settings.cta_text != blank -%}<p class="ig-cta__text">{{ section.settings.cta_text }}</p>{%- endif -%}
+    {%- if section.settings.cta_button_label != blank -%}<a href="{{ section.settings.cta_button_link }}" class="btn btn--blue">{{ section.settings.cta_button_label }}</a>{%- endif -%}
+  </div>
+</section>
+{%- endif -%}
+
+
+{% schema %}
+{
+  "name": "Installation guide",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Step-by-Step Guide" },
+    { "type": "richtext", "id": "heading", "label": "Heading", "default": "<p>Installing Your <em>iMosaicArt</em> Masterpiece</p>" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Turn any space into a stunning work of art. This beginner-friendly guide walks you through every step — from prep to polish — for a flawless, professional finish." },
+    { "type": "text", "id": "note", "label": "Italic note", "default": "No prior experience needed — your walls and floors are the canvas, and every tile a brushstroke." },
+    { "type": "image_picker", "id": "image", "label": "Hero image" },
+    { "type": "text", "id": "stat_1_value", "label": "Stat 1 value", "default": "Beginner" },
+    { "type": "text", "id": "stat_1_label", "label": "Stat 1 label", "default": "Skill Level" },
+    { "type": "text", "id": "stat_2_value", "label": "Stat 2 value", "default": "6 Steps" },
+    { "type": "text", "id": "stat_2_label", "label": "Stat 2 label", "default": "Start to Finish" },
+    { "type": "text", "id": "stat_3_value", "label": "Stat 3 value", "default": "1–2 Days" },
+    { "type": "text", "id": "stat_3_label", "label": "Stat 3 label", "default": "Incl. Curing" },
+    { "type": "header", "content": "Tools" },
+    { "type": "text", "id": "tools_heading", "label": "Heading", "default": "What You'll Need" },
+    { "type": "textarea", "id": "tools_text", "label": "Intro", "default": "We provide the mosaic artistry — you'll just need a few trusty tools, all available at your local hardware store or online." },
+    { "type": "header", "content": "Steps" },
+    { "type": "text", "id": "steps_heading", "label": "Heading", "default": "Six Steps to a Flawless Finish" },
+    { "type": "header", "content": "Timeline" },
+    { "type": "text", "id": "timeline_heading", "label": "Heading", "default": "Plan for Patience, Not Effort" },
+    { "type": "header", "content": "CTA band" },
+    { "type": "text", "id": "cta_heading", "label": "Heading", "default": "Questions About Your Installation?" },
+    { "type": "textarea", "id": "cta_text", "label": "Text", "default": "Our studio team is happy to help you get a flawless finish. Reach out any time." },
+    { "type": "text", "id": "cta_button_label", "label": "Button label", "default": "Contact Us" },
+    { "type": "url", "id": "cta_button_link", "label": "Button link" }
+  ],
+  "blocks": [
+    {
+      "type": "tool",
+      "name": "Tool",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Name", "default": "Safety Gear" },
+        { "type": "text", "id": "desc", "label": "Description", "default": "Gloves, safety glasses and a dust mask to protect yourself." }
+      ]
+    },
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        { "type": "text", "id": "number", "label": "Number", "default": "1" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Prepare Your Surface" },
+        { "type": "textarea", "id": "body", "label": "Body", "default": "Give your chosen surface a thorough cleaning to ensure the adhesive bonds optimally." },
+        { "type": "image_picker", "id": "image", "label": "Image (optional)" },
+        { "type": "text", "id": "tip_label", "label": "Tip label", "default": "Pro Tip" },
+        { "type": "textarea", "id": "tip", "label": "Tip (optional)" }
+      ]
+    },
+    {
+      "type": "timeline",
+      "name": "Timeline row",
+      "settings": [
+        { "type": "text", "id": "phase", "label": "Phase", "default": "Hands-on Work" },
+        { "type": "text", "id": "time", "label": "Time", "default": "2–4 hrs" },
+        { "type": "range", "id": "bar_percent", "min": 5, "max": 100, "step": 5, "unit": "%", "label": "Bar fill", "default": 40 }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Installation guide",
+      "blocks": [
+        { "type": "tool", "settings": { "name": "Safety Gear", "desc": "Gloves, safety glasses and a dust mask to protect yourself." } },
+        { "type": "tool", "settings": { "name": "Adhesive", "desc": "A high-quality mosaic adhesive suited to your surface." } },
+        { "type": "tool", "settings": { "name": "Trowel", "desc": "For spreading the adhesive evenly." } },
+        { "type": "tool", "settings": { "name": "Notched Trowel", "desc": "Creates ridges in the adhesive for better tile grip." } },
+        { "type": "tool", "settings": { "name": "Grout", "desc": "A color that complements your mosaic and space." } },
+        { "type": "tool", "settings": { "name": "Grout Float", "desc": "To apply and smooth grout between the tiles." } },
+        { "type": "tool", "settings": { "name": "Bucket & Sponge", "desc": "For mixing grout and cleaning as you go." } },
+        { "type": "tool", "settings": { "name": "Level", "desc": "Ensures your mosaic is perfectly aligned." } },
+        { "type": "tool", "settings": { "name": "Utility Knife", "desc": "For any necessary cuts to the mesh backing." } },
+        { "type": "tool", "settings": { "name": "Rubber Mallet", "desc": "Gently taps tiles firmly into place." } },
+        { "type": "step", "settings": { "number": "1", "title": "Prepare Your Surface", "body": "Give your chosen surface a thorough cleaning with a damp sponge and soapy water. Remove any dust, dirt or grime to ensure the adhesive bonds optimally.", "tip_label": "Pro Tip", "tip": "For uneven surfaces, apply a leveling compound first to create a smooth, even base." } },
+        { "type": "step", "settings": { "number": "2", "title": "Spread the Adhesive", "body": "Using your trowel, spread a thin, even layer of adhesive onto the prepared surface. Follow the manufacturer's instructions for drying time before moving on." } },
+        { "type": "step", "settings": { "number": "3", "title": "Embrace the Mosaic Magic", "body": "Starting from the center or a corner, gently press your mosaic into the adhesive, keeping proper alignment and spacing. Check with your level regularly." } },
+        { "type": "step", "settings": { "number": "4", "title": "Let the Art Settle", "body": "Allow the adhesive to cure completely according to the manufacturer's recommendations — typically 24 to 48 hours." } },
+        { "type": "step", "settings": { "number": "5", "title": "Grout Your Masterpiece", "body": "Mix your grout and apply it with the grout float, working diagonally, then wipe away excess with a damp sponge. Seal the grout once dry (unless using epoxy grout).", "tip_label": "Important", "tip": "Grout is optional indoors but essential for exterior, pool and wet areas. Choose a light grout for light designs and a dark grout for darker ones." } },
+        { "type": "step", "settings": { "number": "6", "title": "Reveal Your Creation", "body": "After the grout dries completely (usually 24 to 72 hours), buff the surface with a soft cloth to bring out its shine." } },
+        { "type": "timeline", "settings": { "phase": "Hands-on Work", "time": "2–4 hrs", "bar_percent": 35 } },
+        { "type": "timeline", "settings": { "phase": "Adhesive Cure", "time": "24–48 hrs", "bar_percent": 70 } },
+        { "type": "timeline", "settings": { "phase": "Grout Dry", "time": "24–72 hrs", "bar_percent": 90 } }
+      ]
+    }
+  ]
+}
+{% endschema %}

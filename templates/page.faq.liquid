@@ -1,0 +1,68 @@
+<style>
+  .faqpage { padding: 70px 0 100px; }
+  .faqpage__inner { max-width: 860px; }
+  .faqpage__head { text-align: center; margin-bottom: 48px; }
+  .faqpage__eyebrow { justify-content: center; margin-bottom: 14px; }
+  .faqpage__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(36px, 5vw, 60px); line-height: 1.04; letter-spacing: -.01em; color: var(--color-navy); margin-bottom: 18px; }
+  .faqpage__sub { font-size: 17px; line-height: 1.7; color: var(--color-text-muted); max-width: 620px; margin: 0 auto; }
+  .faqpage__rte { margin-bottom: 30px; font-size: 15px; line-height: 1.75; color: var(--color-text-muted); }
+
+  .faqpage__list { border-bottom: 1px solid var(--color-line); }
+  .faq-item { border-top: 1px solid var(--color-line); }
+  .faq-item__head { width: 100%; display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; padding: 26px 2px; cursor: pointer; background: none; border: none; text-align: left; }
+  .faq-item__q { font-family: var(--font-display); font-weight: 500; font-size: clamp(20px, 2.4vw, 25px); line-height: 1.25; color: var(--color-navy); }
+  .faq-item__icon { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 2px; transition: all .3s ease; background: transparent; color: var(--color-navy); border: 1px solid rgba(22,51,94,.3); }
+  .faq-item[data-open] .faq-item__icon { transform: rotate(45deg); background: var(--color-blue); color: #fff; border-color: var(--color-blue); }
+  .faq-item__body { overflow: hidden; max-height: 0; opacity: 0; transition: max-height .45s ease, opacity .3s ease; }
+  .faq-item[data-open] .faq-item__body { max-height: 400px; opacity: 1; }
+  .faq-item__a { font-size: 15.5px; line-height: 1.8; color: var(--color-text-muted); padding: 0 48px 28px 2px; }
+
+  .faqpage__cta { text-align: center; margin-top: 72px; padding: 54px 30px; background: var(--color-panel); }
+  .faqpage__cta-title { font-family: var(--font-display); font-weight: 500; font-size: clamp(26px, 3vw, 36px); color: var(--color-navy); margin-bottom: 12px; }
+  .faqpage__cta-text { font-size: 15.5px; line-height: 1.7; color: var(--color-text-muted); max-width: 460px; margin: 0 auto 26px; }
+  .faqpage__cta-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+</style>
+
+{%- comment -%} Full FAQ page inlined so it always renders the design, independent of section sync. {%- endcomment -%}
+{%- assign faq_qs = 'Are your mosaics weatherproof and waterproof?|What is the production and shipping time?|Can I order a custom size or design?|What materials are your mosaics made from?|How are the mosaics installed?|Do you ship worldwide, and what does it cost?|What is your returns and warranty policy?|Can I send my own image or photo to be recreated?|How do I care for and clean my mosaic?' -%}
+{%- assign faq_as = 'Yes — every mosaic is fully weatherproof and waterproof, hand-cut from durable natural stone and glass. They are suitable for both indoor and outdoor spaces, including bathrooms, pools, patios and kitchens.|Each mosaic is handcrafted to order with a 4–5 week handling time. Transit then typically takes around 10 days, shipped free worldwide with full tracking so you can follow every step.|Absolutely. Use our Request a Custom Quote form to share your dimensions or your own image, and our artisans will hand-cut a one-of-a-kind piece tailored perfectly to your space.|Our mosaics are assembled tile by tile from natural stone and hand-cut glass tesserae, mounted on a flexible fibre-mesh backing that makes handling and installation straightforward.|Each piece arrives on a fibre-mesh backing ready to be set with standard tile adhesive, exactly like conventional tiling. For larger works we include an installation guide, and any professional tiler can mount them with ease.|Yes, we ship worldwide and shipping is completely free. Every order is fully tracked and carefully packaged in protective crating to arrive in perfect condition.|Every mosaic is covered by a 14-day returns policy and a lifetime warranty against material and craftsmanship defects. If anything is not right, our studio will make it right.|Yes — recreating a cherished photo, artwork or design is one of our specialities. Send it through the custom quote form and our artisans will translate it into hand-cut stone and glass.|Simply wipe with a soft, damp cloth and mild soap when needed. No harsh chemicals are required — natural stone and glass keep their beauty for generations with minimal care.' -%}
+{%- assign fq = faq_qs | split: '|' -%}
+{%- assign fa = faq_as | split: '|' -%}
+
+<section class="faqpage">
+  <div class="faqpage__inner page-width">
+    <div class="faqpage__head">
+      <div class="eyebrow faqpage__eyebrow">Good to Know</div>
+      <h1 class="faqpage__title">Frequently Asked Questions</h1>
+      <p class="faqpage__sub">Everything you need to know about our hand-cut mosaics — from materials and installation to shipping, custom orders and care.</p>
+    </div>
+
+    {%- if page.content != blank -%}
+      <div class="faqpage__rte rte">{{ page.content }}</div>
+    {%- endif -%}
+
+    <div class="faqpage__list">
+      {%- for q in fq -%}
+        <div class="faq-item" data-accordion{% if forloop.first %} data-open{% endif %}>
+          <button type="button" class="faq-item__head" data-accordion-toggle>
+            <h3 class="faq-item__q">{{ q | strip }}</h3>
+            <span class="faq-item__icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </span>
+          </button>
+          <div class="faq-item__body"><p class="faq-item__a">{{ fa[forloop.index0] | strip }}</p></div>
+        </div>
+      {%- endfor -%}
+    </div>
+
+    <div class="faqpage__cta">
+      <h2 class="faqpage__cta-title">Still have questions?</h2>
+      <p class="faqpage__cta-text">Our studio is happy to help with anything — from custom commissions to installation advice.</p>
+      <div class="faqpage__cta-actions">
+        <a href="/pages/contact-us" class="btn btn--blue">Contact Our Studio</a>
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn--ghost">Browse the Collection</a>
+      </div>
+    </div>
+  </div>
+</section>
+

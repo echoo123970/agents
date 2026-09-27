@@ -1,0 +1,48 @@
+<style>
+  .newsletter { background: var(--color-navy); color: var(--color-light-text); }
+  .newsletter__inner { max-width: 760px; margin: 0 auto; padding: 90px 40px; text-align: center; }
+  .newsletter__heading { font-family: var(--font-display); font-weight: 500; font-size: clamp(32px, 3.6vw, 46px); line-height: 1.1; margin-bottom: 14px; color: #fff; }
+  .newsletter__text { font-size: 16px; line-height: 1.6; color: var(--color-text-faint); margin-bottom: 34px; }
+  .newsletter__form { display: flex; gap: 0; max-width: 480px; margin: 0 auto; border: 1px solid rgba(220,230,245,.3); }
+  .newsletter__input { flex: 1; background: transparent; border: none; outline: none; color: var(--color-bg); font-family: var(--font-body); font-size: 15px; padding: 16px 20px; }
+  .newsletter__input::placeholder { color: var(--color-text-faint); }
+  .newsletter__button { background: var(--color-blue); color: #fff; border: none; font-family: var(--font-body); font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; padding: 0 28px; cursor: pointer; }
+  .newsletter__success { flex: 1; width: 100%; text-align: center; font-family: var(--font-display); font-style: italic; font-size: 22px; color: #fff; padding: 6px 0; }
+  @media (max-width: 600px) {
+    .newsletter__inner { padding: 64px 22px; }
+    .newsletter__form { flex-direction: column; }
+    .newsletter__button { padding: 15px; }
+  }
+</style>
+
+<section class="newsletter">
+  <div class="newsletter__inner">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="newsletter__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    {%- if section.settings.text != blank -%}
+      <p class="newsletter__text">{{ section.settings.text }}</p>
+    {%- endif -%}
+    {%- form 'customer', class: 'newsletter__form' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      {%- if form.posted_successfully? -%}
+        <p class="newsletter__success">{{ 'general.newsletter_form.confirmation' | t }}</p>
+      {%- else -%}
+        <input type="email" name="contact[email]" required placeholder="{{ 'general.newsletter_form.email_placeholder' | t }}" class="newsletter__input">
+        <button type="submit" class="newsletter__button">{{ 'general.newsletter_form.button_label' | t }}</button>
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</section>
+
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Join The Home Of Mosaics" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Exclusive updates, new arrivals and studio stories — straight to your inbox." }
+  ],
+  "presets": [{ "name": "Newsletter" }]
+}
+{% endschema %}

@@ -1,0 +1,190 @@
+<style>
+  .hero__grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 0; align-items: stretch; min-height: calc(100vh - 78px); }
+  .hero__content { display: flex; flex-direction: column; justify-content: center; padding: 72px 72px 72px 0; }
+  .hero__eyebrow { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; }
+  .hero__eyebrow-rule { width: 42px; height: 1px; background: var(--color-blue); }
+  .hero__eyebrow-text { font-family: var(--font-accent); font-size: 14px; letter-spacing: .36em; text-transform: uppercase; color: var(--color-navy); }
+  .hero__heading { font-family: var(--font-display); font-weight: 500; font-size: clamp(46px, 5.2vw, 78px); line-height: 1.02; letter-spacing: -.01em; margin-bottom: 28px; color: var(--color-navy); }
+  .hero__heading em, .hero__heading i { font-style: italic; color: var(--color-blue); }
+  .hero__heading .hero__amp { font-style: normal; font-feature-settings: "liga" 0, "dlig" 0, "swsh" 0; }
+  .hero__text { font-size: 17px; line-height: 1.7; color: var(--color-text-muted); max-width: 480px; margin-bottom: 38px; }
+  .hero__ctas { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 46px; }
+  .hero__btn { min-width: 286px; }
+  .hero__stats { display: flex; gap: 40px; flex-wrap: wrap; border-top: 1px solid rgba(22,51,94,.12); padding-top: 26px; }
+  .hero__stat-value { font-family: var(--font-display); font-size: 32px; line-height: 1; color: var(--color-navy); }
+  .hero__stat-label { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-soft); margin-top: 6px; }
+
+  .hero__media { position: relative; align-self: stretch; min-height: 520px; }
+  .hero__frame { position: absolute; inset: 48px 0 48px 24px; overflow: hidden; cursor: default; background: var(--color-light-text); }
+  .hero__placeholder { width: 100%; height: 100%; }
+  .hero__placeholder svg { width: 100%; height: 100%; object-fit: cover; }
+  .hero-lens {
+    position: absolute; width: 112px; height: 112px; border-radius: 50%; pointer-events: none;
+    background-repeat: no-repeat;
+    box-shadow: 0 16px 40px rgba(11,28,53,.45), inset 0 0 0 2px rgba(255,255,255,.8);
+    -webkit-mask-image: radial-gradient(circle, #000 70%, rgba(0,0,0,.5) 88%, transparent 100%);
+    mask-image: radial-gradient(circle, #000 70%, rgba(0,0,0,.5) 88%, transparent 100%);
+  }
+  .hero__card { position: absolute; left: -32px; bottom: 78px; background: #fff; padding: 20px 26px; box-shadow: 0 24px 60px rgba(22,51,94,.18); max-width: 230px; }
+  .hero__card-eyebrow { font-family: var(--font-accent); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--color-blue); margin-bottom: 8px; }
+  .hero__card-title { font-family: var(--font-display); font-style: italic; font-size: 22px; line-height: 1.25; color: var(--color-navy); }
+
+  @media (max-width: 990px) {
+    .hero__grid { grid-template-columns: 1fr; min-height: 0; }
+    .hero__content { padding: 56px 0 40px; }
+    .hero__media { min-height: 460px; }
+    .hero__frame { position: relative; inset: 0; height: 460px; }
+    .hero__btn { min-width: 0; flex: 1; }
+    .hero__card { left: 12px; bottom: 12px; }
+  }
+  @media (max-width: 749px) {
+    /* Mobile order: eyebrow/heading/text → image → stats (one row) → buttons */
+    .hero__grid { display: flex; flex-direction: column; padding: 36px 0 42px; }
+    .hero__content { display: contents; }
+    .hero__eyebrow, .hero__heading, .hero__text { order: 0; }
+    .hero__media { order: 1; }
+    .hero__stats { order: 2; }
+    .hero__ctas { order: 3; }
+    .hero__frame .cover-img { object-position: center 8%; }
+
+    .hero__heading { font-size: clamp(34px, 9vw, 44px); }
+    .hero__text { max-width: none; margin-bottom: 24px; }
+    .hero__media { min-height: 0; margin-bottom: 24px; }
+    .hero__frame { position: relative; inset: 0; height: 460px; }
+    .hero__card { left: 12px; bottom: 12px; }
+
+    .hero__stats { flex-wrap: nowrap; gap: 14px; justify-content: space-between; border-top: 1px solid rgba(22,51,94,.12); padding-top: 22px; margin-top: 0; }
+    .hero__stat-value { font-size: 22px; }
+    .hero__stat-label { font-size: 10.5px; letter-spacing: .04em; margin-top: 5px; }
+    .hero__ctas { flex-wrap: wrap; gap: 12px; margin: 24px 0 0; }
+    .hero__btn { min-width: 0; flex: 1 1 100%; }
+  }
+</style>
+
+<section class="hero page-width">
+  <div class="hero__grid">
+    <div class="hero__content">
+      {%- if section.settings.eyebrow != blank -%}
+        <div class="hero__eyebrow">
+          <span class="hero__eyebrow-rule"></span>
+          <span class="hero__eyebrow-text">{{ section.settings.eyebrow }}</span>
+        </div>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        {%- assign hero_heading = section.settings.heading | replace: '&amp;', '<span class="hero__amp">&amp;</span>' -%}
+        <h1 class="hero__heading">{{ hero_heading }}</h1>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <p class="hero__text">{{ section.settings.text }}</p>
+      {%- endif -%}
+      <div class="hero__ctas">
+        {%- if section.settings.button_label_1 != blank -%}
+          <a href="{{ section.settings.button_link_1 | default: routes.all_products_collection_url }}" class="btn btn--dark hero__btn">{{ section.settings.button_label_1 }}</a>
+        {%- endif -%}
+        {%- if section.settings.button_label_2 != blank -%}
+          <a href="{{ section.settings.button_link_2 | default: '/pages/custom-mosaics' }}" class="btn btn--outline hero__btn">{{ section.settings.button_label_2 }}</a>
+        {%- endif -%}
+      </div>
+      <div class="hero__stats">
+        {%- assign stat_blocks = section.blocks | where: 'type', 'stat' -%}
+        {%- assign stat_count = stat_blocks | size -%}
+        {%- if stat_count > 0 -%}
+          {%- for block in stat_blocks -%}
+            <div class="hero__stat" {{ block.shopify_attributes }}>
+              <div class="hero__stat-value">{{ block.settings.value }}</div>
+              <div class="hero__stat-label">{{ block.settings.label }}</div>
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          {%- if section.settings.stat1_value != blank -%}
+            <div class="hero__stat">
+              <div class="hero__stat-value">{{ section.settings.stat1_value }}</div>
+              <div class="hero__stat-label">{{ section.settings.stat1_label }}</div>
+            </div>
+          {%- endif -%}
+          {%- if section.settings.stat2_value != blank -%}
+            <div class="hero__stat">
+              <div class="hero__stat-value">{{ section.settings.stat2_value }}</div>
+              <div class="hero__stat-label">{{ section.settings.stat2_label }}</div>
+            </div>
+          {%- endif -%}
+          {%- if section.settings.stat3_value != blank -%}
+            <div class="hero__stat">
+              <div class="hero__stat-value">{{ section.settings.stat3_value }}</div>
+              <div class="hero__stat-label">{{ section.settings.stat3_label }}</div>
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="hero__media">
+      <div class="hero__frame" data-hero-zoom>
+        {%- if section.settings.image != blank -%}
+          <img src="{{ section.settings.image | image_url: width: 1200 }}" alt="{{ section.settings.heading | strip_html | escape }}" width="1200" height="1400" class="cover-img">
+        {%- elsif section.settings.image_url != blank -%}
+          <img src="{{ section.settings.image_url }}" alt="{{ section.settings.heading | strip_html | escape }}" width="1200" height="1400" class="cover-img" referrerpolicy="no-referrer">
+        {%- elsif section.settings.image_file != blank -%}
+          <img src="{{ section.settings.image_file | asset_url }}" alt="{{ section.settings.heading | strip_html | escape }}" width="1200" height="1400" class="cover-img" onerror="this.onerror=null;this.src='{{ 'bird-peacock.jpg' | asset_url }}'">
+        {%- else -%}
+          <img src="{{ 'bird-peacock.jpg' | asset_url }}" alt="{{ section.settings.heading | strip_html | escape }}" width="1200" height="1400" class="cover-img">
+        {%- endif -%}
+      </div>
+      {%- if section.settings.card_title != blank -%}
+        <div class="hero__card">
+          <div class="hero__card-eyebrow">{{ section.settings.card_eyebrow }}</div>
+          <div class="hero__card-title">{{ section.settings.card_title }}</div>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Mosaic Art Studio · Est. New York" },
+    { "type": "richtext", "id": "heading", "label": "Heading", "default": "<p>Handcrafted Natural Marble &amp; Glass Mosaics for <em>Luxury Interiors &amp; Outdoors.</em></p>" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Timeless, artisanal tile art hand-cut by master artisans — bespoke designs, tailored to your space, delivered worldwide with complimentary shipping." },
+    { "type": "text", "id": "button_label_1", "label": "Button 1 label", "default": "Shop All Mosaics" },
+    { "type": "url", "id": "button_link_1", "label": "Button 1 link" },
+    { "type": "text", "id": "button_label_2", "label": "Button 2 label", "default": "Request a Custom Quote" },
+    { "type": "url", "id": "button_link_2", "label": "Button 2 link" },
+    { "type": "image_picker", "id": "image", "label": "Hero image (upload — best quality)" },
+    { "type": "text", "id": "image_url", "label": "Hero image URL (paste a horse mosaic link)", "default": "https://cdn.shopify.com/s/files/1/0754/6093/5978/files/MAA062_a2009f6f-c0f6-4f85-be56-344f79b78b71.jpg?v=1762022927" },
+    { "type": "text", "id": "image_file", "label": "Bundled image filename (e.g. hero-horse.jpg)", "default": "hero-horse.jpg" },
+    { "type": "header", "content": "Stats row (under the buttons)" },
+    { "type": "text", "id": "stat1_value", "label": "Stat 1 value", "default": "15+" },
+    { "type": "text", "id": "stat1_label", "label": "Stat 1 label", "default": "Years of Experience" },
+    { "type": "text", "id": "stat2_value", "label": "Stat 2 value", "default": "100%" },
+    { "type": "text", "id": "stat2_label", "label": "Stat 2 label", "default": "Hand-cut Stone" },
+    { "type": "text", "id": "stat3_value", "label": "Stat 3 value", "default": "Worldwide" },
+    { "type": "text", "id": "stat3_label", "label": "Stat 3 label", "default": "Free Shipping" },
+    { "type": "header", "content": "Floating card" },
+    { "type": "text", "id": "card_eyebrow", "label": "Card eyebrow", "default": "The Detail" },
+    { "type": "text", "id": "card_title", "label": "Card title", "default": "Thousands of tesserae, placed by hand." }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "settings": [
+        { "type": "text", "id": "value", "label": "Value", "default": "15+" },
+        { "type": "text", "id": "label", "label": "Label", "default": "Years of Experience" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero",
+      "blocks": [
+        { "type": "stat", "settings": { "value": "15+", "label": "Years of Experience" } },
+        { "type": "stat", "settings": { "value": "100%", "label": "Hand-cut Stone" } },
+        { "type": "stat", "settings": { "value": "Worldwide", "label": "Free Shipping" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

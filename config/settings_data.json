@@ -1,0 +1,171 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "current": {
+    "color_background": "#F4F6FA",
+    "color_navy": "#16335E",
+    "color_accent": "#2B7BE8",
+    "page_width": 1320,
+    "favicon": "shopify://shop_images/favicon-512.png",
+    "social_instagram_link": "https://www.instagram.com/i.mosaicart/",
+    "social_pinterest_link": "https://www.pinterest.com/iMosaicArt/",
+    "social_facebook_link": "https://www.facebook.com/profile.php?id=100094048131287",
+    "social_youtube_link": "https://www.youtube.com/@iMosaicArt",
+    "sections": {
+      "hero": {
+        "type": "hero",
+        "settings": {
+          "eyebrow": "Mosaic Art Studio · Est. New York",
+          "heading": "<p>Handcrafted Natural Marble & Glass Mosaics for <em>Luxury Interiors.</em></p>",
+          "text": "Timeless, artisanal tile art hand-cut by master artisans — bespoke designs, tailored to your space, delivered worldwide with complimentary shipping.",
+          "button_label_1": "Shop All Mosaics",
+          "button_link_1": "",
+          "button_label_2": "Request a Custom Quote",
+          "button_link_2": "",
+          "image_url": "https://cdn.shopify.com/s/files/1/0754/6093/5978/files/MAA062_a2009f6f-c0f6-4f85-be56-344f79b78b71.jpg?v=1762022927",
+          "image_file": "hero-horse.jpg",
+          "stat1_value": "15+",
+          "stat1_label": "Years of Experience",
+          "stat2_value": "100%",
+          "stat2_label": "Hand-cut Stone",
+          "stat3_value": "Worldwide",
+          "stat3_label": "Free Shipping",
+          "card_eyebrow": "The Detail",
+          "card_title": "Thousands of tesserae, placed by hand."
+        }
+      },
+      "trust-bar": {
+        "type": "trust-bar",
+        "settings": {
+          "item1_icon": "✦",
+          "item1_title": "Hand-cut Craftsmanship",
+          "item1_sub": "Finest natural stone & glass",
+          "item2_icon": "↺",
+          "item2_title": "Satisfaction Guarantee",
+          "item2_sub": "100% love it or your money back",
+          "item3_icon": "✈",
+          "item3_title": "Fast & Safe Delivery",
+          "item3_sub": "Carefully packed, worldwide",
+          "item4_icon": "🔒",
+          "item4_title": "Secure Payments",
+          "item4_sub": "Trusted, encrypted checkout"
+        }
+      },
+      "quote-banner": {
+        "type": "quote-banner",
+        "settings": {
+          "text": "Every mosaic is weatherproof, waterproof, and suitable for both indoor and outdoor installations."
+        }
+      },
+      "marquee": {
+        "type": "marquee",
+        "settings": {
+          "words": "iMosaicArt, Home of Mosaics, Where Tradition Meets Modern Design, Every Tile Tells a Story, Handmade Beauty in Every Tile, Crafted to Inspire Built to Last"
+        }
+      },
+      "custom-process": {
+        "type": "custom-process",
+        "settings": {
+          "eyebrow": "Custom Mosaics",
+          "heading": "Your vision, Hand-cut in Stone",
+          "text": "From a single photograph to a finished masterpiece. Share your idea and our studio will craft a one-of-a-kind mosaic, tailored to your exact dimensions.",
+          "button_label": "Start Your Custom Mosaic Piece",
+          "button_link": "",
+          "image_caption": "Artistry in motion.",
+          "default_titles": "Share Your Vision|Design & Quote|Hand-Cut In Stone|Delivered To You",
+          "default_descs": "Send a photo, sketch or idea and your desired dimensions.|Our artisans draft your piece and confirm materials & price.|Thousands of tesserae placed by hand in our studio.|Crated, insured and shipped free, anywhere in the world."
+        }
+      },
+      "promises": {
+        "type": "promises",
+        "settings": {
+          "eyebrow": "Our Promise",
+          "heading": "Where Timeless Craft Meets Precision",
+          "default_icons": "✦|↺|✈|◈|♦",
+          "default_titles": "Premium Craft|Satisfaction Promise|Safe Worldwide Ship|Easy & Secure Pay|Lifetime Warranty",
+          "default_descs": "Mosaics handcrafted from the finest stones and glass tiles for lasting beauty.|Love it or return it — 100% satisfaction or your money back.|Carefully packed to ensure your mosaic arrives in perfect condition.|Multiple payment options with a fast, secure checkout.|Every mosaic is backed by a lifetime warranty, protecting your investment for years to come."
+        }
+      },
+      "testimonials": {
+        "type": "testimonials",
+        "settings": {
+          "eyebrow": "Real Experiences",
+          "heading": "Loved In Homes Worldwide",
+          "default_quotes": "The marble portrait we commissioned exceeded every expectation — the shading and detail are breathtaking in person.|Arrived beautifully crated and packed. It's the centerpiece of our entryway and guests always ask about it.|Worked with the studio on a custom size for our kitchen backsplash. Flawless craftsmanship and it feels timeless.|Third piece from iMosaicArt and the quality is always consistent. The colors are so much richer in real life.|Shipped to Australia without a single tile out of place. Truly a heirloom-quality artwork.|The religious mosaic we ordered brings the whole scene to life. Handcrafted quality you can genuinely feel.",
+          "default_names": "Sarah Whitfield|Marcus Delaney|Elena Rossi|David Bennett|Priya Anand|James Mitchell",
+          "default_places": "Austin, TX|Chicago, IL|Toronto, Canada|London, UK|Sydney, Australia|Boston, MA",
+          "default_avatars": "https://randomuser.me/api/portraits/women/65.jpg|https://randomuser.me/api/portraits/men/32.jpg|https://randomuser.me/api/portraits/women/44.jpg|https://randomuser.me/api/portraits/men/51.jpg|https://randomuser.me/api/portraits/women/26.jpg|https://randomuser.me/api/portraits/men/76.jpg"
+        }
+      },
+      "blog-posts": {
+        "type": "blog-posts",
+        "settings": {
+          "eyebrow": "The Journal",
+          "heading": "Stories, Trends & Technique",
+          "blog": "",
+          "button_label": "See All Articles",
+          "button_link": ""
+        }
+      },
+      "instagram-grid": {
+        "type": "instagram-grid",
+        "settings": {
+          "heading": "Follow The Mosaic Studio",
+          "handle": "@i.mosaicart"
+        }
+      },
+      "newsletter": {
+        "type": "newsletter",
+        "settings": {
+          "heading": "Join The Home Of Mosaics",
+          "text": "Exclusive updates, new arrivals and studio stories — straight to your inbox."
+        }
+      },
+      "floating-actions": {
+        "type": "floating-actions",
+        "settings": {
+          "enable": true,
+          "whatsapp_number": "13152175538",
+          "whatsapp_message": "Hi iMosaicArt! I have a question about your mosaics."
+        }
+      }
+    },
+    "content_for_index": [],
+    "blocks": {
+      "15683396631634586217": {
+        "type": "shopify://apps/inbox/blocks/chat/841fc607-4181-4ad1-842d-e24d7f8bad6b",
+        "disabled": false,
+        "settings": {
+          "greeting_message": "",
+          "background_color": "#16335e",
+          "font_color": "#f4f6fa",
+          "button_color": "#16335e",
+          "secondary_color": "#f4f6fa",
+          "ternary_color": "#6a6a6a",
+          "button_icon": "chat_bubble",
+          "button_text": "live_chat",
+          "button_horizontal_position": "bottom_right",
+          "button_vertical_position": "lowest",
+          "agent_inherit_fonts": true,
+          "agent_font": "system_ui_n4",
+          "agent_border_radius": 16
+        }
+      }
+    }
+  },
+  "presets": {
+    "iMosaicArt": {
+      "color_background": "#F4F6FA",
+      "color_navy": "#16335E",
+      "color_accent": "#2B7BE8",
+      "page_width": 1320
+    }
+  }
+}

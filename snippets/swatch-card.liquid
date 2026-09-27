@@ -1,0 +1,14 @@
+{%- comment -%} Color palette swatch card. Accepts: block, index {%- endcomment -%}
+<div class="sw-card" {{ block.shopify_attributes }}>
+  <div class="sw-mosaic">
+    {%- if block.settings.image != blank -%}
+      <img src="{{ block.settings.image | image_url: width: 400 }}" alt="{{ block.settings.name | escape }} mosaic swatch" width="400" height="400" loading="lazy">
+    {%- else -%}
+      {{ 'image' | placeholder_svg_tag: '' }}
+    {%- endif -%}
+  </div>
+  <div class="sw-meta">
+    <div class="sw-num">{{ index | prepend: '0' | slice: -2, 2 }}</div>
+    <div class="sw-name">{{ block.settings.name }}</div>
+  </div>
+</div>
