@@ -16,7 +16,7 @@ from pathlib import Path
 # base rate per m², with shipping included → the categories that carry it
 BANDS = [
     (500, ["Sheets"]),
-    (800, ["Abstract", "Animals", "Geometric", "Logos", "Patterns"]),
+    (850, ["Abstract", "Animals", "Geometric", "Logos", "Patterns"]),
     (900, ["Birds & butterflies", "Borders", "Flowers & trees", "Food",
            "Landmark", "Landscape", "Nautical"]),
     (950, ["Portrait", "Religious", "Roman", "Rugs"]),
