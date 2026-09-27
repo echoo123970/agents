@@ -31,10 +31,13 @@ const CLEAN = process.argv.includes("--clean");
 // trades visible sharpness for a file that opens on a phone, where anything
 // much past 5MB has been refusing to.
 const TIER = process.argv.includes("--mail") ? "mail" : process.argv.includes("--light") ? "light" : "full";
-const { dpi: DPI, quality: QUALITY, suffix: SUFFIX } = {
-  full:  { dpi: 260, quality: 0.92, suffix: "" },
-  light: { dpi: 200, quality: 0.84, suffix: "-light" },
-  mail:  { dpi: 100, quality: 0.60, suffix: "-mail" },
+// A frame marked data-res="hi" is held at the higher pair in every tier: the
+// bench work and the table tops are the detail pages, and they have to read as
+// sharp even in the copy that is sent by mail.
+const { dpi: DPI, quality: QUALITY, hiDpi: HI_DPI, hiQuality: HI_QUALITY, suffix: SUFFIX } = {
+  full:  { dpi: 260, quality: 0.92, hiDpi: 300, hiQuality: 0.94, suffix: "" },
+  light: { dpi: 200, quality: 0.84, hiDpi: 260, hiQuality: 0.90, suffix: "-light" },
+  mail:  { dpi: 100, quality: 0.60, hiDpi: 240, hiQuality: 0.82, suffix: "-mail" },
 }[TIER];
 // Both documents share tokens.css, styles.css and the fonts; --price just
 // points the same pipeline at the other source file.
@@ -96,14 +99,18 @@ await page.evaluate(() => document.fonts.ready);
 // more than a 90mm frame can draw from a 720px file. 200dpi is the lowest
 // that still reads as sharp on screen; --mail goes below that on purpose.
 if (found.length && !FULL_RES) {
-  const shrunk = await page.evaluate(async ([dpi, quality]) => {
+  const shrunk = await page.evaluate(async ([dpi, quality, hiDpi, hiQuality]) => {
     const PX_PER_MM = 96 / 25.4;             // CSS px in a millimetre
     const nodes = [...document.querySelectorAll("[data-slot]")].filter(
       (n) => getComputedStyle(n).backgroundImage !== "none"
     );
+    // where a percentage in background-position puts the image
+    const frac = (v, over) =>
+      v.endsWith("%") ? parseFloat(v) / 100 : over ? parseFloat(v) / over : 0.5;
     let count = 0, before = 0, after = 0;
     for (const node of nodes) {
-      const url = getComputedStyle(node).backgroundImage.slice(5, -2);
+      const cs = getComputedStyle(node);
+      const url = cs.backgroundImage.slice(5, -2);
       if (!url.startsWith("file://")) continue;
       try {
         const img = await new Promise((res, rej) => {
@@ -112,26 +119,45 @@ if (found.length && !FULL_RES) {
           i.onerror = rej;
           i.src = url;
         });
-        // the frame's printed size, and the pixels that size can actually show
         const r = node.getBoundingClientRect();
-        const mm = Math.max(r.width, r.height) / PX_PER_MM;
-        const want = Math.max(320, Math.round((mm / 25.4) * dpi));
-        // background-size: cover means the long edge may be cropped away, so
-        // scale on the short edge to keep the visible area at full quality
-        const shortEdge = Math.min(img.width, img.height);
-        const scale = Math.min(1, want / shortEdge);
+        const hi = node.dataset.res === "hi";
+        const targetDpi = hi ? hiDpi : dpi;
+        // What the frame actually shows. Under `cover` the image is scaled to
+        // fill the frame and the overflowing edge is clipped away, so only the
+        // part inside the frame is worth carrying: cropping to it here is what
+        // lets a 720px file read as sharp instead of being spent on pixels the
+        // reader never sees. Under `contain` the whole image is visible.
+        const contain = cs.backgroundSize === "contain";
+        const s = contain
+          ? Math.min(r.width / img.width, r.height / img.height)
+          : Math.max(r.width / img.width, r.height / img.height);
+        const vw = Math.min(img.width, r.width / s);
+        const vh = Math.min(img.height, r.height / s);
+        const [px, py] = cs.backgroundPosition.split(" ");
+        const sx = Math.max(0, Math.min(img.width - vw, (img.width - vw) * frac(px, img.width * s - r.width)));
+        const sy = Math.max(0, Math.min(img.height - vh, (img.height - vh) * frac(py, img.height * s - r.height)));
+        // the printed size of that visible part, and the pixels it can show
+        const mmW = Math.min(r.width, img.width * s) / PX_PER_MM;
+        const mmH = Math.min(r.height, img.height * s) / PX_PER_MM;
+        const want = Math.max(320, Math.round((Math.max(mmW, mmH) / 25.4) * targetDpi));
+        const scale = Math.min(1, want / Math.max(vw, vh));
         const c = document.createElement("canvas");
-        c.width = Math.round(img.width * scale);
-        c.height = Math.round(img.height * scale);
-        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        c.width = Math.max(1, Math.round(vw * scale));
+        c.height = Math.max(1, Math.round(vh * scale));
+        c.getContext("2d").drawImage(img, sx, sy, vw, vh, 0, 0, c.width, c.height);
         before += img.width * img.height;
         after += c.width * c.height;
-        node.style.setProperty("background-image", `url("${c.toDataURL("image/jpeg", quality)}")`, "important");
+        node.style.setProperty("background-image", `url("${c.toDataURL("image/jpeg", hi ? hiQuality : quality)}")`, "important");
+        // the crop now matches the frame, so nothing is left to position
+        if (!contain) {
+          node.style.setProperty("background-position", "center", "important");
+          node.style.setProperty("background-size", "cover", "important");
+        }
         count++;
       } catch { /* leave the original in place */ }
     }
     return { count, saved: before ? Math.round((1 - after / before) * 100) : 0 };
-  }, [DPI, QUALITY]);
+  }, [DPI, QUALITY, HI_DPI, HI_QUALITY]);
   if (shrunk.count)
     console.log(`photography: ${shrunk.count} image(s) re-encoded to frame size (${shrunk.saved}% fewer pixels)`);
 }
