@@ -19,6 +19,16 @@
     .cp-glass { display:flex; flex-direction:column; gap:26px; }
     .cp-glass__sheet { background:#fff; box-shadow:0 8px 22px rgba(22,51,94,.10); padding:12px; max-width:820px; width:100%; margin:0 auto; }
     .cp-glass__sheet img { width:100%; height:auto; display:block; }
+
+    .cp-sw__img, .cp-glass__sheet { cursor:zoom-in; }
+    .cp-lb { position:fixed; inset:0; z-index:99999; background:rgba(11,28,53,.88); display:none; align-items:center; justify-content:center; padding:26px; }
+    .cp-lb.is-open { display:flex; }
+    .cp-lb__inner { position:relative; display:flex; flex-direction:column; align-items:center; max-width:96vw; }
+    .cp-lb img { display:block; max-width:96vw; max-height:86vh; width:auto; height:auto; background:#fff; box-shadow:0 24px 70px rgba(0,0,0,.45); }
+    .cp-lb--swatch img { width:min(82vw,520px); max-height:82vh; }
+    .cp-lb__cap { margin-top:16px; color:#fff; font-family:'Marcellus',serif; font-size:14px; letter-spacing:.08em; text-align:center; }
+    .cp-lb__close { position:absolute; top:-48px; right:-4px; background:none; border:none; color:#fff; font-size:34px; line-height:1; cursor:pointer; padding:4px 10px; }
+    .cp-lb__close:hover { color:#7BB0F4; }
     .cp-grouphead { display:flex; align-items:center; gap:22px; margin-bottom:44px; }
     .cp-grouphead__t { font-family:'Marcellus',serif; font-size:14px; letter-spacing:.28em; text-transform:uppercase; color:#16335E; white-space:nowrap; }
     .cp-grouphead__ln { flex:1; height:1px; background:rgba(22,51,94,.15); }
@@ -292,4 +302,55 @@
       </div>
     </section>
   </div>
+
+  <div class="cp-lb" data-cp-lb aria-hidden="true">
+    <div class="cp-lb__inner">
+      <button type="button" class="cp-lb__close" data-cp-lb-close aria-label="Close">&times;</button>
+      <img data-cp-lb-img src="" alt="">
+      <div class="cp-lb__cap" data-cp-lb-cap></div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var root = document.querySelector('[data-cp-lb]');
+      if (!root) return;
+      var lbImg = root.querySelector('[data-cp-lb-img]');
+      var lbCap = root.querySelector('[data-cp-lb-cap]');
+      function openLb(src, alt, kind, caption) {
+        lbImg.src = src; lbImg.alt = alt || '';
+        root.classList.toggle('cp-lb--swatch', kind === 'swatch');
+        lbCap.textContent = caption || '';
+        lbCap.style.display = caption ? 'block' : 'none';
+        root.classList.add('is-open');
+        document.documentElement.style.overflow = 'hidden';
+      }
+      function closeLb() {
+        root.classList.remove('is-open');
+        lbImg.removeAttribute('src');
+        document.documentElement.style.overflow = '';
+      }
+      document.querySelectorAll('.cp-sw__img').forEach(function (box) {
+        box.addEventListener('click', function () {
+          var img = box.querySelector('img'); if (!img) return;
+          var sw = box.closest('.cp-sw'); var name = '';
+          if (sw) {
+            var nu = sw.querySelector('.cp-sw__num'); var nm = sw.querySelector('.cp-sw__name');
+            name = (nu ? nu.textContent + ' · ' : '') + (nm ? nm.textContent : '');
+          }
+          openLb(img.currentSrc || img.src, img.alt, 'swatch', name);
+        });
+      });
+      document.querySelectorAll('.cp-glass__sheet').forEach(function (box) {
+        box.addEventListener('click', function () {
+          var img = box.querySelector('img'); if (!img) return;
+          openLb(img.currentSrc || img.src, img.alt, 'glass', '');
+        });
+      });
+      root.addEventListener('click', function (e) {
+        if (e.target === root || e.target.hasAttribute('data-cp-lb-close') || e.target.closest('[data-cp-lb-close]')) closeLb();
+      });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeLb(); });
+    })();
+  </script>
 
