@@ -24,7 +24,7 @@ BANDS = [
                 "Food", "Landmark", "Landscape", "Nautical"]),
     (980, 850, ["Portrait", "Religious", "Roman", "Rugs"]),
 ]
-UPLIFTS = [("Polished", 20), ("Old technique", 50), ("Custom", 30)]
+UPLIFTS = [("Polished", 20), ("Old technique", 50), ("Custom", 35)]
 
 SRC = Path(__file__).resolve().parent.parent / "src" / "price-list.html"
 
