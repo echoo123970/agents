@@ -37,7 +37,7 @@ const TIER = process.argv.includes("--mail") ? "mail" : process.argv.includes("-
 const { dpi: DPI, quality: QUALITY, hiDpi: HI_DPI, hiQuality: HI_QUALITY, suffix: SUFFIX } = {
   full:  { dpi: 260, quality: 0.92, hiDpi: 300, hiQuality: 0.94, suffix: "" },
   light: { dpi: 200, quality: 0.84, hiDpi: 260, hiQuality: 0.90, suffix: "-light" },
-  mail:  { dpi: 100, quality: 0.60, hiDpi: 240, hiQuality: 0.82, suffix: "-mail" },
+  mail:  { dpi: 100, quality: 0.58, hiDpi: 190, hiQuality: 0.76, suffix: "-mail" },
 }[TIER];
 // Both documents share tokens.css, styles.css and the fonts; --price just
 // points the same pipeline at the other source file.
@@ -139,8 +139,11 @@ if (found.length && !FULL_RES) {
         // the printed size of that visible part, and the pixels it can show
         const mmW = Math.min(r.width, img.width * s) / PX_PER_MM;
         const mmH = Math.min(r.height, img.height * s) / PX_PER_MM;
-        const want = Math.max(320, Math.round((Math.max(mmW, mmH) / 25.4) * targetDpi));
-        const scale = Math.min(1, want / Math.max(vw, vh));
+        const want = Math.round((Math.max(mmW, mmH) / 25.4) * targetDpi);
+        // the floor is on the short edge: a tall frame asked for 320px across
+        // its height would come out under 260px wide, which is where the walls
+        // page lost its sharpness
+        const scale = Math.min(1, Math.max(want / Math.max(vw, vh), 320 / Math.min(vw, vh)));
         const c = document.createElement("canvas");
         c.width = Math.max(1, Math.round(vw * scale));
         c.height = Math.max(1, Math.round(vh * scale));
