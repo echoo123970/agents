@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
 """Write the colour-chart pages into src/index.html and src/colour-chart.html.
 
-The charts appear in two documents — inside the deck, and as the standalone
-chart annex — so they are generated rather than kept in step by hand. Add a
-file to images/ as glass-NN.jpg and run:
+The charts appear in two documents — one slide per material inside the deck,
+and every sheet at reading size in the standalone annex — so they are
+generated rather than kept in step by hand. Add a file to images/ named
+after its material and run:
 
+    images/marble-01.jpg, images/glass-07.jpg …
     python3 tools/charts.py
 
-Each sheet gets its own page and is drawn with `contain`, so no code is ever
-cropped off the edge.
+A material with no files is simply skipped, so the deck never carries an
+empty chart page. Materials run in the order of MATERIALS below, and each
+sheet is drawn with `contain`, so no code is ever cropped off the edge.
 """
 import re
 from pathlib import Path
@@ -18,13 +21,65 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parent.parent
 IMAGES = ROOT / "images"
 
-LEAD = ('      <p style="margin:3mm 0 0;font-size:8.6pt;line-height:1.6">Colour runs through the body of '
-        'the glass, so a cut edge matches the face. Iridescent and metal-leaf ranges included '
-        '&nbsp;·&nbsp; any colour can be specified by its code.</p>\n')
+# prefix → the name used on the page, the deck slide's headline, and the line
+# under it. Order here is the order the slides appear in.
+MATERIALS = [
+    ("marble", {
+        "name": "Marble",
+        "headline": "Stone chosen by name, and by the block.",
+        "lead": "Natural stone, so colour and vein carry the variation of the block they were cut from. "
+                "Any marble shown can be specified by name.",
+    }),
+    ("glass", {
+        "name": "Glass",
+        "headline": "Hundreds of colours, each one specified by its code.",
+        "lead": "Colour runs through the body of the glass, so a cut edge matches the face. Iridescent "
+                "and metal-leaf ranges included.",
+    }),
+]
 
-SHEET = IMAGES / "chartsheet.jpg"
-SHEET_W = 1600          # px across; the tiers downscale from here
+SHEET_W = 1600          # px across the composed contact sheet; tiers downscale
 SHEET_ROWS = 3
+
+BANNER = r"<!-- =+\n     \d+ — (?:%s) COLOUR CHART" % "|".join(
+    m[1]["name"].upper() for m in MATERIALS
+)
+
+ANNEX_PAGE = '''<!-- ============================================================
+     {num} — {upper} COLOUR CHART {n} of {total}
+     ============================================================ -->
+<div class="page marble-light">
+  <div class="pad" style="display:flex;flex-direction:column;inset:10mm 8mm 10mm">
+    <div style="flex:none">
+      <div class="eyebrow on-light">{name} &nbsp;—&nbsp; colour chart{cont}</div>
+{lead}    </div>
+    <div data-slot="{slot}" style="flex:1;margin-top:{gap};background-size:contain;background-repeat:no-repeat;background-position:center;background-color:transparent"></div>
+  </div>
+</div>
+
+'''
+
+LEAD = ('      <p style="margin:3mm 0 0;font-size:8.6pt;line-height:1.6">{lead}</p>\n')
+
+DECK_PAGE = '''<!-- ============================================================
+     {num} — {upper} COLOUR CHART
+     ============================================================ -->
+<div class="page marble-light">
+  <div class="pad" style="display:flex;flex-direction:column;inset:12mm 10mm 10mm">
+    <div style="flex:none">
+      <div class="eyebrow on-light">{name} &nbsp;—&nbsp; colour chart</div>
+      <h2 style="margin-top:4mm;font-size:19pt;white-space:nowrap">{headline}</h2>
+      <p style="margin:3.5mm 0 0;font-size:8.4pt;line-height:1.6">{lead} The full charts are supplied at reading size as a separate sheet.</p>
+    </div>
+    <div data-slot="chartsheet-{prefix}" style="flex:1;margin-top:4mm;background-size:contain;background-repeat:no-repeat;background-position:center;background-color:transparent"></div>
+  </div>
+</div>
+
+'''
+
+
+def slots(prefix):
+    return sorted(p.stem for p in IMAGES.glob("%s-*.jpg" % prefix))
 
 
 def rows_of(charts):
@@ -35,11 +90,12 @@ def rows_of(charts):
     the same depth and the sheet free of the gaps a fixed grid leaves.
     """
     aspects = [c.width / c.height for c in charts]
-    target = sum(aspects) / SHEET_ROWS
+    rows_wanted = min(SHEET_ROWS, len(charts))
+    target = sum(aspects) / rows_wanted
     rows, row, used = [], [], 0.0
     for chart, aspect in zip(charts, aspects):
         # start a new row once this one is closer to full without the chart
-        if row and len(rows) < SHEET_ROWS - 1 and abs(used - target) <= abs(used + aspect - target):
+        if row and len(rows) < rows_wanted - 1 and abs(used - target) <= abs(used + aspect - target):
             rows.append(row)
             row, used = [], 0.0
         row.append(chart)
@@ -48,14 +104,14 @@ def rows_of(charts):
     return rows
 
 
-def composite():
-    """Tile every sheet into one contact sheet for the deck's single page.
+def composite(prefix):
+    """Tile a material's sheets into one contact sheet for its deck slide.
 
     Ten images on one page would each carry the encoder's resolution floor,
     which costs far more than a page that size can show. One image sized to
     the frame costs a fraction of it.
     """
-    charts = [Image.open(IMAGES / (s + ".jpg")) for s in slots()]
+    charts = [Image.open(IMAGES / (s + ".jpg")) for s in slots(prefix)]
     gap = SHEET_W // 150
     laid, y = [], gap
     for row in rows_of(charts):
@@ -70,50 +126,40 @@ def composite():
     sheet = Image.new("RGB", (SHEET_W, y), "#FFFDF8")
     for img, x, yy in laid:
         sheet.paste(img, (x, yy))
-    sheet.save(SHEET, quality=92, subsampling=0)
+    out = IMAGES / ("chartsheet-%s.jpg" % prefix)
+    sheet.save(out, quality=92, subsampling=0)
     return sheet.size
 
 
-PAGE = '''<!-- ============================================================
-     {num} — GLASS COLOUR CHART {n} of {total}
-     ============================================================ -->
-<div class="page marble-light">
-  <div class="pad" style="display:flex;flex-direction:column;inset:10mm 8mm 10mm">
-    <div style="flex:none">
-      <div class="eyebrow on-light">Glass &nbsp;—&nbsp; colour chart{cont}</div>
-{lead}    </div>
-    <div data-slot="{slot}" style="flex:1;margin-top:{gap};background-size:contain;background-repeat:no-repeat;background-position:center;background-color:transparent"></div>
-  </div>
-</div>
-
-'''
-
-OPEN = '<!-- ============================================================\n     {} — GLASS COLOUR CHART'
+def deck_pages():
+    body, made = "", []
+    for prefix, copy in MATERIALS:
+        if not slots(prefix):
+            continue
+        size = composite(prefix)
+        body += DECK_PAGE.format(num=0, prefix=prefix, upper=copy["name"].upper(),
+                                 name=copy["name"], headline=copy["headline"], lead=copy["lead"])
+        made.append((copy["name"], len(slots(prefix)), size))
+    return body, made
 
 
-def slots():
-    found = sorted(p.stem for p in IMAGES.glob("glass-*.jpg"))
-    assert found, "no glass-NN.jpg in images/"
-    return found
+def annex_pages():
+    body = ""
+    for prefix, copy in MATERIALS:
+        names = slots(prefix)
+        for i, slot in enumerate(names, start=1):
+            body += ANNEX_PAGE.format(num=0, upper=copy["name"].upper(), name=copy["name"],
+                                      n=i, total=len(names), slot=slot,
+                                      cont="" if i == 1 else " &nbsp;·&nbsp; continued",
+                                      lead=LEAD.format(lead=copy["lead"]) if i == 1 else "",
+                                      gap="4mm" if i == 1 else "3.5mm")
+    return body
 
 
-def pages(first_num):
-    names = slots()
-    out = ""
-    for i, slot in enumerate(names, start=1):
-        out += PAGE.format(num=first_num + i - 1, n=i, total=len(names), slot=slot,
-                           cont="" if i == 1 else " &nbsp;·&nbsp; continued",
-                           lead=LEAD if i == 1 else "",
-                           gap="4mm" if i == 1 else "3.5mm")
-    return out, len(names)
-
-
-def replace_run(text, first_num, tail_marker):
-    """Swap whatever chart run is there now for a freshly generated one."""
-    start = re.search(r"<!-- =+\n     \d+ — GLASS COLOUR CHART", text).start()
-    end = text.index(tail_marker)
-    body, count = pages(first_num)
-    return text[:start] + body + text[end:], count
+def swap_run(text, body, tail_marker):
+    """Replace whatever chart run is in the file with a freshly generated one."""
+    start = re.search(BANNER, text).start()
+    return text[:start] + body + text[text.index(tail_marker):]
 
 
 def renumber(text):
@@ -130,44 +176,26 @@ def renumber(text):
 
 def write(path, text):
     assert len(re.findall(r"<div\b", text)) == text.count("</div>"), path
-    path.write_text(text)
-
-
-DECK_PAGE = '''<!-- ============================================================
-     {num} — GLASS COLOUR CHART
-     ============================================================ -->
-<div class="page marble-light">
-  <div class="pad" style="display:flex;flex-direction:column;inset:12mm 10mm 10mm">
-    <div style="flex:none">
-      <div class="eyebrow on-light">Glass &nbsp;—&nbsp; colour chart</div>
-      <h2 style="margin-top:4mm;font-size:19pt;white-space:nowrap">Hundreds of colours, each one specified by its code.</h2>
-      <p style="margin:3.5mm 0 0;font-size:8.4pt;line-height:1.6">Colour runs through the body of the glass, so a cut edge matches the face. Iridescent and metal-leaf ranges included. The full charts are supplied at reading size as a separate sheet.</p>
-    </div>
-    <div data-slot="chartsheet" style="flex:1;margin-top:4mm;background-size:contain;background-repeat:no-repeat;background-position:center;background-color:transparent"></div>
-  </div>
-</div>
-
-'''
+    path.write_text(renumber(text))
 
 
 def main():
-    size = composite()
+    body, made = deck_pages()
+    assert made, "no chart images in images/ — expected marble-NN.jpg or glass-NN.jpg"
+
     deck = ROOT / "src" / "index.html"
     s = deck.read_text()
-    # the chart run sits between the technical page and the process page —
-    # found by name, since the numbers move every time the run changes length
+    # the run sits between the technical page and the process page — found by
+    # name, since the numbers move every time the run changes length
     tail = re.search(r"<!-- =+\n     \d+ — PROCESS", s).group(0)
-    start = re.search(r"<!-- =+\n     \d+ — GLASS COLOUR CHART", s).start()
-    s = s[:start] + DECK_PAGE.format(num=13) + s[s.index(tail):]
-    write(deck, renumber(s))
+    write(deck, swap_run(s, body, tail))
 
     annex = ROOT / "src" / "colour-chart.html"
-    a = annex.read_text()
-    a, count = replace_run(a, 13, "</body>")
-    write(annex, a)
+    write(annex, swap_run(annex.read_text(), annex_pages(), "</body>"))
 
-    print("charts written: %d sheets in the annex, one contact sheet %dx%d in the deck"
-          % (count, size[0], size[1]))
+    for name, count, size in made:
+        print("%-7s %2d sheets in the annex, one %dx%d contact sheet in the deck"
+              % (name + ":", count, size[0], size[1]))
 
 
 if __name__ == "__main__":
