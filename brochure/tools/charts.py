@@ -28,8 +28,7 @@ MATERIALS = [
         "name": "Marble",
         "kind": "swatches",
         "headline": "Stone chosen by name, and by the block.",
-        "lead": "Natural stone, so colour and vein carry the variation of the block they were cut from. "
-                "Any marble shown can be specified by name.",
+        "lead": "Natural stone, so colour and vein carry the variation of the block they were cut from.",
     }),
     ("glass", {
         "name": "Glass",
@@ -71,7 +70,7 @@ DECK_PAGE = '''<!-- ============================================================
     <div style="flex:none">
       <div class="eyebrow on-light">{name} &nbsp;—&nbsp; colour chart</div>
       <h2 style="margin-top:4mm;font-size:19pt;white-space:nowrap">{headline}</h2>
-      <p style="margin:3.5mm 0 0;font-size:8.4pt;line-height:1.6">{lead} The full charts are supplied at reading size as a separate sheet.</p>
+      <p style="margin:3.5mm 0 0;font-size:8.4pt;line-height:1.6">{lead}</p>
     </div>
     <div data-slot="chartsheet-{prefix}" style="flex:1;margin-top:4mm;background-size:contain;background-repeat:no-repeat;background-position:center;background-color:transparent"></div>
   </div>
