@@ -18,6 +18,7 @@
    e.g. images/cover.jpg, images/wip-02.png
    ============================================================ */
 import { chromium } from "playwright";
+import { spawnSync } from "node:child_process";
 import { readdirSync, mkdirSync, writeFileSync, rmSync, existsSync } from "node:fs";
 import { join, resolve, extname, basename } from "node:path";
 import { readFileSync } from "node:fs";
@@ -41,10 +42,15 @@ const { dpi: DPI, quality: QUALITY, suffix: SUFFIX } = {
 const PRICE = process.argv.includes("--price");
 // The colour charts are supplied as their own document as well as sitting in
 // the deck: five chart pages take the deck past the size that will open.
+// --chart marble | --chart glass — one chart document per material, because
+// both in one file lands past the size the atelier's reader will open
 const CHART = process.argv.includes("--chart");
-const SOURCE = CHART ? "colour-chart.html" : PRICE ? "price-list.html" : "index.html";
+const MATERIAL = CHART
+  ? (process.argv[process.argv.indexOf("--chart") + 1] || "").replace(/^--.*/, "") || "glass"
+  : "";
+const SOURCE = CHART ? `chart-${MATERIAL}.html` : PRICE ? "price-list.html" : "index.html";
 const OUT = join(DIST, CHART
-  ? `bespoke-mosaic-glass-chart${SUFFIX}.pdf`
+  ? `bespoke-mosaic-${MATERIAL}-chart${SUFFIX}.pdf`
   : PRICE ? `bespoke-mosaic-price-list${SUFFIX}.pdf`
   : CLEAN ? `bespoke-mosaic-portfolio-client${SUFFIX}.pdf` : "bespoke-mosaic-portfolio.pdf");
 const EXT = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif"]);
@@ -159,6 +165,13 @@ await page.pdf({
   preferCSSPageSize: true,
   margin: { top: 0, right: 0, bottom: 0, left: 0 },
 });
+
+// A reader left to itself fits a 338.7mm-wide page to the window width,
+// which on a phone means scrolling left and right to read one page. This
+// asks for one whole page at a time instead.
+const viewer = spawnSync("python3", [join(ROOT, "tools", "viewer.py"), OUT], { encoding: "utf8" });
+if (viewer.status === 0) process.stdout.write(viewer.stdout);
+else console.warn("viewer: could not set page layout —", (viewer.stderr || "").trim().split("\n").pop());
 
 if (process.argv.includes("--png")) {
   const PREV = join(DIST, "preview");

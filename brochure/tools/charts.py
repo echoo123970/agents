@@ -40,6 +40,10 @@ MATERIALS = [
 ]
 
 SHEET_W = 1600          # px across the composed contact sheet; tiers downscale
+# Charts in the deck take it past the file size the atelier's reader will
+# open, so they live in their own documents and the deck carries none.
+IN_DECK = False
+ANCHOR = "<!-- colour-chart slides: written by tools/charts.py -->\n\n"
 SHEET_ROWS = 3
 
 BANNER = r"<!-- =+\n     \d+ — (?:%s) COLOUR CHART" % "|".join(
@@ -212,9 +216,11 @@ def deck_pages():
     return body, made
 
 
-def annex_pages():
+def annex_pages(only=None):
     body = ""
     for prefix, copy in MATERIALS:
+        if only and prefix != only:
+            continue
         if copy.get("kind") == "swatches":
             names = ["chartsheet-" + prefix] if slots(prefix) else []
         else:
@@ -229,8 +235,13 @@ def annex_pages():
 
 
 def swap_run(text, body, tail_marker):
-    """Replace whatever chart run is in the file with a freshly generated one."""
-    start = re.search(BANNER, text).start()
+    """Replace whatever chart run is in the file with a freshly generated one.
+
+    The run is found by its banner, or — once the deck carries no slides — by
+    the anchor left in its place.
+    """
+    found = re.search(BANNER, text)
+    start = found.start() if found else text.index(ANCHOR)
     return text[:start] + body + text[text.index(tail_marker):]
 
 
@@ -260,10 +271,19 @@ def main():
     # the run sits between the technical page and the process page — found by
     # name, since the numbers move every time the run changes length
     tail = re.search(r"<!-- =+\n     \d+ — PROCESS", s).group(0)
-    write(deck, swap_run(s, body, tail))
+    write(deck, swap_run(s, (body if IN_DECK else "") + ANCHOR, tail))
 
-    annex = ROOT / "src" / "colour-chart.html"
-    write(annex, swap_run(annex.read_text(), annex_pages(), "</body>"))
+    # one annex per material: both in one file is more than the reader opens
+    template = (ROOT / "src" / "colour-chart.html").read_text()
+    for prefix, copy in MATERIALS:
+        if not slots(prefix):
+            continue
+        out = ROOT / "src" / ("chart-%s.html" % prefix)
+        page = swap_run(template, annex_pages(only=prefix), "</body>")
+        page = re.sub(r"<title>.*?</title>",
+                      "<title>Bespoke Marble &amp; Glass Mosaic — %s Colour Chart</title>" % copy["name"],
+                      page, count=1)
+        write(out, page)
 
     for name, count, size in made:
         print("%-7s %2d sheets in the annex, one %dx%d contact sheet in the deck"

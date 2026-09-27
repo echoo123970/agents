@@ -10,7 +10,8 @@ import { join } from "node:path";
 const SRC = join(import.meta.dirname, "src");
 const tmp = join(SRC, ".qa.html");
 // --price checks the price list instead; both documents share the stylesheet
-const SOURCE = process.argv.includes("--chart") ? "colour-chart.html"
+const CHART = process.argv.indexOf("--chart");
+const SOURCE = CHART >= 0 ? `chart-${(process.argv[CHART + 1] || "glass").replace(/^--.*/, "") || "glass"}.html`
   : process.argv.includes("--price") ? "price-list.html" : "index.html";
 writeFileSync(tmp, readFileSync(join(SRC, SOURCE), "utf8").replace("<!--PHOTO_INJECT-->", ""));
 
