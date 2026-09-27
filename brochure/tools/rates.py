@@ -16,10 +16,10 @@ from pathlib import Path
 # base rate per m², with shipping included → the categories that carry it
 BANDS = [
     (500, ["Sheets"]),
-    (850, ["Abstract", "Geometric", "Logos", "Patterns"]),
-    (900, ["Animals", "Birds & butterflies", "Borders", "Flowers & trees",
+    (900, ["Abstract", "Geometric", "Logos", "Patterns"]),
+    (950, ["Animals", "Birds & butterflies", "Borders", "Flowers & trees",
            "Food", "Landmark", "Landscape", "Nautical"]),
-    (950, ["Portrait", "Religious", "Roman", "Rugs"]),
+    (980, ["Portrait", "Religious", "Roman", "Rugs"]),
 ]
 UPLIFTS = [("Polished", 20), ("Old technique", 50), ("Custom", 30)]
 SHIPPING = 100          # per m², deducted where the client arranges freight
