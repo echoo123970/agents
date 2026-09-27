@@ -17,9 +17,9 @@ from pathlib import Path
 BANDS = [
     (500, ["Sheets"]),
     (900, ["Abstract", "Geometric", "Logos", "Patterns"]),
-    (950, ["Animals", "Birds & butterflies", "Borders", "Flowers & trees",
+    (920, ["Animals", "Birds & butterflies", "Borders", "Flowers & trees",
            "Food", "Landmark", "Landscape", "Nautical"]),
-    (980, ["Portrait", "Religious", "Roman", "Rugs"]),
+    (950, ["Portrait", "Religious", "Roman", "Rugs"]),
 ]
 UPLIFTS = [("Polished", 20), ("Old technique", 50), ("Custom", 30)]
 SHIPPING = 100          # per m², deducted where the client arranges freight
