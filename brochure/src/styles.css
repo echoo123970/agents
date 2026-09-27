@@ -402,3 +402,29 @@ table.rates.tight .cat { font-size: 9.2pt; }
 table.rates.tight td.fig { font-size: 9.2pt; }
 table.rates.tight .fig { width: 16%; }
 table.rates.tight tr.band td { padding-top: 3mm; }
+
+/* ============================================================
+   PRICE LIST — the rates have to be read across a table by
+   someone pricing a job, so the type is set heavier and darker
+   than the portfolio, and the figures take lining numerals
+   instead of the old-style ones that dip below the baseline.
+   ============================================================ */
+.pricelist .micro {
+  font-size: 6.9pt; letter-spacing: .14em; font-weight: 500; color: var(--ink-soft);
+}
+.pricelist p { color: var(--ink); }
+.pricelist .eyebrow { font-weight: 500; }
+.pricelist table.rates th { font-weight: 500; color: var(--ink); }
+.pricelist table.rates th span { font-weight: 400; color: var(--accent-deep); }
+.pricelist table.rates .cat,
+.pricelist table.rates td.fig {
+  font-weight: 600; color: var(--ink);
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: "lnum" 1, "tnum" 1;
+}
+.pricelist ul.ticks li, .pricelist .moves dd { color: var(--ink); }
+.pricelist .moves dd { font-size: 8pt; }
+.pricelist .moves dt {
+  font-weight: 600;
+  font-variant-numeric: lining-nums; font-feature-settings: "lnum" 1;
+}
