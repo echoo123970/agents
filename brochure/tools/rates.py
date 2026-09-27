@@ -24,7 +24,8 @@ BANDS = [
                 "Food", "Landmark", "Landscape", "Nautical"]),
     (980, 850, ["Portrait", "Religious", "Roman", "Rugs"]),
 ]
-UPLIFTS = [("Polished", 20), ("Old technique", 50), ("Custom", 30)]
+# order here is the order the columns appear in, after Normal
+UPLIFTS = [("Custom", 30), ("Polished", 20), ("Old technique", 50)]
 
 SRC = Path(__file__).resolve().parent.parent / "src" / "price-list.html"
 
