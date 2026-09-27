@@ -430,3 +430,7 @@ table.rates.tight tr.band td { padding-top: 3mm; }
 }
 /* four heads, one line each, so the +% sub-lines stay on the same baseline */
 .pricelist table.rates.tight th { white-space: nowrap; letter-spacing: .08em; }
+/* Banded rate table — one row per price, the categories listed in it */
+.pricelist table.rates.bands th, .pricelist table.rates.bands td { padding: 4.6mm 4mm; }
+.pricelist table.rates.bands .fig { width: 13%; }
+.pricelist table.rates.bands .cat { font-size: 10pt; line-height: 1.55; }
