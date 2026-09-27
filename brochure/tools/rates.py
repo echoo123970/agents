@@ -2,9 +2,8 @@
 """Write the rate tables into src/price-list.html from the bands below.
 
 The price list carries the same rates twice — once with shipping in them,
-once with the $100 per m² freight taken out — plus a summary of the bands on
-the terms page. Editing those by hand means three places to keep in step, so
-they are all generated from BANDS.
+once with the $100 per m² freight taken out. Editing both by hand means two
+places to keep in step, so they are generated from BANDS.
 
     python3 tools/rates.py
 
@@ -58,16 +57,6 @@ def table(less=0):
     return "    " + "\n".join(out)
 
 
-def summary():
-    """The one-line recap of the bands on the terms page."""
-    parts = []
-    for base, cats in BANDS:
-        names = [c.lower() for c in cats]
-        listed = names[0] if len(names) == 1 else ", ".join(names[:-1]) + " and " + names[-1]
-        parts.append("%s %s" % (money(base), listed))
-    return " · ".join(parts)
-
-
 def main():
     s = SRC.read_text()
     opens, closes = len(re.findall(r"<div\b", s)), s.count("</div>")
@@ -82,14 +71,10 @@ def main():
         s = s[:start] + new + s[end:]
         pos = start + len(new)
 
-    s = re.sub(r"(<dt>The category sets the base</dt><dd>).*?(</dd>)",
-               lambda m: m.group(1) + summary() + m.group(2), s, count=1)
-
     assert len(re.findall(r"<div\b", s)) == opens == closes == s.count("</div>")
     assert s.count("<table") == s.count("</table>") == 2
     SRC.write_text(s)
     print("rates written: %d categories in %d bands" % (sum(len(c) for _, c in BANDS), len(BANDS)))
-    print("summary: " + summary())
 
 
 if __name__ == "__main__":
