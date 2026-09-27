@@ -39,9 +39,13 @@ const { dpi: DPI, quality: QUALITY, suffix: SUFFIX } = {
 // Both documents share tokens.css, styles.css and the fonts; --price just
 // points the same pipeline at the other source file.
 const PRICE = process.argv.includes("--price");
-const SOURCE = PRICE ? "price-list.html" : "index.html";
-const OUT = join(DIST, PRICE
-  ? `bespoke-mosaic-price-list${SUFFIX}.pdf`
+// The colour charts are supplied as their own document as well as sitting in
+// the deck: five chart pages take the deck past the size that will open.
+const CHART = process.argv.includes("--chart");
+const SOURCE = CHART ? "colour-chart.html" : PRICE ? "price-list.html" : "index.html";
+const OUT = join(DIST, CHART
+  ? `bespoke-mosaic-glass-chart${SUFFIX}.pdf`
+  : PRICE ? `bespoke-mosaic-price-list${SUFFIX}.pdf`
   : CLEAN ? `bespoke-mosaic-portfolio-client${SUFFIX}.pdf` : "bespoke-mosaic-portfolio.pdf");
 const EXT = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif"]);
 
