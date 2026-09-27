@@ -34,7 +34,7 @@ MATERIALS = [
     ("glass", {
         "name": "Glass",
         "kind": "sheets",
-        "headline": "Hundreds of colours, each one specified by its code.",
+        "headline": "Hundreds of colours, in full-body glass.",
         "lead": "Colour runs through the body of the glass, so a cut edge matches the face. Iridescent "
                 "and metal-leaf ranges included.",
     }),
