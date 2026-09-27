@@ -393,3 +393,12 @@ ul.ticks li::before {
 .run.r7 { grid-template-columns: repeat(7, 1fr); }
 .run.r10 { grid-template-columns: repeat(10, 1fr); }
 .run.sq .photo { aspect-ratio: 1; }
+
+/* Two-up rate table — twenty categories will not read at the single-column
+   size, so the list splits into two halves at a tighter setting */
+table.rates.tight th, table.rates.tight td { padding: 2.6mm 2.5mm; }
+table.rates.tight th { font-size: 5.8pt; letter-spacing: .14em; }
+table.rates.tight .cat { font-size: 9.2pt; }
+table.rates.tight td.fig { font-size: 9.2pt; }
+table.rates.tight .fig { width: 16%; }
+table.rates.tight tr.band td { padding-top: 3mm; }
