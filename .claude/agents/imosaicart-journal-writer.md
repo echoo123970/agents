@@ -156,17 +156,11 @@ never state anything beyond this without a source.
 
 ## Images
 
-- **Featured image: 3200×1800 (16:9) with the artwork centred and margin
-  around it, never cropped.** The theme crops featured images to 16:9 on the
-  article page, 3:2 on the top blog card and about 0.9:1 on grid cards. Build
-  it in two CDN padding steps on the blog background color `f3f5f8`:
-  1. set the image to `<source image url>?width=1800&height=1800&pad_color=f3f5f8`
-     (a square with the art inside);
-  2. query the new image URL, drop `?v=…`, and set it again with
-     `?width=3200&height=1800&pad_color=f3f5f8`.
-  Use the `products/`, `files/` or `articles/` CDN path that actually exists;
-  a failed download clears the article image, so query it afterwards and
-  restore it if it is empty. Always pass `altText` with the image.
+- **Featured image: use the original product or portfolio photo as is.** Do
+  not pad or resize it on the CDN; the store owner prefers the artwork large,
+  even though the theme crops it slightly to fit its card and banner shapes.
+  Prefer photos where the artwork has a little space around it, so the crop
+  does not cut into it. Always pass `altText` with the image.
 - Featured image must be at least 1200 px wide (Google Discover). Check
   width with `image { width height }` before using it; landscape preferred.
 - Use only images from **ACTIVE products** (check `status` = `ACTIVE`; never
