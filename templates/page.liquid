@@ -32,6 +32,8 @@
   {% render 'pg-reviews' %}
 {%- elsif ph == 'portfolio-mosaics' or ph == 'portfolio' or ph == 'our-portfolio' -%}
   {% render 'pg-portfolio' %}
+{%- elsif ph == 'free-consultation' or ph == 'consultation' or ph == 'book-consultation' or ph == 'design-consultation' -%}
+  {% render 'pg-consultation' %}
 {%- else -%}
   {% section 'main-page' %}
 {%- endif -%}

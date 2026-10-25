@@ -1,0 +1,110 @@
+<style>
+  .cons { background:#F4F6FA; color:#16335E; }
+  .cons-i { font-style:italic; color:#2B7BE8; }
+
+  .cons-hero { background:#EEF1F6; border-bottom:1px solid rgba(22,51,94,.08); }
+  .cons-hero__crumb { max-width:1320px; margin:0 auto; padding:30px 40px 0; display:flex; align-items:center; gap:9px; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:#7E8AA0; }
+  .cons-hero__crumb a:hover { color:#2B7BE8; }
+  .cons-sep { color:#B7C0D2; } .cons-cur { color:#16335E; }
+  .cons-hero__head { max-width:820px; margin:0 auto; padding:46px 40px 56px; text-align:center; }
+  .cons-eyebrow { display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:22px; font-family:'Marcellus',serif; font-size:13px; letter-spacing:.36em; text-transform:uppercase; color:#16335E; }
+  .cons-eyebrow__ln { width:38px; height:1px; background:#2B7BE8; }
+  .cons-hero__title { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(34px,5.4vw,62px); line-height:1.04; letter-spacing:-.01em; margin:0 0 22px; color:#16335E; }
+  .cons-hero__sub { font-size:17px; line-height:1.7; color:#5E6B85; max-width:600px; margin:0 auto; }
+
+  .cons-wrap { max-width:1060px; margin:0 auto; padding:70px 40px 40px; }
+
+  /* Booking card */
+  .cons-book { background:#16335E; color:#EAE1D2; border-radius:2px; padding:56px 44px; text-align:center; box-shadow:0 24px 60px rgba(22,51,94,.18); }
+  .cons-book__eyebrow { font-family:'Marcellus',serif; font-size:13px; letter-spacing:.32em; text-transform:uppercase; color:#7BB0F4; margin-bottom:16px; }
+  .cons-book__title { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(28px,3.4vw,42px); line-height:1.12; margin:0 0 14px; color:#fff; }
+  .cons-book__text { font-size:16px; line-height:1.7; color:#9AA4B8; margin:0 auto 30px; max-width:520px; }
+  .cons-book__btn { background:#2B7BE8; color:#fff; font-family:'Hanken Grotesk',sans-serif; font-size:14px; letter-spacing:.14em; text-transform:uppercase; padding:19px 48px; display:inline-flex; align-items:center; gap:11px; transition:background .25s ease, transform .25s ease; }
+  .cons-book__btn:hover { background:#1E63C4; transform:translateY(-2px); }
+  .cons-book__meta { margin-top:22px; display:flex; align-items:center; justify-content:center; gap:26px; flex-wrap:wrap; font-size:13px; letter-spacing:.04em; color:#9AA4B8; }
+  .cons-book__meta span { display:inline-flex; align-items:center; gap:8px; }
+
+  /* Steps */
+  .cons-steps { padding:76px 40px 20px; max-width:1180px; margin:0 auto; }
+  .cons-steps__head { text-align:center; margin-bottom:52px; }
+  .cons-steps__eyebrow { font-family:'Marcellus',serif; font-size:13px; letter-spacing:.32em; text-transform:uppercase; color:#2B7BE8; margin-bottom:16px; }
+  .cons-steps__title { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(28px,3.4vw,44px); line-height:1.1; margin:0; color:#16335E; }
+  .cons-steps__grid { display:grid; grid-template-columns:repeat(3,1fr); gap:30px; }
+  .cons-step { background:#fff; padding:40px 34px; text-align:center; box-shadow:0 10px 30px rgba(22,51,94,.06); }
+  .cons-step__num { font-family:'Cormorant Garamond',serif; font-size:40px; color:#9CC0F5; line-height:1; margin-bottom:16px; }
+  .cons-step__t { font-family:'Marcellus',serif; font-size:16px; letter-spacing:.04em; color:#16335E; margin-bottom:12px; }
+  .cons-step__d { font-size:15px; line-height:1.7; color:#5E6B85; }
+
+  /* Contact fallback */
+  .cons-contact { max-width:1060px; margin:0 auto; padding:30px 40px 96px; text-align:center; }
+  .cons-contact__line { font-size:15.5px; line-height:1.8; color:#5E6B85; }
+  .cons-contact__line a { color:#2B7BE8; }
+  .cons-contact__line a:hover { text-decoration:underline; }
+
+  @media (max-width:820px) {
+    .cons-steps__grid { grid-template-columns:1fr; }
+    .cons-wrap { padding:48px 22px 30px; }
+    .cons-book { padding:44px 26px; }
+    .cons-hero__crumb, .cons-hero__head, .cons-steps, .cons-contact { padding-left:22px; padding-right:22px; }
+  }
+</style>
+
+<div class="cons">
+  <section class="cons-hero">
+    <div class="cons-hero__crumb"><a href="{{ routes.root_url }}">Home</a><span class="cons-sep">/</span><span class="cons-cur">Free Consultation</span></div>
+    <div class="cons-hero__head">
+      <div class="cons-eyebrow"><span class="cons-eyebrow__ln"></span>iMosaicArt<span class="cons-eyebrow__ln"></span></div>
+      <h1 class="cons-hero__title">Consultation With Our <span class="cons-i">Design Experts</span></h1>
+      <p class="cons-hero__sub">Planning a custom mosaic? Book a free, no-obligation call with an iMosaicArt design expert. We'll help you shape your space, colors, size, and idea into a one-of-a-kind handcrafted piece.</p>
+    </div>
+  </section>
+
+  <div class="cons-wrap">
+    <div class="cons-book">
+      <div class="cons-book__eyebrow">Free · No Obligation</div>
+      <h2 class="cons-book__title">Book Your Free Design Consultation</h2>
+      <p class="cons-book__text">Choose a time that works for you and meet one-on-one with our design team. Pick your slot on our live calendar — you'll get an instant confirmation.</p>
+      <a href="https://calendar.app.google/Eq6ZFt3JepTqdYXG9" class="cons-book__btn" target="_blank" rel="noopener">
+        Choose a Time
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <div class="cons-book__meta">
+        <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7BB0F4" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>30-minute call</span>
+        <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7BB0F4" stroke-width="2" stroke-linecap="round"><path d="M4 4h16v14H7l-3 3z"/></svg>Video or phone</span>
+        <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7BB0F4" stroke-width="2" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>Instant confirmation</span>
+      </div>
+    </div>
+  </div>
+
+  <section class="cons-steps">
+    <div class="cons-steps__head">
+      <div class="cons-steps__eyebrow">How It Works</div>
+      <h2 class="cons-steps__title">Three Simple Steps</h2>
+    </div>
+    <div class="cons-steps__grid">
+      <div class="cons-step">
+        <div class="cons-step__num">1</div>
+        <div class="cons-step__t">Pick a Time</div>
+        <div class="cons-step__d">Choose a slot on our calendar that suits you. Bring photos of your space and any ideas or references you love.</div>
+      </div>
+      <div class="cons-step">
+        <div class="cons-step__num">2</div>
+        <div class="cons-step__t">Talk to a Designer</div>
+        <div class="cons-step__d">Meet our design expert by video or phone. We'll discuss size, colors, materials, and how your mosaic will fit your space.</div>
+      </div>
+      <div class="cons-step">
+        <div class="cons-step__num">3</div>
+        <div class="cons-step__t">Receive Your Concept</div>
+        <div class="cons-step__d">We'll follow up with a tailored recommendation and a quote — then our artisans hand-cut your piece, made to order.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cons-contact">
+    <p class="cons-contact__line">
+      Prefer to reach us directly? Email <a href="mailto:info@imosaicart.com">info@imosaicart.com</a>
+      or message us on <a href="https://wa.me/13152175538" target="_blank" rel="noopener">WhatsApp</a>.
+      We're happy to help plan your custom mosaic.
+    </p>
+  </div>
+</div>
