@@ -156,3 +156,67 @@ Unreachable because `templates/page.liquid` dispatches by handle instead:
 - `sections/page-installation.liquid` (19 KB) — superseded by `snippets/pg-install.liquid`.
 
 Harmless today, a content-conflict trap later.
+
+---
+
+## 8. Catalog data fixes applied via the Admin API
+
+These two jobs were run directly against the live store, not through theme
+code. Both were idempotent and are complete. Verified afterwards by
+re-exporting the whole catalog with `bulkOperationRunQuery` and tallying the
+result, rather than by trusting the mutation responses.
+
+### Product category (Shopify Standard Product Taxonomy)
+
+Every product sat on `ae-2-1-1-6` — *Arts & Entertainment › Hobbies & Creative
+Arts › Arts & Crafts › Art & Craft Kits › **Mosaic Kits***. These are finished
+wall art, not kits a customer assembles, so the category fed Google Shopping
+and the Merchant Center the wrong product type.
+
+Moved to `hg-3-4-2-3` — *Home & Garden › Decor › Artwork › Posters, Prints, &
+Visual Artwork › **Visual Artwork***.
+
+| | Count |
+|---|---|
+| Products re-categorised | 1,695 |
+| Already correct beforehand | 252 |
+| Gift card left on `gc` (Gift Cards) | 1 |
+| **Live total on `hg-3-4-2-3`** | **1,947 of 1,948** |
+| Still on `ae-2-1-1-6` | 0 |
+| No category at all | 0 |
+
+### Variant SKUs
+
+Most products carried a SKU on the first variant only; the remaining variants
+were null, so their `Offer` nodes had no `sku`/`gtin`/`mpn` and were ineligible
+for merchant listings. The first variant's SKU was propagated to every other
+variant of the same product.
+
+| | Count |
+|---|---|
+| Products filled | 919 |
+| Variants written | 3,676 |
+| Already complete beforehand | 1,026 products |
+| **Live variants carrying a SKU** | **7,308 of 7,315 (99.9%)** |
+
+The 7 remaining nulls are both known exceptions, not misses:
+
+- **`imosaicart-gift-art-card`** (4 variants) — has no SKU anywhere to
+  propagate. It also still has the title/price mismatch flagged separately
+  ($100/$250/$500/$1,000 titles against different prices).
+- **`hand-crafted-fruit-bowl-mosaic-luxury-kitchen-backsplash-art`** — not a
+  null; it carries five *distinct* per-variant SKUs (`MAD035`–`MAD039`). That
+  is correct data and was left alone.
+- **`stunning-glass-mosaic-floral-patterns-artistic-delight`** — had two
+  conflicting real SKUs (`MAF082` on variant 1, `MF323` on variant 5) with
+  three nulls between them. The three nulls were filled with `MAF082`;
+  `MF323` was **not** overwritten, because there is no way to tell from the
+  data which of the two is intended. Worth a human decision.
+
+### A note on duplicate SKUs
+
+Propagation copied whatever the first variant already held, so a handful of
+pre-existing duplicate SKUs across different products were carried along
+(e.g. `MAK005` and `MAG165` each appear on two products, `MAM011` on two).
+Shopify permits this and it does not break merchant listings, but it means
+SKU is not a unique key on this catalog.
