@@ -220,3 +220,30 @@ pre-existing duplicate SKUs across different products were carried along
 (e.g. `MAK005` and `MAG165` each appear on two products, `MAM011` on two).
 Shopify permits this and it does not break merchant listings, but it means
 SKU is not a unique key on this catalog.
+
+---
+
+## 9. Decisions on record
+
+Settled, so they don't get re-raised in a later audit:
+
+- **126 DRAFT products stay in DRAFT.** They are intentionally held back, not
+  an oversight. All 126 have finished descriptions (median 436 characters), so
+  a future audit will likely flag them again as "finished products that are
+  not published" — they are not a defect. They were included in the category
+  and SKU fixes above, so they are correct and ready if they are ever
+  published.
+- **`/pages/all-reviews` stays.** Not a duplicate, and all 1,819 active product
+  pages link to it.
+- **Fabricated ratings and reviews** — see `patches/00-READ-FIRST.md`.
+  Deprioritised by the store owner. Not to be raised again.
+
+### Two figures from the earlier audit that were wrong
+
+Corrected against a full catalog export, for anyone reading the old notes:
+
+- "~1,403 products missing descriptions" — **wrong**. Zero products have an
+  empty description; the median is 451 characters. The real figure is **112
+  products with descriptions under 200 characters**.
+- "One product stuck in DRAFT" — **wrong**. There are **126**, and per the
+  decision above that is deliberate.
