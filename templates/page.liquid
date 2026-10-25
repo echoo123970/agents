@@ -34,6 +34,10 @@
   {% render 'pg-portfolio' %}
 {%- elsif ph == 'free-consultation' or ph == 'consultation' or ph == 'book-consultation' or ph == 'design-consultation' -%}
   {% render 'pg-consultation' %}
+{%- elsif ph == 'technical-details' or ph == 'mosaic-technical-details' or ph == 'technical-specifications' or ph == 'specifications' or ph == 'tech-details' -%}
+  {% render 'pg-tech-details' %}
+{%- elsif ph == 'maintenance-cleaning' or ph == 'maintenance-and-cleaning' or ph == 'care-maintenance' or ph == 'mosaic-care' or ph == 'care-guide' or ph == 'maintenance' -%}
+  {% render 'pg-maintenance' %}
 {%- else -%}
   {% section 'main-page' %}
 {%- endif -%}
