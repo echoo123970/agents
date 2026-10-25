@@ -38,6 +38,8 @@
   {% render 'pg-tech-details' %}
 {%- elsif ph == 'maintenance-cleaning' or ph == 'maintenance-and-cleaning' or ph == 'care-maintenance' or ph == 'mosaic-care' or ph == 'care-guide' or ph == 'maintenance' -%}
   {% render 'pg-maintenance' %}
+{%- elsif ph == 'our-process' or ph == 'order-process' or ph == 'how-it-works' or ph == 'process' or ph == 'your-order-journey' -%}
+  {% render 'pg-order-process' %}
 {%- else -%}
   {% section 'main-page' %}
 {%- endif -%}
