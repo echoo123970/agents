@@ -1,3 +1,21 @@
+{%- comment -%} BlogPosting structured data — applies to every article (SEO/GEO: authorship, dates, publisher). {%- endcomment -%}
+{%- assign art_img = article.image | image_url: width: 1200 -%}
+{%- unless art_img contains 'http' -%}{%- assign art_img = 'https:' | append: art_img -%}{%- endunless -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": {{ article.title | json }},
+  {%- if article.excerpt != blank %}"description": {{ article.excerpt | strip_html | strip_newlines | json }},{% endif %}
+  {%- if article.image != blank %}"image": [{{ art_img | json }}],{% endif %}
+  "datePublished": "{{ article.published_at | date: '%Y-%m-%dT%H:%M:%S%z' }}",
+  "dateModified": "{{ article.updated_at | date: '%Y-%m-%dT%H:%M:%S%z' }}",
+  "author": { "@type": "Organization", "name": {{ article.author | default: 'iMosaicArt' | json }}, "url": "https://www.imosaicart.com/" },
+  "publisher": { "@id": "https://www.imosaicart.com/#organization" },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "{{ canonical_url }}" }
+}
+</script>
+
 <style>
   .article { padding-top: 64px; padding-bottom: 96px; max-width: 860px; }
   .article__head { text-align: center; margin-bottom: 40px; }
