@@ -1,0 +1,125 @@
+{%- comment -%}
+  HowTo structured data for the Installation Guide page.
+  Every string below is also visible on the rendered page (snippets/pg-install.liquid),
+  which is what Google's structured-data policy requires. If you edit the visible
+  steps, edit them here too.
+{%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "@id": "https://www.imosaicart.com/pages/installation-guide#howto",
+  "name": "How to install an iMosaicArt mosaic",
+  "description": "A beginner-friendly, six-step guide to installing a handcrafted marble or glass mosaic on a wall or floor — from surface prep through grouting to the final buff.",
+  "inLanguage": "en",
+  "totalTime": "P2D",
+  "performTime": "PT4H",
+  "prepTime": "PT30M",
+  "yield": "One fully installed mosaic artwork",
+  "image": "{{ 'install-hero-tree.png' | asset_url | prepend: 'https:' | replace: 'https:https:', 'https:' }}",
+  "publisher": { "@id": "https://www.imosaicart.com/#organization" },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://www.imosaicart.com/pages/installation-guide" },
+  "supply": [
+    { "@type": "HowToSupply", "name": "Mosaic adhesive", "description": "A high-quality mosaic adhesive suited to your surface." },
+    { "@type": "HowToSupply", "name": "Grout", "description": "A colour that complements your mosaic and space." }
+  ],
+  "tool": [
+    { "@type": "HowToTool", "name": "Safety gear", "description": "Gloves, safety glasses and a dust mask to protect yourself." },
+    { "@type": "HowToTool", "name": "Trowel", "description": "For spreading the adhesive evenly." },
+    { "@type": "HowToTool", "name": "Notched trowel", "description": "Creates ridges in the adhesive for better tile grip." },
+    { "@type": "HowToTool", "name": "Grout float", "description": "To apply and smooth grout between the tiles." },
+    { "@type": "HowToTool", "name": "Bucket and sponge", "description": "For mixing grout and cleaning as you go." },
+    { "@type": "HowToTool", "name": "Level", "description": "Ensures your mosaic is perfectly aligned." },
+    { "@type": "HowToTool", "name": "Utility knife", "description": "For any necessary cuts to the mesh backing." },
+    { "@type": "HowToTool", "name": "Rubber mallet", "description": "Gently taps tiles firmly into place." }
+  ],
+  "step": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "name": "Prepare Your Surface",
+      "url": "https://www.imosaicart.com/pages/installation-guide#step-1",
+      "itemListElement": [
+        {
+          "@type": "HowToDirection",
+          "text": "Give your chosen surface a thorough cleaning with a damp sponge and soapy water. Remove any dust, dirt or grime to ensure the adhesive bonds optimally."
+        },
+        {
+          "@type": "HowToTip",
+          "text": "For uneven surfaces, apply a leveling compound first to create a smooth, even base."
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Then turn to the mosaic: it arrives rolled like a rug — large designs come as numbered sections you assemble like a puzzle. Unroll it flat (design side down), peel off the backing plastic sheet and any leftover glue, then flip it over and clean the tile surface before installing. If any tiles are missing, use the spare tiles included in the package — trim the long spare tiles to size and add them as you install."
+        }
+      ]
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "name": "Spread the Adhesive",
+      "url": "https://www.imosaicart.com/pages/installation-guide#step-2",
+      "image": "https://cdn.shopify.com/s/files/1/0754/6093/5978/files/tile-adhesive-web_480x480_be247ec6-492a-4efc-a07a-e41d7fd961cc_480x480.jpg",
+      "itemListElement": [
+        {
+          "@type": "HowToDirection",
+          "text": "Using your trowel, spread a thin, even layer of adhesive onto the prepared surface. Follow the manufacturer's instructions for drying time before moving on."
+        }
+      ]
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "name": "Embrace the Mosaic Magic",
+      "url": "https://www.imosaicart.com/pages/installation-guide#step-3",
+      "itemListElement": [
+        {
+          "@type": "HowToDirection",
+          "text": "Starting from the center or a corner, gently press your mosaic into the adhesive, keeping proper alignment and spacing. Check with your level regularly to maintain a flawless finish."
+        }
+      ]
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "name": "Let the Art Settle",
+      "url": "https://www.imosaicart.com/pages/installation-guide#step-4",
+      "itemListElement": [
+        {
+          "@type": "HowToDirection",
+          "text": "Once your mosaic is in place, allow the adhesive to cure completely according to the manufacturer's recommendations — this typically takes 24 to 48 hours."
+        }
+      ]
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "name": "Grout Your Masterpiece",
+      "url": "https://www.imosaicart.com/pages/installation-guide#step-5",
+      "image": "https://cdn.shopify.com/s/files/1/0754/6093/5978/files/DSCN4804-600x450_480x480.jpg",
+      "itemListElement": [
+        {
+          "@type": "HowToDirection",
+          "text": "Mix your grout per the package instructions and apply it with the grout float, working diagonally across the mosaic, then wipe away any excess with a damp sponge. Once it dries, seal the grout to protect it from moisture — unless you used epoxy grout, which is already non-porous and needs no sealing."
+        },
+        {
+          "@type": "HowToTip",
+          "text": "Grout is optional for indoor, dry installations — but essential for exterior, pool and wet areas, where it seals the joints and protects the mosaic from moisture. Choose a light grout for light-toned designs and a dark grout for darker ones, so the joints blend naturally."
+        }
+      ]
+    },
+    {
+      "@type": "HowToStep",
+      "position": 6,
+      "name": "Reveal Your Creation",
+      "url": "https://www.imosaicart.com/pages/installation-guide#step-6",
+      "itemListElement": [
+        {
+          "@type": "HowToDirection",
+          "text": "After the grout dries completely (usually 24 to 72 hours), buff the surface with a soft cloth to bring out its shine and reveal your stunning finished masterpiece."
+        }
+      ]
+    }
+  ]
+}
+</script>
