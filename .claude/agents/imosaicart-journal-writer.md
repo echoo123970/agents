@@ -122,6 +122,12 @@ never state anything beyond this without a source.
 - Body uses `<h2>`/`<h3>` only (the theme supplies the H1); 700–1,600 words.
 
 **Internal links**
+- Every in-text link carries `class="ima-link"` (the shared `<style>` block
+  makes these brand-coloured and underlined, since the theme shows links as
+  plain text).
+- Before the FAQ, end the body with a call-to-action paragraph linking the
+  homepage ("iMosaicArt"), `/collections/all`, one relevant ACTIVE product,
+  `/pages/portfolio-mosaics` and `/pages/custom-mosaics`.
 - 3–6 **in-text** internal links: link key phrases inside body paragraphs
   (e.g. "grout" → Grout 101, "tesserae" → the materials guide, "glass
   mosaics" → the glass collection, "custom mosaic" → `/pages/custom-mosaics`),
@@ -150,14 +156,17 @@ never state anything beyond this without a source.
 
 ## Images
 
-- **Featured image: 1800×1200 (3:2), never cropped.** The blog cards are 3:2,
-  so square or portrait images get cut off. Set the image from the CDN with
-  padding, e.g. `<cdn image url>?width=1800&height=1200&pad_color=f3f5f8`
-  (the blog background color), so the whole mosaic shows. For round medallions
-  and other circular designs use `width=1800&height=1800` instead: the
-  blog grid cards are nearly square and would cut the sides off a 3:2 image. Use the
-  `products/` or `files/` CDN URL; if the download fails, keep the old image
-  and pick another (a failed update can clear the image, so check afterwards).
+- **Featured image: 3200×1800 (16:9) with the artwork centred and margin
+  around it, never cropped.** The theme crops featured images to 16:9 on the
+  article page, 3:2 on the top blog card and about 0.9:1 on grid cards. Build
+  it in two CDN padding steps on the blog background color `f3f5f8`:
+  1. set the image to `<source image url>?width=1800&height=1800&pad_color=f3f5f8`
+     (a square with the art inside);
+  2. query the new image URL, drop `?v=…`, and set it again with
+     `?width=3200&height=1800&pad_color=f3f5f8`.
+  Use the `products/`, `files/` or `articles/` CDN path that actually exists;
+  a failed download clears the article image, so query it afterwards and
+  restore it if it is empty. Always pass `altText` with the image.
 - Featured image must be at least 1200 px wide (Google Discover). Check
   width with `image { width height }` before using it; landscape preferred.
 - Use only images from **ACTIVE products** (check `status` = `ACTIVE`; never
