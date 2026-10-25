@@ -22,3 +22,34 @@ defaulting to **DRAFT** status so nothing goes live by accident.
 
 The agent definition lives in
 [`.claude/agents/shopify-product-creator.md`](.claude/agents/shopify-product-creator.md).
+
+## Tools
+
+### Inlay Studio — `tools/inlay-studio/index.html`
+
+A single-page tool for designing marble and glass inlays. Open the file in a
+browser (no build step, no server).
+
+1. **Sketch** — draw the design in black lines (pen, line, rectangle, ellipse,
+   eraser), upload a drawing and convert it to black and white (adjustable ink
+   threshold), or load the sample medallion.
+   - **Describe a design**: type a description and Claude draws clean,
+     cuttable line art. Tick *Change the current sketch* to revise it.
+   - **Redraw upload as clean lines**: turns a photo or colored design into
+     line art.
+   - Both AI features work when the page is opened as a Claude artifact; the
+     plain HTML file hides them.
+2. **Color** — pick a material from the chart and tap any closed area. Each
+   marble piece gets its own vein direction. Choose the joint color (black,
+   grey, white grout, brass strip, lead came) and close small gaps with
+   *Gap closing*.
+
+The **Materials used** table lists each material with piece count, share and
+area (ft² or m², from the finished width), plus a 15% overage line. *Export*
+produces a PNG with the design and the materials list; *Save design* writes a
+`.json` file that can be reopened or sent to a customer.
+
+**Your material chart:** the built-in chart is a sample. Use *Add material*
+(name, chart code, marble/glass, finish, colors or a swatch photo), then
+*Export chart* to get a JSON file you can load on any device with *Import
+chart*.
