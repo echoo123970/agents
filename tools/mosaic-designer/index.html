@@ -59,7 +59,7 @@ button { cursor: pointer; }
 .brand { font-family: var(--font-display); font-size: 30px; font-weight: 600; letter-spacing: .005em; margin: 0; line-height: 1; }
 .brand small { display: block; font-family: var(--font-accent); font-size: 11px; font-weight: 400; letter-spacing: .3em; text-transform: uppercase; color: var(--muted); margin-top: 5px; }
 .steps { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: var(--panel); }
-.steps button { border: 0; background: none; padding: 7px 16px; border-radius: 999px; font-weight: 600; color: var(--muted); display: inline-flex; gap: 8px; align-items: center; }
+.steps button { border: 0; background: none; padding: 7px 14px; border-radius: 999px; font-weight: 600; color: var(--muted); display: inline-flex; gap: 8px; align-items: center; }
 .steps button .n { font-family: var(--font-mono); font-size: 11px; width: 20px; height: 20px; border-radius: 50%; border: 1px solid currentColor; display: inline-grid; place-items: center; }
 .steps button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
 .actions { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
@@ -134,6 +134,9 @@ tfoot td { font-weight: 600; border-bottom: 0; }
 .chip { display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; color: var(--muted); }
 .tabs { display: flex; gap: 4px; }
 .tabs button { flex: 1; border: 1px solid var(--line); background: none; padding: 6px; border-radius: var(--radius); font-weight: 500; font-size: 13px; }
+.seg { display: flex; gap: 4px; }
+.seg button { flex: 1; border: 1px solid var(--line); background: none; padding: 6px; border-radius: var(--radius); font-weight: 500; font-size: 13px; }
+.seg button[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); }
 .tabs button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: 8px; max-height: 460px; overflow-y: auto; padding: 2px; }
 .swatch { border: 1px solid var(--line); background: none; border-radius: var(--radius); padding: 4px; display: flex; flex-direction: column; gap: 4px; text-align: left; position: relative; }
@@ -174,6 +177,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
   <div class="steps" role="group" aria-label="Step">
     <button id="step-sketch" type="button" aria-pressed="false"><span class="n">1</span>Sketch</button>
     <button id="step-color" type="button" aria-pressed="true"><span class="n">2</span>Color</button>
+    <button id="step-mosaic" type="button" aria-pressed="false"><span class="n">3</span>Mosaic</button>
   </div>
   <div class="actions">
     <button class="btn" id="undo" type="button" title="Undo (Ctrl+Z)">Undo</button>
@@ -215,9 +219,20 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
       </label>
       <p class="label">Start from</p>
       <button class="btn block" id="import-sketch" type="button">Upload a drawing…</button>
-      <label class="field" for="threshold" id="threshold-field" hidden>Ink threshold
-        <span class="row"><input id="threshold" type="range" min="10" max="90" value="55"><span class="val" id="threshold-val">55</span></span>
-      </label>
+      <div class="group" id="trace-field" hidden>
+        <label class="field" for="trace-mode">Convert the upload as
+          <select id="trace-mode">
+            <option value="colors">Colored picture: match to our colors</option>
+            <option value="lines">Line drawing: black lines only</option>
+          </select>
+        </label>
+        <label class="field" for="colors" id="colors-field">Number of colors
+          <span class="row"><input id="colors" type="range" min="2" max="16" value="8"><span class="val" id="colors-val">8</span></span>
+        </label>
+        <label class="field" for="threshold" id="threshold-field" hidden>Ink threshold
+          <span class="row"><input id="threshold" type="range" min="10" max="90" value="55"><span class="val" id="threshold-val">55</span></span>
+        </label>
+      </div>
       <button class="btn block" id="ai-redraw" type="button" hidden>Redraw upload as clean lines (AI)</button>
       <button class="btn block" id="sample" type="button">Load sample medallion</button>
       <button class="btn block danger" id="clear-sketch" type="button">Clear sketch</button>
@@ -230,20 +245,45 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
         <button class="tool" type="button" data-tool="pick"><svg viewBox="0 0 24 24"><path d="M14 4l6 6-9 9H5v-6z"/><path d="M12 6l6 6"/></svg>Pick<kbd>I</kbd></button>
         <button class="tool" type="button" data-tool="remove"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>Remove<kbd>D</kbd></button>
       </div>
-      <p class="hint">Pick a material from the chart, then tap any area of the design.</p>
+      <p class="hint">Pick a color from the chart, then tap any area of the design.</p>
+      <label class="field" for="any-color">Pick any color
+        <span class="row"><input type="color" id="any-color" value="#c0603f"><span class="hint" id="any-color-match">We use the closest color in our chart.</span></span>
+      </label>
+      <p class="label">Show colors as</p>
+      <div class="seg" role="group" aria-label="Show colors as">
+        <button type="button" data-look="flat" aria-pressed="true">Plain colors</button>
+        <button type="button" data-look="stone" aria-pressed="false">Stone</button>
+      </div>
       <label class="field" for="gap">Gap closing
         <span class="row"><input id="gap" type="range" min="0" max="8" value="2"><span class="val" id="gap-val">2</span></span>
       </label>
       <p class="hint">Raise this if a fill leaks through a small gap in the lines.</p>
-      <p class="label">Joint lines</p>
-      <div class="joints" role="group" aria-label="Joint line color">
+      <button class="btn block danger" id="clear-colors" type="button">Clear all colors</button>
+    </div>
+
+    <div id="mosaic-tools" class="group" hidden>
+      <p class="label">Mosaic</p>
+      <label class="field" for="tile-size">Tile size
+        <select id="tile-size">
+          <option value="0.375">⅜ in (1 cm)</option>
+          <option value="0.5" selected>½ in (1.3 cm)</option>
+          <option value="0.625">⅝ in (1.6 cm)</option>
+          <option value="0.75">¾ in (2 cm)</option>
+          <option value="1">1 in (2.5 cm)</option>
+        </select>
+      </label>
+      <p class="hint">Each area is laid with hand-cut tiles of its stone, cut to fit the shape. Tap an area to change its stone.</p>
+    </div>
+
+    <div id="joint-group" class="group">
+      <p class="label">Lines &amp; grout</p>
+      <div class="joints" role="group" aria-label="Line and grout color">
         <button class="joint" type="button" data-joint="#1b1a19" style="background:#1b1a19" title="Black" aria-label="Black joints"></button>
         <button class="joint" type="button" data-joint="#8a8782" style="background:#8a8782" title="Grey grout" aria-label="Grey joints"></button>
         <button class="joint" type="button" data-joint="#f2f0ec" style="background:#f2f0ec" title="White grout" aria-label="White joints"></button>
         <button class="joint" type="button" data-joint="#b08d48" style="background:#b08d48" title="Brass strip" aria-label="Brass joints"></button>
         <button class="joint" type="button" data-joint="#4a4d52" style="background:#4a4d52" title="Lead came" aria-label="Lead came joints"></button>
       </div>
-      <button class="btn block danger" id="clear-colors" type="button">Clear all colors</button>
     </div>
   </aside>
 
@@ -270,7 +310,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Material</th><th>Type</th><th class="num">Pieces</th><th class="num">Share</th><th class="num" id="area-head">Area (ft²)</th></tr></thead>
+          <thead><tr><th>Material</th><th>Type</th><th class="num">Pieces</th><th class="num" id="tiles-head">Tiles</th><th class="num">Share</th><th class="num" id="area-head">Area (ft²)</th></tr></thead>
           <tbody id="bom-body"></tbody>
           <tfoot id="bom-foot"></tfoot>
         </table>
@@ -459,14 +499,14 @@ const SAMPLE_CHART = [
   { id: 'e46', name: 'Ocean Blue', code: 'No. 46', type: 'engineered', style: 'mottled', base: '#2d6ea8', vein: '#5a94c7' },
   { id: 'e47', name: 'Turquoise', code: 'No. 47', type: 'engineered', style: 'mottled', base: '#2fa7a7', vein: '#7cd0cc' },
   { id: 'e48', name: 'Cobalt Blue', code: 'No. 48', type: 'engineered', style: 'mottled', base: '#1e3f9e', vein: '#3d61bd' },
-  { id: 'g-clear',   name: 'Clear Cathedral', code: 'Glass', type: 'glass', style: 'cathedral', base: '#d9e6e8', vein: '#ffffff' },
-  { id: 'g-ruby',    name: 'Ruby Glass',      code: 'Glass', type: 'glass', style: 'cathedral', base: '#a1132b', vein: '#ffffff' },
-  { id: 'g-amber',   name: 'Amber Glass',     code: 'Glass', type: 'glass', style: 'cathedral', base: '#cf8a1f', vein: '#ffffff' },
-  { id: 'g-emerald', name: 'Emerald Glass',   code: 'Glass', type: 'glass', style: 'cathedral', base: '#127049', vein: '#ffffff' },
-  { id: 'e48',  name: 'Cobalt Glass',    code: 'Glass', type: 'glass', style: 'cathedral', base: '#1b3d9c', vein: '#ffffff' },
-  { id: 'g-amethyst',name: 'Amethyst Glass',  code: 'Glass', type: 'glass', style: 'cathedral', base: '#5b2c77', vein: '#ffffff' },
-  { id: 'g-opal',    name: 'Opal White Glass',code: 'Glass', type: 'glass', style: 'opal',      base: '#e6e4de', vein: '#ffffff' },
-  { id: 'g-seaopal', name: 'Sea Green Opal',  code: 'Glass', type: 'glass', style: 'opal',      base: '#5ea597', vein: '#e9f4f0' },
+  { id: 'g-clear',   name: 'Clear Cathedral', code: '', type: 'glass', style: 'cathedral', base: '#d9e6e8', vein: '#ffffff' },
+  { id: 'g-ruby',    name: 'Ruby Glass',      code: '', type: 'glass', style: 'cathedral', base: '#a1132b', vein: '#ffffff' },
+  { id: 'g-amber',   name: 'Amber Glass',     code: '', type: 'glass', style: 'cathedral', base: '#cf8a1f', vein: '#ffffff' },
+  { id: 'g-emerald', name: 'Emerald Glass',   code: '', type: 'glass', style: 'cathedral', base: '#127049', vein: '#ffffff' },
+  { id: 'e48',  name: 'Cobalt Glass',    code: '', type: 'glass', style: 'cathedral', base: '#1b3d9c', vein: '#ffffff' },
+  { id: 'g-amethyst',name: 'Amethyst Glass',  code: '', type: 'glass', style: 'cathedral', base: '#5b2c77', vein: '#ffffff' },
+  { id: 'g-opal',    name: 'Opal White Glass',code: '', type: 'glass', style: 'opal',      base: '#e6e4de', vein: '#ffffff' },
+  { id: 'g-seaopal', name: 'Sea Green Opal',  code: '', type: 'glass', style: 'opal',      base: '#5ea597', vein: '#e9f4f0' },
 ];
 const TYPE_LABEL = { marble: 'Marble', engineered: 'Engineered stone', glass: 'Glass' };
 const STYLES = {
@@ -591,9 +631,11 @@ function loadPhoto(src) {
     photoImgs.set(src, img);
   });
 }
+const flatView = () => state.look === 'flat' && state.mode !== 'mosaic';
 function drawThumb(canvas, m) {
   const ctx = canvas.getContext('2d');
   if (!m) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
+  if (flatView()) { ctx.fillStyle = m.base; ctx.fillRect(0, 0, canvas.width, canvas.height); return; }
   ctx.drawImage(getTile(m), 0, 0, TILE * .6, TILE * .6, 0, 0, canvas.width, canvas.height);
 }
 
@@ -606,6 +648,7 @@ const fillsLayer = mk(), fctx = fillsLayer.getContext('2d');
 const tint = mk(), tctx = tint.getContext('2d');
 const maskC = mk(), mctx = maskC.getContext('2d');
 const work = mk(), wctx = work.getContext('2d');
+const mosaicLayer = mk(), mosctx = mosaicLayer.getContext('2d');
 
 /* ---------------- State ---------------- */
 const state = {
@@ -614,25 +657,27 @@ const state = {
   weight: 3, gap: 2, joint: '#1b1a19',
   selected: 'm04', filter: 'all', query: '',
   sizeW: 36, unit: 'in',
+  look: 'flat',  // how the Color step shows materials: plain colors or stone textures
+  tileIn: 0.5,   // mosaic tile size in inches
   fills: [], // immutable entries: { x, y, mat, rot }
 };
 let inkVer = 0;
-const maskCache = new Map(); // key -> { core, grown, area } | null
 
 /* ---------------- Region detection ---------------- */
+// Every closed area of the sketch gets a label; a fill points at its area through a seed point.
 let barrier = null, barrierKey = '';
-function dilate(src, r) {
+function dilate(src, r, w = W, h = H) {
   if (r <= 0) return src;
-  const tmp = new Uint8Array(N), out = new Uint8Array(N);
-  const pre = new Int32Array(Math.max(W, H) + 1);
-  for (let y = 0; y < H; y++) {
-    const o = y * W;
-    for (let x = 0; x < W; x++) pre[x + 1] = pre[x] + src[o + x];
-    for (let x = 0; x < W; x++) tmp[o + x] = pre[Math.min(W, x + r + 1)] - pre[Math.max(0, x - r)] > 0 ? 1 : 0;
+  const tmp = new Uint8Array(w * h), out = new Uint8Array(w * h);
+  const pre = new Int32Array(Math.max(w, h) + 1);
+  for (let y = 0; y < h; y++) {
+    const o = y * w;
+    for (let x = 0; x < w; x++) pre[x + 1] = pre[x] + src[o + x];
+    for (let x = 0; x < w; x++) tmp[o + x] = pre[Math.min(w, x + r + 1)] - pre[Math.max(0, x - r)] > 0 ? 1 : 0;
   }
-  for (let x = 0; x < W; x++) {
-    for (let y = 0; y < H; y++) pre[y + 1] = pre[y] + tmp[y * W + x];
-    for (let y = 0; y < H; y++) out[y * W + x] = pre[Math.min(H, y + r + 1)] - pre[Math.max(0, y - r)] > 0 ? 1 : 0;
+  for (let x = 0; x < w; x++) {
+    for (let y = 0; y < h; y++) pre[y + 1] = pre[y] + tmp[y * w + x];
+    for (let y = 0; y < h; y++) out[y * w + x] = pre[Math.min(h, y + r + 1)] - pre[Math.max(0, y - r)] > 0 ? 1 : 0;
   }
   return out;
 }
@@ -646,59 +691,135 @@ function getBarrier() {
   return barrier;
 }
 const stack = new Int32Array(N);
-function regionAt(x, y) {
-  const key = inkVer + '|' + state.gap + '|' + x + ',' + y;
-  if (maskCache.has(key)) return maskCache.get(key);
-  const b = getBarrier(), start = y * W + x;
-  if (b[start]) { maskCache.set(key, null); return null; }
-  const core = new Uint8Array(N);
-  let sp = 0, area = 0;
-  stack[sp++] = start; core[start] = 1;
-  while (sp) {
-    const p = stack[--sp]; area++;
-    const px = p % W;
-    if (px > 0 && !core[p - 1] && !b[p - 1]) { core[p - 1] = 1; stack[sp++] = p - 1; }
-    if (px < W - 1 && !core[p + 1] && !b[p + 1]) { core[p + 1] = 1; stack[sp++] = p + 1; }
-    if (p >= W && !core[p - W] && !b[p - W]) { core[p - W] = 1; stack[sp++] = p - W; }
-    if (p < N - W && !core[p + W] && !b[p + W]) { core[p + W] = 1; stack[sp++] = p + W; }
+let labels = null, labelKey = '', regions = [null]; // regions[L] = { area, x0, y0, x1, y1, seed }
+function getLabels() {
+  const key = inkVer + '|' + state.gap;
+  if (labels && labelKey === key) return labels;
+  const b = getBarrier(), lab = new Int32Array(N);
+  regions = [null];
+  for (let s = 0; s < N; s++) {
+    if (b[s] || lab[s]) continue;
+    const L = regions.length;
+    let sp = 0, area = 0, x0 = W, y0 = H, x1 = 0, y1 = 0;
+    stack[sp++] = s; lab[s] = L;
+    while (sp) {
+      const p = stack[--sp], px = p % W, py = (p - px) / W;
+      area++;
+      if (px < x0) x0 = px; if (px > x1) x1 = px; if (py < y0) y0 = py; if (py > y1) y1 = py;
+      if (px > 0 && !lab[p - 1] && !b[p - 1]) { lab[p - 1] = L; stack[sp++] = p - 1; }
+      if (px < W - 1 && !lab[p + 1] && !b[p + 1]) { lab[p + 1] = L; stack[sp++] = p + 1; }
+      if (p >= W && !lab[p - W] && !b[p - W]) { lab[p - W] = L; stack[sp++] = p - W; }
+      if (p < N - W && !lab[p + W] && !b[p + W]) { lab[p + W] = L; stack[sp++] = p + W; }
+    }
+    regions.push({ area, x0, y0, x1, y1, seed: s });
   }
-  const grown = dilate(core, state.gap + 1); // tuck the fill under the joint line
-  const r = { core, grown, area };
-  maskCache.set(key, r);
-  return r;
+  labels = lab; labelKey = key;
+  return labels;
 }
+const labelOf = f => getLabels()[f.y * W + f.x];
 function fillAt(idx) {
-  for (let i = state.fills.length - 1; i >= 0; i--) {
-    const reg = regionAt(state.fills[i].x, state.fills[i].y);
-    if (reg && reg.core[idx]) return i;
-  }
+  const L = getLabels()[idx];
+  if (!L) return -1;
+  for (let i = state.fills.length - 1; i >= 0; i--) if (labelOf(state.fills[i]) === L) return i;
   return -1;
 }
+// Draws the alpha mask of area L, grown by pad px, into maskC and returns where it sits.
+function maskRegion(L, pad) {
+  const r = regions[L], lab = getLabels();
+  const x = Math.max(0, r.x0 - pad), y = Math.max(0, r.y0 - pad);
+  const w = Math.min(W, r.x1 + pad + 1) - x, h = Math.min(H, r.y1 + pad + 1) - y;
+  let m = new Uint8Array(w * h);
+  for (let j = 0; j < h; j++) { const o = (y + j) * W + x; for (let i = 0; i < w; i++) m[j * w + i] = lab[o + i] === L ? 1 : 0; }
+  m = dilate(m, pad, w, h);
+  maskC.width = w; maskC.height = h;
+  const id = mctx.createImageData(w, h);
+  for (let i = 0, k = 3; i < w * h; i++, k += 4) id.data[k] = m[i] ? 255 : 0;
+  mctx.putImageData(id, 0, 0);
+  return { x, y, w, h };
+}
+const tilePx = () => state.tileIn * W / (state.unit === 'in' ? state.sizeW : state.sizeW / 2.54);
+// Tiles laid in area L: every grid cell that any of five sample points falls in.
+function tileCount(L) {
+  const r = regions[L], t = Math.max(4, tilePx()), lab = getLabels();
+  let n = 0;
+  for (let ty = Math.floor(r.y0 / t); ty * t <= r.y1; ty++) for (let tx = Math.floor(r.x0 / t); tx * t <= r.x1; tx++) {
+    for (const [fx, fy] of [[.5, .5], [.2, .2], [.8, .2], [.2, .8], [.8, .8]]) {
+      const px = Math.floor((tx + fx) * t), py = Math.floor((ty + fy) * t);
+      if (px < W && py < H && lab[py * W + px] === L) { n++; break; }
+    }
+  }
+  return n;
+}
+
+/* ---------------- Color matching ---------------- */
+function srgbToLab(r, g, b) {
+  const f = c => { c /= 255; return c <= .04045 ? c / 12.92 : Math.pow((c + .055) / 1.055, 2.4); };
+  const R = f(r), G = f(g), B = f(b);
+  const t = v => v > .008856 ? Math.cbrt(v) : 7.787 * v + 16 / 116;
+  const X = t((R * .4124 + G * .3576 + B * .1805) / .95047), Y = t(R * .2126 + G * .7152 + B * .0722), Z = t((R * .0193 + G * .1192 + B * .9505) / 1.08883);
+  return [116 * Y - 16, 500 * (X - Y), 200 * (Y - Z)];
+}
+const labCache = new Map();
+const matLab = m => { let v = labCache.get(m.base); if (!v) { v = srgbToLab(...hexRgb(m.base)); labCache.set(m.base, v); } return v; };
+function nearestMat(lab, list) {
+  let best = null, bd = Infinity;
+  for (const m of list) { const q = matLab(m), d = (q[0] - lab[0]) ** 2 + (q[1] - lab[1]) ** 2 + (q[2] - lab[2]) ** 2; if (d < bd) { bd = d; best = m; } }
+  return best;
+}
+// Colors are matched against the chart tab the customer has open. Under All, glass joins only once the
+// chart has real glass colors (the built-in glass entries are placeholders without a code).
+const matchList = () => {
+  const l = chart.filter(m => state.filter === 'all' ? (m.type !== 'glass' || m.code) : m.type === state.filter);
+  return l.length ? l : chart;
+};
 
 /* ---------------- Rendering ---------------- */
-let maskImg = null;
 function renderFills() {
   fctx.clearRect(0, 0, W, H);
-  if (!maskImg) maskImg = mctx.createImageData(W, H);
-  const md = maskImg.data;
+  getLabels();
   for (const f of state.fills) {
-    const m = matById(f.mat), reg = regionAt(f.x, f.y);
-    if (!m || !reg) continue;
-    const g = reg.grown;
-    for (let i = 0, j = 3; i < N; i++, j += 4) md[j] = g[i] ? 255 : 0;
-    mctx.putImageData(maskImg, 0, 0);
-    const pat = wctx.createPattern(getTile(m), 'repeat');
-    pat.setTransform(new DOMMatrix().translate(f.x, f.y).rotate(m.type === 'marble' ? f.rot : 0).scale(PATTERN_SCALE));
-    wctx.globalCompositeOperation = 'source-over';
-    wctx.clearRect(0, 0, W, H);
-    wctx.fillStyle = pat; wctx.fillRect(0, 0, W, H);
-    wctx.globalCompositeOperation = 'destination-in';
-    wctx.drawImage(maskC, 0, 0);
-    wctx.globalCompositeOperation = 'source-over';
-    fctx.drawImage(work, 0, 0);
+    const m = matById(f.mat), L = labelOf(f);
+    if (!m || !L) continue;
+    const { x, y, w, h } = maskRegion(L, state.gap + 1); // tuck the fill under the line
+    work.width = w; work.height = h;
+    if (state.look === 'flat') wctx.fillStyle = m.base;
+    else {
+      const pat = wctx.createPattern(getTile(m), 'repeat');
+      pat.setTransform(new DOMMatrix().translate(f.x - x, f.y - y).rotate(m.type === 'marble' ? f.rot : 0).scale(PATTERN_SCALE));
+      wctx.fillStyle = pat;
+    }
+    wctx.fillRect(0, 0, w, h);
+    wctx.globalCompositeOperation = 'destination-in'; wctx.drawImage(maskC, 0, 0); wctx.globalCompositeOperation = 'source-over';
+    fctx.drawImage(work, x, y);
+  }
+}
+// Lays every colored area with square tiles of its stone, each showing a different part of the
+// stone and cut off where the area ends; the lines and the gaps between tiles show as grout.
+function renderMosaic() {
+  mosctx.fillStyle = state.joint; mosctx.fillRect(0, 0, W, H);
+  const t = Math.max(4, tilePx()), gap = Math.max(1, t * .1);
+  getLabels();
+  for (const f of state.fills) {
+    const m = matById(f.mat), L = labelOf(f);
+    if (!m || !L) continue;
+    const { x, y, w, h } = maskRegion(L, state.gap);
+    work.width = w; work.height = h;
+    const pat = wctx.createPattern(getTile(m), 'repeat'), seed = L * 7919;
+    for (let ty = Math.floor(y / t); ty * t < y + h; ty++) for (let tx = Math.floor(x / t); tx * t < x + w; tx++) {
+      const jx = (hash(tx, ty, seed) - .5) * gap, jy = (hash(ty, tx, seed + 1) - .5) * gap;
+      const rx = tx * t + gap / 2 + jx - x, ry = ty * t + gap / 2 + jy - y, sz = t - gap;
+      pat.setTransform(new DOMMatrix().translate(rx - hash(tx, ty, seed + 2) * TILE, ry - hash(tx, ty, seed + 3) * TILE).scale(PATTERN_SCALE * .8));
+      wctx.fillStyle = pat; wctx.fillRect(rx, ry, sz, sz);
+      const v = (hash(tx, ty, seed + 4) - .5) * .16;
+      wctx.fillStyle = v > 0 ? `rgba(255,255,255,${v})` : `rgba(0,0,0,${-v})`;
+      wctx.fillRect(rx, ry, sz, sz);
+    }
+    wctx.globalCompositeOperation = 'destination-in'; wctx.drawImage(maskC, 0, 0); wctx.globalCompositeOperation = 'source-over';
+    mosctx.drawImage(work, x, y);
   }
 }
 function composite(target = vctx, mode = state.mode) {
+  if (mode === 'mosaic') { target.drawImage(mosaicLayer, 0, 0); return; }
   target.fillStyle = '#ffffff';
   target.fillRect(0, 0, W, H);
   target.globalAlpha = mode === 'sketch' ? .3 : 1;
@@ -716,6 +837,7 @@ function composite(target = vctx, mode = state.mode) {
 function busy(on) { $('#busy').hidden = !on; }
 function refresh({ fills = true } = {}) {
   if (fills) renderFills();
+  if (state.mode === 'mosaic') renderMosaic();
   composite();
   renderBom();
   updateHistoryButtons();
@@ -732,13 +854,13 @@ function commit(inkChanged) {
   history.push(snapshot());
   if (history.length > 30) history.shift();
   future.length = 0;
-  if (inkChanged) { currentInk = ictx.getImageData(0, 0, W, H); inkVer++; maskCache.clear(); }
+  if (inkChanged) { currentInk = ictx.getImageData(0, 0, W, H); inkVer++; }
 }
 function restore(s) {
   if (s.ink !== currentInk) {
     currentInk = s.ink;
     if (s.ink) ictx.putImageData(s.ink, 0, 0); else ictx.clearRect(0, 0, W, H);
-    inkVer++; maskCache.clear();
+    inkVer++;
   }
   state.fills = s.fills.slice();
   heavy(() => refresh());
@@ -779,7 +901,7 @@ let drag = null;
 overlay.addEventListener('pointerdown', e => {
   if (e.button !== 0) return;
   const p = pos(e);
-  if (state.mode === 'color') { colorClick(p); return; }
+  if (state.mode !== 'sketch') { colorClick(p); return; }
   overlay.setPointerCapture(e.pointerId);
   const tool = state.tool.sketch;
   drag = { tool, start: p, last: p, mid: p };
@@ -840,19 +962,19 @@ function colorClick(p) {
       if (hit < 0) return;
       commit(false); state.fills.splice(hit, 1); refresh(); return;
     }
-    if (!matById(state.selected)) return toast('Choose a material from the chart first.');
+    if (!matById(state.selected)) return toast('Choose a color from the chart first.');
     if (hit >= 0) {
       if (state.fills[hit].mat === state.selected) return;
       commit(false);
       state.fills[hit] = { ...state.fills[hit], mat: state.selected };
       refresh(); return;
     }
-    const reg = regionAt(x, y);
-    if (!reg) return toast('That spot is on a line. Tap inside an area.');
+    const L = getLabels()[idx];
+    if (!L) return toast('That spot is on a line. Tap inside an area.');
     commit(false);
     state.fills.push({ x, y, mat: state.selected, rot: Math.round(Math.random() * 360) });
     refresh();
-    if (reg.area > N * .9) toast('The fill covered almost everything. Check for an open shape, or raise Gap closing.');
+    if (regions[L].area > N * .9) toast('The fill covered almost everything. Check for an open shape, or raise Gap closing.');
   });
 }
 
@@ -861,35 +983,36 @@ function renderBom() {
   const groups = new Map();
   let total = 0;
   for (const f of state.fills) {
-    const reg = regionAt(f.x, f.y);
-    if (!reg || !matById(f.mat)) continue;
-    const g = groups.get(f.mat) || { pieces: 0, px: 0 };
-    g.pieces++; g.px += reg.area; total += reg.area;
+    const L = labelOf(f);
+    if (!L || !matById(f.mat)) continue;
+    const g = groups.get(f.mat) || { pieces: 0, px: 0, tiles: 0 };
+    g.pieces++; g.px += regions[L].area; g.tiles += tileCount(L); total += regions[L].area;
     groups.set(f.mat, g);
   }
   const imperial = state.unit === 'in';
   const pxPerUnit = W / state.sizeW;
   const toArea = px => { const a = px / (pxPerUnit * pxPerUnit); return imperial ? a / 144 : a / 10000; };
   $('#area-head').textContent = imperial ? 'Area (ft²)' : 'Area (m²)';
+  $('#tiles-head').textContent = `Tiles (${$('#tile-size').selectedOptions[0].textContent.split(' (')[0]})`;
   const hgt = state.sizeW * H / W;
   $('#dims').textContent = `${fmt(state.sizeW)} × ${fmt(hgt)} ${state.unit}`;
   const body = $('#bom-body'), foot = $('#bom-foot');
   body.textContent = ''; foot.textContent = '';
   if (!groups.size) {
-    body.innerHTML = '<tr><td colspan="5" class="empty">No areas colored yet. Pick a material and tap the design.</td></tr>';
+    body.innerHTML = '<tr><td colspan="6" class="empty">No areas colored yet. Pick a color and tap the design.</td></tr>';
     return [];
   }
   const rows = [...groups].sort((a, b) => b[1].px - a[1].px).map(([id, g]) => ({ m: matById(id), ...g, area: toArea(g.px), share: g.px / total }));
   for (const r of rows) {
     const tr = document.createElement('tr');
     tr.innerHTML = `<td><div class="mat-cell"><canvas width="56" height="56"></canvas><div><div>${esc(r.m.name)}</div><div class="code">${esc(r.m.code || '')}</div></div></div></td>
-      <td>${TYPE_LABEL[r.m.type] || 'Marble'}</td><td class="num">${r.pieces}</td><td class="num">${Math.round(r.share * 100)}%</td><td class="num">${r.area.toFixed(2)}</td>`;
+      <td>${TYPE_LABEL[r.m.type] || 'Marble'}</td><td class="num">${r.pieces}</td><td class="num">${r.tiles.toLocaleString()}</td><td class="num">${Math.round(r.share * 100)}%</td><td class="num">${r.area.toFixed(2)}</td>`;
     drawThumb(tr.querySelector('canvas'), r.m);
     body.appendChild(tr);
   }
-  const tA = rows.reduce((s, r) => s + r.area, 0), pcs = rows.reduce((s, r) => s + r.pieces, 0);
-  foot.innerHTML = `<tr><td>Total</td><td></td><td class="num">${pcs}</td><td class="num">100%</td><td class="num">${tA.toFixed(2)}</td></tr>
-    <tr><td colspan="4" class="code">Order with 15% overage for cutting waste</td><td class="num">${(tA * 1.15).toFixed(2)}</td></tr>`;
+  const tA = rows.reduce((s, r) => s + r.area, 0), pcs = rows.reduce((s, r) => s + r.pieces, 0), tls = rows.reduce((s, r) => s + r.tiles, 0);
+  foot.innerHTML = `<tr><td>Total</td><td></td><td class="num">${pcs}</td><td class="num">${tls.toLocaleString()}</td><td class="num">100%</td><td class="num">${tA.toFixed(2)}</td></tr>
+    <tr><td colspan="5" class="code">Order with 15% overage for cutting waste</td><td class="num">${(tA * 1.15).toFixed(2)}</td></tr>`;
   return rows;
 }
 const fmt = n => (Math.round(n * 10) / 10).toString();
@@ -1007,16 +1130,20 @@ $('#m-delete').addEventListener('click', async () => {
 /* ---------------- Mode & tools ---------------- */
 function setMode(mode) {
   state.mode = mode;
-  $('#step-sketch').setAttribute('aria-pressed', String(mode === 'sketch'));
-  $('#step-color').setAttribute('aria-pressed', String(mode === 'color'));
+  for (const k of ['sketch', 'color', 'mosaic']) $('#step-' + k).setAttribute('aria-pressed', String(mode === k));
   $('#sketch-tools').hidden = mode !== 'sketch';
   $('#color-tools').hidden = mode !== 'color';
-  $('#slab').classList.toggle('mode-color', mode === 'color');
-  $('#status').innerHTML = mode === 'color'
-    ? 'Tap an area to fill it with <b id="status-mat"></b>'
-    : 'Draw the design in black lines. Colors you have added show faintly behind it.';
-  renderSelected(matById(state.selected));
-  composite();
+  $('#mosaic-tools').hidden = mode !== 'mosaic';
+  $('#joint-group').hidden = mode === 'sketch';
+  $('#slab').classList.toggle('mode-color', mode !== 'sketch');
+  $('#status').innerHTML = {
+    sketch: 'Draw the design in black lines. Colors you have added show faintly behind it.',
+    color: 'Tap an area to fill it with <b id="status-mat"></b>',
+    mosaic: 'Your design as a hand-cut mosaic. Tap an area to change it to <b id="status-mat"></b>',
+  }[mode];
+  renderChart(); selectMat(state.selected); renderBom();
+  if (mode === 'mosaic') heavy(() => { renderMosaic(); composite(); });
+  else composite();
 }
 function setTool(t) {
   state.tool[state.mode] = t;
@@ -1024,6 +1151,7 @@ function setTool(t) {
 }
 $('#step-sketch').addEventListener('click', () => setMode('sketch'));
 $('#step-color').addEventListener('click', () => setMode('color'));
+$('#step-mosaic').addEventListener('click', () => setMode('mosaic'));
 $$('.tool').forEach(b => b.addEventListener('click', () => {
   const sketchTool = !!b.closest('#sketch-tools');
   if ((state.mode === 'sketch') !== sketchTool) setMode(sketchTool ? 'sketch' : 'color');
@@ -1031,8 +1159,23 @@ $$('.tool').forEach(b => b.addEventListener('click', () => {
 }));
 $('#weight').addEventListener('input', e => { state.weight = +e.target.value; $('#weight-val').textContent = e.target.value; });
 $('#gap').addEventListener('input', e => { $('#gap-val').textContent = e.target.value; });
-$('#gap').addEventListener('change', e => { state.gap = +e.target.value; maskCache.clear(); heavy(() => refresh()); });
-$$('.joint').forEach(b => b.addEventListener('click', () => { state.joint = b.dataset.joint; markJoint(); composite(); scheduleSave(); }));
+$('#gap').addEventListener('change', e => { state.gap = +e.target.value; heavy(() => refresh()); });
+$$('.joint').forEach(b => b.addEventListener('click', () => {
+  state.joint = b.dataset.joint; markJoint(); scheduleSave();
+  if (state.mode === 'mosaic') heavy(() => { renderMosaic(); composite(); }); else composite();
+}));
+function markLook() { $$('.seg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.look === state.look))); }
+$$('.seg button').forEach(b => b.addEventListener('click', () => {
+  state.look = b.dataset.look; markLook();
+  renderChart(); selectMat(state.selected); heavy(() => refresh());
+}));
+$('#tile-size').addEventListener('change', e => { state.tileIn = +e.target.value; heavy(() => refresh({ fills: false })); });
+$('#any-color').addEventListener('input', e => {
+  const m = nearestMat(srgbToLab(...hexRgb(e.target.value)), matchList());
+  if (!m) return;
+  selectMat(m.id); setTool('fill');
+  $('#any-color-match').textContent = `Closest in our chart: ${m.code ? m.code + ' ' : ''}${m.name}`;
+});
 function markJoint() { $$('.joint').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.joint === state.joint))); }
 $$('.tabs button').forEach(b => b.addEventListener('click', () => {
   state.filter = b.dataset.filter;
@@ -1040,11 +1183,17 @@ $$('.tabs button').forEach(b => b.addEventListener('click', () => {
   renderChart(); selectMat(state.selected);
 }));
 $('#search').addEventListener('input', e => { state.query = e.target.value; renderChart(); selectMat(state.selected); });
-$('#size-w').addEventListener('input', e => { const v = parseFloat(e.target.value); if (v > 0) { state.sizeW = v; renderBom(); scheduleSave(); } });
+let sizeTimer = 0;
+$('#size-w').addEventListener('input', e => {
+  const v = parseFloat(e.target.value); if (!(v > 0)) return;
+  state.sizeW = v; renderBom(); scheduleSave();
+  if (state.mode === 'mosaic') { clearTimeout(sizeTimer); sizeTimer = setTimeout(() => heavy(() => { renderMosaic(); composite(); }), 400); }
+});
 $('#size-unit').addEventListener('change', e => {
   const to = e.target.value; if (to === state.unit) return;
   state.sizeW = to === 'cm' ? Math.round(state.sizeW * 2.54) : Math.round(state.sizeW / 2.54 * 2) / 2;
   state.unit = to; $('#size-w').value = state.sizeW; renderBom(); scheduleSave();
+  if (state.mode === 'mosaic') heavy(() => { renderMosaic(); composite(); });
 });
 $('#undo').addEventListener('click', undo);
 $('#redo').addEventListener('click', redo);
@@ -1067,6 +1216,7 @@ document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && k === 'z') { e.preventDefault(); e.shiftKey ? redo() : undo(); return; }
   if ((e.ctrlKey || e.metaKey) && k === 'y') { e.preventDefault(); redo(); return; }
   if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (k === 'm') { setMode('mosaic'); return; }
   const map = { b: ['sketch', 'pen'], l: ['sketch', 'line'], r: ['sketch', 'rect'], o: ['sketch', 'ellipse'], x: ['sketch', 'eraser'], f: ['color', 'fill'], i: ['color', 'pick'], d: ['color', 'remove'] };
   if (map[k]) { if (state.mode !== map[k][0]) setMode(map[k][0]); setTool(map[k][1]); }
 });
@@ -1079,26 +1229,159 @@ $('#file-sketch').addEventListener('change', async e => {
   if (!f) return;
   const img = await loadPhoto(await fileToDataURL(f));
   if (!img) return toast('That file could not be read as an image.');
-  importedImg = img; importedFile = f; lastSvg = null; $('#threshold-field').hidden = false;
+  importedImg = img; importedFile = f; lastSvg = null;
+  $('#trace-mode').value = isColorful(img) ? 'colors' : 'lines';
+  showTraceFields();
   $('#ai-redraw').hidden = !sampleFn || !imagesOk;
-  state.fills = [];
-  heavy(() => { traceImage(); commit(true); refresh(); toast('Drawing traced. Adjust Ink threshold if lines are missing or too heavy.'); });
+  heavy(runTrace);
 });
+function showTraceFields() {
+  $('#trace-field').hidden = false;
+  $('#colors-field').hidden = $('#trace-mode').value !== 'colors';
+  $('#threshold-field').hidden = $('#trace-mode').value !== 'lines';
+}
+$('#trace-mode').addEventListener('change', () => { showTraceFields(); if (importedImg) heavy(runTrace); });
 $('#threshold').addEventListener('input', e => { $('#threshold-val').textContent = e.target.value; });
-$('#threshold').addEventListener('change', () => { if (importedImg) heavy(() => { traceImage(); commit(true); refresh(); }); });
-function traceImage() {
+$('#threshold').addEventListener('change', () => { if (importedImg) heavy(runTrace); });
+$('#colors').addEventListener('input', e => { $('#colors-val').textContent = e.target.value; });
+$('#colors').addEventListener('change', () => { if (importedImg) heavy(runTrace); });
+function runTrace() {
+  if ($('#trace-mode').value === 'colors') {
+    const { idx, mats } = traceColors();
+    commit(true);
+    autoFill(idx, mats);
+    setMode('color');
+    refresh();
+    toast(`Matched to ${new Set(state.fills.map(f => f.mat)).size} colors from our chart. Tap any area to change it.`);
+  } else {
+    traceImage();
+    commit(true);
+    state.fills = [];
+    refresh();
+    toast('Drawing traced. Adjust Ink threshold if lines are missing or too heavy.');
+  }
+}
+// The uploaded picture fitted onto a white slab, as pixels.
+function drawImported() {
   const img = importedImg, s = Math.min(W / img.naturalWidth, H / img.naturalHeight);
   const w = img.naturalWidth * s, h = img.naturalHeight * s;
-  wctx.globalCompositeOperation = 'source-over';
+  work.width = W; work.height = H;
   wctx.fillStyle = '#fff'; wctx.fillRect(0, 0, W, H);
   wctx.drawImage(img, (W - w) / 2, (H - h) / 2, w, h);
-  const src = wctx.getImageData(0, 0, W, H), out = ictx.createImageData(W, H);
+  return wctx.getImageData(0, 0, W, H);
+}
+function isColorful(img) {
+  const c = document.createElement('canvas'); c.width = c.height = 64;
+  const x = c.getContext('2d'); x.drawImage(img, 0, 0, 64, 64);
+  const d = x.getImageData(0, 0, 64, 64).data;
+  let colored = 0;
+  for (let i = 0; i < d.length; i += 4) if (Math.max(d[i], d[i + 1], d[i + 2]) - Math.min(d[i], d[i + 1], d[i + 2]) > 40) colored++;
+  return colored > 64 * 64 * .08;
+}
+function traceImage() {
+  const src = drawImported(), out = ictx.createImageData(W, H);
   const thr = +$('#threshold').value / 100 * 255;
   for (let i = 0; i < N * 4; i += 4) {
     const lum = .299 * src.data[i] + .587 * src.data[i + 1] + .114 * src.data[i + 2];
     if (lum < thr) out.data[i + 3] = 255;
   }
   ictx.putImageData(out, 0, 0);
+}
+function boxBlur(ch, r) {
+  const tmp = new Float32Array(N), d = 2 * r + 1;
+  for (let y = 0; y < H; y++) {
+    const o = y * W; let acc = 0;
+    for (let x = -r; x <= r; x++) acc += ch[o + Math.min(W - 1, Math.max(0, x))];
+    for (let x = 0; x < W; x++) { tmp[o + x] = acc / d; acc += ch[o + Math.min(W - 1, x + r + 1)] - ch[o + Math.max(0, x - r)]; }
+  }
+  for (let x = 0; x < W; x++) {
+    let acc = 0;
+    for (let y = -r; y <= r; y++) acc += tmp[Math.min(H - 1, Math.max(0, y)) * W + x];
+    for (let y = 0; y < H; y++) { ch[y * W + x] = acc / d; acc += tmp[Math.min(H - 1, y + r + 1) * W + x] - tmp[Math.max(0, y - r) * W + x]; }
+  }
+}
+// Turns a colored picture into outlined areas: groups its colors, matches each group to the
+// closest chart color, merges specks too small to cut, and draws lines where colors meet.
+function traceColors() {
+  const d = drawImported().data;
+  const ch = [new Float32Array(N), new Float32Array(N), new Float32Array(N)];
+  for (let i = 0; i < N; i++) { ch[0][i] = d[i * 4]; ch[1][i] = d[i * 4 + 1]; ch[2][i] = d[i * 4 + 2]; }
+  for (const c of ch) boxBlur(c, 2);
+  const lab = new Float32Array(N * 3);
+  for (let i = 0; i < N; i++) { const v = srgbToLab(ch[0][i], ch[1][i], ch[2][i]); lab[i * 3] = v[0]; lab[i * 3 + 1] = v[1]; lab[i * 3 + 2] = v[2]; }
+  const dist = (i, c) => (lab[i * 3] - c[0]) ** 2 + (lab[i * 3 + 1] - c[1]) ** 2 + (lab[i * 3 + 2] - c[2]) ** 2;
+  // k-means on a sample of pixels, seeded with spread-out colors
+  const K = +$('#colors').value, sample = [];
+  for (let i = 0; i < N; i += 29) sample.push(i);
+  const centers = [[lab[sample[0] * 3], lab[sample[0] * 3 + 1], lab[sample[0] * 3 + 2]]];
+  const minD = new Float32Array(sample.length).fill(Infinity);
+  while (centers.length < K) {
+    let far = 0;
+    sample.forEach((p, j) => { minD[j] = Math.min(minD[j], dist(p, centers[centers.length - 1])); if (minD[j] > minD[far]) far = j; });
+    const p = sample[far]; centers.push([lab[p * 3], lab[p * 3 + 1], lab[p * 3 + 2]]);
+  }
+  const nearestCenter = i => { let b = 0, bd = Infinity; for (let c = 0; c < centers.length; c++) { const v = dist(i, centers[c]); if (v < bd) { bd = v; b = c; } } return b; };
+  for (let it = 0; it < 8; it++) {
+    const sum = centers.map(() => [0, 0, 0, 0]);
+    for (const p of sample) { const s = sum[nearestCenter(p)]; s[0] += lab[p * 3]; s[1] += lab[p * 3 + 1]; s[2] += lab[p * 3 + 2]; s[3]++; }
+    sum.forEach((s, c) => { if (s[3]) centers[c] = [s[0] / s[3], s[1] / s[3], s[2] / s[3]]; });
+  }
+  const list = matchList(), mats = [];
+  const cmap = centers.map(c => { const m = nearestMat(c, list); let k = mats.indexOf(m); if (k < 0) { mats.push(m); k = mats.length - 1; } return k; });
+  let idx = new Uint8Array(N);
+  for (let i = 0; i < N; i++) idx[i] = cmap[nearestCenter(i)];
+  // smooth ragged edges
+  const M = mats.length, cnt = new Uint16Array(M);
+  for (let pass = 0; pass < 2; pass++) {
+    const out = new Uint8Array(N);
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      cnt.fill(0);
+      for (let dy = -1; dy <= 1; dy++) { const yy = y + dy; if (yy < 0 || yy >= H) continue; for (let dx = -1; dx <= 1; dx++) { const xx = x + dx; if (xx >= 0 && xx < W) cnt[idx[yy * W + xx]]++; } }
+      let b = idx[y * W + x]; for (let k = 0; k < M; k++) if (cnt[k] > cnt[b]) b = k;
+      out[y * W + x] = b;
+    }
+    idx = out;
+  }
+  // merge specks smaller than about two tiles into their most common neighbor
+  const minA = Math.max(150, (tilePx() * 1.5) ** 2), seen = new Uint8Array(N), comp = new Int32Array(N), nb = new Uint32Array(M);
+  const near = (p, px) => [px > 0 ? p - 1 : -1, px < W - 1 ? p + 1 : -1, p >= W ? p - W : -1, p < N - W ? p + W : -1];
+  for (let s0 = 0; s0 < N; s0++) {
+    if (seen[s0]) continue;
+    const k = idx[s0]; let sp = 0, n = 0;
+    stack[sp++] = s0; seen[s0] = 1;
+    while (sp) {
+      const p = stack[--sp]; comp[n++] = p;
+      for (const q of near(p, p % W)) if (q >= 0 && idx[q] === k && !seen[q]) { seen[q] = 1; stack[sp++] = q; }
+    }
+    if (n >= minA) continue;
+    nb.fill(0);
+    for (let j = 0; j < n; j++) for (const q of near(comp[j], comp[j] % W)) if (q >= 0 && idx[q] !== k) nb[idx[q]]++;
+    let b = -1; for (let m = 0; m < M; m++) if (m !== k && nb[m] && (b < 0 || nb[m] > nb[b])) b = m;
+    if (b >= 0) for (let j = 0; j < n; j++) idx[comp[j]] = b;
+  }
+  // lines where two colors meet
+  let line = new Uint8Array(N);
+  for (let p = 0; p < N; p++) {
+    const px = p % W;
+    if ((px < W - 1 && idx[p] !== idx[p + 1]) || (p < N - W && idx[p] !== idx[p + W])) line[p] = 1;
+  }
+  line = dilate(line, 1);
+  const out = ictx.createImageData(W, H);
+  for (let i = 0; i < N; i++) if (line[i]) out.data[i * 4 + 3] = 255;
+  ictx.putImageData(out, 0, 0);
+  return { idx, mats };
+}
+// Colors every outlined area with the chart color most of its pixels were matched to.
+function autoFill(idx, mats) {
+  const lab = getLabels(), M = mats.length, votes = new Uint32Array(regions.length * M);
+  for (let i = 0; i < N; i++) { const L = lab[i]; if (L) votes[L * M + idx[i]]++; }
+  const fills = [];
+  for (let L = 1; L < regions.length; L++) {
+    let b = 0; for (let k = 1; k < M; k++) if (votes[L * M + k] > votes[L * M + b]) b = k;
+    const s = regions[L].seed;
+    fills.push({ x: s % W, y: (s - s % W) / W, mat: mats[b].id, rot: Math.round(hash(L, 3, 7) * 360) });
+  }
+  state.fills = fills;
 }
 
 /* ---------------- Sample medallion ---------------- */
@@ -1118,7 +1401,7 @@ function loadSample(withHistory) {
   for (let k = 0; k < 16; k += 2) { const a = -90 + k * 22.5; ictx.beginPath(); ictx.moveTo(...pt(24, a)); ictx.lineTo(...pt(rad(k), a)); ictx.stroke(); }
   // Sixteen keystones in the outer band
   for (let k = 0; k < 16; k++) { const a = -90 + k * 22.5 + 11.25; ictx.beginPath(); ictx.moveTo(...pt(300, a)); ictx.lineTo(...pt(332, a)); ictx.stroke(); }
-  currentInk = ictx.getImageData(0, 0, W, H); inkVer++; maskCache.clear();
+  currentInk = ictx.getImageData(0, 0, W, H); inkVer++;
   if (withHistory) future.length = 0;
 
   const fills = [];
@@ -1143,7 +1426,7 @@ function designJSON() {
   const used = [...new Set(state.fills.map(f => f.mat))].map(matById).filter(Boolean);
   return { app: 'imosaicart-design', version: 1, sketch: ink.toDataURL('image/png'),
     fills: state.fills.map(({ x, y, mat, rot }) => ({ x, y, mat, rot })),
-    gap: state.gap, joint: state.joint, sizeW: state.sizeW, unit: state.unit, materials: used };
+    gap: state.gap, joint: state.joint, sizeW: state.sizeW, unit: state.unit, look: state.look, tileIn: state.tileIn, materials: used };
 }
 let saveTimer = 0;
 function scheduleSave() { clearTimeout(saveTimer); saveTimer = setTimeout(() => store.set('mosaic.design', designJSON()), 600); }
@@ -1157,9 +1440,10 @@ async function applyDesign(d, withHistory) {
   if (withHistory) { history.push(snapshot()); future.length = 0; }
   ictx.clearRect(0, 0, W, H);
   if (img) ictx.drawImage(img, 0, 0, W, H);
-  currentInk = ictx.getImageData(0, 0, W, H); inkVer++; maskCache.clear();
+  currentInk = ictx.getImageData(0, 0, W, H); inkVer++;
   state.fills = (d.fills || []).filter(f => Number.isFinite(f.x) && Number.isFinite(f.y));
-  Object.assign(state, { gap: d.gap ?? 2, joint: d.joint || state.joint, sizeW: d.sizeW || 36, unit: d.unit === 'cm' ? 'cm' : 'in' });
+  Object.assign(state, { gap: d.gap ?? 2, joint: d.joint || state.joint, sizeW: d.sizeW || 36, unit: d.unit === 'cm' ? 'cm' : 'in', look: d.look === 'stone' ? 'stone' : 'flat', tileIn: +d.tileIn || .5 });
+  $('#tile-size').value = String(state.tileIn); if (!$('#tile-size').value) { state.tileIn = .5; $('#tile-size').value = '0.5'; } markLook();
   $('#gap').value = state.gap; $('#gap-val').textContent = state.gap;
   $('#size-w').value = state.sizeW; $('#size-unit').value = state.unit; markJoint();
 }
@@ -1209,7 +1493,8 @@ $('#export').addEventListener('click', () => heavy(() => {
   const c = document.createElement('canvas'); c.width = W; c.height = H + legendH;
   const ctx = c.getContext('2d');
   ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, c.width, c.height);
-  composite(ctx, 'color');
+  if (state.mode === 'mosaic') renderMosaic();
+  composite(ctx, state.mode === 'mosaic' ? 'mosaic' : 'color');
   if (rows.length) {
     let y = H + 50;
     ctx.fillStyle = '#16335E'; ctx.font = '600 28px "Cormorant Garamond", Georgia, serif';
@@ -1219,14 +1504,15 @@ $('#export').addEventListener('click', () => heavy(() => {
     ctx.textAlign = 'left'; y += 22;
     const unit = state.unit === 'in' ? 'ft²' : 'm²';
     for (const r of rows) {
-      ctx.drawImage(getTile(r.m), 0, 0, TILE * .6, TILE * .6, pad, y, 34, 34);
+      if (flatView()) { ctx.fillStyle = r.m.base; ctx.fillRect(pad, y, 34, 34); }
+      else ctx.drawImage(getTile(r.m), 0, 0, TILE * .6, TILE * .6, pad, y, 34, 34);
       ctx.strokeStyle = '#DFE4EC'; ctx.strokeRect(pad + .5, y + .5, 33, 33);
       ctx.fillStyle = '#16335E'; ctx.font = '500 16px "Hanken Grotesk", system-ui, sans-serif';
       ctx.fillText(r.m.name, pad + 48, y + 16);
       ctx.fillStyle = '#4A5468'; ctx.font = '12px "Hanken Grotesk", sans-serif';
       ctx.fillText(`${r.m.code || ''}  ${TYPE_LABEL[r.m.type] || 'Marble'}`, pad + 48, y + 32);
       ctx.textAlign = 'right'; ctx.fillStyle = '#16335E'; ctx.font = '14px "Hanken Grotesk", sans-serif';
-      ctx.fillText(`${r.pieces} pc   ${Math.round(r.share * 100)}%   ${r.area.toFixed(2)} ${unit}`, W - pad, y + 22);
+      ctx.fillText(`${r.pieces} pc   ${r.tiles.toLocaleString()} tiles   ${Math.round(r.share * 100)}%   ${r.area.toFixed(2)} ${unit}`, W - pad, y + 22);
       ctx.textAlign = 'left'; y += rowH;
     }
   }
@@ -1328,7 +1614,7 @@ async function runAI(kind) {
     if (!svg) { status.textContent = 'The drawing came back incomplete. Try again or simplify the description.'; return; }
     const img = await loadPhoto('data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg));
     if (!img) { status.textContent = 'The drawing could not be read. Try again.'; return; }
-    lastSvg = svg; importedImg = img; $('#threshold-field').hidden = true;
+    lastSvg = svg; importedImg = img; $('#trace-field').hidden = true;
     heavy(() => { state.fills = []; traceImage(); commit(true); refresh(); });
     status.textContent = 'Done. Fix any lines by hand, or describe a change and tick "Change the current sketch".';
     $('#ai-edit').checked = true;
@@ -1374,7 +1660,7 @@ async function boot() {
   if (saved) { try { await applyDesign(saved, false); ok = true; } catch {} }
   if (!ok) loadSample(false);
   if (!matById(state.selected)) state.selected = chart[0]?.id;
-  markJoint(); setTool('pen'); state.mode = 'color'; setTool('fill');
+  markJoint(); markLook(); setTool('pen'); state.mode = 'color'; setTool('fill');
   renderChart(); selectMat(state.selected); setMode('color');
   heavy(() => refresh());
 }

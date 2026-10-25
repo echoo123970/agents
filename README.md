@@ -39,12 +39,17 @@ browser (no build step, no server).
      line art.
    - Both AI features work when the page is opened as a Claude artifact; the
      plain HTML file hides them.
-2. **Color** — pick a material from the chart and tap any closed area. Each
-   marble piece gets its own vein direction. Choose the joint color (black,
-   grey, white grout, brass strip, lead came) and close small gaps with
-   *Gap closing*.
+2. **Color** — customers color with plain colors from the chart, or use *Pick any
+   color* and the tool picks the closest stone in the chart. Uploading a colored
+   picture does this automatically: its colors are grouped, matched to the closest
+   chart colors, and turned into outlined areas that are already colored
+   (*Number of colors* sets how many). *Show colors as* switches between plain
+   colors and stone textures.
+3. **Mosaic** — turns the design into hand-cut tiles of each stone, cut to fit
+   each area, with grout between them. Choose the tile size (⅜ in to 1 in) and
+   grout color.
 
-The **Materials used** table lists each material with piece count, share and
+The **Materials used** table lists each material with piece count, tile count, share and
 area (ft² or m², from the finished width), plus a 15% overage line. *Export*
 produces a PNG with the design and the materials list; *Save design* writes a
 `.json` file that can be reopened or sent to a customer.
