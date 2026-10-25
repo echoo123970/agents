@@ -150,7 +150,13 @@ never state anything beyond this without a source.
 
 ## Images
 
-- **Featured image must be at least 1200 px wide** (Google Discover). Check
+- **Featured image: 1800×1200 (3:2), never cropped.** The blog cards are 3:2,
+  so square or portrait images get cut off. Set the image from the CDN with
+  padding, e.g. `<cdn image url>?width=1800&height=1200&pad_color=f3f5f8`
+  (the blog background color), so the whole mosaic shows. Use the
+  `products/` or `files/` CDN URL; if the download fails, keep the old image
+  and pick another (a failed update can clear the image, so check afterwards).
+- Featured image must be at least 1200 px wide (Google Discover). Check
   width with `image { width height }` before using it; landscape preferred.
 - Use only images from **ACTIVE products** (check `status` = `ACTIVE`; never
   DRAFT or ARCHIVED) or from the **portfolio** (real installations under
