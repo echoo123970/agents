@@ -122,7 +122,11 @@ never state anything beyond this without a source.
 - Body uses `<h2>`/`<h3>` only (the theme supplies the H1); 700–1,600 words.
 
 **Internal links**
-- 3–6 internal links with descriptive anchor text, plus a short
+- 3–6 **in-text** internal links: link key phrases inside body paragraphs
+  (e.g. "grout" → Grout 101, "tesserae" → the materials guide, "glass
+  mosaics" → the glass collection, "custom mosaic" → `/pages/custom-mosaics`),
+  one link per target, never in headings or the bold opening answer. The
+  Keep exploring list does not count toward this. Use descriptive anchor text, plus a short
   `<h2>Keep exploring</h2>` list of related articles/collections at the end.
 - **Every internal link opens in a new tab:**
   `<a href="https://www.imosaicart.com/..." target="_blank" rel="noopener">`.
