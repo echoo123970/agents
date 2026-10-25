@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>iMosaicArt Design Studio</title>
+<title>iMosaicArt Mosaic Designer</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -170,7 +170,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
 <body>
 
 <header class="topbar">
-  <h1 class="brand">iMosaicArt<small>Mosaic Design Studio</small></h1>
+  <h1 class="brand">iMosaicArt<small>Mosaic Designer</small></h1>
   <div class="steps" role="group" aria-label="Step">
     <button id="step-sketch" type="button" aria-pressed="false"><span class="n">1</span>Sketch</button>
     <button id="step-color" type="button" aria-pressed="true"><span class="n">2</span>Color</button>
@@ -355,7 +355,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
     <p class="hint">The image includes the materials list. If the download button does nothing in your viewer, right-click or long-press the image to save it.</p>
     <div class="foot">
       <button class="btn" type="button" id="export-close">Close</button>
-      <a class="btn primary" id="export-dl" download="inlay-design.png" href="#">Download PNG</a>
+      <a class="btn primary" id="export-dl" download="mosaic-design.png" href="#">Download PNG</a>
     </div>
   </div>
 </dialog>
@@ -474,8 +474,8 @@ const STYLES = {
   marble: [['veined', 'Veined'], ['bold', 'Bold veins'], ['web', 'Web / breccia'], ['mottled', 'Mottled'], ['solid', 'Solid']],
   glass: [['cathedral', 'Cathedral (rippled)'], ['opal', 'Opalescent (streaky)'], ['clear', 'Smooth']],
 };
-let chart = store.get('inlay.chart.v2') || SAMPLE_CHART.map(m => ({ ...m }));
-let chartIsSample = !store.get('inlay.chart.v2');
+let chart = store.get('mosaic.chart') || SAMPLE_CHART.map(m => ({ ...m }));
+let chartIsSample = !store.get('mosaic.chart');
 const matById = id => chart.find(m => m.id === id);
 
 /* ---------------- Procedural textures ---------------- */
@@ -934,7 +934,7 @@ function renderSelected(m) {
   $('#sel-type').textContent = m ? (TYPE_LABEL[m.type] || 'Marble') : '';
   const sm = $('#status-mat'); if (sm) sm.textContent = m ? m.name : '—';
 }
-function saveChart() { chartIsSample = false; store.set('inlay.chart.v2', chart); $('#sample-note').hidden = true; }
+function saveChart() { chartIsSample = false; store.set('mosaic.chart', chart); $('#sample-note').hidden = true; }
 
 /* Material dialog */
 let editing = null, editPhoto = null;
@@ -1141,12 +1141,12 @@ function loadSample(withHistory) {
 /* ---------------- Save / open / export ---------------- */
 function designJSON() {
   const used = [...new Set(state.fills.map(f => f.mat))].map(matById).filter(Boolean);
-  return { app: 'inlay-studio', version: 1, sketch: ink.toDataURL('image/png'),
+  return { app: 'imosaicart-design', version: 1, sketch: ink.toDataURL('image/png'),
     fills: state.fills.map(({ x, y, mat, rot }) => ({ x, y, mat, rot })),
     gap: state.gap, joint: state.joint, sizeW: state.sizeW, unit: state.unit, materials: used };
 }
 let saveTimer = 0;
-function scheduleSave() { clearTimeout(saveTimer); saveTimer = setTimeout(() => store.set('inlay.design', designJSON()), 600); }
+function scheduleSave() { clearTimeout(saveTimer); saveTimer = setTimeout(() => store.set('mosaic.design', designJSON()), 600); }
 async function applyDesign(d, withHistory) {
   if (!d || !d.sketch) throw new Error('bad file');
   for (const m of d.materials || []) {
@@ -1164,7 +1164,7 @@ async function applyDesign(d, withHistory) {
   $('#size-w').value = state.sizeW; $('#size-unit').value = state.unit; markJoint();
 }
 $('#save-design').addEventListener('click', () => {
-  showJSON('Save design', 'Keep this file to reopen the design later, or send it to a customer so they can color it. It includes the materials it uses.', designJSON(), 'inlay-design.json');
+  showJSON('Save design', 'Keep this file to reopen the design later, or send it to a customer so they can color it. It includes the materials it uses.', designJSON(), 'mosaic-design.json');
 });
 $('#open-design').addEventListener('click', () => $('#file-design').click());
 $('#file-design').addEventListener('change', async e => {
@@ -1174,9 +1174,9 @@ $('#file-design').addEventListener('change', async e => {
     await applyDesign(JSON.parse(await f.text()), true);
     renderChart(); selectMat(state.selected); setMode('color');
     heavy(() => refresh()); toast('Design opened');
-  } catch { toast('That file is not an Inlay Studio design.'); }
+  } catch { toast('That file is not an iMosaicArt mosaic design file.'); }
 });
-$('#export-chart').addEventListener('click', () => showJSON('Export chart', 'Share this file with your team or load it on another device with Import chart.', { app: 'inlay-studio-chart', version: 1, materials: chart }, 'material-chart.json'));
+$('#export-chart').addEventListener('click', () => showJSON('Export chart', 'Share this file with your team or load it on another device with Import chart.', { app: 'imosaicart-chart', version: 1, materials: chart }, 'material-chart.json'));
 $('#import-chart').addEventListener('click', () => $('#file-chart').click());
 $('#file-chart').addEventListener('change', async e => {
   const f = e.target.files[0]; e.target.value = '';
@@ -1200,7 +1200,7 @@ $('#file-chart').addEventListener('change', async e => {
 $('#reset-chart').addEventListener('click', async () => {
   if (!(await confirmBox('Reset to the sample chart?', 'Your added materials will be removed. Export your chart first if you want to keep it.', 'Reset chart'))) return;
   chart = SAMPLE_CHART.map(m => ({ ...m })); chartIsSample = true;
-  try { localStorage.removeItem('inlay.chart.v2'); } catch {}
+  try { localStorage.removeItem('mosaic.chart'); } catch {}
   tileCache.clear(); renderChart(); selectMat(chart[0].id); heavy(() => refresh());
 });
 $('#export').addEventListener('click', () => heavy(() => {
@@ -1363,13 +1363,13 @@ async function offerDownload(e, filename, getData) {
   try { await downloadsApi.save({ filename, data: await getData() }); toast('Saved'); }
   catch (err) { if (err?.code !== 'declined') toast('Saving is not available here. Right-click or long-press to save instead.'); }
 }
-$('#export-dl').addEventListener('click', e => offerDownload(e, 'inlay-design.png', () => new Promise(r => lastExport.toBlob(r, 'image/png'))));
+$('#export-dl').addEventListener('click', e => offerDownload(e, 'mosaic-design.png', () => new Promise(r => lastExport.toBlob(r, 'image/png'))));
 $('#json-dl').addEventListener('click', e => offerDownload(e, $('#json-dl').download, () => $('#json-text').value));
 
 /* ---------------- Boot ---------------- */
 async function boot() {
   for (const m of chart) if (m.photo) await loadPhoto(m.photo);
-  const saved = store.get('inlay.design');
+  const saved = store.get('mosaic.design');
   let ok = false;
   if (saved) { try { await applyDesign(saved, false); ok = true; } catch {} }
   if (!ok) loadSample(false);

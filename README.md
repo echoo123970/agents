@@ -25,7 +25,7 @@ The agent definition lives in
 
 ## Tools
 
-### iMosaicArt Design Studio — `tools/inlay-studio/index.html`
+### iMosaicArt Mosaic Designer — `tools/mosaic-designer/index.html`
 
 A single-page tool for designing marble and glass inlays. Open the file in a
 browser (no build step, no server).
