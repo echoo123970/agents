@@ -43,8 +43,8 @@ browser (no build step, no server).
    color* and the tool picks the closest stone in the chart. Uploading a colored
    picture does this automatically: its colors are grouped, matched to the closest
    chart colors, and turned into outlined areas that are already colored
-   (*Number of colors* sets how many). *Show colors as* switches between plain
-   colors and stone textures.
+   (*Number of colors* sets how many). Areas show the stone images by default;
+   *Show colors as* can switch to plain colors.
 3. **Mosaic** — turns the design into hand-cut tiles of each stone, cut to fit
    each area, with grout between them. Choose the tile size (⅜ in to 1 in) and
    grout color.

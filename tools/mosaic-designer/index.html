@@ -251,8 +251,8 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
       </label>
       <p class="label">Show colors as</p>
       <div class="seg" role="group" aria-label="Show colors as">
-        <button type="button" data-look="flat" aria-pressed="true">Plain colors</button>
-        <button type="button" data-look="stone" aria-pressed="false">Stone</button>
+        <button type="button" data-look="stone" aria-pressed="true">Stone</button>
+        <button type="button" data-look="flat" aria-pressed="false">Plain colors</button>
       </div>
       <label class="field" for="gap">Gap closing
         <span class="row"><input id="gap" type="range" min="0" max="8" value="2"><span class="val" id="gap-val">2</span></span>
@@ -657,7 +657,7 @@ const state = {
   weight: 3, gap: 2, joint: '#1b1a19',
   selected: 'm04', filter: 'all', query: '',
   sizeW: 36, unit: 'in',
-  look: 'flat',  // how the Color step shows materials: plain colors or stone textures
+  look: 'stone', // how the Color step shows materials: stone textures or plain colors
   tileIn: 0.5,   // mosaic tile size in inches
   fills: [], // immutable entries: { x, y, mat, rot }
 };
@@ -1442,7 +1442,7 @@ async function applyDesign(d, withHistory) {
   if (img) ictx.drawImage(img, 0, 0, W, H);
   currentInk = ictx.getImageData(0, 0, W, H); inkVer++;
   state.fills = (d.fills || []).filter(f => Number.isFinite(f.x) && Number.isFinite(f.y));
-  Object.assign(state, { gap: d.gap ?? 2, joint: d.joint || state.joint, sizeW: d.sizeW || 36, unit: d.unit === 'cm' ? 'cm' : 'in', look: d.look === 'stone' ? 'stone' : 'flat', tileIn: +d.tileIn || .5 });
+  Object.assign(state, { gap: d.gap ?? 2, joint: d.joint || state.joint, sizeW: d.sizeW || 36, unit: d.unit === 'cm' ? 'cm' : 'in', look: d.look === 'flat' ? 'flat' : 'stone', tileIn: +d.tileIn || .5 });
   $('#tile-size').value = String(state.tileIn); if (!$('#tile-size').value) { state.tileIn = .5; $('#tile-size').value = '0.5'; } markLook();
   $('#gap').value = state.gap; $('#gap-val').textContent = state.gap;
   $('#size-w').value = state.sizeW; $('#size-unit').value = state.unit; markJoint();
