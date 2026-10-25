@@ -123,7 +123,7 @@ never state anything beyond this without a source.
 
 **Internal links**
 - Every in-text link carries `class="ima-link"` (the shared `<style>` block
-  makes these brand-coloured and underlined, since the theme shows links as
+  makes these the theme's light blue #2B7BE8, underlined, since the theme shows links as
   plain text).
 - Before the FAQ, end the body with a call-to-action paragraph linking the
   homepage ("iMosaicArt"), `/collections/all`, one relevant ACTIVE product,
@@ -204,7 +204,9 @@ Every article, new or edited, follows this outline:
 
 ### Design components (inside the article body)
 
-The design lives in the body, never in the theme. Start every body with the
+The design lives in the body, never in the theme. Use only the theme
+palette: light blue `#2B7BE8`, navy `#16335E`, tint `#EEF4FD`, border
+`#D3E3FA` (the page background is `#F4F6FA`, so boxes need the tint). Start every body with the
 shared `<style>` block (copy it from any live article, e.g.
 `how-much-does-a-custom-mosaic-cost`). It defines three classes:
 
