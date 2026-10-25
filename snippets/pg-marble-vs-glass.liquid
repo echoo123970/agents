@@ -1,0 +1,211 @@
+{%- comment -%} FAQ structured data — AEO/GEO direct-answer extraction. {%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Which is more durable, marble or glass mosaic?", "acceptedAnswer": { "@type": "Answer", "text": "Both are extremely durable and fully weatherproof. Glass is non-porous and completely waterproof, making it ideal for pools and wet areas, while marble is solid natural stone that should be sealed periodically in wet settings. Both marble and glass mosaics are slip-tested before shipping and backed by a lifetime warranty." } },
+    { "@type": "Question", "name": "Is marble or glass better for a pool or bathroom?", "acceptedAnswer": { "@type": "Answer", "text": "Glass is usually the best choice for pools, fountains, showers, and bathrooms because it is non-porous, fully waterproof, and stays vivid underwater. Marble also works well in wet areas when sealed, and is often chosen for its natural, timeless look." } },
+    { "@type": "Question", "name": "Which is better for a portrait or classical mosaic?", "acceptedAnswer": { "@type": "Answer", "text": "Marble is often preferred for portraits and classical art because its natural earth tones, veining, and depth suit realistic, timeless imagery. Glass is ideal for vivid, luminous, and modern or abstract designs where bright color and reflection matter." } },
+    { "@type": "Question", "name": "Is glass or marble mosaic more expensive?", "acceptedAnswer": { "@type": "Answer", "text": "Both marble and glass are premium, made-to-order materials. The price of a mosaic depends mainly on its size, level of detail, and complexity rather than simply on marble versus glass. Share your project with us for an exact quote." } },
+    { "@type": "Question", "name": "Can marble and glass be combined in one mosaic?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Many iMosaicArt pieces blend marble and glass in a single design — the depth and warmth of natural stone alongside the brilliance and color of hand-cut glass. Our designers can help you mix both materials." } },
+    { "@type": "Question", "name": "Does marble mosaic need sealing while glass does not?", "acceptedAnswer": { "@type": "Answer", "text": "Correct. Because marble is porous, it should be sealed periodically with a penetrating stone sealer, especially in wet areas. Glass is non-porous and never needs sealing." } }
+  ]
+}
+</script>
+<style>
+  .doc { background:#F4F6FA; color:#16335E; }
+  .doc-i { font-style:italic; color:#2B7BE8; }
+  .doc-hero { background:#EEF1F6; border-bottom:1px solid rgba(22,51,94,.08); }
+  .doc-hero__crumb { max-width:1320px; margin:0 auto; padding:30px 40px 0; display:flex; align-items:center; gap:9px; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:#7E8AA0; }
+  .doc-hero__crumb a:hover { color:#2B7BE8; }
+  .doc-sep { color:#B7C0D2; } .doc-cur { color:#16335E; }
+  .doc-hero__head { max-width:860px; margin:0 auto; padding:46px 40px 56px; text-align:center; }
+  .doc-eyebrow { display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:22px; font-family:'Marcellus',serif; font-size:13px; letter-spacing:.36em; text-transform:uppercase; color:#16335E; }
+  .doc-eyebrow__ln { width:38px; height:1px; background:#2B7BE8; }
+  .doc-hero__title { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(32px,5vw,58px); line-height:1.05; letter-spacing:-.01em; margin:0 0 22px; color:#16335E; }
+  .doc-hero__sub { font-size:17px; line-height:1.7; color:#5E6B85; max-width:640px; margin:0 auto; }
+
+  .doc-wrap { max-width:980px; margin:0 auto; padding:66px 40px 20px; }
+  .doc-lead { font-size:18px; line-height:1.75; color:#4A5468; text-align:center; max-width:760px; margin:0 auto 54px; }
+  .doc-lead strong { color:#16335E; }
+
+  .doc-mats { display:grid; grid-template-columns:1fr 1fr; gap:26px; margin-bottom:60px; }
+  .doc-mat { background:#fff; box-shadow:0 12px 34px rgba(22,51,94,.08); overflow:hidden; }
+  .doc-mat__img { aspect-ratio:16/10; overflow:hidden; background:#DCE6F5; }
+  .doc-mat__img img { width:100%; height:100%; object-fit:cover; display:block; }
+  .doc-mat__body { padding:30px 30px 34px; }
+  .doc-mat__t { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:28px; color:#16335E; margin:0 0 12px; }
+  .doc-mat__d { font-size:15px; line-height:1.76; color:#4A5468; margin:0; }
+
+  .doc-sec { margin-bottom:58px; }
+  .doc-sec__eyebrow { font-family:'Marcellus',serif; font-size:12.5px; letter-spacing:.28em; text-transform:uppercase; color:#2B7BE8; margin-bottom:14px; text-align:center; }
+  .doc-sec__title { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(26px,3.2vw,42px); line-height:1.12; margin:0 0 30px; color:#16335E; text-align:center; }
+
+  .doc-table { width:100%; border-collapse:collapse; background:#fff; box-shadow:0 10px 30px rgba(22,51,94,.06); }
+  .doc-table th, .doc-table td { text-align:left; padding:16px 20px; font-size:15px; border-bottom:1px solid #ECEFF4; vertical-align:top; }
+  .doc-table thead th { font-family:'Marcellus',serif; font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color:#16335E; background:#EEF1F6; }
+  .doc-table td:first-child, .doc-table th:first-child { width:24%; }
+  .doc-table td:first-child { font-family:'Marcellus',serif; font-size:13px; letter-spacing:.04em; color:#16335E; }
+  .doc-table td { color:#4A5468; }
+  .doc-table tr:last-child td { border-bottom:none; }
+
+  .doc-choose { display:grid; grid-template-columns:1fr 1fr; gap:26px; }
+  .doc-choose__card { background:#fff; padding:36px 32px; box-shadow:0 10px 30px rgba(22,51,94,.06); border-top:3px solid #2B7BE8; }
+  .doc-choose__t { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:25px; color:#16335E; margin:0 0 18px; }
+  .doc-choose__card ul { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:13px; }
+  .doc-choose__card li { position:relative; padding-left:26px; font-size:15px; line-height:1.55; color:#4A5468; }
+  .doc-choose__card li::before { content:""; position:absolute; left:0; top:7px; width:9px; height:9px; background:#2B7BE8; border-radius:50%; }
+
+  .doc-combine { background:#EEF1F6; padding:40px 40px; text-align:center; border-left:3px solid #2B7BE8; }
+  .doc-combine__t { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:26px; color:#16335E; margin:0 0 12px; }
+  .doc-combine__d { font-size:16px; line-height:1.76; color:#4A5468; margin:0 auto; max-width:680px; }
+
+  .doc-faq__item { border-top:1px solid #E3E8F0; padding:24px 2px; }
+  .doc-faq__item:last-child { border-bottom:1px solid #E3E8F0; }
+  .doc-faq__q { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:22px; line-height:1.3; color:#16335E; margin:0 0 10px; }
+  .doc-faq__a { font-size:15.5px; line-height:1.76; color:#4A5468; margin:0; }
+
+  .doc-cta { background:#16335E; color:#EAE1D2; text-align:center; }
+  .doc-cta__inner { max-width:720px; margin:0 auto; padding:76px 40px; }
+  .doc-cta__title { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(28px,3.4vw,42px); line-height:1.12; margin:0 0 14px; color:#fff; }
+  .doc-cta__text { font-size:16px; line-height:1.7; color:#9AA4B8; margin:0 auto 30px; max-width:520px; }
+  .doc-cta__btns { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .doc-cta__btn { background:#2B7BE8; color:#fff; font-size:13px; letter-spacing:.14em; text-transform:uppercase; padding:18px 40px; display:inline-block; transition:background .25s ease; }
+  .doc-cta__btn:hover { background:#1E63C4; }
+  .doc-cta__btn--ghost { background:transparent; border:1px solid rgba(255,255,255,.4); }
+  .doc-cta__btn--ghost:hover { background:rgba(255,255,255,.1); }
+
+  @media (max-width:760px) {
+    .doc-mats, .doc-choose { grid-template-columns:1fr; }
+    .doc-wrap { padding:44px 22px 10px; }
+    .doc-hero__crumb, .doc-hero__head { padding-left:22px; padding-right:22px; }
+    .doc-table td:first-child, .doc-table th:first-child { width:38%; }
+  }
+</style>
+
+<div class="doc">
+  <section class="doc-hero">
+    <div class="doc-hero__crumb"><a href="{{ routes.root_url }}">Home</a><span class="doc-sep">/</span><span class="doc-cur">Marble vs. Glass</span></div>
+    <div class="doc-hero__head">
+      <div class="doc-eyebrow"><span class="doc-eyebrow__ln"></span>Materials Compared<span class="doc-eyebrow__ln"></span></div>
+      <h1 class="doc-hero__title">Marble vs. <span class="doc-i">Glass Mosaics</span></h1>
+      <p class="doc-hero__sub">Both are premium, hand-cut, and made to order — but they create very different effects. Here's how natural marble and hand-cut glass compare, and how to choose the right one for your space.</p>
+    </div>
+  </section>
+
+  <div class="doc-wrap">
+    <p class="doc-lead">At iMosaicArt we craft mosaics in <strong>both natural marble and hand-cut glass</strong>, so our advice is genuinely balanced. The right material comes down to the <strong>look you want, where the piece will live, and the feel you're after</strong> — and the two can even be combined in a single design.</p>
+
+    <div class="doc-mats">
+      <div class="doc-mat">
+        <div class="doc-mat__img"><img src="{{ 'sw-04.png' | asset_url }}" alt="Natural Carrara marble mosaic tesserae" loading="lazy"></div>
+        <div class="doc-mat__body">
+          <h2 class="doc-mat__t">Natural Marble</h2>
+          <p class="doc-mat__d">Cut from genuine marble and stone, each tessera carries natural veining, depth, and earthy warmth. Honed or polished by hand across 40+ tones — from Carrara white to Nero black — marble brings a timeless, architectural, sculptural quality that suits portraits, classical art, floors, and refined interiors.</p>
+        </div>
+      </div>
+      <div class="doc-mat">
+        <div class="doc-mat__img"><img src="https://cdn.shopify.com/s/files/1/0754/6093/5978/files/1_2ddf180e-8e93-44be-bf4d-9ff5e74a8002.png?v=1790505204&width=1200" alt="Hand-cut glass mosaic color range" loading="lazy"></div>
+        <div class="doc-mat__body">
+          <h2 class="doc-mat__t">Hand-Cut Glass</h2>
+          <p class="doc-mat__d">Hand-cut from vitreous glass in a full spectrum of jewel-like tones — including luminous iridescent finishes — glass is non-porous, fully waterproof, and color-stable. It catches and reflects light for vivid brilliance, making it ideal for pools, fountains, backsplashes, and bold, contemporary art.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-sec">
+      <div class="doc-sec__eyebrow">Side by Side</div>
+      <h2 class="doc-sec__title">The Comparison</h2>
+      <table class="doc-table">
+        <thead><tr><th>&nbsp;</th><th>Natural Marble</th><th>Hand-Cut Glass</th></tr></thead>
+        <tbody>
+          <tr><td>Appearance</td><td>Organic veining, natural depth, matte-to-polished</td><td>Vivid, luminous, light-reflecting</td></tr>
+          <tr><td>Color range</td><td>Natural earth tones — whites, greys, beiges, greens, reds, blacks</td><td>Full spectrum, including iridescent finishes</td></tr>
+          <tr><td>Finish</td><td>Honed or polished stone</td><td>Glossy, matte &amp; iridescent</td></tr>
+          <tr><td>Water resistance</td><td>Water-resistant; seal for wet areas</td><td>Non-porous &amp; fully waterproof</td></tr>
+          <tr><td>Best for</td><td>Portraits, classical art, floors, architecture, warm interiors</td><td>Pools, fountains, backsplashes, vibrant modern art, light-filled spaces</td></tr>
+          <tr><td>Maintenance</td><td>pH-neutral cleaning; periodic sealing</td><td>Simple wipe; no sealing needed</td></tr>
+          <tr><td>Feel</td><td>Natural stone — tactile &amp; substantial</td><td>Smooth, bright &amp; jewel-like</td></tr>
+          <tr><td>Shared</td><td colspan="2">Both are hand-cut by master artisans, made to order, weatherproof, slip-tested, and covered by a lifetime warranty with free worldwide shipping.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="doc-sec">
+      <div class="doc-sec__eyebrow">Make the Call</div>
+      <h2 class="doc-sec__title">Which Is Right for You?</h2>
+      <div class="doc-choose">
+        <div class="doc-choose__card">
+          <h3 class="doc-choose__t">Choose Marble if…</h3>
+          <ul>
+            <li>You love natural stone, veining, and earthy tones</li>
+            <li>It's a portrait, classical, or fine-art design</li>
+            <li>You want a timeless, warm, understated look</li>
+            <li>It's for floors, feature walls, or architectural interiors</li>
+            <li>You prefer a matte, natural finish over high shine</li>
+          </ul>
+        </div>
+        <div class="doc-choose__card">
+          <h3 class="doc-choose__t">Choose Glass if…</h3>
+          <ul>
+            <li>You want vivid color or iridescent, light-catching finishes</li>
+            <li>It's for a pool, fountain, shower, or wet area</li>
+            <li>You're after a bold, modern, or abstract statement</li>
+            <li>Maximum brightness and reflection matter</li>
+            <li>You want a zero-sealing, ultra-low-maintenance surface</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-sec">
+      <div class="doc-combine">
+        <h2 class="doc-combine__t">Can You Combine Both?</h2>
+        <p class="doc-combine__d">Absolutely. Many of our finest commissions blend <strong>marble and glass in a single piece</strong> — the depth and warmth of natural stone paired with the brilliance and color of hand-cut glass. Our designers will help you mix materials so your mosaic has exactly the character you're after.</p>
+      </div>
+    </div>
+
+    <div class="doc-sec">
+      <div class="doc-sec__eyebrow">Common Questions</div>
+      <h2 class="doc-sec__title">Marble vs. Glass FAQ</h2>
+      <div class="doc-faq">
+        <div class="doc-faq__item">
+          <h3 class="doc-faq__q">Which is more durable, marble or glass mosaic?</h3>
+          <p class="doc-faq__a">Both are extremely durable and fully weatherproof. Glass is non-porous and completely waterproof (ideal for pools); marble is solid natural stone that should be sealed periodically in wet areas. Both are slip-tested and carry a lifetime warranty.</p>
+        </div>
+        <div class="doc-faq__item">
+          <h3 class="doc-faq__q">Is marble or glass better for a pool or bathroom?</h3>
+          <p class="doc-faq__a">Glass is usually best for pools, fountains, showers, and bathrooms — it's non-porous, fully waterproof, and stays vivid underwater. Marble also works well in wet areas when sealed, and is often chosen for its natural, timeless look.</p>
+        </div>
+        <div class="doc-faq__item">
+          <h3 class="doc-faq__q">Which is better for a portrait or classical mosaic?</h3>
+          <p class="doc-faq__a">Marble is often preferred for portraits and classical art — its natural tones, veining, and depth suit realistic, timeless imagery. Glass is ideal for vivid, luminous, and modern or abstract designs.</p>
+        </div>
+        <div class="doc-faq__item">
+          <h3 class="doc-faq__q">Is glass or marble mosaic more expensive?</h3>
+          <p class="doc-faq__a">Both are premium, made-to-order materials. Price depends mainly on size, detail, and complexity rather than simply marble versus glass. Share your project with us for an exact quote.</p>
+        </div>
+        <div class="doc-faq__item">
+          <h3 class="doc-faq__q">Can marble and glass be combined in one mosaic?</h3>
+          <p class="doc-faq__a">Yes — many iMosaicArt pieces blend both materials, pairing the depth of natural stone with the brilliance of hand-cut glass. Our designers can help you mix them.</p>
+        </div>
+        <div class="doc-faq__item">
+          <h3 class="doc-faq__q">Does marble need sealing while glass does not?</h3>
+          <p class="doc-faq__a">Correct. Marble is porous, so seal it periodically with a penetrating stone sealer, especially in wet areas. Glass is non-porous and never needs sealing.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="doc-cta">
+    <div class="doc-cta__inner">
+      <h2 class="doc-cta__title">Still Deciding?</h2>
+      <p class="doc-cta__text">Tell us about your space and our design experts will recommend the perfect material — or a blend of both — for your custom mosaic.</p>
+      <div class="doc-cta__btns">
+        <a href="/pages/free-consultation" class="doc-cta__btn">Book a Free Consultation</a>
+        <a href="{{ routes.all_products_collection_url }}" class="doc-cta__btn doc-cta__btn--ghost">Shop All Mosaics</a>
+      </div>
+    </div>
+  </section>
+</div>
