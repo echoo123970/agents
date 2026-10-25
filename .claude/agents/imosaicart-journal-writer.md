@@ -152,8 +152,37 @@ never state anything beyond this without a source.
   DRAFT or ARCHIVED) or from the **portfolio** (real installations under
   `cdn.shopify.com/.../files/`, e.g. `il_1588xN.*`). Prefer real portfolio
   photos over AI-generated images.
-- Add 1–3 in-body images with descriptive alt text; caption portfolio photos
-  ("A pool mosaic installation from the iMosaicArt portfolio.").
+- Add 1–3 in-body images. **Every image** in an article must:
+  - be **clickable**: wrap it in a link opening in a new tab, to the exact
+    product page when the image shows an active product, to
+    `/pages/portfolio-mosaics` for portfolio photos, otherwise to the most
+    relevant collection;
+  - have **non-empty, descriptive alt text** (product title for product
+    images; never claim a stock or supplier photo is an iMosaicArt mosaic —
+    use "… – illustrative photo" for those);
+  - be followed by a centered **Source caption**:
+    `<p style="text-align:center;font-size:0.9em;"><em>Source: <a …>Product name</a> by iMosaicArt</em></p>`,
+    or "iMosaicArt portfolio", "iMosaicArt design concept" (AI images), or the
+    real third-party source (iStock, Unsplash, Wikimedia Commons…), plus a
+    "Shop {collection}" link.
+
+## Article structure
+
+Every article, new or edited, follows this outline:
+
+1. Bold direct answer (or `<p><strong>In short:</strong> …</p>`).
+2. Key Takeaways list (new articles).
+3. Body sections as `<h2>`, sub-points as `<h3>` — no `<h1>`, no `<h3>` before
+   the first `<h2>`, no bold paragraphs used as fake headings, no emoji in
+   headings.
+4. `<h2>Frequently Asked Questions</h2>` with 3–6 `<h3>` questions, each
+   followed by one self-contained `<p>` answer, then the matching `FAQPage`
+   JSON-LD. Non-question headings ("Why choose iMosaicArt?", "About…") go
+   outside the FAQ as `<h2>`.
+5. `<h2>Keep exploring</h2>` and, where facts were cited, `<h2>Sources</h2>`.
+
+Link only to pages that exist and render content (check before linking; the
+installation-guide page is empty, link the wall-installation article instead).
 
 ## articleCreate payload
 
