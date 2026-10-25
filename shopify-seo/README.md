@@ -247,3 +247,60 @@ Corrected against a full catalog export, for anyone reading the old notes:
   products with descriptions under 200 characters**.
 - "One product stuck in DRAFT" — **wrong**. There are **126**, and per the
   decision above that is deliberate.
+
+---
+
+## 10. Thin product descriptions rewritten
+
+The 112 products whose descriptions ran under 200 characters of visible text
+were rewritten. Verified afterwards against a fresh full-catalog export:
+
+| | Before | After |
+|---|---|---|
+| Products under 200 chars | 112 | **0** |
+| Shortest description in the catalog | 2 chars | **201 chars** |
+| Catalog median | 451 chars | 455 chars |
+| Identical openings among the rewritten set | — | **none** |
+
+Two of them (`landscape-mosaics-starry-night-reproduction-...` and
+`landscape-mosaics-timeless-tranquility-...`) had `<p>22</p>` as their entire
+description — stray data, not copy.
+
+### What the copy is grounded in
+
+Nothing was invented. Each description was written from data already on the
+product plus facts already verified elsewhere on the site:
+
+- **Subject and treatment** — from the product title and product type.
+- **Exact size ladder** — reproduced from the variant titles, which also makes
+  every page's content genuinely unique rather than boilerplate.
+- **Format and proportion** — computed from those dimensions (square, 2:3
+  upright, landscape, and so on), including which sizes are large enough to
+  ship in sections.
+- **Lead time** — 28–35 days production, 7–14 days transit, matching the
+  corrected shipping policy exactly.
+- **Internal link** to `/pages/installation-guide`, which exists and renders
+  via the `pg-install` snippet.
+
+Deliberately avoided: any claim about material where the title does not state
+it (titles saying "glass" were described as glass; the rest were not), any
+provenance or studio claim, any durability, outdoor or wet-area claim not
+already implied by the product type, and any statement about what customers
+or specifiers do. Two first-draft sentences that broke those rules — an
+invented claim about how specifiers buy, and a studio provenance claim — were
+caught and rewritten before the batch was finished.
+
+Public-domain works are described as handcrafted mosaic interpretations or
+reproductions with the original named and dated (Van Gogh's *The Starry
+Night*, 1889; Michelangelo's *Creation of Adam*, c. 1512), never as originals.
+
+### Still outstanding: mojibake
+
+Separate from the rewrite, **8 product descriptions still contain mojibake** —
+UTF-8 punctuation decoded as Latin-1, so an apostrophe renders as `â€™`.
+There were 21; 13 were inside the thin set and were fixed by the rewrite.
+Product **titles** are affected too (for example "Sunrise Over the Ocean
+Mosaic: A New Dayâ€™s Promise"), and one handle has it baked in
+(`...naturea-™s-beauty-in-every-tile`). This is a pure character repair with no
+editorial judgement in it, but it was not part of the brief, so it is left for
+a decision. Handles should not be changed without redirects.
