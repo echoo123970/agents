@@ -45,9 +45,11 @@ browser (no build step, no server).
    chart colors, and turned into outlined areas that are already colored
    (*Number of colors* sets how many). Areas show the stone images by default;
    *Show colors as* can switch to plain colors.
-3. **Mosaic** — turns the design into hand-cut tiles of each stone, cut to fit
-   each area, with grout between them. Choose the tile size (⅜ in to 1 in) and
-   grout color.
+3. **Mosaic** — turns the design into hand-cut tiles with grout between them.
+   With an uploaded picture, every tile takes the chart stone closest to the
+   picture under it (with error diffusion so skin tones and skies blend), which
+   gives a realistic portrait-style mosaic; or tile the colored areas instead.
+   Choose the tile size (¼ in to 1 in) and grout color.
 
 The **Materials used** table lists each material with piece count, tile count, share and
 area (ft² or m², from the finished width), plus a 15% overage line. *Export*

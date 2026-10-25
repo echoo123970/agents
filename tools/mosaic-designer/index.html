@@ -265,6 +265,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
       <p class="label">Mosaic</p>
       <label class="field" for="tile-size">Tile size
         <select id="tile-size">
+          <option value="0.25">¼ in (6 mm)</option>
           <option value="0.375">⅜ in (1 cm)</option>
           <option value="0.5" selected>½ in (1.3 cm)</option>
           <option value="0.625">⅝ in (1.6 cm)</option>
@@ -272,7 +273,15 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
           <option value="1">1 in (2.5 cm)</option>
         </select>
       </label>
-      <p class="hint">Each area is laid with hand-cut tiles of its stone, cut to fit the shape. Tap an area to change its stone.</p>
+      <div class="group" id="mosaic-from-group" hidden>
+        <p class="label">Build the mosaic from</p>
+        <div class="seg" role="group" aria-label="Build the mosaic from">
+          <button type="button" data-from="picture" aria-pressed="true">Original picture</button>
+          <button type="button" data-from="areas" aria-pressed="false">Colored areas</button>
+        </div>
+        <p class="hint" id="mosaic-from-hint">Every tile takes the stone from our chart that is closest to the picture under it, like our hand-made portraits. Smaller tiles show more detail.</p>
+      </div>
+      <p class="hint" id="mosaic-areas-hint">Each area is laid with hand-cut tiles of its stone, cut to fit the shape. Tap an area to change its stone.</p>
     </div>
 
     <div id="joint-group" class="group">
@@ -659,6 +668,7 @@ const state = {
   sizeW: 36, unit: 'in',
   look: 'stone', // how the Color step shows materials: stone textures or plain colors
   tileIn: 0.5,   // mosaic tile size in inches
+  mosaicFrom: 'picture', // with an uploaded picture: tile it directly, or tile the colored areas
   fills: [], // immutable entries: { x, y, mat, rot }
 };
 let inkVer = 0;
@@ -795,7 +805,59 @@ function renderFills() {
 }
 // Lays every colored area with square tiles of its stone, each showing a different part of the
 // stone and cut off where the area ends; the lines and the gaps between tiles show as grout.
+// A hand-cut tile: a square whose corners are nudged a little, so no two tiles are identical.
+function tilePath(ctx, x0, y0, sz, tx, ty, seed) {
+  const j = sz * .09, c = k => (hash(tx * 8 + k, ty, seed) - .5) * 2 * j;
+  ctx.beginPath();
+  ctx.moveTo(x0 + c(0), y0 + c(1)); ctx.lineTo(x0 + sz + c(2), y0 + c(3));
+  ctx.lineTo(x0 + sz + c(4), y0 + sz + c(5)); ctx.lineTo(x0 + c(6), y0 + sz + c(7));
+  ctx.closePath();
+}
+let sourceData = null;        // the uploaded picture on the slab, as pixels
+let sourceRect = { x: 0, y: 0, w: W, h: H }; // where the picture sits on the slab
+let pictureCounts = new Map(); // material id -> tiles, from the last picture mosaic
+const usePicture = () => !!sourceData && state.mosaicFrom === 'picture';
+// Tiles the whole picture: each tile gets the chart stone closest to the picture under it. The
+// color error is carried to the neighboring tiles, so gradients like skin and sky read smoothly.
+function renderPictureMosaic() {
+  const t = Math.max(4, tilePx()), gap = Math.max(1, t * .12), d = sourceData.data, list = matchList();
+  const R = sourceRect, inside = (tx, ty) => { const cx = (tx + .5) * t, cy = (ty + .5) * t; return cx >= R.x && cx < R.x + R.w && cy >= R.y && cy < R.y + R.h; };
+  mosctx.fillStyle = '#ffffff'; mosctx.fillRect(0, 0, W, H);
+  const gx0 = Math.floor(R.x / t + .5) * t, gy0 = Math.floor(R.y / t + .5) * t;
+  mosctx.fillStyle = state.joint; mosctx.fillRect(gx0, gy0, Math.min(W, Math.ceil((R.x + R.w) / t - .5) * t) - gx0, Math.min(H, Math.ceil((R.y + R.h) / t - .5) * t) - gy0);
+  const cols = Math.ceil(W / t), rows = Math.ceil(H / t), avg = new Float32Array(cols * rows * 3);
+  for (let ty = 0; ty < rows; ty++) for (let tx = 0; tx < cols; tx++) {
+    let r = 0, g = 0, b = 0, n = 0;
+    const step = Math.max(1, Math.floor(t / 4));
+    for (let y = Math.floor(ty * t); y < Math.min(H, (ty + 1) * t); y += step) for (let x = Math.floor(tx * t); x < Math.min(W, (tx + 1) * t); x += step) {
+      const i = (y * W + x) * 4; r += d[i]; g += d[i + 1]; b += d[i + 2]; n++;
+    }
+    const k = (ty * cols + tx) * 3; avg[k] = r / n; avg[k + 1] = g / n; avg[k + 2] = b / n;
+  }
+  const cache = new Map(), pats = new Map(), rgbOf = new Map();
+  pictureCounts = new Map();
+  for (let ty = 0; ty < rows; ty++) for (let tx = 0; tx < cols; tx++) {
+    if (!inside(tx, ty)) continue;
+    const k = (ty * cols + tx) * 3;
+    const r = Math.max(0, Math.min(255, avg[k])), g = Math.max(0, Math.min(255, avg[k + 1])), b = Math.max(0, Math.min(255, avg[k + 2]));
+    const key = (r >> 2) << 12 | (g >> 2) << 6 | (b >> 2);
+    let m = cache.get(key);
+    if (!m) { m = nearestMat(srgbToLab(r, g, b), list); cache.set(key, m); }
+    let base = rgbOf.get(m.id); if (!base) { base = hexRgb(m.base); rgbOf.set(m.id, base); }
+    const spread = (dx, dy, w) => { const x = tx + dx, y = ty + dy; if (x < 0 || x >= cols || y >= rows) return; const q = (y * cols + x) * 3; for (let c = 0; c < 3; c++) avg[q + c] += ([r, g, b][c] - base[c]) * w * .7; };
+    spread(1, 0, 7 / 16); spread(-1, 1, 3 / 16); spread(0, 1, 5 / 16); spread(1, 1, 1 / 16);
+    let pat = pats.get(m.id); if (!pat) { pat = mosctx.createPattern(getTile(m), 'repeat'); pats.set(m.id, pat); }
+    const rx = tx * t + gap / 2, ry = ty * t + gap / 2, sz = t - gap;
+    pat.setTransform(new DOMMatrix().translate(rx - hash(tx, ty, 11) * TILE, ry - hash(tx, ty, 12) * TILE).scale(PATTERN_SCALE * .8));
+    tilePath(mosctx, rx, ry, sz, tx, ty, 5);
+    mosctx.fillStyle = pat; mosctx.fill();
+    const v = (hash(tx, ty, 13) - .5) * .14;
+    mosctx.fillStyle = v > 0 ? `rgba(255,255,255,${v})` : `rgba(0,0,0,${-v})`; mosctx.fill();
+    pictureCounts.set(m.id, (pictureCounts.get(m.id) || 0) + 1);
+  }
+}
 function renderMosaic() {
+  if (usePicture()) return renderPictureMosaic();
   mosctx.fillStyle = state.joint; mosctx.fillRect(0, 0, W, H);
   const t = Math.max(4, tilePx()), gap = Math.max(1, t * .1);
   getLabels();
@@ -809,10 +871,11 @@ function renderMosaic() {
       const jx = (hash(tx, ty, seed) - .5) * gap, jy = (hash(ty, tx, seed + 1) - .5) * gap;
       const rx = tx * t + gap / 2 + jx - x, ry = ty * t + gap / 2 + jy - y, sz = t - gap;
       pat.setTransform(new DOMMatrix().translate(rx - hash(tx, ty, seed + 2) * TILE, ry - hash(tx, ty, seed + 3) * TILE).scale(PATTERN_SCALE * .8));
-      wctx.fillStyle = pat; wctx.fillRect(rx, ry, sz, sz);
+      tilePath(wctx, rx, ry, sz, tx, ty, seed);
+      wctx.fillStyle = pat; wctx.fill();
       const v = (hash(tx, ty, seed + 4) - .5) * .16;
       wctx.fillStyle = v > 0 ? `rgba(255,255,255,${v})` : `rgba(0,0,0,${-v})`;
-      wctx.fillRect(rx, ry, sz, sz);
+      wctx.fill();
     }
     wctx.globalCompositeOperation = 'destination-in'; wctx.drawImage(maskC, 0, 0); wctx.globalCompositeOperation = 'source-over';
     mosctx.drawImage(work, x, y);
@@ -982,7 +1045,10 @@ function colorClick(p) {
 function renderBom() {
   const groups = new Map();
   let total = 0;
-  for (const f of state.fills) {
+  if (state.mode === 'mosaic' && usePicture()) {
+    const t2 = Math.max(4, tilePx()) ** 2;
+    for (const [id, n] of pictureCounts) if (matById(id)) { groups.set(id, { pieces: null, px: n * t2, tiles: n }); total += n * t2; }
+  } else for (const f of state.fills) {
     const L = labelOf(f);
     if (!L || !matById(f.mat)) continue;
     const g = groups.get(f.mat) || { pieces: 0, px: 0, tiles: 0 };
@@ -1006,11 +1072,11 @@ function renderBom() {
   for (const r of rows) {
     const tr = document.createElement('tr');
     tr.innerHTML = `<td><div class="mat-cell"><canvas width="56" height="56"></canvas><div><div>${esc(r.m.name)}</div><div class="code">${esc(r.m.code || '')}</div></div></div></td>
-      <td>${TYPE_LABEL[r.m.type] || 'Marble'}</td><td class="num">${r.pieces}</td><td class="num">${r.tiles.toLocaleString()}</td><td class="num">${Math.round(r.share * 100)}%</td><td class="num">${r.area.toFixed(2)}</td>`;
+      <td>${TYPE_LABEL[r.m.type] || 'Marble'}</td><td class="num">${r.pieces ?? '—'}</td><td class="num">${r.tiles.toLocaleString()}</td><td class="num">${Math.round(r.share * 100)}%</td><td class="num">${r.area.toFixed(2)}</td>`;
     drawThumb(tr.querySelector('canvas'), r.m);
     body.appendChild(tr);
   }
-  const tA = rows.reduce((s, r) => s + r.area, 0), pcs = rows.reduce((s, r) => s + r.pieces, 0), tls = rows.reduce((s, r) => s + r.tiles, 0);
+  const tA = rows.reduce((s, r) => s + r.area, 0), pcs = rows[0].pieces == null ? '—' : rows.reduce((s, r) => s + r.pieces, 0), tls = rows.reduce((s, r) => s + r.tiles, 0);
   foot.innerHTML = `<tr><td>Total</td><td></td><td class="num">${pcs}</td><td class="num">${tls.toLocaleString()}</td><td class="num">100%</td><td class="num">${tA.toFixed(2)}</td></tr>
     <tr><td colspan="5" class="code">Order with 15% overage for cutting waste</td><td class="num">${(tA * 1.15).toFixed(2)}</td></tr>`;
   return rows;
@@ -1142,8 +1208,15 @@ function setMode(mode) {
     mosaic: 'Your design as a hand-cut mosaic. Tap an area to change it to <b id="status-mat"></b>',
   }[mode];
   renderChart(); selectMat(state.selected); renderBom();
-  if (mode === 'mosaic') heavy(() => { renderMosaic(); composite(); });
+  markFrom();
+  if (mode === 'mosaic') heavy(() => { renderMosaic(); composite(); renderBom(); });
   else composite();
+}
+function markFrom() {
+  $('#mosaic-from-group').hidden = !sourceData;
+  $$('#mosaic-from-group .seg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.from === state.mosaicFrom)));
+  $('#mosaic-areas-hint').hidden = usePicture();
+  if (state.mode === 'mosaic' && usePicture()) $('#status').textContent = 'Your picture as a hand-cut mosaic in our stones. Change the tile size or grout on the left.';
 }
 function setTool(t) {
   state.tool[state.mode] = t;
@@ -1162,10 +1235,14 @@ $('#gap').addEventListener('input', e => { $('#gap-val').textContent = e.target.
 $('#gap').addEventListener('change', e => { state.gap = +e.target.value; heavy(() => refresh()); });
 $$('.joint').forEach(b => b.addEventListener('click', () => {
   state.joint = b.dataset.joint; markJoint(); scheduleSave();
-  if (state.mode === 'mosaic') heavy(() => { renderMosaic(); composite(); }); else composite();
+  if (state.mode === 'mosaic') heavy(() => { renderMosaic(); composite(); renderBom(); }); else composite();
 }));
-function markLook() { $$('.seg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.look === state.look))); }
-$$('.seg button').forEach(b => b.addEventListener('click', () => {
+function markLook() { $$('#color-tools .seg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.look === state.look))); }
+$$('#mosaic-from-group .seg button').forEach(b => b.addEventListener('click', () => {
+  state.mosaicFrom = b.dataset.from; markFrom(); scheduleSave();
+  heavy(() => { renderMosaic(); composite(); renderBom(); });
+}));
+$$('#color-tools .seg button').forEach(b => b.addEventListener('click', () => {
   state.look = b.dataset.look; markLook();
   renderChart(); selectMat(state.selected); heavy(() => refresh());
 }));
@@ -1187,13 +1264,13 @@ let sizeTimer = 0;
 $('#size-w').addEventListener('input', e => {
   const v = parseFloat(e.target.value); if (!(v > 0)) return;
   state.sizeW = v; renderBom(); scheduleSave();
-  if (state.mode === 'mosaic') { clearTimeout(sizeTimer); sizeTimer = setTimeout(() => heavy(() => { renderMosaic(); composite(); }), 400); }
+  if (state.mode === 'mosaic') { clearTimeout(sizeTimer); sizeTimer = setTimeout(() => heavy(() => { renderMosaic(); composite(); renderBom(); }), 400); }
 });
 $('#size-unit').addEventListener('change', e => {
   const to = e.target.value; if (to === state.unit) return;
   state.sizeW = to === 'cm' ? Math.round(state.sizeW * 2.54) : Math.round(state.sizeW / 2.54 * 2) / 2;
   state.unit = to; $('#size-w').value = state.sizeW; renderBom(); scheduleSave();
-  if (state.mode === 'mosaic') heavy(() => { renderMosaic(); composite(); });
+  if (state.mode === 'mosaic') heavy(() => { renderMosaic(); composite(); renderBom(); });
 });
 $('#undo').addEventListener('click', undo);
 $('#redo').addEventListener('click', redo);
@@ -1204,7 +1281,7 @@ $('#clear-colors').addEventListener('click', async () => {
 });
 $('#clear-sketch').addEventListener('click', async () => {
   if (!(await confirmBox('Clear the sketch?', 'This removes every line and color. You can undo this.', 'Clear sketch'))) return;
-  ictx.clearRect(0, 0, W, H); state.fills = []; commit(true); refresh();
+  ictx.clearRect(0, 0, W, H); sourceData = null; state.fills = []; commit(true); refresh();
 });
 $('#sample').addEventListener('click', async () => {
   if (!(await confirmBox('Load the sample medallion?', 'It replaces the current sketch and colors. You can undo this.', 'Load sample'))) return;
@@ -1231,6 +1308,11 @@ $('#file-sketch').addEventListener('change', async e => {
   if (!img) return toast('That file could not be read as an image.');
   importedImg = img; importedFile = f; lastSvg = null;
   $('#trace-mode').value = isColorful(img) ? 'colors' : 'lines';
+  if ($('#trace-mode').value === 'colors') {
+    // a new picture: start with settings that suit portraits and photos
+    state.tileIn = .25; $('#tile-size').value = '0.25';
+    if (state.joint === '#1b1a19') { state.joint = '#8a8782'; markJoint(); }
+  }
   showTraceFields();
   $('#ai-redraw').hidden = !sampleFn || !imagesOk;
   heavy(runTrace);
@@ -1246,6 +1328,8 @@ $('#threshold').addEventListener('change', () => { if (importedImg) heavy(runTra
 $('#colors').addEventListener('input', e => { $('#colors-val').textContent = e.target.value; });
 $('#colors').addEventListener('change', () => { if (importedImg) heavy(runTrace); });
 function runTrace() {
+  sourceData = drawImported();
+  state.mosaicFrom = 'picture';
   if ($('#trace-mode').value === 'colors') {
     const { idx, mats } = traceColors();
     commit(true);
@@ -1255,6 +1339,7 @@ function runTrace() {
     toast(`Matched to ${new Set(state.fills.map(f => f.mat)).size} colors from our chart. Tap any area to change it.`);
   } else {
     traceImage();
+    sourceData = null;
     commit(true);
     state.fills = [];
     refresh();
@@ -1268,6 +1353,7 @@ function drawImported() {
   work.width = W; work.height = H;
   wctx.fillStyle = '#fff'; wctx.fillRect(0, 0, W, H);
   wctx.drawImage(img, (W - w) / 2, (H - h) / 2, w, h);
+  sourceRect = { x: (W - w) / 2, y: (H - h) / 2, w, h };
   return wctx.getImageData(0, 0, W, H);
 }
 function isColorful(img) {
@@ -1386,6 +1472,7 @@ function autoFill(idx, mats) {
 
 /* ---------------- Sample medallion ---------------- */
 function loadSample(withHistory) {
+  sourceData = null;
   const cx = 500, cy = 375;
   if (withHistory) history.push(snapshot());
   ictx.clearRect(0, 0, W, H);
@@ -1422,11 +1509,20 @@ function loadSample(withHistory) {
 }
 
 /* ---------------- Save / open / export ---------------- */
+let pictureCache = { data: null, url: null };
+function pictureURL() {
+  if (pictureCache.data !== sourceData) {
+    const c = mk(); c.getContext('2d').putImageData(sourceData, 0, 0);
+    pictureCache = { data: sourceData, url: c.toDataURL('image/jpeg', .85) };
+  }
+  return pictureCache.url;
+}
 function designJSON() {
   const used = [...new Set(state.fills.map(f => f.mat))].map(matById).filter(Boolean);
   return { app: 'imosaicart-design', version: 1, sketch: ink.toDataURL('image/png'),
     fills: state.fills.map(({ x, y, mat, rot }) => ({ x, y, mat, rot })),
-    gap: state.gap, joint: state.joint, sizeW: state.sizeW, unit: state.unit, look: state.look, tileIn: state.tileIn, materials: used };
+    gap: state.gap, joint: state.joint, sizeW: state.sizeW, unit: state.unit, look: state.look, tileIn: state.tileIn, mosaicFrom: state.mosaicFrom,
+    picture: sourceData ? pictureURL() : null, pictureRect: sourceData ? sourceRect : null, materials: used };
 }
 let saveTimer = 0;
 function scheduleSave() { clearTimeout(saveTimer); saveTimer = setTimeout(() => store.set('mosaic.design', designJSON()), 600); }
@@ -1437,6 +1533,9 @@ async function applyDesign(d, withHistory) {
     if (m.photo) await loadPhoto(m.photo);
   }
   const img = await loadPhoto(d.sketch);
+  const pic = d.picture ? await loadPhoto(d.picture) : null;
+  if (pic) { const c = mk(), x = c.getContext('2d'); x.drawImage(pic, 0, 0, W, H); sourceData = x.getImageData(0, 0, W, H); sourceRect = d.pictureRect || { x: 0, y: 0, w: W, h: H }; } else sourceData = null;
+  state.mosaicFrom = d.mosaicFrom === 'areas' ? 'areas' : 'picture';
   if (withHistory) { history.push(snapshot()); future.length = 0; }
   ictx.clearRect(0, 0, W, H);
   if (img) ictx.drawImage(img, 0, 0, W, H);
@@ -1512,7 +1611,7 @@ $('#export').addEventListener('click', () => heavy(() => {
       ctx.fillStyle = '#4A5468'; ctx.font = '12px "Hanken Grotesk", sans-serif';
       ctx.fillText(`${r.m.code || ''}  ${TYPE_LABEL[r.m.type] || 'Marble'}`, pad + 48, y + 32);
       ctx.textAlign = 'right'; ctx.fillStyle = '#16335E'; ctx.font = '14px "Hanken Grotesk", sans-serif';
-      ctx.fillText(`${r.pieces} pc   ${r.tiles.toLocaleString()} tiles   ${Math.round(r.share * 100)}%   ${r.area.toFixed(2)} ${unit}`, W - pad, y + 22);
+      ctx.fillText(`${r.pieces == null ? '' : r.pieces + ' pc   '}${r.tiles.toLocaleString()} tiles   ${Math.round(r.share * 100)}%   ${r.area.toFixed(2)} ${unit}`, W - pad, y + 22);
       ctx.textAlign = 'left'; y += rowH;
     }
   }
@@ -1614,7 +1713,7 @@ async function runAI(kind) {
     if (!svg) { status.textContent = 'The drawing came back incomplete. Try again or simplify the description.'; return; }
     const img = await loadPhoto('data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg));
     if (!img) { status.textContent = 'The drawing could not be read. Try again.'; return; }
-    lastSvg = svg; importedImg = img; $('#trace-field').hidden = true;
+    lastSvg = svg; importedImg = img; sourceData = null; $('#trace-field').hidden = true;
     heavy(() => { state.fills = []; traceImage(); commit(true); refresh(); });
     status.textContent = 'Done. Fix any lines by hand, or describe a change and tick "Change the current sketch".';
     $('#ai-edit').checked = true;
