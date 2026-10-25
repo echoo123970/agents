@@ -175,11 +175,31 @@ Every article, new or edited, follows this outline:
 3. Body sections as `<h2>`, sub-points as `<h3>` — no `<h1>`, no `<h3>` before
    the first `<h2>`, no bold paragraphs used as fake headings, no emoji in
    headings.
-4. `<h2>Frequently Asked Questions</h2>` with 3–6 `<h3>` questions, each
+4. `<h2>Frequently Asked Questions</h2>` with 3–6 questions in the FAQ accordion (below), each
    followed by one self-contained `<p>` answer, then the matching `FAQPage`
    JSON-LD. Non-question headings ("Why choose iMosaicArt?", "About…") go
    outside the FAQ as `<h2>`.
 5. `<h2>Keep exploring</h2>` and, where facts were cited, `<h2>Sources</h2>`.
+
+### Design components (inside the article body)
+
+The design lives in the body, never in the theme. Start every body with the
+shared `<style>` block (copy it from any live article, e.g.
+`how-much-does-a-custom-mosaic-cost`). It defines three classes:
+
+- **Table of contents**: give each `<h2>` an `id` (slug of its text). When an
+  article has 3 or more content sections, insert
+  `<nav class="ima-toc"><p class="ima-toc-title">In this article</p><ol><li><a href="#id">…</a></li>…</ol></nav>`
+  after Key Takeaways (or before the first `<h2>`). Leave out Key Takeaways,
+  Keep exploring and Sources. These in-page `#` links stay in the same tab.
+- **Tables**: wrap each table in `<div class="ima-table-wrap">`, use `<th>` in
+  `<thead>`, and give no inline styles. The CSS adds the dark header, zebra
+  rows, rounded border and side-scrolling on mobile.
+- **FAQ accordion**: after the FAQ `<h2>`, use
+  `<div class="ima-faq"><details><summary><h3>Question?</h3></summary><div class="ima-a"><p>Answer.</p></div></details>…</div>`
+  followed by the `FAQPage` JSON-LD. Questions stay real `<h3>` headings and
+  answers stay in the HTML, so search and AI engines can read them when the
+  accordion is closed.
 
 Link only to pages that exist and render content (check before linking; the
 installation-guide page is empty, link the wall-installation article instead).
