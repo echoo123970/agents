@@ -3,39 +3,41 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Inlay Studio</title>
+<title>iMosaicArt Design Studio</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500;6..96,600&family=Figtree:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Hanken+Grotesk:wght@400;500;600&family=Marcellus&display=swap">
 <style>
-/* Layout: a stonemason's workbench — tools on the left, the slab (artboard) in the middle, the material chart on the right; stacks to one column on phones */
+/* Layout: a mosaic artisan's workbench — tools on the left, the slab (artboard) in the middle, the material palette on the right; stacks to one column on phones */
+/* Colors and type follow the iMosaicArt storefront theme (navy, azure blue, mist panels; Cormorant Garamond, Marcellus, Hanken Grotesk). */
 :root {
-  --bg: #efede9;
-  --panel: #faf9f7;
-  --ink: #1f1d1b;
-  --muted: #6c675f;
-  --line: #dcd7cf;
-  --accent: #7a5a36;
-  --accent-soft: #ece2d4;
+  --bg: #F4F6FA;
+  --panel: #FFFFFF;
+  --ink: #16335E;
+  --muted: #4A5468;
+  --line: #DFE4EC;
+  --accent: #2B7BE8;
+  --accent-soft: #E3EDFC;
   --accent-fg: #ffffff;
   --slab: #ffffff;
-  --danger: #a2332b;
-  --font-display: "Bodoni Moda", Didot, "Bodoni 72", Georgia, serif;
-  --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --danger: #B3364A;
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-accent: "Marcellus", Georgia, serif;
+  --font-body: "Hanken Grotesk", -apple-system, system-ui, sans-serif;
+  --font-mono: "Hanken Grotesk", -apple-system, system-ui, sans-serif;
   --radius: 6px;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #171614; --panel: #201f1c; --ink: #ece8e1; --muted: #a59e93; --line: #36332e;
-    --accent: #c9a172; --accent-soft: #3a3127; --accent-fg: #1a1714; --danger: #e07a70;
+    --bg: #0B1C35; --panel: #102A4F; --ink: #F4F6FA; --muted: #B7C2D6; --line: #224A82;
+    --accent: #7BB0F4; --accent-soft: #16335E; --accent-fg: #0B1C35; --danger: #F08A9A;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #171614; --panel: #201f1c; --ink: #ece8e1; --muted: #a59e93; --line: #36332e;
-  --accent: #c9a172; --accent-soft: #3a3127; --accent-fg: #1a1714; --danger: #e07a70;
+  --bg: #0B1C35; --panel: #102A4F; --ink: #F4F6FA; --muted: #B7C2D6; --line: #224A82;
+    --accent: #7BB0F4; --accent-soft: #16335E; --accent-fg: #0B1C35; --danger: #F08A9A;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -54,8 +56,8 @@ button { cursor: pointer; }
 
 /* Top bar */
 .topbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding-bottom: 12px; border-bottom: 1px solid var(--line); margin-bottom: 14px; }
-.brand { font-family: var(--font-display); font-size: 26px; font-weight: 600; letter-spacing: .01em; margin: 0; line-height: 1; }
-.brand small { display: block; font-family: var(--font-body); font-size: 11px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-top: 5px; }
+.brand { font-family: var(--font-display); font-size: 30px; font-weight: 600; letter-spacing: .005em; margin: 0; line-height: 1; }
+.brand small { display: block; font-family: var(--font-accent); font-size: 11px; font-weight: 400; letter-spacing: .3em; text-transform: uppercase; color: var(--muted); margin-top: 5px; }
 .steps { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: var(--panel); }
 .steps button { border: 0; background: none; padding: 7px 16px; border-radius: 999px; font-weight: 600; color: var(--muted); display: inline-flex; gap: 8px; align-items: center; }
 .steps button .n { font-family: var(--font-mono); font-size: 11px; width: 20px; height: 20px; border-radius: 50%; border: 1px solid currentColor; display: inline-grid; place-items: center; }
@@ -64,7 +66,8 @@ button { cursor: pointer; }
 
 .btn { border: 1px solid var(--line); background: var(--panel); padding: 7px 12px; border-radius: var(--radius); font-weight: 500; }
 .btn:hover { border-color: var(--muted); }
-.btn.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); letter-spacing: .06em; }
+.btn.primary:hover { filter: brightness(.92); }
 .btn.danger { color: var(--danger); }
 .btn:disabled { opacity: .4; cursor: default; }
 .btn.block { width: 100%; }
@@ -75,7 +78,7 @@ button { cursor: pointer; }
 @media (max-width: 720px) { .bench { grid-template-columns: minmax(0, 1fr); } .stage { order: -1; } }
 
 .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
-.label { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0; }
+.label { font-family: var(--font-accent); font-size: 11.5px; font-weight: 400; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); margin: 0; }
 .group { display: flex; flex-direction: column; gap: 8px; }
 .toolgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 6px; }
 .tool { border: 1px solid var(--line); background: none; border-radius: var(--radius); padding: 8px 6px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; font-weight: 500; }
@@ -98,7 +101,7 @@ button { cursor: pointer; }
 
 /* Stage */
 .stage { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
-.slab-wrap { position: relative; width: 100%; aspect-ratio: 4 / 3; max-width: 100%; background: var(--slab); border-radius: 4px; box-shadow: 0 1px 0 var(--line), 0 12px 30px -18px rgba(0,0,0,.35); overflow: hidden; }
+.slab-wrap { position: relative; width: 100%; aspect-ratio: 4 / 3; max-width: 100%; background: var(--slab); border-radius: 4px; box-shadow: 0 8px 22px rgba(22,51,94,.12); overflow: hidden; }
 .slab-wrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 #overlay { touch-action: none; cursor: crosshair; }
 .slab-wrap.mode-color #overlay { cursor: pointer; }
@@ -109,7 +112,7 @@ button { cursor: pointer; }
 /* Materials used */
 .bom { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px; }
 .bom-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; margin-bottom: 10px; }
-.bom h2 { font-family: var(--font-display); font-weight: 500; font-size: 20px; margin: 0; }
+.bom h2 { font-family: var(--font-display); font-weight: 600; font-size: 24px; margin: 0; }
 .bom-size { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
 .bom-size input { width: 64px; border: 1px solid var(--line); background: var(--bg); border-radius: var(--radius); padding: 4px 6px; font-family: var(--font-mono); }
 .bom-size select { border: 1px solid var(--line); background: var(--bg); border-radius: var(--radius); padding: 4px; }
@@ -121,13 +124,13 @@ td.num, th.num { text-align: right; font-family: var(--font-mono); font-variant-
 tfoot td { font-weight: 600; border-bottom: 0; }
 .mat-cell { display: flex; align-items: center; gap: 10px; }
 .mat-cell canvas { width: 28px; height: 28px; border-radius: 3px; flex: none; border: 1px solid var(--line); }
-.code { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+.code { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 11px; color: var(--muted); }
 .empty { color: var(--muted); font-size: 13px; padding: 10px 0 2px; }
 
 /* Chart */
 .selected { display: grid; grid-template-columns: 72px 1fr; gap: 12px; align-items: center; }
 .selected canvas { width: 72px; height: 72px; border-radius: 4px; border: 1px solid var(--line); }
-.selected .nm { font-family: var(--font-display); font-size: 19px; line-height: 1.15; font-weight: 500; }
+.selected .nm { font-family: var(--font-display); font-size: 22px; font-weight: 600; line-height: 1.15; font-weight: 500; }
 .chip { display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; color: var(--muted); }
 .tabs { display: flex; gap: 4px; }
 .tabs button { flex: 1; border: 1px solid var(--line); background: none; padding: 6px; border-radius: var(--radius); font-weight: 500; font-size: 13px; }
@@ -148,7 +151,7 @@ tfoot td { font-weight: 600; border-bottom: 0; }
 dialog { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); color: var(--ink); padding: 0; width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 32px); }
 dialog::backdrop { background: rgba(10,9,8,.5); }
 .dlg { padding: 18px; display: flex; flex-direction: column; gap: 14px; }
-.dlg h3 { font-family: var(--font-display); font-weight: 500; font-size: 22px; margin: 0; }
+.dlg h3 { font-family: var(--font-display); font-weight: 600; font-size: 26px; margin: 0; }
 .dlg .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 @media (max-width: 480px) { .dlg .grid2 { grid-template-columns: 1fr; } }
 .dlg .foot { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
@@ -167,7 +170,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
 <body>
 
 <header class="topbar">
-  <h1 class="brand">Inlay Studio<small>Sketch · Marble &amp; Glass</small></h1>
+  <h1 class="brand">iMosaicArt<small>Mosaic Design Studio</small></h1>
   <div class="steps" role="group" aria-label="Step">
     <button id="step-sketch" type="button" aria-pressed="false"><span class="n">1</span>Sketch</button>
     <button id="step-color" type="button" aria-pressed="true"><span class="n">2</span>Color</button>
@@ -288,13 +291,14 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
     <div class="tabs" role="group" aria-label="Filter">
       <button type="button" data-filter="all" aria-pressed="true">All</button>
       <button type="button" data-filter="marble" aria-pressed="false">Marble</button>
+      <button type="button" data-filter="engineered" aria-pressed="false">Engineered</button>
       <button type="button" data-filter="glass" aria-pressed="false">Glass</button>
     </div>
     <label class="field" for="search">Search chart
       <input id="search" type="search" placeholder="Name or code">
     </label>
     <div class="swatches" id="swatches" role="group" aria-label="Materials"></div>
-    <p class="note" id="sample-note">This is a sample chart. Add your own stones and glass, with real codes and photos, using Add material or Import chart.</p>
+    <p class="note" id="sample-note">Stone names and numbers come from the iMosaicArt palette; the colors are close matches. For an exact look, edit a swatch and add its photo. Glass colors are placeholders until the glass chart is added.</p>
     <div class="chart-actions">
       <button class="btn primary" id="add-mat" type="button">Add material</button>
       <button class="btn" id="import-chart" type="button">Import chart</button>
@@ -317,7 +321,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
     </div>
     <div class="grid2">
       <label class="field" for="m-type">Material
-        <select id="m-type"><option value="marble">Marble</option><option value="glass">Glass</option></select>
+        <select id="m-type"><option value="marble">Marble</option><option value="engineered">Engineered stone</option><option value="glass">Glass</option></select>
       </label>
       <label class="field" for="m-style">Finish
         <select id="m-style"></select>
@@ -404,30 +408,74 @@ const store = {
 };
 
 /* ---------------- Material chart ---------------- */
+// iMosaicArt color palette (imosaicart.com/pages/color-palette). Stone colors are approximations of each
+// swatch; add the swatch photo with Edit for an exact match. Glass entries are generic placeholders.
 const SAMPLE_CHART = [
-  { id: 'carrara',   name: 'Carrara White',   code: 'MB-101', type: 'marble', style: 'veined',  base: '#e8e7e3', vein: '#8e9195' },
-  { id: 'calacatta', name: 'Calacatta Gold',  code: 'MB-104', type: 'marble', style: 'bold',    base: '#f2ede3', vein: '#a88957' },
-  { id: 'thassos',   name: 'Thassos White',   code: 'MB-108', type: 'marble', style: 'mottled', base: '#f7f7f4', vein: '#d9d9d4' },
-  { id: 'crema',     name: 'Crema Marfil',    code: 'MB-112', type: 'marble', style: 'mottled', base: '#e2d1b1', vein: '#c3a982' },
-  { id: 'emperador', name: 'Emperador Dark',  code: 'MB-120', type: 'marble', style: 'web',     base: '#563b2b', vein: '#c9a888' },
-  { id: 'rosso',     name: 'Rosso Levanto',   code: 'MB-131', type: 'marble', style: 'web',     base: '#7a2d28', vein: '#d9c7b9' },
-  { id: 'verde',     name: 'Verde Guatemala', code: 'MB-140', type: 'marble', style: 'web',     base: '#203f35', vein: '#c4d4c9' },
-  { id: 'nero',      name: 'Nero Marquina',   code: 'MB-150', type: 'marble', style: 'veined',  base: '#1c1c1e', vein: '#e4e4e4' },
-  { id: 'g-clear',   name: 'Clear Cathedral', code: 'GL-200', type: 'glass',  style: 'cathedral', base: '#d9e6e8', vein: '#ffffff' },
-  { id: 'g-ruby',    name: 'Ruby Red',        code: 'GL-214', type: 'glass',  style: 'cathedral', base: '#a1132b', vein: '#ffffff' },
-  { id: 'g-amber',   name: 'Amber',           code: 'GL-221', type: 'glass',  style: 'cathedral', base: '#cf8a1f', vein: '#ffffff' },
-  { id: 'g-emerald', name: 'Emerald',         code: 'GL-230', type: 'glass',  style: 'cathedral', base: '#127049', vein: '#ffffff' },
-  { id: 'g-cobalt',  name: 'Cobalt Blue',     code: 'GL-242', type: 'glass',  style: 'cathedral', base: '#1b3d9c', vein: '#ffffff' },
-  { id: 'g-amethyst',name: 'Amethyst',        code: 'GL-262', type: 'glass',  style: 'cathedral', base: '#5b2c77', vein: '#ffffff' },
-  { id: 'g-opal',    name: 'Opal White',      code: 'GL-250', type: 'glass',  style: 'opal',      base: '#e6e4de', vein: '#ffffff' },
-  { id: 'g-seaopal', name: 'Sea Green Opal',  code: 'GL-271', type: 'glass',  style: 'opal',      base: '#5ea597', vein: '#e9f4f0' },
+  { id: 'm01', name: 'Nero Marquina', code: 'No. 01', type: 'marble', style: 'veined', base: '#1c1c1e', vein: '#e4e4e4' },
+  { id: 'm02', name: 'Bardiglio Gray', code: 'No. 02', type: 'marble', style: 'veined', base: '#7d8288', vein: '#4a4f56' },
+  { id: 'm03', name: 'Thassos White', code: 'No. 03', type: 'marble', style: 'mottled', base: '#f6f6f3', vein: '#dedcd6' },
+  { id: 'm04', name: 'Carrara White', code: 'No. 04', type: 'marble', style: 'veined', base: '#e8e7e3', vein: '#8e9195' },
+  { id: 'm05', name: 'Giallo Siena', code: 'No. 05', type: 'marble', style: 'web', base: '#d9b45e', vein: '#a9772f' },
+  { id: 'm06', name: 'Rosso Verona', code: 'No. 06', type: 'marble', style: 'mottled', base: '#b0533c', vein: '#e2a07e' },
+  { id: 'm07', name: 'Giallo Reale', code: 'No. 07', type: 'marble', style: 'veined', base: '#d8bf8a', vein: '#b08e55' },
+  { id: 'm08', name: 'Rojo Alicante', code: 'No. 08', type: 'marble', style: 'web', base: '#9a3b2c', vein: '#d9b9a5' },
+  { id: 'm09', name: 'Emperador Dark', code: 'No. 09', type: 'marble', style: 'web', base: '#563b2b', vein: '#c9a888' },
+  { id: 'm10', name: 'Imperador Red', code: 'No. 10', type: 'marble', style: 'web', base: '#7f3a2c', vein: '#c9957a' },
+  { id: 'm11', name: 'Crema Marfil', code: 'No. 11', type: 'marble', style: 'mottled', base: '#e2d1b1', vein: '#c3a982' },
+  { id: 'm12', name: 'Pink Rose', code: 'No. 12', type: 'marble', style: 'mottled', base: '#d9a7a0', vein: '#f1d9d3' },
+  { id: 'm13', name: 'Lilac', code: 'No. 13', type: 'marble', style: 'mottled', base: '#b7a1bf', vein: '#e2d7e6' },
+  { id: 'm14', name: 'Perlato Royal', code: 'No. 14', type: 'marble', style: 'mottled', base: '#d6c3a2', vein: '#b9a27c' },
+  { id: 'm15', name: 'Honey Onyx', code: 'No. 15', type: 'marble', style: 'bold', base: '#d39a45', vein: '#f1d08a' },
+  { id: 'm16', name: 'Beige Marfil', code: 'No. 16', type: 'marble', style: 'mottled', base: '#d8c6a4', vein: '#bba277' },
+  { id: 'm17', name: 'Rojo Valencia', code: 'No. 17', type: 'marble', style: 'web', base: '#a4513f', vein: '#d8a48c' },
+  { id: 'm18', name: 'Trani Beige', code: 'No. 18', type: 'marble', style: 'mottled', base: '#cdb894', vein: '#a88e66' },
+  { id: 'm19', name: 'Noce', code: 'No. 19', type: 'marble', style: 'mottled', base: '#8a6447', vein: '#b78f6c' },
+  { id: 'm20', name: 'Amarillo Triana', code: 'No. 20', type: 'marble', style: 'mottled', base: '#e1c46a', vein: '#b48b33' },
+  { id: 'm21', name: 'Marron Emperador', code: 'No. 21', type: 'marble', style: 'web', base: '#6b4a34', vein: '#c4a283' },
+  { id: 'm22', name: 'Walnut', code: 'No. 22', type: 'marble', style: 'mottled', base: '#6a4a33', vein: '#8f6a4c' },
+  { id: 'm23', name: 'Light Taupe', code: 'No. 23', type: 'marble', style: 'mottled', base: '#b7a594', vein: '#d4c6b8' },
+  { id: 'm24', name: 'Silver Grey', code: 'No. 24', type: 'marble', style: 'veined', base: '#b9bcbf', vein: '#8a8e93' },
+  { id: 'm25', name: 'Light Beige', code: 'No. 25', type: 'marble', style: 'mottled', base: '#e3d6bf', vein: '#c9b69a' },
+  { id: 'm26', name: 'Ivory Cream', code: 'No. 26', type: 'marble', style: 'mottled', base: '#efe6d2', vein: '#d8c9ab' },
+  { id: 'm27', name: 'Snow White', code: 'No. 27', type: 'marble', style: 'solid', base: '#fbfbf9', vein: '#ececea' },
+  { id: 'm28', name: 'Bianco Thassos', code: 'No. 28', type: 'marble', style: 'mottled', base: '#f5f5f2', vein: '#e0e0dc' },
+  { id: 'm29', name: 'Bianco Carrara', code: 'No. 29', type: 'marble', style: 'veined', base: '#e6e6e2', vein: '#9a9da1' },
+  { id: 'm30', name: 'Cloud Grey', code: 'No. 30', type: 'marble', style: 'mottled', base: '#c9cbcd', vein: '#a3a7ab' },
+  { id: 'm31', name: 'Lavender', code: 'No. 31', type: 'marble', style: 'mottled', base: '#a99bc0', vein: '#d8d0e4' },
+  { id: 'm32', name: 'Grey Marble', code: 'No. 32', type: 'marble', style: 'veined', base: '#8f9397', vein: '#d6d8da' },
+  { id: 'm33', name: 'Tundra Grey', code: 'No. 33', type: 'marble', style: 'veined', base: '#7f8183', vein: '#c9c9c6' },
+  { id: 'm34', name: 'Graphite', code: 'No. 34', type: 'marble', style: 'mottled', base: '#4a4c50', vein: '#6d7075' },
+  { id: 'm35', name: 'Dark Grey', code: 'No. 35', type: 'marble', style: 'mottled', base: '#3a3c40', vein: '#5a5d61' },
+  { id: 'm36', name: 'Black Absolute', code: 'No. 36', type: 'marble', style: 'solid', base: '#141416', vein: '#26272a' },
+  { id: 'm37', name: 'Sahara Verde', code: 'No. 37', type: 'marble', style: 'web', base: '#6f8a5a', vein: '#b6c49b' },
+  { id: 'm38', name: 'Verde Alpi', code: 'No. 38', type: 'marble', style: 'web', base: '#2d4a3c', vein: '#9fb7a6' },
+  { id: 'm39', name: 'Verde Oliva', code: 'No. 39', type: 'marble', style: 'mottled', base: '#6f7a45', vein: '#a8b07c' },
+  { id: 'm40', name: 'Verde Guatemala', code: 'No. 40', type: 'marble', style: 'web', base: '#203f35', vein: '#c4d4c9' },
+  { id: 'm41', name: 'Verde Aver', code: 'No. 41', type: 'marble', style: 'web', base: '#3f5a3c', vein: '#9fb59a' },
+  { id: 'm42', name: 'Verde Imperiale', code: 'No. 42', type: 'marble', style: 'web', base: '#1f4a3a', vein: '#b9d1c2' },
+  { id: 'e43', name: 'Cream', code: 'No. 43', type: 'engineered', style: 'mottled', base: '#ece2cc', vein: '#ddd0b4' },
+  { id: 'e44', name: 'Ruby Red', code: 'No. 44', type: 'engineered', style: 'mottled', base: '#a3192c', vein: '#c43a4b' },
+  { id: 'e45', name: 'Sky Blue', code: 'No. 45', type: 'engineered', style: 'mottled', base: '#8fc0e0', vein: '#b7d8ee' },
+  { id: 'e46', name: 'Ocean Blue', code: 'No. 46', type: 'engineered', style: 'mottled', base: '#2d6ea8', vein: '#5a94c7' },
+  { id: 'e47', name: 'Turquoise', code: 'No. 47', type: 'engineered', style: 'mottled', base: '#2fa7a7', vein: '#7cd0cc' },
+  { id: 'e48', name: 'Cobalt Blue', code: 'No. 48', type: 'engineered', style: 'mottled', base: '#1e3f9e', vein: '#3d61bd' },
+  { id: 'g-clear',   name: 'Clear Cathedral', code: 'Glass', type: 'glass', style: 'cathedral', base: '#d9e6e8', vein: '#ffffff' },
+  { id: 'g-ruby',    name: 'Ruby Glass',      code: 'Glass', type: 'glass', style: 'cathedral', base: '#a1132b', vein: '#ffffff' },
+  { id: 'g-amber',   name: 'Amber Glass',     code: 'Glass', type: 'glass', style: 'cathedral', base: '#cf8a1f', vein: '#ffffff' },
+  { id: 'g-emerald', name: 'Emerald Glass',   code: 'Glass', type: 'glass', style: 'cathedral', base: '#127049', vein: '#ffffff' },
+  { id: 'e48',  name: 'Cobalt Glass',    code: 'Glass', type: 'glass', style: 'cathedral', base: '#1b3d9c', vein: '#ffffff' },
+  { id: 'g-amethyst',name: 'Amethyst Glass',  code: 'Glass', type: 'glass', style: 'cathedral', base: '#5b2c77', vein: '#ffffff' },
+  { id: 'g-opal',    name: 'Opal White Glass',code: 'Glass', type: 'glass', style: 'opal',      base: '#e6e4de', vein: '#ffffff' },
+  { id: 'g-seaopal', name: 'Sea Green Opal',  code: 'Glass', type: 'glass', style: 'opal',      base: '#5ea597', vein: '#e9f4f0' },
 ];
+const TYPE_LABEL = { marble: 'Marble', engineered: 'Engineered stone', glass: 'Glass' };
 const STYLES = {
+  engineered: [['mottled', 'Speckled'], ['solid', 'Solid'], ['veined', 'Veined']],
   marble: [['veined', 'Veined'], ['bold', 'Bold veins'], ['web', 'Web / breccia'], ['mottled', 'Mottled'], ['solid', 'Solid']],
   glass: [['cathedral', 'Cathedral (rippled)'], ['opal', 'Opalescent (streaky)'], ['clear', 'Smooth']],
 };
-let chart = store.get('inlay.chart') || SAMPLE_CHART.map(m => ({ ...m }));
-let chartIsSample = !store.get('inlay.chart');
+let chart = store.get('inlay.chart.v2') || SAMPLE_CHART.map(m => ({ ...m }));
+let chartIsSample = !store.get('inlay.chart.v2');
 const matById = id => chart.find(m => m.id === id);
 
 /* ---------------- Procedural textures ---------------- */
@@ -564,7 +612,7 @@ const state = {
   mode: 'color',
   tool: { sketch: 'pen', color: 'fill' },
   weight: 3, gap: 2, joint: '#1b1a19',
-  selected: 'carrara', filter: 'all', query: '',
+  selected: 'm04', filter: 'all', query: '',
   sizeW: 36, unit: 'in',
   fills: [], // immutable entries: { x, y, mat, rot }
 };
@@ -755,7 +803,7 @@ overlay.addEventListener('pointermove', e => {
   } else {
     octx.clearRect(0, 0, W, H);
     strokeStyle(octx, false);
-    octx.strokeStyle = '#7a5a36';
+    octx.strokeStyle = '#2B7BE8';
     shapePath(octx, drag.tool, drag.start, p, e.shiftKey); octx.stroke();
   }
 });
@@ -835,7 +883,7 @@ function renderBom() {
   for (const r of rows) {
     const tr = document.createElement('tr');
     tr.innerHTML = `<td><div class="mat-cell"><canvas width="56" height="56"></canvas><div><div>${esc(r.m.name)}</div><div class="code">${esc(r.m.code || '')}</div></div></div></td>
-      <td>${r.m.type === 'glass' ? 'Glass' : 'Marble'}</td><td class="num">${r.pieces}</td><td class="num">${Math.round(r.share * 100)}%</td><td class="num">${r.area.toFixed(2)}</td>`;
+      <td>${TYPE_LABEL[r.m.type] || 'Marble'}</td><td class="num">${r.pieces}</td><td class="num">${Math.round(r.share * 100)}%</td><td class="num">${r.area.toFixed(2)}</td>`;
     drawThumb(tr.querySelector('canvas'), r.m);
     body.appendChild(tr);
   }
@@ -883,10 +931,10 @@ function renderSelected(m) {
   drawThumb($('#sel-thumb'), m);
   $('#sel-name').textContent = m ? m.name : 'No material';
   $('#sel-code').textContent = m ? (m.code || '') : '';
-  $('#sel-type').textContent = m ? (m.type === 'glass' ? 'Glass' : 'Marble') : '';
+  $('#sel-type').textContent = m ? (TYPE_LABEL[m.type] || 'Marble') : '';
   const sm = $('#status-mat'); if (sm) sm.textContent = m ? m.name : '—';
 }
-function saveChart() { chartIsSample = false; store.set('inlay.chart', chart); $('#sample-note').hidden = true; }
+function saveChart() { chartIsSample = false; store.set('inlay.chart.v2', chart); $('#sample-note').hidden = true; }
 
 /* Material dialog */
 let editing = null, editPhoto = null;
@@ -911,7 +959,7 @@ function openMatDialog(m) {
   editing = m || null; editPhoto = m?.photo || null;
   $('#mat-dlg-title').textContent = m ? 'Edit material' : 'Add material';
   $('#m-name').value = m?.name || ''; $('#m-code').value = m?.code || '';
-  $('#m-type').value = m?.type || (state.filter === 'glass' ? 'glass' : 'marble');
+  $('#m-type').value = m?.type || (state.filter === 'all' ? 'marble' : state.filter);
   fillStyles($('#m-type').value, m?.style);
   $('#m-base').value = m?.base || '#e9e8e4'; $('#m-vein').value = m?.vein || '#8f9295';
   $('#m-delete').hidden = !m;
@@ -1075,16 +1123,16 @@ function loadSample(withHistory) {
 
   const fills = [];
   const add = (x, y, mat, rot = (x * 7 + y * 13) % 360) => fills.push({ x: Math.round(x), y: Math.round(y), mat, rot });
-  add(70, 70, 'crema');
-  for (let k = 0; k < 16; k++) { const [x, y] = pt(316, -90 + k * 22.5); add(x, y, k % 2 ? 'g-amber' : 'nero'); }
-  add(...pt(276, -90), 'rosso');
-  add(...pt(200, -67.5), 'carrara');
-  add(cx, cy, 'g-cobalt');
+  add(70, 70, 'm11');
+  for (let k = 0; k < 16; k++) { const [x, y] = pt(316, -90 + k * 22.5); add(x, y, k % 2 ? 'g-amber' : 'm01'); }
+  add(...pt(276, -90), 'm08');
+  add(...pt(200, -67.5), 'm04');
+  add(cx, cy, 'e48');
   for (let k = 0; k < 16; k += 2) {
     const a = -90 + k * 22.5, tip = pt(rad(k), a), cardinal = k % 4 === 0;
     for (const side of [-1, 1]) {
       const v = pt(70, a + side * 22.5), c = pt(24, a);
-      add((c[0] + v[0] + tip[0]) / 3, (c[1] + v[1] + tip[1]) / 3, cardinal ? (side < 0 ? 'nero' : 'calacatta') : (side < 0 ? 'verde' : 'thassos'));
+      add((c[0] + v[0] + tip[0]) / 3, (c[1] + v[1] + tip[1]) / 3, cardinal ? (side < 0 ? 'm01' : 'm15') : (side < 0 ? 'm40' : 'm03'));
     }
   }
   state.fills = fills.filter(f => matById(f.mat));
@@ -1139,7 +1187,7 @@ $('#file-chart').addEventListener('change', async e => {
     if (!Array.isArray(list) || !list.length) throw 0;
     const clean = list.filter(m => m && m.name && /^#[0-9a-f]{6}$/i.test(m.base || '') || m?.photo).map((m, i) => ({
       id: String(m.id || 'imp-' + i + '-' + Date.now().toString(36)), name: String(m.name), code: String(m.code || ''),
-      type: m.type === 'glass' ? 'glass' : 'marble', style: m.style || (m.type === 'glass' ? 'cathedral' : 'veined'),
+      type: TYPE_LABEL[m.type] ? m.type : 'marble', style: m.style || (m.type === 'glass' ? 'cathedral' : 'veined'),
       base: m.base || '#cccccc', vein: m.vein || m.base || '#999999', ...(m.photo ? { photo: m.photo } : {}) }));
     for (const m of clean) if (m.photo) await loadPhoto(m.photo);
     // Keep materials the current design still uses.
@@ -1152,7 +1200,7 @@ $('#file-chart').addEventListener('change', async e => {
 $('#reset-chart').addEventListener('click', async () => {
   if (!(await confirmBox('Reset to the sample chart?', 'Your added materials will be removed. Export your chart first if you want to keep it.', 'Reset chart'))) return;
   chart = SAMPLE_CHART.map(m => ({ ...m })); chartIsSample = true;
-  try { localStorage.removeItem('inlay.chart'); } catch {}
+  try { localStorage.removeItem('inlay.chart.v2'); } catch {}
   tileCache.clear(); renderChart(); selectMat(chart[0].id); heavy(() => refresh());
 });
 $('#export').addEventListener('click', () => heavy(() => {
@@ -1164,20 +1212,20 @@ $('#export').addEventListener('click', () => heavy(() => {
   composite(ctx, 'color');
   if (rows.length) {
     let y = H + 50;
-    ctx.fillStyle = '#1f1d1b'; ctx.font = '600 24px "Bodoni Moda", Georgia, serif';
-    ctx.fillText('Materials', pad, y);
-    ctx.font = '13px "IBM Plex Mono", monospace'; ctx.fillStyle = '#6c675f'; ctx.textAlign = 'right';
+    ctx.fillStyle = '#16335E'; ctx.font = '600 28px "Cormorant Garamond", Georgia, serif';
+    ctx.fillText('iMosaicArt · Materials', pad, y);
+    ctx.font = '13px "Hanken Grotesk", sans-serif'; ctx.fillStyle = '#4A5468'; ctx.textAlign = 'right';
     ctx.fillText(`${fmt(state.sizeW)} × ${fmt(state.sizeW * H / W)} ${state.unit}`, W - pad, y);
     ctx.textAlign = 'left'; y += 22;
     const unit = state.unit === 'in' ? 'ft²' : 'm²';
     for (const r of rows) {
       ctx.drawImage(getTile(r.m), 0, 0, TILE * .6, TILE * .6, pad, y, 34, 34);
-      ctx.strokeStyle = '#dcd7cf'; ctx.strokeRect(pad + .5, y + .5, 33, 33);
-      ctx.fillStyle = '#1f1d1b'; ctx.font = '500 16px Figtree, system-ui, sans-serif';
+      ctx.strokeStyle = '#DFE4EC'; ctx.strokeRect(pad + .5, y + .5, 33, 33);
+      ctx.fillStyle = '#16335E'; ctx.font = '500 16px "Hanken Grotesk", system-ui, sans-serif';
       ctx.fillText(r.m.name, pad + 48, y + 16);
-      ctx.fillStyle = '#6c675f'; ctx.font = '12px "IBM Plex Mono", monospace';
-      ctx.fillText(`${r.m.code || ''}  ${r.m.type === 'glass' ? 'Glass' : 'Marble'}`, pad + 48, y + 32);
-      ctx.textAlign = 'right'; ctx.fillStyle = '#1f1d1b'; ctx.font = '14px "IBM Plex Mono", monospace';
+      ctx.fillStyle = '#4A5468'; ctx.font = '12px "Hanken Grotesk", sans-serif';
+      ctx.fillText(`${r.m.code || ''}  ${TYPE_LABEL[r.m.type] || 'Marble'}`, pad + 48, y + 32);
+      ctx.textAlign = 'right'; ctx.fillStyle = '#16335E'; ctx.font = '14px "Hanken Grotesk", sans-serif';
       ctx.fillText(`${r.pieces} pc   ${Math.round(r.share * 100)}%   ${r.area.toFixed(2)} ${unit}`, W - pad, y + 22);
       ctx.textAlign = 'left'; y += rowH;
     }

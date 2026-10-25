@@ -25,7 +25,7 @@ The agent definition lives in
 
 ## Tools
 
-### Inlay Studio — `tools/inlay-studio/index.html`
+### iMosaicArt Design Studio — `tools/inlay-studio/index.html`
 
 A single-page tool for designing marble and glass inlays. Open the file in a
 browser (no build step, no server).
@@ -49,7 +49,7 @@ area (ft² or m², from the finished width), plus a 15% overage line. *Export*
 produces a PNG with the design and the materials list; *Save design* writes a
 `.json` file that can be reopened or sent to a customer.
 
-**Your material chart:** the built-in chart is a sample. Use *Add material*
+**Material chart:** preloaded with the iMosaicArt palette (42 natural marbles, 6 engineered stones, numbered as on imosaicart.com/pages/color-palette). Swatch colors are close approximations; add each swatch photo with Edit for an exact match. Glass entries are placeholders until the glass chart is added. Use *Add material*
 (name, chart code, marble/glass, finish, colors or a swatch photo), then
 *Export chart* to get a JSON file you can load on any device with *Import
 chart*.
