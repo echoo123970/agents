@@ -153,7 +153,9 @@ never state anything beyond this without a source.
 - **Featured image: 1800×1200 (3:2), never cropped.** The blog cards are 3:2,
   so square or portrait images get cut off. Set the image from the CDN with
   padding, e.g. `<cdn image url>?width=1800&height=1200&pad_color=f3f5f8`
-  (the blog background color), so the whole mosaic shows. Use the
+  (the blog background color), so the whole mosaic shows. For round medallions
+  and other circular designs use `width=1800&height=1800` instead: the
+  blog grid cards are nearly square and would cut the sides off a 3:2 image. Use the
   `products/` or `files/` CDN URL; if the download fails, keep the old image
   and pick another (a failed update can clear the image, so check afterwards).
 - Featured image must be at least 1200 px wide (Google Discover). Check
