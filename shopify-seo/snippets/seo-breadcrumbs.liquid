@@ -1,5 +1,7 @@
 {%- comment -%}
-  BreadcrumbList structured data for page types that do not already emit one.
+  Two jobs, both rendered once from layout/theme.liquid:
+    1. A noindex robots meta for utility pages that should never be indexed.
+    2. BreadcrumbList structured data for page types that do not already emit one.
 
   Already covered elsewhere — do NOT duplicate:
     * products     -> templates/product.liquid
@@ -10,6 +12,33 @@
 {%- endcomment -%}
 
 {%- assign site = 'https://www.imosaicart.com' -%}
+
+{%- comment -%}
+  ------------------------------------------------------------------
+  1. NOINDEX for utility pages.
+  These render per-visitor content (or nothing) and have no search
+  value, but they are crawlable and linked, so robots.txt alone will
+  not keep them out of the index — a Disallow stops the crawl, not
+  the listing. A noindex meta is what actually removes them.
+  Add handles to the list below, pipe-separated, to extend it.
+  ------------------------------------------------------------------
+{%- endcomment -%}
+{%- assign noindex_handles = 'wishlist|my-wishlist' -%}
+{%- assign noindex_list = noindex_handles | split: '|' -%}
+{%- if request.page_type == 'page' and page.handle != blank -%}
+  {%- if noindex_list contains page.handle -%}
+    <meta name="robots" content="noindex, follow">
+  {%- endif -%}
+{%- endif -%}
+{%- if request.page_type == 'customers/account' or request.page_type == 'customers/login' or request.page_type == 'customers/register' or request.page_type == 'customers/order' or request.page_type == 'customers/addresses' or request.page_type == 'customers/reset_password' or request.page_type == 'customers/activate_account' or request.page_type == 'cart' or request.page_type == 'search' -%}
+  <meta name="robots" content="noindex, follow">
+{%- endif -%}
+
+{%- comment -%}
+  ------------------------------------------------------------------
+  2. BREADCRUMBS
+  ------------------------------------------------------------------
+{%- endcomment -%}
 
 {%- case request.page_type -%}
 

@@ -63,7 +63,7 @@ promise you FAQ rich results from it.
 | File | Fixes |
 |---|---|
 | `snippets/seo-howto-install.liquid` | **`HowTo` on the installation guide.** The one item you named that was truly absent. 6 steps, 2 tips, 2 supplies, 8 tools, timings — all drawn verbatim from the visible page so schema and content cannot diverge. |
-| `snippets/seo-breadcrumbs.liquid` | **`BreadcrumbList` for content pages, blog articles and the blog index** (16 `pg-*` snippets render a visible breadcrumb; none emitted schema). Plus a `CollectionPage`/`ItemList` for the blog index so AI engines can enumerate your articles. |
+| `snippets/seo-breadcrumbs.liquid` | Two things. (a) **`noindex` for utility pages** — `/pages/wishlist`, cart, search and every customer-account page. A `robots.txt` Disallow does *not* do this: blocking the crawl does not remove a listing, only a `noindex` meta does. The handle list at the top of the file is yours to extend. (b) **`BreadcrumbList` for content pages, blog articles and the blog index** (16 `pg-*` snippets render a visible breadcrumb; none emitted schema), plus a `CollectionPage`/`ItemList` for the blog index so AI engines can enumerate your articles. |
 | `templates/robots.txt.liquid` | Two real bugs — see §5. |
 | `patches/00-READ-FIRST.md` | Fabricated rating and testimonial data. **Read this one.** |
 | `patches/01-product-schema.md` | Product schema upgrade: identifiers, return policy, shipping details, entity linking. |
@@ -87,6 +87,9 @@ writes to the published theme through this API, by design. Paste them in via
    ```liquid
    {% render 'seo-breadcrumbs' %}
    ```
+   This must sit inside `<head>`, because it emits the `noindex` meta as well as
+   the breadcrumb schema. The line above is already inside `<head>`, so pasting it
+   at that point is correct.
 5. **Replace** `templates/robots.txt.liquid` with the version here.
 6. Apply `patches/01-product-schema.md` once you've confirmed the two delivery
    values it lists.
