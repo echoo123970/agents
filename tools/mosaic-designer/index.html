@@ -151,8 +151,9 @@ tfoot td { font-weight: 600; border-bottom: 0; }
 .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: 8px; max-height: 460px; overflow-y: auto; padding: 2px; }
 .swatch { border: 1px solid var(--line); background: none; border-radius: var(--radius); padding: 4px; display: flex; flex-direction: column; gap: 4px; text-align: left; position: relative; }
 .swatch canvas { width: 100%; aspect-ratio: 1; border-radius: 3px; display: block; }
-.swatch .sn { font-size: 11.5px; font-weight: 500; line-height: 1.2; }
-.swatch .sc { font-family: var(--font-mono); font-size: 10px; color: var(--muted); }
+.swatch { text-align: center; }
+.swatch .sn { font-family: var(--font-accent); font-size: 11.5px; line-height: 1.2; color: var(--ink); }
+.swatch .sc { font-family: var(--font-display); font-size: 15px; line-height: 1; color: var(--muted); }
 .swatch[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
 .swatch .edit { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; border-radius: 50%; border: 0; background: rgba(0,0,0,.55); color: #fff; font-size: 12px; line-height: 22px; padding: 0; opacity: 0; }
 .swatch:hover .edit, .swatch:focus-within .edit { opacity: 1; }
@@ -421,7 +422,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
     <div class="swatches" id="swatches" role="group" aria-label="Materials"></div>
     <!-- chart management, kept for staff use later; not shown to customers -->
     <div id="chart-admin" hidden>
-    <p class="note" id="sample-note">The chart shows the 48 iMosaicArt stones with their real swatch photos, No. 01 to 48.</p>
+    <p class="note" id="sample-note">The chart shows the 48 iMosaicArt stones with their real swatch photos, 01 to 48.</p>
     <div class="chart-actions">
       <button class="btn primary" id="add-mat" type="button">Add material</button>
       <button class="btn" id="import-chart" type="button">Import chart</button>
@@ -542,54 +543,54 @@ const store = {
 // iMosaicArt color palette (imosaicart.com/pages/color-palette). Stones get their real swatch photo
 // and its average color from IMOSAIC_SWATCHES. Glass is left out for now (photos kept in glass/).
 const SAMPLE_CHART = [
-  { id: 'm01', name: 'Nero Marquina', code: 'No. 01', type: 'marble', style: 'veined', base: '#1c1c1e', vein: '#e4e4e4' },
-  { id: 'm02', name: 'Bardiglio Gray', code: 'No. 02', type: 'marble', style: 'veined', base: '#7d8288', vein: '#4a4f56' },
-  { id: 'm03', name: 'Thassos White', code: 'No. 03', type: 'marble', style: 'mottled', base: '#f6f6f3', vein: '#dedcd6' },
-  { id: 'm04', name: 'Carrara White', code: 'No. 04', type: 'marble', style: 'veined', base: '#e8e7e3', vein: '#8e9195' },
-  { id: 'm05', name: 'Giallo Siena', code: 'No. 05', type: 'marble', style: 'web', base: '#d9b45e', vein: '#a9772f' },
-  { id: 'm06', name: 'Rosso Verona', code: 'No. 06', type: 'marble', style: 'mottled', base: '#b0533c', vein: '#e2a07e' },
-  { id: 'm07', name: 'Giallo Reale', code: 'No. 07', type: 'marble', style: 'veined', base: '#d8bf8a', vein: '#b08e55' },
-  { id: 'm08', name: 'Rojo Alicante', code: 'No. 08', type: 'marble', style: 'web', base: '#9a3b2c', vein: '#d9b9a5' },
-  { id: 'm09', name: 'Emperador Dark', code: 'No. 09', type: 'marble', style: 'web', base: '#563b2b', vein: '#c9a888' },
-  { id: 'm10', name: 'Imperador Red', code: 'No. 10', type: 'marble', style: 'web', base: '#7f3a2c', vein: '#c9957a' },
-  { id: 'm11', name: 'Crema Marfil', code: 'No. 11', type: 'marble', style: 'mottled', base: '#e2d1b1', vein: '#c3a982' },
-  { id: 'm12', name: 'Pink Rose', code: 'No. 12', type: 'marble', style: 'mottled', base: '#d9a7a0', vein: '#f1d9d3' },
-  { id: 'm13', name: 'Lilac', code: 'No. 13', type: 'marble', style: 'mottled', base: '#b7a1bf', vein: '#e2d7e6' },
-  { id: 'm14', name: 'Perlato Royal', code: 'No. 14', type: 'marble', style: 'mottled', base: '#d6c3a2', vein: '#b9a27c' },
-  { id: 'm15', name: 'Honey Onyx', code: 'No. 15', type: 'marble', style: 'bold', base: '#d39a45', vein: '#f1d08a' },
-  { id: 'm16', name: 'Beige Marfil', code: 'No. 16', type: 'marble', style: 'mottled', base: '#d8c6a4', vein: '#bba277' },
-  { id: 'm17', name: 'Rojo Valencia', code: 'No. 17', type: 'marble', style: 'web', base: '#a4513f', vein: '#d8a48c' },
-  { id: 'm18', name: 'Trani Beige', code: 'No. 18', type: 'marble', style: 'mottled', base: '#cdb894', vein: '#a88e66' },
-  { id: 'm19', name: 'Noce', code: 'No. 19', type: 'marble', style: 'mottled', base: '#8a6447', vein: '#b78f6c' },
-  { id: 'm20', name: 'Amarillo Triana', code: 'No. 20', type: 'marble', style: 'mottled', base: '#e1c46a', vein: '#b48b33' },
-  { id: 'm21', name: 'Marron Emperador', code: 'No. 21', type: 'marble', style: 'web', base: '#6b4a34', vein: '#c4a283' },
-  { id: 'm22', name: 'Walnut', code: 'No. 22', type: 'marble', style: 'mottled', base: '#6a4a33', vein: '#8f6a4c' },
-  { id: 'm23', name: 'Light Taupe', code: 'No. 23', type: 'marble', style: 'mottled', base: '#b7a594', vein: '#d4c6b8' },
-  { id: 'm24', name: 'Silver Grey', code: 'No. 24', type: 'marble', style: 'veined', base: '#b9bcbf', vein: '#8a8e93' },
-  { id: 'm25', name: 'Light Beige', code: 'No. 25', type: 'marble', style: 'mottled', base: '#e3d6bf', vein: '#c9b69a' },
-  { id: 'm26', name: 'Ivory Cream', code: 'No. 26', type: 'marble', style: 'mottled', base: '#efe6d2', vein: '#d8c9ab' },
-  { id: 'm27', name: 'Snow White', code: 'No. 27', type: 'marble', style: 'solid', base: '#fbfbf9', vein: '#ececea' },
-  { id: 'm28', name: 'Bianco Thassos', code: 'No. 28', type: 'marble', style: 'mottled', base: '#f5f5f2', vein: '#e0e0dc' },
-  { id: 'm29', name: 'Bianco Carrara', code: 'No. 29', type: 'marble', style: 'veined', base: '#e6e6e2', vein: '#9a9da1' },
-  { id: 'm30', name: 'Cloud Grey', code: 'No. 30', type: 'marble', style: 'mottled', base: '#c9cbcd', vein: '#a3a7ab' },
-  { id: 'm31', name: 'Lavender', code: 'No. 31', type: 'marble', style: 'mottled', base: '#a99bc0', vein: '#d8d0e4' },
-  { id: 'm32', name: 'Grey Marble', code: 'No. 32', type: 'marble', style: 'veined', base: '#8f9397', vein: '#d6d8da' },
-  { id: 'm33', name: 'Tundra Grey', code: 'No. 33', type: 'marble', style: 'veined', base: '#7f8183', vein: '#c9c9c6' },
-  { id: 'm34', name: 'Graphite', code: 'No. 34', type: 'marble', style: 'mottled', base: '#4a4c50', vein: '#6d7075' },
-  { id: 'm35', name: 'Dark Grey', code: 'No. 35', type: 'marble', style: 'mottled', base: '#3a3c40', vein: '#5a5d61' },
-  { id: 'm36', name: 'Black Absolute', code: 'No. 36', type: 'marble', style: 'solid', base: '#141416', vein: '#26272a' },
-  { id: 'm37', name: 'Sahara Verde', code: 'No. 37', type: 'marble', style: 'web', base: '#6f8a5a', vein: '#b6c49b' },
-  { id: 'm38', name: 'Verde Alpi', code: 'No. 38', type: 'marble', style: 'web', base: '#2d4a3c', vein: '#9fb7a6' },
-  { id: 'm39', name: 'Verde Oliva', code: 'No. 39', type: 'marble', style: 'mottled', base: '#6f7a45', vein: '#a8b07c' },
-  { id: 'm40', name: 'Verde Guatemala', code: 'No. 40', type: 'marble', style: 'web', base: '#203f35', vein: '#c4d4c9' },
-  { id: 'm41', name: 'Verde Aver', code: 'No. 41', type: 'marble', style: 'web', base: '#3f5a3c', vein: '#9fb59a' },
-  { id: 'm42', name: 'Verde Imperiale', code: 'No. 42', type: 'marble', style: 'web', base: '#1f4a3a', vein: '#b9d1c2' },
-  { id: 'e43', name: 'Cream', code: 'No. 43', type: 'engineered', style: 'mottled', base: '#ece2cc', vein: '#ddd0b4' },
-  { id: 'e44', name: 'Ruby Red', code: 'No. 44', type: 'engineered', style: 'mottled', base: '#a3192c', vein: '#c43a4b' },
-  { id: 'e45', name: 'Sky Blue', code: 'No. 45', type: 'engineered', style: 'mottled', base: '#8fc0e0', vein: '#b7d8ee' },
-  { id: 'e46', name: 'Ocean Blue', code: 'No. 46', type: 'engineered', style: 'mottled', base: '#2d6ea8', vein: '#5a94c7' },
-  { id: 'e47', name: 'Turquoise', code: 'No. 47', type: 'engineered', style: 'mottled', base: '#2fa7a7', vein: '#7cd0cc' },
-  { id: 'e48', name: 'Cobalt Blue', code: 'No. 48', type: 'engineered', style: 'mottled', base: '#1e3f9e', vein: '#3d61bd' },
+  { id: 'm01', name: 'Nero Marquina', code: '01', type: 'marble', style: 'veined', base: '#1c1c1e', vein: '#e4e4e4' },
+  { id: 'm02', name: 'Bardiglio Gray', code: '02', type: 'marble', style: 'veined', base: '#7d8288', vein: '#4a4f56' },
+  { id: 'm03', name: 'Thassos White', code: '03', type: 'marble', style: 'mottled', base: '#f6f6f3', vein: '#dedcd6' },
+  { id: 'm04', name: 'Carrara White', code: '04', type: 'marble', style: 'veined', base: '#e8e7e3', vein: '#8e9195' },
+  { id: 'm05', name: 'Giallo Siena', code: '05', type: 'marble', style: 'web', base: '#d9b45e', vein: '#a9772f' },
+  { id: 'm06', name: 'Rosso Verona', code: '06', type: 'marble', style: 'mottled', base: '#b0533c', vein: '#e2a07e' },
+  { id: 'm07', name: 'Giallo Reale', code: '07', type: 'marble', style: 'veined', base: '#d8bf8a', vein: '#b08e55' },
+  { id: 'm08', name: 'Rojo Alicante', code: '08', type: 'marble', style: 'web', base: '#9a3b2c', vein: '#d9b9a5' },
+  { id: 'm09', name: 'Emperador Dark', code: '09', type: 'marble', style: 'web', base: '#563b2b', vein: '#c9a888' },
+  { id: 'm10', name: 'Imperador Red', code: '10', type: 'marble', style: 'web', base: '#7f3a2c', vein: '#c9957a' },
+  { id: 'm11', name: 'Crema Marfil', code: '11', type: 'marble', style: 'mottled', base: '#e2d1b1', vein: '#c3a982' },
+  { id: 'm12', name: 'Pink Rose', code: '12', type: 'marble', style: 'mottled', base: '#d9a7a0', vein: '#f1d9d3' },
+  { id: 'm13', name: 'Lilac', code: '13', type: 'marble', style: 'mottled', base: '#b7a1bf', vein: '#e2d7e6' },
+  { id: 'm14', name: 'Perlato Royal', code: '14', type: 'marble', style: 'mottled', base: '#d6c3a2', vein: '#b9a27c' },
+  { id: 'm15', name: 'Honey Onyx', code: '15', type: 'marble', style: 'bold', base: '#d39a45', vein: '#f1d08a' },
+  { id: 'm16', name: 'Beige Marfil', code: '16', type: 'marble', style: 'mottled', base: '#d8c6a4', vein: '#bba277' },
+  { id: 'm17', name: 'Rojo Valencia', code: '17', type: 'marble', style: 'web', base: '#a4513f', vein: '#d8a48c' },
+  { id: 'm18', name: 'Trani Beige', code: '18', type: 'marble', style: 'mottled', base: '#cdb894', vein: '#a88e66' },
+  { id: 'm19', name: 'Noce', code: '19', type: 'marble', style: 'mottled', base: '#8a6447', vein: '#b78f6c' },
+  { id: 'm20', name: 'Amarillo Triana', code: '20', type: 'marble', style: 'mottled', base: '#e1c46a', vein: '#b48b33' },
+  { id: 'm21', name: 'Marron Emperador', code: '21', type: 'marble', style: 'web', base: '#6b4a34', vein: '#c4a283' },
+  { id: 'm22', name: 'Walnut', code: '22', type: 'marble', style: 'mottled', base: '#6a4a33', vein: '#8f6a4c' },
+  { id: 'm23', name: 'Light Taupe', code: '23', type: 'marble', style: 'mottled', base: '#b7a594', vein: '#d4c6b8' },
+  { id: 'm24', name: 'Silver Grey', code: '24', type: 'marble', style: 'veined', base: '#b9bcbf', vein: '#8a8e93' },
+  { id: 'm25', name: 'Light Beige', code: '25', type: 'marble', style: 'mottled', base: '#e3d6bf', vein: '#c9b69a' },
+  { id: 'm26', name: 'Ivory Cream', code: '26', type: 'marble', style: 'mottled', base: '#efe6d2', vein: '#d8c9ab' },
+  { id: 'm27', name: 'Snow White', code: '27', type: 'marble', style: 'solid', base: '#fbfbf9', vein: '#ececea' },
+  { id: 'm28', name: 'Bianco Thassos', code: '28', type: 'marble', style: 'mottled', base: '#f5f5f2', vein: '#e0e0dc' },
+  { id: 'm29', name: 'Bianco Carrara', code: '29', type: 'marble', style: 'veined', base: '#e6e6e2', vein: '#9a9da1' },
+  { id: 'm30', name: 'Cloud Grey', code: '30', type: 'marble', style: 'mottled', base: '#c9cbcd', vein: '#a3a7ab' },
+  { id: 'm31', name: 'Lavender', code: '31', type: 'marble', style: 'mottled', base: '#a99bc0', vein: '#d8d0e4' },
+  { id: 'm32', name: 'Grey Marble', code: '32', type: 'marble', style: 'veined', base: '#8f9397', vein: '#d6d8da' },
+  { id: 'm33', name: 'Tundra Grey', code: '33', type: 'marble', style: 'veined', base: '#7f8183', vein: '#c9c9c6' },
+  { id: 'm34', name: 'Graphite', code: '34', type: 'marble', style: 'mottled', base: '#4a4c50', vein: '#6d7075' },
+  { id: 'm35', name: 'Dark Grey', code: '35', type: 'marble', style: 'mottled', base: '#3a3c40', vein: '#5a5d61' },
+  { id: 'm36', name: 'Black Absolute', code: '36', type: 'marble', style: 'solid', base: '#141416', vein: '#26272a' },
+  { id: 'm37', name: 'Sahara Verde', code: '37', type: 'marble', style: 'web', base: '#6f8a5a', vein: '#b6c49b' },
+  { id: 'm38', name: 'Verde Alpi', code: '38', type: 'marble', style: 'web', base: '#2d4a3c', vein: '#9fb7a6' },
+  { id: 'm39', name: 'Verde Oliva', code: '39', type: 'marble', style: 'mottled', base: '#6f7a45', vein: '#a8b07c' },
+  { id: 'm40', name: 'Verde Guatemala', code: '40', type: 'marble', style: 'web', base: '#203f35', vein: '#c4d4c9' },
+  { id: 'm41', name: 'Verde Aver', code: '41', type: 'marble', style: 'web', base: '#3f5a3c', vein: '#9fb59a' },
+  { id: 'm42', name: 'Verde Imperiale', code: '42', type: 'marble', style: 'web', base: '#1f4a3a', vein: '#b9d1c2' },
+  { id: 'e43', name: 'Cream', code: '43', type: 'engineered', style: 'mottled', base: '#ece2cc', vein: '#ddd0b4' },
+  { id: 'e44', name: 'Ruby Red', code: '44', type: 'engineered', style: 'mottled', base: '#a3192c', vein: '#c43a4b' },
+  { id: 'e45', name: 'Sky Blue', code: '45', type: 'engineered', style: 'mottled', base: '#8fc0e0', vein: '#b7d8ee' },
+  { id: 'e46', name: 'Ocean Blue', code: '46', type: 'engineered', style: 'mottled', base: '#2d6ea8', vein: '#5a94c7' },
+  { id: 'e47', name: 'Turquoise', code: '47', type: 'engineered', style: 'mottled', base: '#2fa7a7', vein: '#7cd0cc' },
+  { id: 'e48', name: 'Cobalt Blue', code: '48', type: 'engineered', style: 'mottled', base: '#1e3f9e', vein: '#3d61bd' },
 ];
 for (const m of SAMPLE_CHART) Object.assign(m, (window.IMOSAIC_SWATCHES || {})[m.id]);
 const TYPE_LABEL = { marble: 'Marble', engineered: 'Engineered stone', glass: 'Glass' };
@@ -598,8 +599,8 @@ const STYLES = {
   marble: [['veined', 'Veined'], ['bold', 'Bold veins'], ['web', 'Web / breccia'], ['mottled', 'Mottled'], ['solid', 'Solid']],
   glass: [['cathedral', 'Cathedral (rippled)'], ['opal', 'Opalescent (streaky)'], ['clear', 'Smooth']],
 };
-let chart = store.get('mosaic.chart.v6') || SAMPLE_CHART.map(m => ({ ...m }));
-let chartIsSample = !store.get('mosaic.chart.v6');
+let chart = store.get('mosaic.chart.v7') || SAMPLE_CHART.map(m => ({ ...m }));
+let chartIsSample = !store.get('mosaic.chart.v7');
 const matById = id => chart.find(m => m.id === id);
 
 /* ---------------- Procedural textures ---------------- */
@@ -1523,7 +1524,7 @@ function renderChart() {
     const b = document.createElement('div');
     b.className = 'swatch'; b.setAttribute('role', 'button'); b.tabIndex = 0; b.dataset.id = m.id;
     b.setAttribute('aria-pressed', String(m.id === state.selected));
-    b.innerHTML = `<canvas width="120" height="120"></canvas><span class="sn">${esc(m.name)}</span><span class="sc">${esc(m.code || '')}</span><button class="edit" type="button" title="Edit ${esc(m.name)}" aria-label="Edit ${esc(m.name)}">✎</button>`;
+    b.innerHTML = `<canvas width="120" height="120"></canvas><span class="sc">${esc(m.code || '')}</span><span class="sn">${esc(m.name)}</span><button class="edit" type="button" title="Edit ${esc(m.name)}" aria-label="Edit ${esc(m.name)}">✎</button>`;
     b.addEventListener('click', e => { if (e.target.closest('.edit')) return openMatDialog(m); selectMat(m.id); if (state.mode !== 'color') setMode('color'); setTool('fill'); });
     b.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); b.click(); } });
     box.appendChild(b);
@@ -1549,7 +1550,7 @@ function renderSelected(m) {
   $('#sel-type').textContent = m ? (TYPE_LABEL[m.type] || 'Marble') : '';
   const sm = $('#status-mat'); if (sm) sm.textContent = m ? m.name : '—';
 }
-function saveChart() { chartIsSample = false; store.set('mosaic.chart.v6', chart); $('#sample-note').hidden = true; }
+function saveChart() { chartIsSample = false; store.set('mosaic.chart.v7', chart); $('#sample-note').hidden = true; }
 
 /* Material dialog */
 let editing = null, editPhoto = null;
@@ -2033,7 +2034,7 @@ $('#file-chart').addEventListener('change', async e => {
 $('#reset-chart').addEventListener('click', async () => {
   if (!(await confirmBox('Reset to the sample chart?', 'Your added materials will be removed. Export your chart first if you want to keep it.', 'Reset chart'))) return;
   chart = SAMPLE_CHART.map(m => ({ ...m })); chartIsSample = true;
-  try { localStorage.removeItem('mosaic.chart.v6'); } catch {}
+  try { localStorage.removeItem('mosaic.chart.v7'); } catch {}
   tileCache.clear(); renderChart(); selectMat(chart[0].id); heavy(() => refresh());
 });
 $('#export').addEventListener('click', () => heavy(() => {
