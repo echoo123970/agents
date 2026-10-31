@@ -38,7 +38,9 @@
     </script>
     <link rel="canonical" href="{{ canonical_url }}">
 
-    {%- comment -%} Organization + LocalBusiness structured data (sitewide) — helps Google Knowledge Panel and LLM understanding. {%- endcomment -%}
+    {%- comment -%} Organization + WebSite structured data (sitewide) — helps Google Knowledge Panel and LLM understanding.
+         No LocalBusiness/Store node: the registered address is not a storefront customers can visit, and LocalBusiness
+         markup asserts a visitable place of business. areaServed carries the worldwide reach instead. {%- endcomment -%}
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -56,6 +58,7 @@
           "description": "iMosaicArt is a premium US-based studio creating handcrafted natural stone and glass mosaic art — custom portraits, wall art, backsplashes, tabletops, and architectural installations. Every piece is made to order and shipped free worldwide.",
           "email": "info@imosaicart.com",
           "telephone": "+1-315-217-5538",
+          "areaServed": "Worldwide",
           "address": {
             "@type": "PostalAddress",
             "streetAddress": "28 Liberty St",
@@ -73,26 +76,6 @@
             {%- assign social_arr = social_links | split: "|" -%}
             {%- for link in social_arr -%}"{{ link }}"{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}
           ]
-        },
-        {
-          "@type": "Store",
-          "@id": "https://www.imosaicart.com/#store",
-          "name": "iMosaicArt",
-          "url": "https://www.imosaicart.com/",
-          "image": "https://cdn.shopify.com/s/files/1/0754/6093/5978/files/imosaicart-tile-ink_22592187-c72f-491a-8167-46c80ce7a3d6.png?v=1786045537",
-          "parentOrganization": { "@id": "https://www.imosaicart.com/#organization" },
-          "priceRange": "$$$",
-          "email": "info@imosaicart.com",
-          "telephone": "+1-315-217-5538",
-          "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "28 Liberty St",
-            "addressLocality": "New York",
-            "addressRegion": "NY",
-            "postalCode": "10005",
-            "addressCountry": "US"
-          },
-          "areaServed": "Worldwide"
         },
         {
           "@type": "WebSite",
