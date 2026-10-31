@@ -1952,7 +1952,18 @@ async function runFree(desc) {
     + 'flat vector line art, large simple shapes, no shading, no hatching, no fur or grass texture, no sketch lines, no gray, no words, pure white background, centered';
   const w = 1024, h = Math.round(1024 * H / W / 8) * 8;
   const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=${w}&height=${h}&nologo=true&seed=${Math.floor(Math.random() * 1e6)}`;
-  const img = await Promise.race([loadPhoto(url), new Promise(r => setTimeout(() => r(null), 120000))]);
+  // When the free service is full it answers with a notice picture instead of a drawing; that notice
+  // never has the size we asked for, so it is caught here and asked again once after a short wait.
+  const fetchDrawing = async u => {
+    const im = await Promise.race([loadPhoto(u), new Promise(r => setTimeout(() => r(null), 120000))]);
+    return im && Math.abs(im.naturalWidth - w) <= 8 && Math.abs(im.naturalHeight - h) <= 8 ? im : null;
+  };
+  let img = await fetchDrawing(url);
+  if (!img) {
+    status.textContent = 'The drawing service is busy. Trying again in a few seconds…';
+    await new Promise(r => setTimeout(r, 12000));
+    img = await fetchDrawing(url.replace(/seed=\d+/, 'seed=' + Math.floor(Math.random() * 1e6)));
+  }
   busy(false); go.disabled = false;
   if (!img) { status.textContent = 'Our drawing service is busy right now. Please try again in a minute, or upload or draw your design instead.'; return; }
   importedImg = img; importedFile = null; lastSvg = null; sourceData = null; upStore = false;
