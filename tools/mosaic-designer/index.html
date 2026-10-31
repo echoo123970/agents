@@ -1957,9 +1957,23 @@ function showGallery() {
 }
 $('#gallery-close').addEventListener('click', () => { $('#gallery').hidden = true; });
 $('#start-close').addEventListener('click', () => showStart(false));
+// Every start choice begins a fresh design: the old drawing, colors, picture and settings are cleared
+// (Undo still brings the previous design back).
+function resetDesign() {
+  $('#upload-panel').hidden = true; $('#gallery').hidden = true; $('#trace-field').hidden = true; $('#draw-hint').hidden = true;
+  pendingImg = null; upStore = false; upAction = null; importedImg = null; importedFile = null; lastSvg = null; sourceData = null;
+  state.mosaicFrom = 'areas'; state.sourceKind = null;
+  $('#threshold').value = 55; $('#threshold-val').textContent = '55';
+  $('#ai-prompt').value = ''; $('#ai-edit').checked = false;
+  traceImg = null; $('#trace-opts').hidden = true; // no photo to trace over
+  ictx.globalCompositeOperation = 'source-over'; ictx.clearRect(0, 0, W, H);
+  commit(true); state.fills = [];
+  setMode('sketch'); setTool('pen'); refresh();
+}
 $$('#start [data-start]').forEach(b => b.addEventListener('click', () => {
   const how = b.dataset.start;
   showStart(false);
+  resetDesign();
   $('#sketch-tools').classList.toggle('draw-only', how === 'draw'); // drawing from scratch needs no picture tools
   if (how === 'upload') { setMode('sketch'); $('#file-sketch').click(); }
   else if (how === 'describe') {
@@ -1967,11 +1981,7 @@ $$('#start [data-start]').forEach(b => b.addEventListener('click', () => {
     if (sampleFn || freeAI) { $('#ai-prompt').focus(); $('#ai-more').scrollIntoView({ behavior: 'smooth', block: 'center' }); }
     else toast('Describing a design is not available here. You can upload or draw instead.');
   } else if (how === 'draw') {
-    $('#upload-panel').hidden = true; $('#gallery').hidden = true; $('#trace-field').hidden = true; pendingImg = null; upStore = false;
     heavy(() => {
-      ictx.clearRect(0, 0, W, H); sourceData = null;
-      commit(true); state.fills = [];
-      setMode('sketch'); setTool('pen'); refresh();
       $('#draw-hint').hidden = false;
       $('.bench').scrollIntoView({ behavior: 'smooth', block: 'start' });
       $('#sketch-tools').classList.add('flash'); setTimeout(() => $('#sketch-tools').classList.remove('flash'), 2400);
