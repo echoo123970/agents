@@ -668,7 +668,7 @@ const mosaicLayer = mk(), mosctx = mosaicLayer.getContext('2d');
 const state = {
   mode: 'color',
   tool: { sketch: 'pen', color: 'fill' },
-  weight: 3, gap: 2, joint: '#1b1a19',
+  weight: 3, gap: 2, joint: '#8a8782',
   selected: 'm04', filter: 'marble', query: '',
   sizeW: 36, unit: 'in',
   look: 'stone', // how the Color step shows materials: stone textures or plain colors
@@ -794,17 +794,13 @@ function renderFills() {
   for (const f of state.fills) {
     const m = matById(f.mat), L = labelOf(f);
     if (!m || !L) continue;
-    const { x, y, w, h } = maskRegion(L, state.gap + 1); // tuck the fill under the line
-    work.width = w; work.height = h;
-    if (state.look === 'flat') wctx.fillStyle = m.base;
-    else {
-      const pat = wctx.createPattern(getTile(m), 'repeat');
-      pat.setTransform(new DOMMatrix().translate(f.x - x, f.y - y).rotate(m.type === 'marble' ? f.rot : 0).scale(PATTERN_SCALE));
-      wctx.fillStyle = pat;
-    }
-    wctx.fillRect(0, 0, w, h);
-    wctx.globalCompositeOperation = 'destination-in'; wctx.drawImage(maskC, 0, 0); wctx.globalCompositeOperation = 'source-over';
-    fctx.drawImage(work, x, y);
+    if (state.look === 'flat') {
+      const { x, y, w, h } = maskRegion(L, state.gap + 1); // tuck the fill under the line
+      work.width = w; work.height = h;
+      wctx.fillStyle = m.base; wctx.fillRect(0, 0, w, h);
+      wctx.globalCompositeOperation = 'destination-in'; wctx.drawImage(maskC, 0, 0); wctx.globalCompositeOperation = 'source-over';
+      fctx.drawImage(work, x, y);
+    } else tileArea(fctx, f, m, L, state.gap + 1, state.joint); // the area as mosaic tiles cut from the swatch photo
   }
 }
 // Lays every colored area with square tiles of its stone, each showing a different part of the
@@ -885,13 +881,20 @@ function renderPictureMosaic() {
 function renderMosaic() {
   if (usePicture()) return renderPictureMosaic();
   mosctx.fillStyle = state.joint; mosctx.fillRect(0, 0, W, H);
-  const t = Math.max(4, tilePx()), gap = Math.max(1, t * .1);
   getLabels();
   for (const f of state.fills) {
     const m = matById(f.mat), L = labelOf(f);
-    if (!m || !L) continue;
-    const { x, y, w, h } = maskRegion(L, state.gap);
+    if (m && L) tileArea(mosctx, f, m, L, state.gap, null);
+  }
+}
+// Lays area L with tiles of stone m at the chosen tile size and draws it onto ctx; with grout set,
+// the gaps between tiles are painted in that color (the final mosaic paints its grout underneath).
+function tileArea(ctx, f, m, L, pad, grout) {
+  const t = Math.max(4, tilePx()), gap = Math.max(1, t * .1);
+  {
+    const { x, y, w, h } = maskRegion(L, pad);
     work.width = w; work.height = h;
+    if (grout) { wctx.fillStyle = grout; wctx.fillRect(0, 0, w, h); }
     const pat = wctx.createPattern(getTile(m), 'repeat'), seed = L * 7919;
     for (let ty = Math.floor(y / t); ty * t < y + h; ty++) for (let tx = Math.floor(x / t); tx * t < x + w; tx++) {
       const jx = (hash(tx, ty, seed) - .5) * gap, jy = (hash(ty, tx, seed + 1) - .5) * gap;
@@ -903,7 +906,7 @@ function renderMosaic() {
       wctx.fill();
     }
     wctx.globalCompositeOperation = 'destination-in'; wctx.drawImage(maskC, 0, 0); wctx.globalCompositeOperation = 'source-over';
-    mosctx.drawImage(work, x, y);
+    ctx.drawImage(work, x, y);
   }
 }
 function composite(target = vctx, mode = state.mode) {
@@ -1258,7 +1261,7 @@ $('#gap').addEventListener('input', e => { $('#gap-val').textContent = e.target.
 $('#gap').addEventListener('change', e => { state.gap = +e.target.value; heavy(() => refresh()); });
 $$('.joint').forEach(b => b.addEventListener('click', () => {
   state.joint = b.dataset.joint; markJoint(); scheduleSave();
-  if (state.mode === 'mosaic') heavy(() => { renderMosaic(); composite(); renderBom(); }); else composite();
+  heavy(() => refresh()); // the grout shows in the Color step's tiles too
 }));
 function markLook() { $$('#color-tools .seg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.look === state.look))); }
 $$('#mosaic-from-group .seg button').forEach(b => b.addEventListener('click', () => {
@@ -1269,7 +1272,7 @@ $$('#color-tools .seg button').forEach(b => b.addEventListener('click', () => {
   state.look = b.dataset.look; markLook();
   renderChart(); selectMat(state.selected); heavy(() => refresh());
 }));
-$('#tile-size').addEventListener('change', e => { state.tileIn = +e.target.value; heavy(() => refresh({ fills: false })); });
+$('#tile-size').addEventListener('change', e => { state.tileIn = +e.target.value; heavy(() => refresh()); });
 $('#any-color').addEventListener('input', e => {
   const m = nearestMat(srgbToLab(...hexRgb(e.target.value)), matchList());
   if (!m) return;
@@ -1287,13 +1290,13 @@ let sizeTimer = 0;
 $('#size-w').addEventListener('input', e => {
   const v = parseFloat(e.target.value); if (!(v > 0)) return;
   state.sizeW = v; renderBom(); scheduleSave();
-  if (state.mode === 'mosaic') { clearTimeout(sizeTimer); sizeTimer = setTimeout(() => heavy(() => { renderMosaic(); composite(); renderBom(); }), 400); }
+  clearTimeout(sizeTimer); sizeTimer = setTimeout(() => heavy(() => refresh()), 400); // tiles get a new size
 });
 $('#size-unit').addEventListener('change', e => {
   const to = e.target.value; if (to === state.unit) return;
   state.sizeW = to === 'cm' ? Math.round(state.sizeW * 2.54) : Math.round(state.sizeW / 2.54 * 2) / 2;
   state.unit = to; $('#size-w').value = state.sizeW; renderBom(); scheduleSave();
-  if (state.mode === 'mosaic') heavy(() => { renderMosaic(); composite(); renderBom(); });
+  heavy(() => refresh());
 });
 $('#undo').addEventListener('click', undo);
 $('#redo').addEventListener('click', redo);
@@ -1567,7 +1570,7 @@ async function applyDesign(d, withHistory) {
   if (img) ictx.drawImage(img, 0, 0, W, H);
   currentInk = ictx.getImageData(0, 0, W, H); inkVer++;
   state.fills = (d.fills || []).filter(f => Number.isFinite(f.x) && Number.isFinite(f.y));
-  Object.assign(state, { gap: d.gap ?? 2, joint: d.joint || state.joint, sizeW: d.sizeW || 36, unit: d.unit === 'cm' ? 'cm' : 'in', look: d.look === 'flat' ? 'flat' : 'stone', tileIn: +d.tileIn || .5 });
+  Object.assign(state, { gap: d.gap ?? 2, joint: d.joint || state.joint, sizeW: d.sizeW || 36, unit: d.unit === 'cm' ? 'cm' : 'in', tileIn: +d.tileIn || .5 });
   $('#tile-size').value = String(state.tileIn); if (!$('#tile-size').value) { state.tileIn = .5; $('#tile-size').value = '0.5'; } markLook();
   $('#gap').value = state.gap; $('#gap-val').textContent = state.gap;
   $('#size-w').value = state.sizeW; $('#size-unit').value = state.unit; markJoint();
