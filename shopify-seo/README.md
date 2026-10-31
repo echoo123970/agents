@@ -549,11 +549,27 @@ its alt attribute from a title rather than from the image:
      alt="{{ product.title | escape }}">
 ```
 
-So the alt text stored against each image — including the richer
-`Title | Category | iMosaicArt` pattern the store already used — was
-discarded on every product card, product page, collection card, article
-card and article hero. Filling in alt text in the admin had no effect on
-the rendered page.
+So the alt text stored against each image was discarded on every product
+card, product page, collection card, article card and article hero.
+Filling in alt text in the admin had no effect on the rendered page.
+
+An earlier draft of this section claimed the store "already had richer
+alt text on 1,941 of 1,948 products" in the form
+`Title | Category | iMosaicArt`. That was wrong — generalised from the
+handful of records inspected closely during the mojibake repair, which do
+use that form. Measured across 1,750 products, the real split is:
+
+| Stored alt | Count | Share |
+|---|---:|---:|
+| Exactly the product title | 1,425 | 81% |
+| `Title \| Category \| iMosaicArt` | 296 | 17% |
+| Something else | 22 | 1% |
+| Missing (the 7 filled above) | 7 | <1% |
+
+Four products in five therefore carry alt text that is a verbatim copy of
+the title — not broken, but adding nothing a crawler or screen reader did
+not already have. Upgrading those 1,425 to the house pattern is an open
+decision, not a defect.
 
 `patches/02-render-stored-alt-text.patch` fixes this across 15 files,
 reading the image's own alt and falling back to the previous title so
@@ -572,24 +588,43 @@ thumbnail buttons that duplicate the labelled main image, and the
 decorative login/register side panels. No `<img>` in the theme lacks an
 alt attribute.
 
-**This patch is not deployed.** Pushing to `shopify-live` publishes
-straight to the live storefront and was blocked as a production deploy, so
-it is held here for approval. To ship it:
+**Deployed 2026-10-31.** The direct push to `shopify-live` was refused as a
+production deploy, so the commit went to `claude/theme-render-stored-alt`
+and shipped by merging PR #13 into `shopify-live`, which Shopify synced to
+the live theme at 10:01 UTC. Verified afterwards by reading the live theme
+file back: `snippets/card-product.liquid` now contains
+`alt="{{ product.featured_media.alt | default: product.title | escape }}"`.
+Confirmed again in the browser on a real product page, where the rendered
+`alt` matched the value stored in Shopify.
 
-```sh
-git checkout shopify-live && git am shopify-seo/patches/02-render-stored-alt-text.patch
-git push origin shopify-live
-```
+The patch file is kept here as the record of the change.
+
+Two corrections to its scope, found later while removing dead theme files:
+
+- Of the 15 files it touched, **three were unreferenced dead code** —
+  `sections/main-product.liquid`, `snippets/card-product.liquid` and
+  `sections/page-portfolio.liquid`. Those edits render nothing. The live
+  paths it did fix are `templates/product.liquid`, `coll-card`,
+  `card-collection`, `main-list-collections`, the three blog/article
+  sections, `hero`, `custom-process`, `testimonials`, `instagram-grid` and
+  `page-installation`. All three dead files were deleted in PR #14.
+- The theme change makes stored alt text *render*; it does not improve it.
+  Because 81% of products store alt identical to the title, most pages emit
+  the same string as before — correctly sourced now, but unchanged.
 
 ### Left undone, and why
 
-- **4 promo images in the Black Friday article** and **1 on the
-  `custom-mosaics` page** have `alt=""`. Their filenames carry no
-  information (`Gemini_Generated_Image_4vplbq…`), the CDN is unreachable
-  from this environment, so I cannot see what they depict. Writing a
-  description would mean inventing one. They need someone to open them in
-  the admin; `alt=""` is at least the correct treatment if they turn out
-  to be decorative.
+- **5 images with `alt=""` — since closed, no action needed.** Four sit in
+  the Black Friday article and one on the `custom-mosaics` page. I could
+  not caption them: their filenames carry no information
+  (`Gemini_Generated_Image_4vplbq…`) and the CDN is unreachable from this
+  environment, so writing a description would have meant inventing one.
+  Checking where they actually render settled it instead. Both the Black
+  Friday and Cyber Monday articles are unpublished (`isPublished: false`),
+  and `templates/page.liquid` routes the `custom-mosaics` handle to the
+  hand-built `pg-custom-mosaics` snippet rather than falling through to
+  `main-page`, so that page's body HTML — and the image inside it — never
+  reaches the storefront. None of the five is on the live site.
 - **The Files library** holds roughly 3,500+ images, a large share with no
   alt. This is an asset bin, not rendered output: a file's alt text only
   reaches a page where the theme reads it, and products, collections,
@@ -598,3 +633,87 @@ git push origin shopify-live
   cannot be captioned honestly either. Those named by SKU (`MAF151.jpg`,
   `MAK001.webp`) *could* be captioned by resolving the SKU to its product
   title, if the media bin is ever worth tidying for its own sake.
+
+## 15. Store and theme fixes, 2026-10-31
+
+### Gift card: labels and prices disagreed by $300
+
+`iMosaicArt Gift Art Card` is a true Shopify gift card (`isGiftCard: true`),
+so the card's value equals the price paid. Its four denomination labels and
+its prices had drifted apart by exactly $300 on every variant:
+
+| Label | Price before | Price now | SKU added |
+|---|---:|---:|---|
+| $100.00 | $400 | **$100** | `GIFTCARD-100` |
+| $250.00 | $550 | **$250** | `GIFTCARD-250` |
+| $500.00 | $800 | **$500** | `GIFTCARD-500` |
+| $1,000.00 | $1,300 | **$1,000** | `GIFTCARD-1000` |
+
+A customer clicking "$100.00" was charged $400 and received a $400 card —
+internally consistent, but advertising a number four times under what it
+charged. The constant $300 offset showed this was a systematic edit rather
+than drift. The owner confirmed the labels were authoritative; prices were
+dropped to match.
+
+`productType` was empty and is now `Gift Cards`, which also gave the image
+usable alt text. Collection membership was read before and after to confirm
+no smart collection reacted to the new type — same three either way.
+
+Checked and *not* a problem: the `-1` and `0` inventory numbers on those
+variants. `tracked: false` and `availableForSale: true`, so gift cards hold
+no stock and all four were always purchasable.
+
+### SKU collision MAF082 / MF323
+
+`Stunning Glass Mosaic Floral Patterns: Artistic Delight` (created 2023)
+had `MAF082` on four variants and `MF323` on the fifth, and `MF323` was
+also held by a 2025 product.
+
+The assumption that `MF323` was malformed turned out to be wrong: `MF###`
+is a real parallel scheme used by a cohort of Flower products created in
+May and November 2025 (`MF218`–`MF246`), while `MAF###` is the older 2023
+scheme. `SKU_LOGIC.md` lists Flower's next SKU as `MF453`, confirming
+`MF###` is the go-forward series and `MAF###` is legacy.
+
+That made the call clean rather than arbitrary: a 2023 product belongs on
+the 2023 scheme, so the fifth variant was set to `MAF082`. Verified after:
+`MF323` now resolves to exactly one product, `MAF082` to exactly one.
+
+The catalog running two SKU schemes for one category is a cataloguing
+decision, not a bug, but it will keep producing collisions like this.
+
+### /llms.txt
+
+A redirect already served `/llm.txt` from a file in Shopify Files, and
+`robots.txt` allowed that path. The convention answer engines actually
+request is the **plural** `/llms.txt`, so the file sat where nothing looked.
+A `/llms.txt` redirect to the same file was created, and `robots.txt` now
+allows both.
+
+Two caveats: the redirect targets a `cdn.shopify.com` URL rather than
+`www.imosaicart.com/llms.txt`, because Shopify cannot serve arbitrary root
+files; and the target carries `?v=1792936942`, so re-uploading that file
+changes the version and breaks both redirects.
+
+### Small theme fixes (PR #14)
+
+- **One `<h1>` per login page.** `main-login.liquid` had two — the
+  reset-password panel and the sign-in form. The panel starts at
+  `display:none` but is still in the DOM and still parsed. The reset
+  heading is now an `<h2>` with the same class, so nothing moves visually.
+- **`og:image` dimensions.** Narrower than first recorded: `og:image` was
+  already dynamic and requested at `width: 1200`, which preserves aspect
+  ratio, but height was declared a flat `1200`. The product photos are 4:5,
+  so shared product links served 1200×1500 while claiming square. The real
+  height is now derived from the source image, and no dimensions are
+  emitted at all when falling back to the default.
+- **Six unreferenced files deleted** — `category-grid`,
+  `collection-showcase`, `main-product`, `page-portfolio`, `card-product`,
+  `swatch-card`. Not the ~12 originally estimated.
+
+**Deliberately not changed:** the FAQ section on the product template,
+listed as duplicated boilerplate. Its three questions cover weatherproofing,
+production time and custom sizing — what a buyer actually asks on a product
+page — and it emits no JSON-LD, so there is no duplicate structured data.
+Removing it would cost conversions to solve a problem search engines do not
+have with ordinary ecommerce boilerplate.
