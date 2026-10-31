@@ -98,8 +98,8 @@
     </div>
     <div class="cm-zoom ig-hero__media">
       {%- if section.settings.image != blank -%}
-        <img src="{{ section.settings.image | image_url: width: 900 }}" alt="" width="900" height="765" class="cover-img">
-      {%- else -%}<img src="{{ 'install-hero-tree.png' | asset_url }}" alt="" width="900" height="765" class="cover-img">{%- endif -%}
+        <img src="{{ section.settings.image | image_url: width: 900 }}" alt="{{ section.settings.image.alt | default: section.settings.heading | strip_html | escape }}" width="900" height="765" class="cover-img">
+      {%- else -%}<img src="{{ 'install-hero-tree.png' | asset_url }}" alt="{{ section.settings.heading | strip_html | escape }}" width="900" height="765" class="cover-img">{%- endif -%}
     </div>
   </div>
 </section>
@@ -139,7 +139,7 @@
           <h3 class="ig-step__title">{{ block.settings.title }}</h3>
           {%- if block.settings.body != blank -%}<p class="ig-step__text">{{ block.settings.body }}</p>{%- endif -%}
           {%- if block.settings.image != blank -%}
-            <div class="ig-step__img"><img src="{{ block.settings.image | image_url: width: 600 }}" alt="" width="520" height="293" class="cover-img" loading="lazy"></div>
+            <div class="ig-step__img"><img src="{{ block.settings.image | image_url: width: 600 }}" alt="{{ block.settings.image.alt | default: block.settings.title | escape }}" width="520" height="293" class="cover-img" loading="lazy"></div>
           {%- endif -%}
           {%- if block.settings.tip != blank -%}
             <div class="ig-step__tip">

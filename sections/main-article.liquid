@@ -40,7 +40,7 @@
     {%- if article.author != blank -%}<div class="article__author">By {{ article.author }}</div>{%- endif -%}
   </div>
   {%- if article.image != blank -%}
-    <img src="{{ article.image | image_url: width: 1400 }}" alt="{{ article.title | escape }}" width="1400" height="788" class="article__image">
+    <img src="{{ article.image | image_url: width: 1400 }}" alt="{{ article.image.alt | default: article.title | escape }}" width="1400" height="788" class="article__image">
   {%- endif -%}
   <div class="article__body rte">{{ article.content }}</div>
 </article>

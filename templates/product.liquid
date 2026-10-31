@@ -196,7 +196,7 @@
     <div class="pdp__gallery">
       <div class="pdp-stage" data-zoom-stage>
         {%- if product.featured_media -%}
-          <img src="{{ product.featured_media | image_url: width: 1100 }}" alt="{{ product.title | escape }}" width="1100" height="1375" class="pdp-main" id="PdpMainImage">
+          <img src="{{ product.featured_media | image_url: width: 1100 }}" alt="{{ product.featured_media.alt | default: product.title | escape }}" width="1100" height="1375" class="pdp-main" id="PdpMainImage">
         {%- else -%}
           {{ 'product-1' | placeholder_svg_tag: 'pdp-main' }}
         {%- endif -%}
