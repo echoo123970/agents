@@ -1624,9 +1624,10 @@ Contact us to create a personalized…"* — which is its own mild cannibalisati
 problem across 18 pages. The replacements lead with the subject and the
 hand-cut method, and all 18 open with a distinct phrase.
 
-`mosaic-tile-art` was deliberately left bare: it has **0 products** and is
-published to 9 channels, a live empty collection page. Writing SEO copy for it
-would be the wrong fix; it needs unpublishing or deleting, which is §20.6.
+`mosaic-tile-art` was left bare in this pass because it had **0 products**
+while being published to 9 channels — a live empty collection page. The owner
+chose to keep rather than remove it, and it has since been built out properly:
+see §20.7.
 
 ### 20.5 There is no SEO app. The §19.6 blocker is cleared.
 
@@ -1663,10 +1664,180 @@ active. That now looks right — one was, and it is gone.
 
 Three, all merchandising rather than technical:
 
-1. **`mosaic-tile-art`** — 0 products, published to 9 channels, no SEO, empty
-   body. Unpublishing achieves the same result as deleting and is reversible,
-   which is the recommendation.
+1. ~~**`mosaic-tile-art`**~~ — **resolved, see §20.7.** The owner chose to keep
+   it, so it was built into a working collection rather than unpublished.
 2. **`glass-mosaic-art`** — §20.3. Rename, split, or accept.
 3. **`cloud-search-all-products`** — unpublished, but carries complete,
    well-written SEO copy that is currently doing nothing. If a "Shop All" page
    is wanted, it already exists and only needs publishing.
+
+### 20.7 `mosaic-tile-art` kept and built out
+
+The recommendation above was to unpublish it. The owner chose to **keep** it,
+which turned out to be the better call: `mosaic-tile-art` is a strong keyword
+for this catalogue, and the handle was already sitting on it.
+
+- **59 products** have "tile art" in the title; **97** have "mosaic tile"
+- The collection was empty and *manual*, so nothing maintained it
+
+Rebuilt as a **rule-based collection** — product title contains "Tile Art" —
+so membership maintains itself as the catalogue changes. It now holds **58
+products**, with a title (53 chars), a description (130 chars) and body copy.
+
+A side effect worth recording: the new rule surfaced **11 draft products**
+titled `<Subject> Premium Mosaic Tile Art`, created 2025-11-15, the day before
+the 184 of §16.2 — one for each of 11 of the 12 subjects. These look like the
+originals the generator copied from. All are DRAFT, so none competes in
+search, and the §18.3 canonical picks stand.
+
+Their `seo.description` fields are **corrupted by a bad find-and-replace**:
+every "a" became "this" and every "the" became "its".
+
+```
+hthisndcrthisfted mosthisic thisrt  →  handcrafted mosaic art
+thisgthisinst                      →  against
+```
+
+Harmless while they are drafts. Anyone publishing them would ship that text.
+
+---
+
+## 21. Title tags, meta descriptions and duplicates (2026-10-31)
+
+### 21.1 The sizing was wrong, and the theme is why
+
+§19.6 recorded "1,285 over-long `seo.title`s" and proposed dropping the
+`| <Type> | iMosaicArt` suffix, claiming only 61 would still exceed 60
+characters.
+
+**That measured the stored field, not the rendered `<title>`.** The theme does
+this:
+
+```liquid
+{%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+```
+
+It appends ` – iMosaicArt` (13 characters) **unless the title already contains
+the brand**. The old suffix suppressed that append; removing it brings the
+brand straight back. So the real budget for a brand-less title is 60 − 13 =
+**47 characters**, and the true figure was:
+
+| | |
+|---|---:|
+| Rendered titles over 60 chars | **1,792 of 1,948 (92%)** |
+| Products whose base title fits 47 chars | 949 (49%) |
+| Median base title length | 48 chars |
+
+Half the catalogue is long because the **product title itself** is long, not
+because of the suffix. Caught before writing to anything.
+
+### 21.2 The fix, and the trap it avoided
+
+1,341 products carried an `seo.title` that was exactly
+`<product title> | <type> | iMosaicArt` — pure redundancy. Clearing those lets
+the theme supply the brand itself.
+
+**The obvious method would have destroyed 1,341 meta descriptions.**
+`productUpdate` with `seo: { title: … }` is a whole-object replace (§19.1), and
+`seo: { title: null }` nulls the description just the same — proven on one test
+product, which was restored immediately.
+
+The safe route: Shopify exposes the legacy SEO fields as **separate
+metafields**, `global.title_tag` and `global.description_tag`. Deleting
+`title_tag` with `metafieldsDelete` clears the title override and **never
+touches the description**.
+
+| Check | Result |
+|---|---|
+| Overrides cleared | **1,341**, zero errors |
+| Descriptions lost | **0** |
+| Descriptions altered in any way | **0** |
+| Rendered titles over 60 | 1,792 → **1,013** |
+| Products fixed | **779** |
+
+A second pass found **193 more** overrides in a different shape
+(`… I iMosaicArt | <Type>`), which the first pattern missed.
+
+### 21.3 Eight misspellings that only Google could see
+
+Among that second batch, eight overrides differed from their product title not
+by decoration but by a **typo in the `seo.title` itself** — the field Google
+indexes — while the product title was correct:
+
+| In the title tag | Should be |
+|---|---|
+| `Ladscape` | Landscape |
+| `Bacsplash` | Backsplash |
+| `Abstact` | Abstract |
+| `Geoemtric` | Geometric |
+| `Patter` | Pattern |
+| `Islamik` | Islamic |
+| `Symetrical` | Symmetrical |
+| `Marbe` | Marble |
+
+Clearing them makes the correct product title the title tag. These were
+invisible on the storefront, which is why they survived.
+
+### 21.4 Meta descriptions and double spaces
+
+- **27 products had no meta description at all**, 26 of them ACTIVE, so Google
+  wrote its own snippet. Each now has one written from that product's own body
+  copy, 104–121 characters, none duplicated. **Now 0.**
+- **88 product titles contained a double space**, 83 of them indexed — the same
+  signature as the `Premium  Tile Art` defect of §18.2. All collapsed. **Now 0.**
+
+### 21.5 A second generated set, and what remains
+
+Checking duplicates surfaced **81 products titled `<Adjective> <Subject>  Floral
+Stone Mosaic Art`** — 8 subjects, ~10 listings each, every one carrying the
+double space. The same generator as §16.2, missed because the original scan
+matched on `Premium Tile Art` rather than on the *pattern* of machine-generated
+titles.
+
+None were noindexed, so all were competing with each other.
+
+**Still open after this pass:**
+
+| | Count |
+|---|---:|
+| Active products with no meta description | **0** |
+| Double spaces in titles | **0** |
+| Indexed duplicate title tags | **36** (34 Floral + 1 pair) |
+| Rendered titles still over 60 | **884 of 1,750 (51%)** |
+
+The 884 need their **product titles** shortened, not their tags — a
+merchandising decision, not a mechanical one. The 34 Floral duplicates need the
+§18.3 noindex treatment: 8 canonical, the rest excluded.
+
+### 21.6 A mislabeled product, not a duplicate
+
+`MAR058` carries the handle `…the-nativity-scene-mosaic-with-three-kings` but
+its title *and* body both read "The Last Supper Mosaic with Twelve Apostles" —
+identical to its sibling `MAR059`, which is legitimately that piece. They were
+created **two seconds apart**, so this is a bulk import where the handle
+probably preserved the true identity while the title and body shifted by one.
+
+Not guessed at: the CDN is unreachable from this environment, so the image
+cannot be checked here. **Note the meta description written in §21.4 for
+`MAR058` follows its title**, so if the piece is actually the Nativity, the
+title, the body and that description are all describing the wrong artwork.
+
+One for the owner, with the image:
+`MAR058_706c8035-c700-4ed5-8e2a-82883012468c.jpg`
+
+### 21.7 The method lesson
+
+§18.2 established that a clean `userErrors: []` says nothing about items never
+sent. This pass adds a second: **scanning for a known-bad string finds only
+that string.**
+
+The 184 of §16.2 were found by matching `Premium Tile Art`. That scan could
+never have found the 81 Floral products, the 11 drafts, or the 88 double
+spaces, because none of them contain it. Each turned up by accident — the
+Floral set through a duplicate-title check, the drafts through a collection
+rule.
+
+Before this catalogue can be called clean, it needs a sweep for the *shape* of
+machine-generated content — adjective-prefix repetition, byte-identical
+descriptions, doubled whitespace — rather than for any particular defective
+string.
