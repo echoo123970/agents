@@ -1267,11 +1267,11 @@ sitewide `@graph` is now `Organization` + `WebSite`.
   All four are in the noindex set, so it currently costs nothing.
   → **Done via `seo.title` override, see §19.2** — and the same check found
   1,285 over-long `seo.title`s catalogue-wide, see §19.6.
-- **Collections are still entirely untouched** — see §14's "Left undone".
-  Dead `mosaic-tile-art` (0 products), a duplicate pair both holding all
-  1,948, `glass-mosaic-art` holding 1,624 (83%) under a *material* label,
-  and four thin collections (4, 6, 13, 13). This is the largest remaining
-  structural item.
+- **Collections** — now done, see §20. Note that three claims in this list
+  were wrong: the "duplicate pair" is unpublished and was never an SEO
+  problem, and two of the four "thin" collections are unpublished too. The
+  real finding was `glass-mosaic-art`, and it is larger than a label
+  problem — see §20.3.
 - **A pre-existing `seo.hidden` metafield definition** (`number_integer`,
   storefront-readable) already existed on products, presumably from an SEO
   app. It is unrelated to `seo.noindex` and was left alone, but anyone
@@ -1475,11 +1475,11 @@ characters.** The suffix is the cause, not the titles. And the brand is
 already appended to the `<title>` by Shopify's own template on most themes,
 which would make it redundant twice over.
 
-**Not actioned.** Before writing to 1,285 products it needs establishing
-whether an installed SEO app owns that field and would simply overwrite the
-fix — the store already carries an unrelated `seo.hidden` definition
-(`number_integer`), which suggests one has been active at some point. That
-check comes first.
+**Not actioned yet, but no longer blocked.** The concern was that an
+installed SEO app might own that field and overwrite any fix. **That check is
+done and the answer is no — there is no SEO app installed** (§20.5). The only
+SEO-adjacent app has read-only scopes and cannot write. So this work can
+proceed whenever the owner wants it.
 
 ### 19.7 Repo hygiene: rebase/squash merges strand this branch
 
@@ -1520,3 +1520,153 @@ Two things are wrong underneath it:
 Not changed — it is a live page and the correct value depends on whether the
 suffix should be cleared or pointed at the real template. One field to set
 once decided.
+
+---
+
+## 20. Collections, and the SEO-app question answered (2026-10-31)
+
+The last untouched area. Investigating it corrected three things stated
+earlier in this document, and answered the question that was blocking §19.6.
+
+### 20.1 Three corrections
+
+**The "duplicate all-1,948 pair" is not an SEO problem.** §14 and §18.5 both
+listed `cloud-search-all-products` and `globofilter-best-selling-products-index`
+as duplicate collections worth addressing. Both are published to **zero**
+channels. They are invisible to the storefront and to Google. There was never
+anything to fix.
+
+**`featured-mosaics` is also unpublished**, so its missing SEO metadata costs
+nothing. It was listed as a thin collection needing attention; it does not.
+
+**`sources` *does* expose smart-collection rule conditions.** §14 recorded
+that it did not, and that the loss of `ruleSet` meant rules could no longer be
+read. Wrong — they are simply nested further down:
+
+```
+Collection.sources → CollectionConditionsSource.inclusion
+                   → { matchType, conditions[] }
+```
+
+`conditions` is a union of twenty concrete types
+(`…ConditionProductType`, `…ConditionVariantPrice`, and so on), which is why a
+naive selection set returns nothing useful and makes the field look empty.
+
+### 20.2 The real state of the collections
+
+27 collections: **24 published, 3 not**.
+
+Only two of the 27 are rule-based; the rest, including the 1,624-product
+`glass-mosaic-art`, are **manual**. Nothing maintains their membership.
+
+| | |
+|---|---:|
+| Collections | 27 |
+| Published to the online store | 24 |
+| Unpublished (app or draft leftovers) | 3 |
+| Rule-based (smart) | 2 |
+| Manual | 25 |
+
+### 20.3 `glass-mosaic-art` makes a false material claim
+
+The significant finding, and it is worse than a mislabelled collection.
+
+| | |
+|---|---:|
+| Products in `glass-mosaic-art` | 1,624 (83% of catalogue) |
+| Catalogue titles naming **glass** | 199 |
+| Catalogue titles naming **stone / marble** | 586 |
+| Stone-titled products that **must** be inside it | **≥262** |
+
+That 262 is a pigeonhole floor, not an estimate: only 324 products sit outside
+the collection, so at least 586 − 324 = 262 stone-titled products are inside
+it. Spot-checked and confirmed — "Signature Mediterranean Seascape **Stone**
+Mosaic Wall Art" is filed under **Glass** Mosaic Art, as is "Fine Abstract
+Tessellation Grid Stone Mosaic Wall Art".
+
+So the page ranks for "glass mosaic art" and delivers stone. For search that is
+a relevance mismatch. For this project specifically it is worse: it feeds
+answer engines a false material attribute about at least 262 products, and
+material is exactly the kind of fact a retrieval pipeline will repeat.
+
+**Not actioned** — the options (rename the collection to something materially
+honest, split it into glass and stone, or accept the inaccuracy) are a
+merchandising decision, not a defect with one correct fix.
+
+### 20.4 SEO pass over every published collection
+
+Two rounds, both verified by reading all 27 back from Shopify afterwards.
+
+**Outright defects:**
+
+- **`limited-edition` carried the wrong meta description entirely.** It
+  described Studio Specials: *"Shop our Studio Specials for unique, one-off
+  mosaic masterpieces and design prototypes."* A copy-paste error on a live
+  page. Replaced with copy drawn from the collection's own body text —
+  hand-cut marble, numbered, Certificate of Authenticity, retired after the run.
+- **`best-sellers` had a malformed title**:
+  `"Shop Best Sellers — iMosaicArt| Our Top Trending Mosaics "` — no space
+  before the pipe, and a trailing space.
+
+**Systematic:**
+
+| | Before | After |
+|---|---|---|
+| Published titles over 60 chars | 12 | **0** |
+| Published collections with no description | 3 | **0** |
+| Published descriptions over 160 chars | 18 | **0** |
+| Title length range | 47–73 | 47–60 |
+| Description length range | 137–203 | **115–156** |
+| Duplicate descriptions | 0 | 0 |
+
+The old descriptions nearly all followed one template — *"Shop X featuring…
+Contact us to create a personalized…"* — which is its own mild cannibalisation
+problem across 18 pages. The replacements lead with the subject and the
+hand-cut method, and all 18 open with a distinct phrase.
+
+`mosaic-tile-art` was deliberately left bare: it has **0 products** and is
+published to 9 channels, a live empty collection page. Writing SEO copy for it
+would be the wrong fix; it needs unpublishing or deleting, which is §20.6.
+
+### 20.5 There is no SEO app. The §19.6 blocker is cleared.
+
+§19.6 held back the 1,285 over-long product `seo.title`s pending a check on
+whether an installed app owned that field and would overwrite any fix.
+
+**It does not. There is no SEO app installed.** All 15 installed apps were
+listed with their access scopes:
+
+| App | Developer | Relevant scopes |
+|---|---|---|
+| Magical XML/HTML Sitemap | Magical Apps | **read-only** — `read_themes`, `read_content`, `read_products` |
+| Search & Discovery | Shopify | `write_products` (filters and synonyms, not SEO fields) |
+| Translate & Adapt | Shopify | `write_products` (translations) |
+| Smile.io, Forms, Messaging, Flow, Fraud Control, Bill Pay | — | no product-content writes |
+
+The only SEO-adjacent app, Magical Sitemap, **cannot write** — its scopes are
+read-only. So nothing will revert a change to `seo.title`, and §19.6's work can
+proceed whenever the owner wants it.
+
+**A side finding from the same check:** neither Cloud Search nor Globo Filter
+is installed. The two collections named after them
+(`cloud-search-all-products`, `globofilter-best-selling-products-index`) are
+**orphans left behind by uninstalled apps**. This also corrects a caution
+recorded while investigating §20.1 — that deleting them might break site
+search or filtering. It cannot: there is no app left to break. They are
+unpublished either way, so deleting them is tidying, not a fix.
+
+Also still present: the unrelated `seo.hidden` metafield definition
+(`number_integer`), which was the thing that suggested an SEO app had once been
+active. That now looks right — one was, and it is gone.
+
+### 20.6 Open decisions
+
+Three, all merchandising rather than technical:
+
+1. **`mosaic-tile-art`** — 0 products, published to 9 channels, no SEO, empty
+   body. Unpublishing achieves the same result as deleting and is reversible,
+   which is the recommendation.
+2. **`glass-mosaic-art`** — §20.3. Rename, split, or accept.
+3. **`cloud-search-all-products`** — unpublished, but carries complete,
+   well-written SEO copy that is currently doing nothing. If a "Shop All" page
+   is wanted, it already exists and only needs publishing.
