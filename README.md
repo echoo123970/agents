@@ -61,11 +61,10 @@ produces a PNG with the design and the materials list; *Save design* writes a
 Each stone's matching color is the average of its photo, and every mosaic tile
 shows a small piece of the real swatch.
 
-**Glass:** the crystal glass F-series (10×10×4 mm, F001–F192 plus gold and
-silver mirror HP01-10–HP04-10, 154 colors) is cut from the supplier sheet into
-`tools/mosaic-designer/glass/crystal-f/`, with each code taken from its position
-on the sheet and cross-checked by OCR (`glass/crystal-f-review.png` shows every
-swatch with its code). Glass is matched together with the stones.
+**Glass:** left out of the chart for now. The crystal glass F-series (10×10×4 mm,
+154 colors, codes from their sheet position cross-checked by OCR) is cut and kept in
+`tools/mosaic-designer/glass/crystal-f/`, with `glass/crystal-f-review.png`, ready to
+add back.
 
 **Material chart:** preloaded with the iMosaicArt palette (42 natural marbles, 6 engineered stones, numbered as on imosaicart.com/pages/color-palette), with their real swatch photos. Glass entries are placeholders until the glass chart is added. Use *Add material*
 (name, chart code, marble/glass, finish, colors or a swatch photo), then
