@@ -121,7 +121,7 @@
     <div class="hero__media">
       <div class="hero__frame" data-hero-zoom>
         {%- if section.settings.image != blank -%}
-          <img src="{{ section.settings.image | image_url: width: 1200 }}" alt="{{ section.settings.heading | strip_html | escape }}" width="1200" height="1400" class="cover-img">
+          <img src="{{ section.settings.image | image_url: width: 1200 }}" alt="{{ section.settings.image.alt | default: section.settings.heading | strip_html | escape }}" width="1200" height="1400" class="cover-img">
         {%- elsif section.settings.image_url != blank -%}
           <img src="{{ section.settings.image_url }}" alt="{{ section.settings.heading | strip_html | escape }}" width="1200" height="1400" class="cover-img" referrerpolicy="no-referrer">
         {%- elsif section.settings.image_file != blank -%}

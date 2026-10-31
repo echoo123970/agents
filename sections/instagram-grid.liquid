@@ -36,7 +36,7 @@
       {%- for block in section.blocks -%}
         <a href="{{ block.settings.link | default: settings.social_instagram_link | default: '#' }}" target="_blank" rel="noopener" class="ig-tile{% if forloop.index0 >= 6 %} ig-tile--hidden{% endif %}" {{ block.shopify_attributes }}>
           {%- if block.settings.image != blank -%}
-            <img src="{{ block.settings.image | image_url: width: 400 }}" alt="" width="400" height="400" class="cover-img" loading="lazy">
+            <img src="{{ block.settings.image | image_url: width: 400 }}" alt="{{ block.settings.image.alt | default: 'iMosaicArt mosaic artwork on Instagram' | escape }}" width="400" height="400" class="cover-img" loading="lazy">
           {%- else -%}
             {{ 'image' | placeholder_svg_tag: 'cover-img' }}
           {%- endif -%}
@@ -53,9 +53,9 @@
         {%- if tile_link == blank or tile_link == '#' -%}{%- assign tile_link = ig_link -%}{%- endif -%}
         <a href="{{ tile_link }}" target="_blank" rel="noopener" class="ig-tile{% if forloop.index0 >= 6 %} ig-tile--hidden{% endif %}">
           {%- if f contains '://' -%}
-            <img src="{{ f }}" alt="" width="400" height="400" class="cover-img" loading="lazy" referrerpolicy="no-referrer">
+            <img src="{{ f }}" alt="iMosaicArt mosaic artwork on Instagram, post {{ forloop.index }}" width="400" height="400" class="cover-img" loading="lazy" referrerpolicy="no-referrer">
           {%- else -%}
-            <img src="{{ f | asset_url }}" alt="" width="400" height="400" class="cover-img" loading="lazy">
+            <img src="{{ f | asset_url }}" alt="iMosaicArt mosaic artwork on Instagram, post {{ forloop.index }}" width="400" height="400" class="cover-img" loading="lazy">
           {%- endif -%}
           <span class="ig-overlay"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="#fff" stroke="none"/></svg></span>
         </a>

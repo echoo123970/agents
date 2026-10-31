@@ -164,7 +164,7 @@
         <a class="bj-card post-card" data-bj-item data-bj-cat="{% for t in article.tags %}{{ t | handleize }}{% unless forloop.last %} {% endunless %}{% endfor %}"{% if show_featured and forloop.first %} data-bj-first style="display:none"{% endif %} href="{{ article.url }}">
           <div class="bj-card__media">
             {%- if article.image != blank -%}
-              <img src="{{ article.image | image_url: width: 600 }}" alt="{{ article.title | escape }}" loading="lazy">
+              <img src="{{ article.image | image_url: width: 600 }}" alt="{{ article.image.alt | default: article.title | escape }}" loading="lazy">
             {%- else -%}{{ 'image' | placeholder_svg_tag: 'bj-ph' }}{%- endif -%}
           </div>
           <div class="bj-meta">

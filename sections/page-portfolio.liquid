@@ -89,7 +89,7 @@
       {%- for block in items -%}
         <figure class="pf-tile" data-pf-cat="{{ block.settings.category | handle }}" data-pf-full="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1400 }}{% endif %}" data-pf-title="{{ block.settings.title | escape }}" data-pf-catlabel="{{ block.settings.category | escape }}" {{ block.shopify_attributes }}>
           {%- if block.settings.image != blank -%}
-            <img src="{{ block.settings.image | image_url: width: 700 }}" alt="{{ block.settings.title | escape }}" width="700" height="900" class="pf-tile__img" loading="lazy">
+            <img src="{{ block.settings.image | image_url: width: 700 }}" alt="{{ block.settings.image.alt | default: block.settings.title | escape }}" width="700" height="900" class="pf-tile__img" loading="lazy">
           {%- else -%}{{ 'image' | placeholder_svg_tag: 'pf-tile__img' }}{%- endif -%}
           <figcaption class="pf-tile__cap">
             {%- if block.settings.category != blank -%}<span class="pf-tile__cat">{{ block.settings.category }}</span>{%- endif -%}
