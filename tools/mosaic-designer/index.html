@@ -1605,8 +1605,7 @@ function renderBom() {
     body.appendChild(tr);
   }
   const tA = rows.reduce((s, r) => s + r.area, 0), pcs = rows[0].pieces == null ? '—' : rows.reduce((s, r) => s + r.pieces, 0), tls = rows.reduce((s, r) => s + r.tiles, 0);
-  foot.innerHTML = `<tr><td>Total</td><td></td><td class="num">${pcs}</td><td class="num">${tls.toLocaleString()}</td><td class="num">100%</td><td class="num">${tA.toFixed(2)}</td></tr>
-    <tr><td colspan="5" class="code">Order with 15% overage for cutting waste</td><td class="num">${(tA * 1.15).toFixed(2)}</td></tr>`;
+  foot.innerHTML = `<tr><td>Total</td><td></td><td class="num">${pcs}</td><td class="num">${tls.toLocaleString()}</td><td class="num">100%</td><td class="num">${tA.toFixed(2)}</td></tr>`;
   return rows;
 }
 const fmt = n => (Math.round(n * 10) / 10).toString();

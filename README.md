@@ -63,7 +63,7 @@ browser (no build step, no server).
    Choose the tile size (¼ in to 1 in) and grout color.
 
 The **Materials used** table lists each material with piece count, tile count, share and
-area (ft² or m², from the finished width), plus a 15% overage line. *Export*
+area (ft² or m², from the finished width). *Export*
 produces a PNG with the design and the materials list; *Save design* writes a
 `.json` file that can be reopened or sent to a customer.
 
