@@ -477,11 +477,52 @@ templates a moment later. That order was harmless: until `product.liquid`
 arrived it still carried its own inline Product schema, so there was never a
 page with two Product blocks or with a render pointing at a missing snippet.
 
-### Still unverified: rendered output
+### Verified 2026-10-31: rendered output
 
-The storefront remains unreachable from this environment, so the emitted JSON-LD
-has still never been seen rendered. Check a product page loads, then run it and
-`/pages/installation-guide` through the Rich Results Test.
+The owner ran both pages through Google's Rich Results Test. The storefront is
+still unreachable from this environment, so this is the first time the emitted
+JSON-LD has been seen rendered.
+
+**Product page** (`/products/landscape-mosaics-desert-oasis-at-dawn-mosaic-art`),
+crawled 15:27:01 — all valid:
+
+| Type | Items | Source |
+|---|---:|---|
+| Product snippets | 1 | `seo-product-schema` |
+| Merchant listings | 1 | `seo-product-schema` |
+| Breadcrumbs | 1 | `seo-breadcrumbs` |
+| Local businesses | 2 | sitewide `@graph` in `theme.liquid` |
+| Organisation | 2 | sitewide `@graph` in `theme.liquid` |
+
+Exactly one Product block and one BreadcrumbList, which is what the earlier
+check asked for — no surviving inline duplicate.
+
+The two non-critical issues are `aggregateRating` and `review`, both optional
+and both absent **by design**: the store has no reviews and inventing them was
+never an option.
+
+The counts of 2 are not duplicate markup. `theme.liquid` emits a well-formed
+`@graph` of three entities with distinct `@id`s and proper cross-links
+(`Organization` → `Store` via `parentOrganization`, `WebSite` via `publisher`).
+`Store` is a subtype of both `LocalBusiness` and `Organization`, so Google
+tallies that one node in both buckets. That block predates this work — it came
+in via `9c1e4c2`, not from any commit here.
+
+**Installation guide** (`/pages/installation-guide`), crawled 15:28:37 — 5
+valid items: Breadcrumbs 1, Local businesses 2, Organisation 2.
+
+**No HowTo card appeared.** The render condition is correct
+(`request.page_type == 'page' and page.handle == 'installation-guide'`), and
+`seo-breadcrumbs` renders from the same hook on that page, so the hook fires.
+The likeliest explanation is that **Google deprecated HowTo rich results in
+2023** and the Rich Results Test no longer reports the type at all, whether or
+not the markup is present.
+
+That is a hypothesis, not a verified fact. To settle it, run the page through
+`validator.schema.org`, which reports every type including ones Google no
+longer surfaces, or view source and search for `"HowTo"`. If the markup is
+there, nothing is broken and `seo-howto-install.liquid` is simply marking up a
+format Google stopped rewarding. If it is absent, the snippet has a bug.
 
 ### Now obsolete
 
