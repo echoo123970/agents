@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Mosaic Designer – {{ shop.name }}</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="https://cdn.shopify.com/s/files/1/0754/6093/5978/files/favicon-32.png?v=1783243826">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Hanken+Grotesk:wght@400;500;600&family=Marcellus&display=swap">
+  {{ 'mosaic-designer.css' | asset_url | stylesheet_tag }}
+  {{ content_for_header }}
+</head>
+<body>
+
+
+<header class="topbar">
+  <h1 class="brand"><a href="{{ routes.root_url }}" style="color:inherit;text-decoration:none">iMosaicArt</a><small>Mosaic Designer</small></h1>
+  <div class="steps" role="group" aria-label="Step">
+    <button id="step-sketch" type="button" aria-pressed="false"><span class="n">1</span>Design</button>
+    <button id="step-color" type="button" aria-pressed="true"><span class="n">2</span>Color</button>
+    <button id="step-mosaic" type="button" aria-pressed="false"><span class="n">3</span>Mosaic</button>
+  </div>
+  <div class="actions">
+    <button class="btn" id="new-design" type="button">New design</button>
+    <button class="btn" id="undo" type="button" title="Undo (Ctrl+Z)">Undo</button>
+    <button class="btn" id="redo" type="button" title="Redo (Ctrl+Shift+Z)">Redo</button>
+    <button class="btn" id="open-design" type="button">Open design</button>
+    <button class="btn" id="save-design" type="button">Save design</button>
+    <button class="btn primary" id="export" type="button">Export</button>
+  </div>
+</header>
+
+<main class="bench">
+  <!-- Tools -->
+  <aside class="panel tools" aria-label="Tools">
+    <div id="sketch-tools" class="group" hidden>
+      <p class="label">Draw</p>
+      <div class="toolgrid" role="group" aria-label="Drawing tools">
+        <button class="tool" type="button" data-tool="select" title="Select (V)"><svg viewBox="0 0 24 24"><path d="M5 3l12 9-5 1 3 6-2 1-3-6-4 4z"/></svg>Select</button>
+        <button class="tool" type="button" data-tool="pen" title="Pen (B)"><svg viewBox="0 0 24 24"><path d="M4 20c4-1 6-4 9-8l4-5-3-2-5 5c-3 3-5 6-5 10z"/></svg>Pen</button>
+        <button class="tool" type="button" data-tool="line" title="Line (L)"><svg viewBox="0 0 24 24"><path d="M5 19L19 5"/></svg>Line</button>
+        <button class="tool" type="button" data-tool="path" title="Path (P)"><svg viewBox="0 0 24 24"><path d="M4 18l5-11 6 8 5-9"/><circle cx="4" cy="18" r="1.5"/><circle cx="20" cy="6" r="1.5"/></svg>Path</button>
+        <button class="tool" type="button" data-tool="rect" title="Rectangle (R)"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12"/></svg>Rectangle</button>
+        <button class="tool" type="button" data-tool="ellipse" title="Ellipse (O)"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="8" ry="6"/></svg>Ellipse</button>
+        <button class="tool" type="button" data-tool="polygon" title="Polygon (G)"><svg viewBox="0 0 24 24"><path d="M12 3l8 6-3 10H7L4 9z"/></svg>Polygon</button>
+        <button class="tool" type="button" data-tool="star" title="Star (S)"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6-5.3-3-5.3 3 1.2-6L3.4 9.3l6-.7z"/></svg>Star</button>
+        <button class="tool" type="button" data-tool="heart" title="Heart (K)"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>Heart</button>
+        <button class="tool" type="button" data-tool="text" title="Text (T)"><svg viewBox="0 0 24 24"><path d="M5 6V4h14v2M12 4v16M9 20h6"/></svg>Text</button>
+        <button class="tool" type="button" data-tool="eraser" title="Eraser (X)"><svg viewBox="0 0 24 24"><path d="M8 20h12M5 15l8-9 6 6-7 8H9z"/></svg>Eraser</button>
+        <button class="tool" type="button" data-tool="hand" title="Move view (H)"><svg viewBox="0 0 24 24"><path d="M8 12V6a1.5 1.5 0 0 1 3 0v5V4.5a1.5 1.5 0 0 1 3 0V11V6a1.5 1.5 0 0 1 3 0v8c0 4-2.5 6-6 6s-5-2-6.5-4.5L4 13a1.4 1.4 0 0 1 2.3-1.6z"/></svg>Move view</button>
+      </div>
+      <p class="hint" id="tool-hint">Drag to draw. Hold Shift for straight angles, squares and circles.</p>
+      <label class="field" for="weight">Line weight
+        <span class="row"><input id="weight" type="range" min="1" max="14" value="3"><span class="val" id="weight-val">3</span></span>
+      </label>
+      <label class="field" for="sides" id="sides-field" hidden>Sides / points
+        <span class="row"><input id="sides" type="range" min="3" max="12" value="6"><span class="val" id="sides-val">6</span></span>
+      </label>
+      <div class="group" id="text-field" hidden>
+        <label class="field" for="text-input">Text<input id="text-input" value="iMosaicArt" maxlength="40"></label>
+        <div class="grid2">
+          <label class="field" for="text-font">Font
+            <select id="text-font">
+              <option value="600 {s}px 'Cormorant Garamond', Georgia, serif">Classic</option>
+              <option value="{s}px Marcellus, Georgia, serif">Roman</option>
+              <option value="700 {s}px 'Hanken Grotesk', system-ui, sans-serif">Modern</option>
+            </select>
+          </label>
+          <label class="field" for="text-size">Size<input id="text-size" type="number" min="20" max="400" value="120"></label>
+        </div>
+        <p class="hint">Click the design to place the text, then move or resize it. Each letter becomes an outlined area you can color.</p>
+      </div>
+      <div class="group" id="sel-actions" hidden>
+        <p class="label">Selection</p>
+        <div class="toolgrid">
+          <button class="btn" type="button" data-sel="flipx">Flip ↔</button>
+          <button class="btn" type="button" data-sel="flipy">Flip ↕</button>
+          <button class="btn" type="button" data-sel="rot">Rotate 90°</button>
+          <button class="btn" type="button" data-sel="dup">Duplicate</button>
+          <button class="btn danger" type="button" data-sel="del">Delete</button>
+          <button class="btn primary" type="button" data-sel="done">Done</button>
+        </div>
+        <p class="hint">Drag inside to move, a corner to resize, the round handle to rotate. Ctrl+C and Ctrl+V copy and paste.</p>
+      </div>
+      <details class="more">
+        <summary>Symmetry, grid &amp; tracing</summary>
+        <div class="group">
+      <div class="grid2">
+        <label class="field" for="symmetry">Symmetry
+          <select id="symmetry">
+            <option value="0">Off</option><option value="1">Mirror</option><option value="2">4-way</option>
+            <option value="3">6-way</option><option value="4">8-way</option><option value="6">12-way</option>
+          </select>
+        </label>
+        <label class="field" for="grid">Grid
+          <select id="grid"><option value="0">Off</option><option value="20">Fine</option><option value="40">Medium</option><option value="80">Large</option></select>
+        </label>
+      </div>
+      <label class="check" for="snap"><input type="checkbox" id="snap" checked> Snap to grid and center</label>
+      <button class="btn block" id="trace-photo" type="button">Trace over a photo…</button>
+      <div class="group" id="trace-opts" hidden>
+        <label class="check" for="trace-on"><input type="checkbox" id="trace-on" checked> Show the photo under the drawing</label>
+        <label class="field" for="trace-alpha">Photo strength
+          <span class="row"><input id="trace-alpha" type="range" min="10" max="80" value="35"><span class="val" id="trace-alpha-val">35</span></span>
+        </label>
+      </div>
+        </div>
+      </details>
+      <p class="label">Picture</p>
+      <button class="btn block" id="import-sketch" type="button">Upload a picture…</button>
+      <div class="group" id="trace-field" hidden>
+        <label class="field" for="trace-mode">Convert the upload as
+          <select id="trace-mode">
+            <option value="outline">Black &amp; white outline of a photo or colored picture</option>
+            <option value="lines">Line drawing: keep its black lines</option>
+            <option value="colors">Outline and color it with our stones</option>
+          </select>
+        </label>
+        <label class="field" for="colors" id="colors-field">Detail (number of areas)
+          <span class="row"><input id="colors" type="range" min="2" max="16" value="8"><span class="val" id="colors-val">8</span></span>
+        </label>
+        <label class="field" for="threshold" id="threshold-field" hidden>Ink threshold
+          <span class="row"><input id="threshold" type="range" min="10" max="90" value="55"><span class="val" id="threshold-val">55</span></span>
+        </label>
+      </div>
+      <button class="btn block" id="ai-redraw" type="button" hidden>Redraw upload as clean lines (AI)</button>
+      <details class="more" id="ai-more">
+        <summary>Describe a design (AI)</summary>
+        <div class="group">
+      <div class="group" id="ai-box">
+        <p class="label">Describe a design</p>
+        <label class="field" for="ai-prompt"><span class="sr">What should we draw?</span>
+          <textarea id="ai-prompt" rows="4" placeholder="Compass rose medallion with a wave border"></textarea>
+        </label>
+        <label class="check" for="ai-edit"><input type="checkbox" id="ai-edit"> Change the current sketch instead</label>
+        <div class="row">
+          <button class="btn primary" id="ai-go" type="button" style="flex:1">Draw it</button>
+          <button class="btn" id="ai-stop" type="button" hidden>Stop</button>
+        </div>
+        <p class="hint" id="ai-status">Claude draws black outlines you can edit, then color.</p>
+      </div>
+      <p class="hint" id="ai-off" hidden>Drawing from a description works when this page is opened in Claude.</p>
+        </div>
+      </details>
+      <details class="more">
+        <summary>Start over</summary>
+        <div class="group">
+          <button class="btn block" id="sample" type="button">Load our sample medallion</button>
+      <button class="btn block danger" id="clear-sketch" type="button">Clear sketch</button>
+        </div>
+      </details>
+    </div>
+
+    <div id="color-tools" class="group">
+      <p class="label">Color</p>
+      <div class="toolgrid" role="group" aria-label="Coloring tools">
+        <button class="tool" type="button" data-tool="fill" title="Fill (F)"><svg viewBox="0 0 24 24"><path d="M5 11l7-7 7 7-7 7z"/><path d="M19 15c1 2 2 3 2 4a2 2 0 0 1-4 0c0-1 1-2 2-4z"/></svg>Fill</button>
+        <button class="tool" type="button" data-tool="pick" title="Pick (I)"><svg viewBox="0 0 24 24"><path d="M14 4l6 6-9 9H5v-6z"/><path d="M12 6l6 6"/></svg>Pick</button>
+        <button class="tool" type="button" data-tool="remove" title="Remove (D)"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>Remove</button>
+      </div>
+      <p class="hint">Pick a stone from the chart, then tap any area of your design.</p>
+      <label class="field" for="any-color">Pick any color
+        <span class="row"><input type="color" id="any-color" value="#c0603f"><span class="hint" id="any-color-match">We use the closest color in our chart.</span></span>
+      </label>
+      <details class="more">
+        <summary>More options</summary>
+        <div class="group">
+      <p class="label">Show colors as</p>
+      <div class="seg" role="group" aria-label="Show colors as">
+        <button type="button" data-look="stone" aria-pressed="true">Stone</button>
+        <button type="button" data-look="flat" aria-pressed="false">Plain colors</button>
+      </div>
+      <label class="field" for="gap">Gap closing
+        <span class="row"><input id="gap" type="range" min="0" max="8" value="2"><span class="val" id="gap-val">2</span></span>
+      </label>
+      <p class="hint">Raise this if a fill leaks through a small gap in the lines.</p>
+      <button class="btn block danger" id="clear-colors" type="button">Clear all colors</button>
+        </div>
+      </details>
+    </div>
+
+    <div id="mosaic-tools" class="group" hidden>
+      <p class="label">Mosaic</p>
+      <label class="field" for="tile-size">Tile size
+        <select id="tile-size">
+          <option value="0.25">¼ in (6 mm)</option>
+          <option value="0.375">⅜ in (1 cm)</option>
+          <option value="0.5" selected>½ in (1.3 cm)</option>
+          <option value="0.625">⅝ in (1.6 cm)</option>
+          <option value="0.75">¾ in (2 cm)</option>
+          <option value="1">1 in (2.5 cm)</option>
+        </select>
+      </label>
+      <div class="group" id="mosaic-from-group" hidden>
+        <p class="label">Build the mosaic from</p>
+        <div class="seg" role="group" aria-label="Build the mosaic from">
+          <button type="button" data-from="picture" aria-pressed="true">Original picture</button>
+          <button type="button" data-from="areas" aria-pressed="false">Colored areas</button>
+        </div>
+        <p class="hint" id="mosaic-from-hint">Every tile takes the stone from our chart that is closest to the picture under it, like our hand-made portraits. Smaller tiles show more detail.</p>
+      </div>
+      <p class="hint" id="mosaic-areas-hint">Each area is laid with hand-cut tiles of its stone, cut to fit the shape. Tap an area to change its stone.</p>
+    </div>
+
+    <div id="joint-group" class="group">
+      <p class="label">Lines &amp; grout</p>
+      <div class="joints" role="group" aria-label="Line and grout color">
+        <button class="joint" type="button" data-joint="#1b1a19" style="background:#1b1a19" title="Black" aria-label="Black joints"></button>
+        <button class="joint" type="button" data-joint="#8a8782" style="background:#8a8782" title="Grey grout" aria-label="Grey joints"></button>
+        <button class="joint" type="button" data-joint="#f2f0ec" style="background:#f2f0ec" title="White grout" aria-label="White joints"></button>
+        <button class="joint" type="button" data-joint="#b08d48" style="background:#b08d48" title="Brass strip" aria-label="Brass joints"></button>
+        <button class="joint" type="button" data-joint="#4a4d52" style="background:#4a4d52" title="Lead came" aria-label="Lead came joints"></button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Slab -->
+  <section class="stage" aria-label="Design">
+    <div class="start" id="start" hidden>
+      <div class="start-head">
+        <div><h2>Create your mosaic</h2><p class="hint">How would you like to start? You can change everything afterwards.</p></div>
+        <button class="start-close" type="button" id="start-close" aria-label="Close">×</button>
+      </div>
+      <div class="start-grid">
+        <button type="button" data-start="upload"><svg viewBox="0 0 24 24"><path d="M4 16v3h16v-3M12 4v11M7 9l5-5 5 5"/></svg><b>Upload a picture</b><span>A drawing, a photo, or a picture of a mosaic. We'll ask what you'd like to do with it.</span></button>
+        <button type="button" data-start="describe"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg><b>Describe it</b><span>Type your idea and we draw the outline for you.</span></button>
+        <button type="button" data-start="draw"><svg viewBox="0 0 24 24"><path d="M4 20c4-1 6-4 9-8l4-5-3-2-5 5c-3 3-5 6-5 10z"/></svg><b>Draw it myself</b><span>Shapes, text, symmetry and freehand on a blank canvas.</span></button>
+        <button type="button" data-start="sample"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4l2 8-2 8-2-8z"/></svg><b>Explore a sample</b><span>Try coloring our compass-rose medallion.</span></button>
+      </div>
+    </div>
+    <div class="start" id="upload-panel" hidden>
+      <div class="start-head">
+        <div class="up-head"><img id="up-thumb" alt="Your upload"><div><h2>Your picture</h2><p class="hint">Tell us what it is and what you'd like, and we'll set it up.</p></div></div>
+        <button class="start-close" type="button" id="up-close" aria-label="Cancel">×</button>
+      </div>
+      <p class="label">1 · What is this picture?</p>
+      <div class="seg up-kind" role="group" aria-label="What is this picture">
+        <button type="button" data-kind="bw">Black &amp; white drawing</button>
+        <button type="button" data-kind="color">Colored picture or photo</button>
+        <button type="button" data-kind="mosaic">Photo of a mosaic</button>
+      </div>
+      <p class="label">2 · What would you like?</p>
+      <div class="start-grid up-actions" id="up-actions"></div>
+    </div>
+    <div class="slab-wrap mode-color" id="slab">
+      <div id="slab-inner">
+        <canvas id="view" width="1000" height="750" aria-label="Design canvas"></canvas>
+        <canvas id="overlay" width="1000" height="750"></canvas>
+      </div>
+      <div class="busy" id="busy" hidden>Cutting…</div>
+      <div class="zoombar" role="group" aria-label="Zoom">
+        <button type="button" id="zoom-out" title="Zoom out (−)" aria-label="Zoom out">−</button>
+        <button type="button" id="zoom-fit" title="Fit (0)">100%</button>
+        <button type="button" id="zoom-in" title="Zoom in (+)" aria-label="Zoom in">+</button>
+      </div>
+    </div>
+    <div class="stepnav">
+      <button class="btn" type="button" id="prev-step">← Back</button>
+      <p class="step-help"><b id="step-title">Step 2 of 3 · Color</b><span id="status">Tap an area to fill it with <b id="status-mat">—</b></span></p>
+      <button class="btn primary" type="button" id="next-step">Next: See the mosaic →</button>
+    </div>
+    <div class="statusline"><span></span><span id="dims">36 × 27 in</span></div>
+
+  </section>
+
+  <!-- Chart -->
+  <aside class="panel chart" aria-label="Material chart">
+    <div class="selected">
+      <canvas id="sel-thumb" width="144" height="144"></canvas>
+      <div>
+        <span class="chip" id="sel-type">Marble</span>
+        <div class="nm" id="sel-name">—</div>
+        <div class="code" id="sel-code"></div>
+      </div>
+    </div>
+    <div class="tabs" role="group" aria-label="Show">
+      <button type="button" data-filter="marble" aria-pressed="true">Marble</button>
+      <button type="button" data-filter="engineered" aria-pressed="false">Engineered</button>
+    </div>
+    <label class="field" for="search">Search chart
+      <input id="search" type="search" placeholder="Name or code">
+    </label>
+    <div class="swatches" id="swatches" role="group" aria-label="Materials"></div>
+    <!-- chart management, kept for staff use later; not shown to customers -->
+    <div id="chart-admin" hidden>
+    <p class="note" id="sample-note">The chart shows the 48 iMosaicArt stones with their real swatch photos, 01 to 48.</p>
+    <div class="chart-actions">
+      <button class="btn primary" id="add-mat" type="button">Add material</button>
+      <button class="btn" id="import-chart" type="button">Import chart</button>
+      <button class="btn" id="export-chart" type="button">Export chart</button>
+      <button class="btn" id="reset-chart" type="button">Reset chart</button>
+      <button class="btn primary" id="import-swatches" type="button" hidden style="grid-column: 1 / -1">Import our swatch photos from Shopify</button>
+    </div>
+    <p class="hint" id="import-status" hidden></p>
+    </div>
+  </aside>
+
+  <section class="bom-wrap" aria-label="Materials used">
+    <div class="bom">
+      <div class="bom-head">
+        <h2>Materials used</h2>
+        <div class="bom-size">
+          <label for="size-w">Finished width</label>
+          <input id="size-w" type="number" min="1" step="0.5" value="36">
+          <select id="size-unit" aria-label="Unit"><option value="in">in</option><option value="cm">cm</option></select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Material</th><th>Type</th><th class="num">Pieces</th><th class="num" id="tiles-head">Tiles</th><th class="num">Share</th><th class="num" id="area-head">Area (ft²)</th></tr></thead>
+          <tbody id="bom-body"></tbody>
+          <tfoot id="bom-foot"></tfoot>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Material editor -->
+<dialog id="mat-dlg">
+  <form class="dlg" id="mat-form" method="dialog">
+    <h3 id="mat-dlg-title">Add material</h3>
+    <div class="preview-row">
+      <canvas id="mat-preview" width="240" height="240"></canvas>
+      <div class="group">
+        <label class="field" for="m-name">Name<input id="m-name" required placeholder="Calacatta Viola"></label>
+        <label class="field" for="m-code">Chart code<input id="m-code" placeholder="MB-160"></label>
+      </div>
+    </div>
+    <div class="grid2">
+      <label class="field" for="m-type">Material
+        <select id="m-type"><option value="marble">Marble</option><option value="engineered">Engineered stone</option></select>
+      </label>
+      <label class="field" for="m-style">Finish
+        <select id="m-style"></select>
+      </label>
+    </div>
+    <div class="grid2">
+      <div class="field">Base color
+        <span class="colorpair"><input type="color" id="m-base" value="#e9e8e4" aria-label="Base color"><span class="code" id="m-base-hex">#e9e8e4</span></span>
+      </div>
+      <div class="field" id="m-vein-field">Veining / streak color
+        <span class="colorpair"><input type="color" id="m-vein" value="#8f9295" aria-label="Veining color"><span class="code" id="m-vein-hex">#8f9295</span></span>
+      </div>
+    </div>
+    <div class="field">Swatch photo (optional, replaces the generated texture)
+      <span class="row"><button class="btn" type="button" id="m-photo-btn">Choose photo…</button><button class="btn" type="button" id="m-photo-clear" hidden>Remove photo</button></span>
+    </div>
+    <div class="foot">
+      <button class="btn danger" type="button" id="m-delete" hidden>Delete</button>
+      <span class="spacer"></span>
+      <button class="btn" type="button" id="m-cancel">Cancel</button>
+      <button class="btn primary" type="submit" id="m-save">Save material</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Export -->
+<dialog id="export-dlg">
+  <div class="dlg">
+    <h3>Export design</h3>
+    <img class="export-img" id="export-img" alt="Colored design with materials list">
+    <p class="hint">The image includes the materials list. If the download button does nothing in your viewer, right-click or long-press the image to save it.</p>
+    <div class="foot">
+      <button class="btn" type="button" id="export-close">Close</button>
+      <a class="btn primary" id="export-dl" download="mosaic-design.png" href="#">Download PNG</a>
+    </div>
+  </div>
+</dialog>
+
+<!-- JSON (save design / chart) -->
+<dialog id="json-dlg">
+  <div class="dlg">
+    <h3 id="json-title">Save design</h3>
+    <p class="hint" id="json-hint"></p>
+    <textarea class="json" id="json-text" readonly aria-label="File contents"></textarea>
+    <div class="foot">
+      <button class="btn" type="button" id="json-close">Close</button>
+      <button class="btn" type="button" id="json-copy">Copy</button>
+      <a class="btn primary" id="json-dl" href="#" download="design.json">Download file</a>
+    </div>
+  </div>
+</dialog>
+
+<!-- Confirm -->
+<dialog id="confirm-dlg">
+  <form class="dlg" method="dialog">
+    <h3 id="confirm-title">Are you sure?</h3>
+    <p class="hint" id="confirm-body"></p>
+    <div class="foot">
+      <button class="btn" value="cancel">Cancel</button>
+      <button class="btn primary" value="ok" id="confirm-ok">Continue</button>
+    </div>
+  </form>
+</dialog>
+
+<input type="file" id="file-sketch" accept="image/*" hidden>
+<input type="file" id="file-trace" accept="image/*" hidden>
+<input type="file" id="file-design" accept=".json,application/json" hidden>
+<input type="file" id="file-chart" accept=".json,application/json" hidden>
+<input type="file" id="file-photo" accept="image/*" hidden>
+<div class="toast" id="toast" hidden></div>
+
+<div hidden>{{ content_for_layout }}</div>
+<script>
+  // iMosaicArt stone photos from this theme (sw-01 ... sw-48) and each stone's average color.
+  window.IMOSAIC_SWATCHES = {
+    m01: { base: "#1a1a17", photo: "{{ 'sw-01.png' | asset_url }}" },
+    m02: { base: "#8e877f", photo: "{{ 'sw-02.png' | asset_url }}" },
+    m03: { base: "#ddd6cf", photo: "{{ 'sw-03.png' | asset_url }}" },
+    m04: { base: "#d0c5bb", photo: "{{ 'sw-04.png' | asset_url }}" },
+    m05: { base: "#a1600d", photo: "{{ 'sw-05.png' | asset_url }}" },
+    m06: { base: "#6c1f04", photo: "{{ 'sw-06.png' | asset_url }}" },
+    m07: { base: "#995917", photo: "{{ 'sw-07.png' | asset_url }}" },
+    m08: { base: "#7b2708", photo: "{{ 'sw-08.png' | asset_url }}" },
+    m09: { base: "#351e0d", photo: "{{ 'sw-09.png' | asset_url }}" },
+    m10: { base: "#3e150e", photo: "{{ 'sw-10.png' | asset_url }}" },
+    m11: { base: "#c5a37e", photo: "{{ 'sw-11.png' | asset_url }}" },
+    m12: { base: "#a67965", photo: "{{ 'sw-12.png' | asset_url }}" },
+    m13: { base: "#8a7168", photo: "{{ 'sw-13.png' | asset_url }}" },
+    m14: { base: "#9b8977", photo: "{{ 'sw-14.png' | asset_url }}" },
+    m15: { base: "#a66218", photo: "{{ 'sw-15.png' | asset_url }}" },
+    m16: { base: "#bf9970", photo: "{{ 'sw-16.png' | asset_url }}" },
+    m17: { base: "#a9562b", photo: "{{ 'sw-17.png' | asset_url }}" },
+    m18: { base: "#b7895b", photo: "{{ 'sw-18.png' | asset_url }}" },
+    m19: { base: "#6e3e19", photo: "{{ 'sw-19.png' | asset_url }}" },
+    m20: { base: "#ae7433", photo: "{{ 'sw-20.png' | asset_url }}" },
+    m21: { base: "#382312", photo: "{{ 'sw-21.png' | asset_url }}" },
+    m22: { base: "#77573d", photo: "{{ 'sw-22.png' | asset_url }}" },
+    m23: { base: "#785b43", photo: "{{ 'sw-23.png' | asset_url }}" },
+    m24: { base: "#686058", photo: "{{ 'sw-24.png' | asset_url }}" },
+    m25: { base: "#c3a079", photo: "{{ 'sw-25.png' | asset_url }}" },
+    m26: { base: "#c9ac8b", photo: "{{ 'sw-26.png' | asset_url }}" },
+    m27: { base: "#d6cec8", photo: "{{ 'sw-27.png' | asset_url }}" },
+    m28: { base: "#dad8d7", photo: "{{ 'sw-28.png' | asset_url }}" },
+    m29: { base: "#c7c4c3", photo: "{{ 'sw-29.png' | asset_url }}" },
+    m30: { base: "#949393", photo: "{{ 'sw-30.png' | asset_url }}" },
+    m31: { base: "#7a696e", photo: "{{ 'sw-31.png' | asset_url }}" },
+    m32: { base: "#666664", photo: "{{ 'sw-32.png' | asset_url }}" },
+    m33: { base: "#5b5143", photo: "{{ 'sw-33.png' | asset_url }}" },
+    m34: { base: "#1f211f", photo: "{{ 'sw-34.png' | asset_url }}" },
+    m35: { base: "#1b1d1b", photo: "{{ 'sw-35.png' | asset_url }}" },
+    m36: { base: "#070706", photo: "{{ 'sw-36.png' | asset_url }}" },
+    m37: { base: "#926d49", photo: "{{ 'sw-37.png' | asset_url }}" },
+    m38: { base: "#2e3222", photo: "{{ 'sw-38.png' | asset_url }}" },
+    m39: { base: "#484c37", photo: "{{ 'sw-39.png' | asset_url }}" },
+    m40: { base: "#2b362b", photo: "{{ 'sw-40.png' | asset_url }}" },
+    m41: { base: "#1a2521", photo: "{{ 'sw-41.png' | asset_url }}" },
+    m42: { base: "#1b211d", photo: "{{ 'sw-42.png' | asset_url }}" },
+    e43: { base: "#bd966b", photo: "{{ 'sw-43.png' | asset_url }}" },
+    e44: { base: "#6d020f", photo: "{{ 'sw-44.png' | asset_url }}" },
+    e45: { base: "#528193", photo: "{{ 'sw-45.png' | asset_url }}" },
+    e46: { base: "#072e46", photo: "{{ 'sw-46.png' | asset_url }}" },
+    e47: { base: "#025f81", photo: "{{ 'sw-47.png' | asset_url }}" },
+    e48: { base: "#013275", photo: "{{ 'sw-48.png' | asset_url }}" }
+  };
+</script>
+<script src="{{ 'mosaic-designer.js' | asset_url }}" defer></script>
+</body>
+</html>
