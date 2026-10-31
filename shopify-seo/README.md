@@ -423,3 +423,68 @@ shoppers no detail, scale or in-situ shot, and give AI shopping agents almost
 nothing to look at. For handmade artwork sold at these prices, detail and
 in-room shots are likely the highest-return change available — but that needs
 photography, not an API call.
+
+---
+
+## 13. Deployed to the live theme via GitHub sync (2026-10-31)
+
+**The live theme is connected to this repository.** The theme named
+`agents/shopify-live` is Shopify's GitHub integration naming for repo `agents`,
+branch `shopify-live`. Pushing to that branch syncs straight to the live
+storefront.
+
+This was the way through, and it came from the store owner, not from me. I had
+tested and reported five dead ends — live-theme writes via the MCP, theme
+publishing, direct network access to Shopify, the Chrome extension, Remote
+Control — without checking whether the theme was already wired to the repo I had
+push access to the whole time. The theme's own name said so.
+
+### Confirmed before pushing
+
+23 files compared between `origin/shopify-live` and the live theme, byte sizes
+identical on every one, including `config/settings_data.json` (8,011), every
+section, every page snippet and every template. That established the branch was
+genuinely the live theme's source and in sync, not merely similar.
+
+### What was pushed
+
+Commit `63b1729` on `shopify-live`. `templates/product.liquid` and
+`layout/theme.liquid` were patched **programmatically from the branch's own
+copies** rather than retyped, so the unchanged 30 KB of those files is bit-for-bit
+the original.
+
+| File | Before | After |
+|---|---|---|
+| `snippets/seo-product-schema.liquid` | — | 3,996 |
+| `snippets/seo-breadcrumbs.liquid` | — | 4,516 |
+| `snippets/seo-howto-install.liquid` | — | 6,448 |
+| `templates/robots.txt.liquid` | 2,996 | 4,355 |
+| `templates/product.liquid` | 32,156 | 30,441 |
+| `layout/theme.liquid` | 14,832 | 15,419 |
+
+Verified after sync: all six present on the live theme at exactly those sizes.
+Liquid tag balance checked on every changed file, and
+`templates/product.liquid` contains exactly one `ld+json` block (the
+breadcrumb), so no duplicate Product schema survived.
+
+The sync landed the snippets and `layout/theme.liquid` first and the two
+templates a moment later. That order was harmless: until `product.liquid`
+arrived it still carried its own inline Product schema, so there was never a
+page with two Product blocks or with a render pointing at a missing snippet.
+
+### Still unverified: rendered output
+
+The storefront remains unreachable from this environment, so the emitted JSON-LD
+has still never been seen rendered. Check a product page loads, then run it and
+`/pages/installation-guide` through the Rich Results Test.
+
+### Now obsolete
+
+`INSTALL-ON-LIVE.md` and `scripts/Install-SeoSchema.ps1` were written for the
+manual and PowerShell routes. Both are superseded by `git push origin
+shopify-live`, which is how any future theme change should be made. They are
+kept only as a fallback if the GitHub connection is ever removed.
+
+Theme `192613450026` ("iMosaicArt + SEO schema") is also now redundant and can
+be deleted; `Copy of agents/shopify-live` (`192613744938`) remains as the
+pre-change backup.
