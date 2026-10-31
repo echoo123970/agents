@@ -424,6 +424,11 @@ nothing to look at. For handmade artwork sold at these prices, detail and
 in-room shots are likely the highest-return change available — but that needs
 photography, not an API call.
 
+**Closed 2026-10-31 at the owner's direction.** Raised as the standing
+highest-return item; the owner has set it aside. It is recorded here as a
+known characteristic of the catalogue, not as pending work, and should not
+be re-raised in future status reports.
+
 ---
 
 ## 13. Deployed to the live theme via GitHub sync (2026-10-31)
