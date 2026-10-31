@@ -43,6 +43,13 @@ browser (no build step, no server).
      line art.
    - Both AI features work when the page is opened as a Claude artifact; the
      plain HTML file hides them.
+   **Uploading** asks what the picture is and what to do with it:
+   - *Black & white drawing* → keep its lines, then color with stones.
+   - *Colored picture or photo* → an outline to color yourself, an outline
+     colored with the closest stones, or straight to a tile-by-tile mosaic.
+   - *Photo of a mosaic* → rebuild it tile by tile in our stones (grout lines
+     are ignored), or turn it into colored areas to adjust.
+   Every result can still be edited with all the drawing tools.
 2. **Color** — customers color with plain colors from the chart, or use *Pick any
    color* and the tool picks the closest stone in the chart. Uploading a colored
    picture is turned into a black & white outline first (lines where its colors

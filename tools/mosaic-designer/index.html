@@ -139,6 +139,11 @@ details.more > .group { margin-top: 10px; }
 .start-grid svg { width: 26px; height: 26px; stroke: var(--accent); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .start-grid b { font-size: 14.5px; }
 .start-grid span { font-size: 12.5px; color: var(--muted); line-height: 1.4; }
+.up-head { display: flex; gap: 12px; align-items: center; }
+.up-head img { width: 64px; height: 64px; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); }
+.up-kind button { font-size: 12.5px; }
+.up-actions { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 900px) { .up-actions { grid-template-columns: minmax(0, 1fr); } }
 .stepnav { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .step-help { flex: 1; min-width: 200px; margin: 0; display: flex; flex-direction: column; gap: 2px; font-size: 13px; color: var(--muted); }
 .step-help > b { color: var(--ink); font-family: var(--font-accent); font-weight: 400; letter-spacing: .14em; text-transform: uppercase; font-size: 11.5px; }
@@ -424,11 +429,25 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
         <button class="start-close" type="button" id="start-close" aria-label="Close">×</button>
       </div>
       <div class="start-grid">
-        <button type="button" data-start="upload"><svg viewBox="0 0 24 24"><path d="M4 16v3h16v-3M12 4v11M7 9l5-5 5 5"/></svg><b>Upload a picture</b><span>A photo, logo or drawing becomes an outline you fill with our stones.</span></button>
+        <button type="button" data-start="upload"><svg viewBox="0 0 24 24"><path d="M4 16v3h16v-3M12 4v11M7 9l5-5 5 5"/></svg><b>Upload a picture</b><span>A drawing, a photo, or a picture of a mosaic. We'll ask what you'd like to do with it.</span></button>
         <button type="button" data-start="describe"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg><b>Describe it</b><span>Type your idea and we draw the outline for you.</span></button>
         <button type="button" data-start="draw"><svg viewBox="0 0 24 24"><path d="M4 20c4-1 6-4 9-8l4-5-3-2-5 5c-3 3-5 6-5 10z"/></svg><b>Draw it myself</b><span>Shapes, text, symmetry and freehand on a blank canvas.</span></button>
         <button type="button" data-start="sample"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4l2 8-2 8-2-8z"/></svg><b>Explore a sample</b><span>Try coloring our compass-rose medallion.</span></button>
       </div>
+    </div>
+    <div class="start" id="upload-panel" hidden>
+      <div class="start-head">
+        <div class="up-head"><img id="up-thumb" alt="Your upload"><div><h2>Your picture</h2><p class="hint">Tell us what it is and what you'd like, and we'll set it up.</p></div></div>
+        <button class="start-close" type="button" id="up-close" aria-label="Cancel">×</button>
+      </div>
+      <p class="label">1 · What is this picture?</p>
+      <div class="seg up-kind" role="group" aria-label="What is this picture">
+        <button type="button" data-kind="bw">Black &amp; white drawing</button>
+        <button type="button" data-kind="color">Colored picture or photo</button>
+        <button type="button" data-kind="mosaic">Photo of a mosaic</button>
+      </div>
+      <p class="label">2 · What would you like?</p>
+      <div class="start-grid up-actions" id="up-actions"></div>
     </div>
     <div class="slab-wrap mode-color" id="slab">
       <div id="slab-inner">
@@ -820,7 +839,8 @@ const state = {
   sizeW: 36, unit: 'in',
   look: 'stone', // how the Color step shows materials: stone textures or plain colors
   tileIn: 0.5,   // mosaic tile size in inches
-  mosaicFrom: 'picture', // with an uploaded picture: tile it directly, or tile the colored areas
+  mosaicFrom: 'picture',
+  sourceKind: 'color', // what the last upload was: bw, color or mosaic // with an uploaded picture: tile it directly, or tile the colored areas
   fills: [], // immutable entries: { x, y, mat, rot }
 };
 let inkVer = 0;
@@ -998,12 +1018,20 @@ function renderPictureMosaic() {
   const cols = Math.ceil(W / t), rows = Math.ceil(H / t), avg = new Float32Array(cols * rows * 3);
   for (let ty = 0; ty < rows; ty++) for (let tx = 0; tx < cols; tx++) {
     let r = 0, g = 0, b = 0, n = 0;
-    const step = Math.max(1, Math.floor(t / 4));
+    const step = Math.max(1, Math.floor(t / 4)), rs = [], gs = [], bs = [];
     for (let y = Math.floor(ty * t); y < Math.min(H, (ty + 1) * t); y += step) for (let x = Math.floor(tx * t); x < Math.min(W, (tx + 1) * t); x += step) {
       const i = (y * W + x) * 4; r += d[i]; g += d[i + 1]; b += d[i + 2]; n++;
+      if (sourceData.mosaic) { rs.push(d[i]); gs.push(d[i + 1]); bs.push(d[i + 2]); }
     }
-    const k = (ty * cols + tx) * 3; avg[k] = r / n; avg[k + 1] = g / n; avg[k + 2] = b / n;
+    const k = (ty * cols + tx) * 3;
+    if (sourceData.mosaic && n) { // a photo of a mosaic: the median ignores its grout lines
+      const med = a => a.sort((p, q) => p - q)[a.length >> 1];
+      avg[k] = med(rs); avg[k + 1] = med(gs); avg[k + 2] = med(bs);
+    } else { avg[k] = r / n; avg[k + 1] = g / n; avg[k + 2] = b / n; }
   }
+  // carry part of each tile's color error to its neighbors so photos blend; a mosaic photo is already
+  // in tiles, so each tile simply takes its closest stone
+  const blend = sourceData.mosaic ? 0 : .5;
   const cache = new Map(), pats = new Map(), rgbOf = new Map();
   pictureCounts = new Map();
   for (let ty = 0; ty < rows; ty++) for (let tx = 0; tx < cols; tx++) {
@@ -1014,7 +1042,7 @@ function renderPictureMosaic() {
     let m = cache.get(key);
     if (!m) { m = nearestMat(srgbToLab(r, g, b), list); cache.set(key, m); }
     let base = rgbOf.get(m.id); if (!base) { base = hexRgb(m.base); rgbOf.set(m.id, base); }
-    const spread = (dx, dy, w) => { const x = tx + dx, y = ty + dy; if (x < 0 || x >= cols || y >= rows) return; const q = (y * cols + x) * 3; for (let c = 0; c < 3; c++) avg[q + c] += ([r, g, b][c] - base[c]) * w * .7; };
+    const spread = (dx, dy, w) => { const x = tx + dx, y = ty + dy; if (x < 0 || x >= cols || y >= rows) return; const q = (y * cols + x) * 3; for (let c = 0; c < 3; c++) avg[q + c] += ([r, g, b][c] - base[c]) * w * blend; };
     spread(1, 0, 7 / 16); spread(-1, 1, 3 / 16); spread(0, 1, 5 / 16); spread(1, 1, 1 / 16);
     let pat = pats.get(m.id); if (!pat) { pat = mosctx.createPattern(getTile(m), 'repeat'); pats.set(m.id, pat); }
     const rx = tx * t + gap / 2, ry = ty * t + gap / 2, sz = t - gap;
@@ -1860,12 +1888,59 @@ $('#file-sketch').addEventListener('change', async e => {
   const img = await loadPhoto(await fileToDataURL(f));
   if (!img) return toast('That file could not be read as an image.');
   importedImg = img; importedFile = f; lastSvg = null;
-  // every upload becomes a black & white outline first; the customer colors it with our stones
-  $('#trace-mode').value = isColorful(img) ? 'outline' : 'lines';
-  showTraceFields();
   $('#ai-redraw').hidden = !sampleFn || !imagesOk;
-  heavy(runTrace);
+  showStart(false);
+  $('#up-thumb').src = img.src;
+  upKind = isColorful(img) ? 'color' : 'bw';
+  renderUpload();
+  $('#upload-panel').hidden = false;
+  $('#upload-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 });
+
+/* ---------------- Upload journeys ---------------- */
+// Three kinds of upload, each with its own ways forward:
+//   black & white drawing -> keep its lines -> color with stones -> mosaic
+//   colored picture/photo -> outline to color yourself | outline already colored | straight to a mosaic
+//   photo of a mosaic     -> rebuild it tile by tile in our stones | outline already colored
+let upKind = 'color';
+const UP_ACTIONS = {
+  bw: [['lines', 'Color it with our stones', 'We keep your black lines. Then you fill each area with a stone and see it as a mosaic.']],
+  color: [
+    ['outline', 'Make an outline I color myself', 'Your picture becomes a black & white outline. You can edit it, then fill each area with a stone.'],
+    ['colors', 'Outline it and color it for me', 'We outline the picture and fill each area with the closest stone. You can change any of them.'],
+    ['picture', 'Turn it straight into a mosaic', 'Every tile takes the closest stone to the picture under it, like our portraits. Best for photos.'],
+  ],
+  mosaic: [
+    ['picture', 'Rebuild it in our stones', 'We read the mosaic tile by tile and remake it with the closest stones from our chart.'],
+    ['colors', 'Outline it and color it for me', 'We turn the mosaic into clear areas filled with our stones, which you can adjust and redraw.'],
+  ],
+};
+function renderUpload() {
+  $$('.up-kind button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.kind === upKind)));
+  const box = $('#up-actions'); box.textContent = '';
+  for (const [how, title, text] of UP_ACTIONS[upKind]) {
+    const b = document.createElement('button'); b.type = 'button';
+    b.innerHTML = `<b>${title}</b><span>${text}</span>`;
+    b.addEventListener('click', () => { $('#upload-panel').hidden = true; heavy(() => runUpload(how)); });
+    box.appendChild(b);
+  }
+}
+$$('.up-kind button').forEach(b => b.addEventListener('click', () => { upKind = b.dataset.kind; renderUpload(); }));
+$('#up-close').addEventListener('click', () => { $('#upload-panel').hidden = true; });
+function runUpload(how) {
+  state.sourceKind = upKind;
+  $('#trace-mode').value = how === 'picture' ? 'colors' : how;
+  showTraceFields();
+  if (how === 'picture') {
+    // outline and color it too, so every step shows the design; the Mosaic step tiles the picture
+    runTrace(true);
+    state.mosaicFrom = 'picture';
+    state.tileIn = upKind === 'mosaic' ? .375 : .25; $('#tile-size').value = String(state.tileIn);
+    if (state.joint === '#1b1a19') { state.joint = '#8a8782'; markJoint(); }
+    setMode('mosaic');
+    toast(upKind === 'mosaic' ? 'Rebuilt in our stones. Change the tile size or grout on the left, or go back to adjust colors.' : 'Your picture as a mosaic in our stones. Smaller tiles show more detail.');
+  } else runTrace();
+}
 function showTraceFields() {
   $('#trace-field').hidden = false;
   $('#colors-field').hidden = $('#trace-mode').value === 'lines';
@@ -1876,30 +1951,32 @@ $('#threshold').addEventListener('input', e => { $('#threshold-val').textContent
 $('#threshold').addEventListener('change', () => { if (importedImg) heavy(runTrace); });
 $('#colors').addEventListener('input', e => { $('#colors-val').textContent = e.target.value; });
 $('#colors').addEventListener('change', () => { if (importedImg) heavy(runTrace); });
-function runTrace() {
+function runTrace(quiet) {
   sourceData = drawImported();
   state.mosaicFrom = 'areas';
+  if (state.sourceKind === 'mosaic') sourceData.mosaic = true;
   if ($('#trace-mode').value === 'outline') {
     traceColors(); // draws the outline where the picture's colors meet
     commit(true);
     state.fills = [];
     setMode('sketch');
     refresh();
-    toast('Your picture is now a black & white outline. Go to step 2, Color, to fill it with our stones.');
+    toast('Your picture is now an outline. Edit it if you like, then press Next: Color it.');
   } else if ($('#trace-mode').value === 'colors') {
     const { idx, mats } = traceColors();
     commit(true);
     autoFill(idx, mats);
     setMode('color');
     refresh();
-    toast(`Matched to ${new Set(state.fills.map(f => f.mat)).size} colors from our chart. Tap any area to change it.`);
+    if (!quiet) toast(`Colored with ${new Set(state.fills.map(f => f.mat)).size} stones from our chart. Tap any area to change it.`);
   } else {
     traceImage();
     sourceData = null;
     commit(true);
     state.fills = [];
+    setMode('color');
     refresh();
-    toast('Drawing traced. Adjust Ink threshold if lines are missing or too heavy.');
+    toast('Your drawing is ready. Pick a stone and tap each area. If lines are missing, adjust Ink threshold in step 1.');
   }
 }
 // The uploaded picture fitted onto a white slab, as pixels.
@@ -1948,7 +2025,7 @@ function traceColors() {
   const d = drawImported().data;
   const ch = [new Float32Array(N), new Float32Array(N), new Float32Array(N)];
   for (let i = 0; i < N; i++) { ch[0][i] = d[i * 4]; ch[1][i] = d[i * 4 + 1]; ch[2][i] = d[i * 4 + 2]; }
-  for (const c of ch) boxBlur(c, 2);
+  for (const c of ch) boxBlur(c, sourceData?.mosaic ? 5 : 2); // a mosaic photo's grout lines blur away
   const lab = new Float32Array(N * 3);
   for (let i = 0; i < N; i++) { const v = srgbToLab(ch[0][i], ch[1][i], ch[2][i]); lab[i * 3] = v[0]; lab[i * 3 + 1] = v[1]; lab[i * 3 + 2] = v[2]; }
   const dist = (i, c) => (lab[i * 3] - c[0]) ** 2 + (lab[i * 3 + 1] - c[1]) ** 2 + (lab[i * 3 + 2] - c[2]) ** 2;
