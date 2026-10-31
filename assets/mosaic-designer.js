@@ -1305,7 +1305,8 @@ $$('#start [data-start]').forEach(b => b.addEventListener('click', () => {
   if (how === 'upload') { setMode('sketch'); $('#file-sketch').click(); }
   else if (how === 'describe') {
     setMode('sketch'); $('#ai-more').open = true;
-    if (sampleFn) $('#ai-prompt').focus(); else toast('Describing a design works when this tool is opened in Claude. You can upload or draw instead.');
+    if (sampleFn || freeAI) { $('#ai-prompt').focus(); $('#ai-more').scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    else toast('Describing a design is not available here. You can upload or draw instead.');
   } else if (how === 'draw') {
     $('#upload-panel').hidden = true; $('#gallery').hidden = true; $('#trace-field').hidden = true; pendingImg = null; upStore = false;
     heavy(() => {
@@ -1934,8 +1935,36 @@ const AI_ERRORS = {
   image_rejected: 'That image could not be sent. Try a smaller JPG or PNG.',
   empty_completion: 'No drawing came back. Try a simpler description.',
 };
+// On the website (outside Claude) a description is drawn by a free public image service as black &
+// white line art, which then goes through the black & white drawing journey: lines kept, ready to color.
+let freeAI = false;
+async function runFree(desc) {
+  const status = $('#ai-status'), go = $('#ai-go');
+  if (!desc) { status.textContent = 'Type what you would like first, for example: a compass rose with waves around it.'; $('#ai-prompt').focus(); return; }
+  go.disabled = true; busy(true);
+  status.textContent = 'Drawing your design… this can take up to a minute.';
+  const prompt = `black and white line art coloring page for a stone mosaic: ${desc}. Clean bold black outlines, every shape closed, flat, `
+    + 'no shading, no gray, no hatching, no words, pure white background, centered, large simple shapes';
+  const w = 1024, h = Math.round(1024 * H / W / 8) * 8;
+  const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=${w}&height=${h}&nologo=true&seed=${Math.floor(Math.random() * 1e6)}`;
+  const img = await Promise.race([loadPhoto(url), new Promise(r => setTimeout(() => r(null), 120000))]);
+  busy(false); go.disabled = false;
+  if (!img) { status.textContent = 'Our drawing service is busy right now. Please try again in a minute, or upload or draw your design instead.'; return; }
+  importedImg = img; importedFile = null; lastSvg = null; sourceData = null; upStore = false;
+  heavy(() => {
+    try {
+      $('#trace-mode').value = 'lines'; showTraceFields(); state.sourceKind = 'bw';
+      runTrace();
+      status.textContent = 'Done. Color it now, or go back to Design to fix lines. Not quite right? Press Draw it again for a new version.';
+    } catch (err) {
+      console.error(err);
+      status.textContent = 'That drawing could not be used. Please press Draw it again.';
+    }
+  });
+}
 async function runAI(kind) {
   const desc = $('#ai-prompt').value.trim();
+  if (freeAI) return runFree(desc);
   let input, opts = {};
   if (kind === 'redraw') {
     input = `${svgRules()}\n\nThe attached image is a customer's design. Redraw it as clean outline line art that follows the rules, keeping its composition and main shapes. Ignore its colors; only the shapes matter.${desc ? '\nAlso apply these changes: ' + desc : ''}`;
@@ -2061,8 +2090,11 @@ async function initSwatches() {
 async function initCapabilities() {
   initSwatches();
   $('#ai-box').hidden = true;
-  if (!window.claude?.use) { // describing a design needs Claude; outside it, offer upload and drawing only
-    $('#ai-more').hidden = true; $('[data-start="describe"]').hidden = true; return;
+  if (!window.claude?.use) { // on the website a free image service draws descriptions
+    freeAI = true; $('#ai-box').hidden = false;
+    $('label[for="ai-edit"]').hidden = true;
+    $('#ai-status').textContent = 'We draw black & white outlines from your words. You then color them with our stones.';
+    return;
   }
   const [s, d] = await Promise.all([claude.use('sample').catch(() => null), claude.use('downloads').catch(() => null)]);
   downloadsApi = d;
