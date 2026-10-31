@@ -103,6 +103,16 @@ button { cursor: pointer; }
 .stage { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .slab-wrap { position: relative; width: 100%; aspect-ratio: 4 / 3; max-width: 100%; background: var(--slab); border-radius: 4px; box-shadow: 0 8px 22px rgba(22,51,94,.12); overflow: hidden; }
 .slab-wrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+#slab-inner { position: absolute; inset: 0; transform-origin: 0 0; }
+.zoombar { position: absolute; right: 10px; bottom: 10px; display: flex; background: var(--panel); border: 1px solid var(--line); border-radius: 999px; overflow: hidden; box-shadow: 0 4px 12px rgba(22,51,94,.15); }
+.zoombar button { border: 0; background: none; min-width: 34px; height: 30px; padding: 0 8px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.zoombar button:hover { background: var(--accent-soft); }
+.slab-wrap.tool-hand #overlay, .slab-wrap.panning #overlay { cursor: grab; }
+.slab-wrap.tool-select #overlay { cursor: default; }
+.slab-wrap.tool-text #overlay { cursor: text; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+#sel-actions .toolgrid { grid-template-columns: 1fr 1fr; }
+#sel-actions .btn { padding: 6px 4px; font-size: 12.5px; }
 #overlay { touch-action: none; cursor: crosshair; }
 .slab-wrap.mode-color #overlay { cursor: pointer; }
 .statusline { display: flex; flex-wrap: wrap; gap: 6px 16px; justify-content: space-between; font-size: 12px; color: var(--muted); }
@@ -207,16 +217,72 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
       <p class="hint" id="ai-off" hidden>Drawing from a description works when this page is opened in Claude.</p>
       <p class="label">Draw</p>
       <div class="toolgrid" role="group" aria-label="Drawing tools">
+        <button class="tool" type="button" data-tool="select"><svg viewBox="0 0 24 24"><path d="M5 3l12 9-5 1 3 6-2 1-3-6-4 4z"/></svg>Select<kbd>V</kbd></button>
         <button class="tool" type="button" data-tool="pen"><svg viewBox="0 0 24 24"><path d="M4 20c4-1 6-4 9-8l4-5-3-2-5 5c-3 3-5 6-5 10z"/></svg>Pen<kbd>B</kbd></button>
         <button class="tool" type="button" data-tool="line"><svg viewBox="0 0 24 24"><path d="M5 19L19 5"/></svg>Line<kbd>L</kbd></button>
+        <button class="tool" type="button" data-tool="path"><svg viewBox="0 0 24 24"><path d="M4 18l5-11 6 8 5-9"/><circle cx="4" cy="18" r="1.5"/><circle cx="20" cy="6" r="1.5"/></svg>Path<kbd>P</kbd></button>
         <button class="tool" type="button" data-tool="rect"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12"/></svg>Rectangle<kbd>R</kbd></button>
         <button class="tool" type="button" data-tool="ellipse"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="8" ry="6"/></svg>Ellipse<kbd>O</kbd></button>
+        <button class="tool" type="button" data-tool="polygon"><svg viewBox="0 0 24 24"><path d="M12 3l8 6-3 10H7L4 9z"/></svg>Polygon<kbd>G</kbd></button>
+        <button class="tool" type="button" data-tool="star"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6-5.3-3-5.3 3 1.2-6L3.4 9.3l6-.7z"/></svg>Star<kbd>S</kbd></button>
+        <button class="tool" type="button" data-tool="heart"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>Heart<kbd>K</kbd></button>
+        <button class="tool" type="button" data-tool="text"><svg viewBox="0 0 24 24"><path d="M5 6V4h14v2M12 4v16M9 20h6"/></svg>Text<kbd>T</kbd></button>
         <button class="tool" type="button" data-tool="eraser"><svg viewBox="0 0 24 24"><path d="M8 20h12M5 15l8-9 6 6-7 8H9z"/></svg>Eraser<kbd>X</kbd></button>
+        <button class="tool" type="button" data-tool="hand"><svg viewBox="0 0 24 24"><path d="M8 12V6a1.5 1.5 0 0 1 3 0v5V4.5a1.5 1.5 0 0 1 3 0V11V6a1.5 1.5 0 0 1 3 0v8c0 4-2.5 6-6 6s-5-2-6.5-4.5L4 13a1.4 1.4 0 0 1 2.3-1.6z"/></svg>Move view<kbd>H</kbd></button>
       </div>
-      <p class="hint">Hold Shift for straight angles, squares and circles. Close every shape so it can be filled.</p>
+      <p class="hint" id="tool-hint">Drag to draw. Hold Shift for straight angles, squares and circles.</p>
       <label class="field" for="weight">Line weight
         <span class="row"><input id="weight" type="range" min="1" max="14" value="3"><span class="val" id="weight-val">3</span></span>
       </label>
+      <label class="field" for="sides" id="sides-field" hidden>Sides / points
+        <span class="row"><input id="sides" type="range" min="3" max="12" value="6"><span class="val" id="sides-val">6</span></span>
+      </label>
+      <div class="group" id="text-field" hidden>
+        <label class="field" for="text-input">Text<input id="text-input" value="iMosaicArt" maxlength="40"></label>
+        <div class="grid2">
+          <label class="field" for="text-font">Font
+            <select id="text-font">
+              <option value="600 {s}px 'Cormorant Garamond', Georgia, serif">Classic</option>
+              <option value="{s}px Marcellus, Georgia, serif">Roman</option>
+              <option value="700 {s}px 'Hanken Grotesk', system-ui, sans-serif">Modern</option>
+            </select>
+          </label>
+          <label class="field" for="text-size">Size<input id="text-size" type="number" min="20" max="400" value="120"></label>
+        </div>
+        <p class="hint">Click the design to place the text, then move or resize it. Each letter becomes an outlined area you can color.</p>
+      </div>
+      <div class="group" id="sel-actions" hidden>
+        <p class="label">Selection</p>
+        <div class="toolgrid">
+          <button class="btn" type="button" data-sel="flipx">Flip ↔</button>
+          <button class="btn" type="button" data-sel="flipy">Flip ↕</button>
+          <button class="btn" type="button" data-sel="rot">Rotate 90°</button>
+          <button class="btn" type="button" data-sel="dup">Duplicate</button>
+          <button class="btn danger" type="button" data-sel="del">Delete</button>
+          <button class="btn primary" type="button" data-sel="done">Done</button>
+        </div>
+        <p class="hint">Drag inside to move, a corner to resize, the round handle to rotate. Ctrl+C and Ctrl+V copy and paste.</p>
+      </div>
+      <p class="label">Helpers</p>
+      <div class="grid2">
+        <label class="field" for="symmetry">Symmetry
+          <select id="symmetry">
+            <option value="0">Off</option><option value="1">Mirror</option><option value="2">4-way</option>
+            <option value="3">6-way</option><option value="4">8-way</option><option value="6">12-way</option>
+          </select>
+        </label>
+        <label class="field" for="grid">Grid
+          <select id="grid"><option value="0">Off</option><option value="20">Fine</option><option value="40">Medium</option><option value="80">Large</option></select>
+        </label>
+      </div>
+      <label class="check" for="snap"><input type="checkbox" id="snap" checked> Snap to grid and center</label>
+      <button class="btn block" id="trace-photo" type="button">Trace over a photo…</button>
+      <div class="group" id="trace-opts" hidden>
+        <label class="check" for="trace-on"><input type="checkbox" id="trace-on" checked> Show the photo under the drawing</label>
+        <label class="field" for="trace-alpha">Photo strength
+          <span class="row"><input id="trace-alpha" type="range" min="10" max="80" value="35"><span class="val" id="trace-alpha-val">35</span></span>
+        </label>
+      </div>
       <p class="label">Start from</p>
       <button class="btn block" id="import-sketch" type="button">Upload a picture…</button>
       <div class="group" id="trace-field" hidden>
@@ -300,9 +366,16 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
   <!-- Slab -->
   <section class="stage" aria-label="Design">
     <div class="slab-wrap mode-color" id="slab">
-      <canvas id="view" width="1000" height="750" aria-label="Design canvas"></canvas>
-      <canvas id="overlay" width="1000" height="750"></canvas>
+      <div id="slab-inner">
+        <canvas id="view" width="1000" height="750" aria-label="Design canvas"></canvas>
+        <canvas id="overlay" width="1000" height="750"></canvas>
+      </div>
       <div class="busy" id="busy" hidden>Cutting…</div>
+      <div class="zoombar" role="group" aria-label="Zoom">
+        <button type="button" id="zoom-out" title="Zoom out (−)" aria-label="Zoom out">−</button>
+        <button type="button" id="zoom-fit" title="Fit (0)">100%</button>
+        <button type="button" id="zoom-in" title="Zoom in (+)" aria-label="Zoom in">+</button>
+      </div>
     </div>
     <div class="statusline">
       <span id="status">Tap an area to fill it with <b id="status-mat">—</b></span>
@@ -346,6 +419,8 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
       <input id="search" type="search" placeholder="Name or code">
     </label>
     <div class="swatches" id="swatches" role="group" aria-label="Materials"></div>
+    <!-- chart management, kept for staff use later; not shown to customers -->
+    <div id="chart-admin" hidden>
     <p class="note" id="sample-note">The chart shows the 48 iMosaicArt stones with their real swatch photos, No. 01 to 48.</p>
     <div class="chart-actions">
       <button class="btn primary" id="add-mat" type="button">Add material</button>
@@ -355,6 +430,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
       <button class="btn primary" id="import-swatches" type="button" hidden style="grid-column: 1 / -1">Import our swatch photos from Shopify</button>
     </div>
     <p class="hint" id="import-status" hidden></p>
+    </div>
   </aside>
 </main>
 
@@ -437,6 +513,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
 </dialog>
 
 <input type="file" id="file-sketch" accept="image/*" hidden>
+<input type="file" id="file-trace" accept="image/*" hidden>
 <input type="file" id="file-design" accept=".json,application/json" hidden>
 <input type="file" id="file-chart" accept=".json,application/json" hidden>
 <input type="file" id="file-photo" accept="image/*" hidden>
@@ -916,7 +993,7 @@ function composite(target = vctx, mode = state.mode) {
   target.globalAlpha = mode === 'sketch' ? .3 : 1;
   target.drawImage(fillsLayer, 0, 0);
   target.globalAlpha = 1;
-  if (mode === 'sketch') { target.drawImage(ink, 0, 0); return; }
+  if (mode === 'sketch') { if (target === vctx) drawTrace(target); target.drawImage(ink, 0, 0); return; }
   tctx.globalCompositeOperation = 'source-over';
   tctx.clearRect(0, 0, W, H);
   tctx.drawImage(ink, 0, 0);
@@ -956,15 +1033,75 @@ function restore(s) {
   state.fills = s.fills.slice();
   heavy(() => refresh());
 }
-function undo() { if (!history.length) return; future.push(snapshot()); restore(history.pop()); }
-function redo() { if (!future.length) return; history.push(snapshot()); restore(future.pop()); }
+function undo() { if (sel) { cancelSel(); return; } if (!history.length) return; future.push(snapshot()); restore(history.pop()); }
+function redo() { if (sel) cancelSel(); if (!future.length) return; history.push(snapshot()); restore(future.pop()); }
 function updateHistoryButtons() { $('#undo').disabled = !history.length; $('#redo').disabled = !future.length; }
 
 /* ---------------- Drawing ---------------- */
-function pos(e) {
-  const r = overlay.getBoundingClientRect();
-  return { x: Math.max(0, Math.min(W - 1, (e.clientX - r.left) * W / r.width)), y: Math.max(0, Math.min(H - 1, (e.clientY - r.top) * H / r.height)) };
+// Zoom and pan: the canvases sit in #slab-inner, scaled and moved with a CSS transform. pos() reads
+// the transformed box, so pointer math stays in design pixels at any zoom.
+const view_ = { z: 1, x: 0, y: 0 };
+function applyView() {
+  const r = $('#slab').getBoundingClientRect();
+  view_.z = Math.max(1, Math.min(8, view_.z));
+  view_.x = Math.min(0, Math.max(r.width - r.width * view_.z, view_.x));
+  view_.y = Math.min(0, Math.max(r.height - r.height * view_.z, view_.y));
+  $('#slab-inner').style.transform = `translate(${view_.x}px, ${view_.y}px) scale(${view_.z})`;
+  $('#zoom-fit').textContent = Math.round(view_.z * 100) + '%';
 }
+function zoomAt(factor, cx, cy) {
+  const r = $('#slab').getBoundingClientRect();
+  if (cx == null) { cx = r.width / 2; cy = r.height / 2; }
+  const z = Math.max(1, Math.min(8, view_.z * factor));
+  view_.x = cx - (cx - view_.x) * z / view_.z; view_.y = cy - (cy - view_.y) * z / view_.z; view_.z = z;
+  applyView(); drawOverlay();
+}
+$('#zoom-in').addEventListener('click', () => zoomAt(1.5));
+$('#zoom-out').addEventListener('click', () => zoomAt(1 / 1.5));
+$('#zoom-fit').addEventListener('click', () => { view_.z = 1; view_.x = view_.y = 0; applyView(); drawOverlay(); });
+$('#slab').addEventListener('wheel', e => {
+  if (!e.ctrlKey && !e.metaKey && view_.z === 1) return; // plain scrolling keeps scrolling the page until zoomed in
+  e.preventDefault();
+  const r = $('#slab').getBoundingClientRect();
+  if (e.ctrlKey || e.metaKey) zoomAt(Math.exp(-e.deltaY * .0025), e.clientX - r.left, e.clientY - r.top);
+  else { view_.x -= e.deltaX; view_.y -= e.deltaY; applyView(); }
+}, { passive: false });
+window.addEventListener('resize', applyView);
+
+function pos(e, clamp = true) {
+  const r = overlay.getBoundingClientRect();
+  const x = (e.clientX - r.left) * W / r.width, y = (e.clientY - r.top) * H / r.height;
+  return clamp ? { x: Math.max(0, Math.min(W - 1, x)), y: Math.max(0, Math.min(H - 1, y)) } : { x, y };
+}
+// Snap a point to the grid, or to the center lines when close.
+function snap(p) {
+  if (!$('#snap').checked) return p;
+  let { x, y } = p;
+  const g = +$('#grid').value;
+  if (g) { x = Math.round(x / g) * g; y = Math.round(y / g) * g; }
+  if (Math.abs(x - W / 2) < 8) x = W / 2;
+  if (Math.abs(y - H / 2) < 8) y = H / 2;
+  return { x, y };
+}
+// Symmetry: every stroke is repeated around the center, turned and mirrored like a kaleidoscope.
+function symMatrices() {
+  const k = +$('#symmetry').value, out = [];
+  if (!k) return [new DOMMatrix()];
+  for (let i = 0; i < k; i++) for (const flip of [1, -1]) {
+    out.push(new DOMMatrix().translate(W / 2, H / 2).rotate(360 * i / k).scale(flip, 1).translate(-W / 2, -H / 2));
+  }
+  return out;
+}
+function withSym(ctx, draw) {
+  for (const m of symMatrices()) { ctx.save(); ctx.setTransform(m); draw(); ctx.restore(); }
+}
+function strokeStyle(ctx, eraser) {
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.lineWidth = eraser ? state.weight * 4 + 6 : state.weight;
+  ctx.strokeStyle = '#000';
+  ctx.globalCompositeOperation = eraser ? 'destination-out' : 'source-over';
+}
+// Outline of a shape tool between two corners of its box.
 function shapePath(ctx, tool, a, b, shift) {
   let { x: x2, y: y2 } = b;
   const dx = x2 - a.x, dy = y2 - a.y;
@@ -975,69 +1112,332 @@ function shapePath(ctx, tool, a, b, shift) {
       x2 = a.x + Math.cos(ang) * len; y2 = a.y + Math.sin(ang) * len;
     }
     ctx.moveTo(a.x, a.y); ctx.lineTo(x2, y2);
-  } else {
-    let w = dx, h = dy;
-    if (shift) { const s = Math.max(Math.abs(w), Math.abs(h)); w = Math.sign(w || 1) * s; h = Math.sign(h || 1) * s; }
-    if (tool === 'rect') ctx.rect(a.x, a.y, w, h);
-    else ctx.ellipse(a.x + w / 2, a.y + h / 2, Math.abs(w / 2), Math.abs(h / 2), 0, 0, Math.PI * 2);
+    return;
+  }
+  let w = dx, h = dy;
+  if (shift || tool === 'polygon' || tool === 'star') { const s = Math.max(Math.abs(w), Math.abs(h)); w = Math.sign(w || 1) * s; h = Math.sign(h || 1) * s; }
+  const cx = a.x + w / 2, cy = a.y + h / 2, rx = Math.abs(w / 2), ry = Math.abs(h / 2), n = +$('#sides').value;
+  if (tool === 'rect') ctx.rect(a.x, a.y, w, h);
+  else if (tool === 'ellipse') ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+  else if (tool === 'polygon' || tool === 'star') {
+    const pts = tool === 'star' ? n * 2 : n;
+    for (let i = 0; i < pts; i++) {
+      const ang = -Math.PI / 2 + i * 2 * Math.PI / pts, r = tool === 'star' && i % 2 ? .45 : 1;
+      const px = cx + Math.cos(ang) * rx * r, py = cy + Math.sin(ang) * ry * r;
+      i ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
+    }
+    ctx.closePath();
+  } else if (tool === 'heart') {
+    const x0 = Math.min(a.x, a.x + w), y0 = Math.min(a.y, a.y + h), W2 = Math.abs(w), H2 = Math.abs(h);
+    ctx.moveTo(x0 + W2 / 2, y0 + H2 * .28);
+    ctx.bezierCurveTo(x0 + W2 / 2, y0, x0, y0, x0, y0 + H2 * .32);
+    ctx.bezierCurveTo(x0, y0 + H2 * .62, x0 + W2 / 2, y0 + H2 * .78, x0 + W2 / 2, y0 + H2);
+    ctx.bezierCurveTo(x0 + W2 / 2, y0 + H2 * .78, x0 + W2, y0 + H2 * .62, x0 + W2, y0 + H2 * .32);
+    ctx.bezierCurveTo(x0 + W2, y0, x0 + W2 / 2, y0, x0 + W2 / 2, y0 + H2 * .28);
+    ctx.closePath();
   }
 }
-function strokeStyle(ctx, eraser) {
-  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-  ctx.lineWidth = eraser ? state.weight * 4 + 6 : state.weight;
-  ctx.strokeStyle = '#000';
-  ctx.globalCompositeOperation = eraser ? 'destination-out' : 'source-over';
+const SHAPES = ['line', 'rect', 'ellipse', 'polygon', 'star', 'heart'];
+
+// A floating selection: lifted (or pasted) pixels with a center, scale, flip and rotation. It is
+// stamped onto the drawing when finished, so it can be moved and transformed freely until then.
+let sel = null, clip = null;
+function selMatrix(s = sel) {
+  return new DOMMatrix().translate(s.cx, s.cy).rotate(s.rot).scale(s.sx, s.sy).translate(-s.img.width / 2, -s.img.height / 2);
 }
-let drag = null;
+function selCorners() {
+  const m = selMatrix(), w = sel.img.width, h = sel.img.height;
+  return [[0, 0], [w, 0], [w, h], [0, h]].map(([x, y]) => m.transformPoint(new DOMPoint(x, y)));
+}
+function selRotHandle() {
+  const [a, b] = selCorners(), mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+  const len = Math.hypot(b.x - a.x, b.y - a.y) || 1, nx = (b.y - a.y) / len, ny = -(b.x - a.x) / len;
+  const flip = sel.sy < 0 ? -1 : 1, d = 28 / view_.z;
+  return { x: mx + nx * d * flip, y: my + ny * d * flip };
+}
+function selHit(p) {
+  if (!sel) return null;
+  const hs = 12 / view_.z, rh = selRotHandle();
+  if (Math.hypot(p.x - rh.x, p.y - rh.y) < hs) return 'rotate';
+  if (selCorners().some(c => Math.hypot(p.x - c.x, p.y - c.y) < hs)) return 'scale';
+  const q = selMatrix().inverse().transformPoint(new DOMPoint(p.x, p.y));
+  return q.x >= 0 && q.y >= 0 && q.x <= sel.img.width && q.y <= sel.img.height ? 'move' : null;
+}
+function liftRect(a, b) {
+  const x = Math.floor(Math.min(a.x, b.x)), y = Math.floor(Math.min(a.y, b.y));
+  const w = Math.ceil(Math.abs(b.x - a.x)), h = Math.ceil(Math.abs(b.y - a.y));
+  if (w < 3 || h < 3) return;
+  const img = document.createElement('canvas'); img.width = w; img.height = h;
+  img.getContext('2d').drawImage(ink, x, y, w, h, 0, 0, w, h);
+  ictx.clearRect(x, y, w, h);
+  sel = { img, cx: x + w / 2, cy: y + h / 2, sx: 1, sy: 1, rot: 0 };
+  showSelActions(); composite(); drawOverlay();
+}
+function floatCanvas(img, cx = W / 2, cy = H / 2) {
+  sel = { img, cx, cy, sx: 1, sy: 1, rot: 0 };
+  showSelActions(); composite(); drawOverlay();
+}
+function finishSel(keep = true) {
+  if (!sel) return;
+  if (keep) { ictx.save(); ictx.setTransform(selMatrix()); ictx.drawImage(sel.img, 0, 0); ictx.restore(); }
+  sel = null; showSelActions(); drawOverlay();
+  commit(true); refresh();
+}
+function cancelSel() { // put the lifted pixels back
+  if (!sel) return;
+  sel = null; if (currentInk) ictx.putImageData(currentInk, 0, 0); else ictx.clearRect(0, 0, W, H);
+  showSelActions(); composite(); drawOverlay();
+}
+function showSelActions() { $('#sel-actions').hidden = !sel; }
+$$('#sel-actions [data-sel]').forEach(b => b.addEventListener('click', () => {
+  if (!sel) return;
+  const a = b.dataset.sel;
+  if (a === 'flipx') sel.sx *= -1;
+  else if (a === 'flipy') sel.sy *= -1;
+  else if (a === 'rot') sel.rot = (sel.rot + 90) % 360;
+  else if (a === 'dup') { // stamp a copy where it is and keep moving the other one
+    ictx.save(); ictx.setTransform(selMatrix()); ictx.drawImage(sel.img, 0, 0); ictx.restore();
+    sel.cx += 24; sel.cy += 24;
+  } else if (a === 'del') { finishSel(false); return; }
+  else if (a === 'done') { finishSel(true); return; }
+  composite(); drawOverlay();
+}));
+function selectionImage() { // the selection as it currently looks, for copying
+  const c = document.createElement('canvas'); c.width = sel.img.width; c.height = sel.img.height;
+  c.getContext('2d').drawImage(sel.img, 0, 0); return c;
+}
+function textCanvas() {
+  const txt = $('#text-input').value.trim();
+  if (!txt) { toast('Type the text first.'); return null; }
+  const size = Math.max(20, Math.min(400, +$('#text-size').value || 120));
+  const font = $('#text-font').value.replace('{s}', size);
+  const m = document.createElement('canvas').getContext('2d'); m.font = font;
+  const pad = state.weight * 2 + 6, c = document.createElement('canvas');
+  c.width = Math.ceil(m.measureText(txt).width + pad * 2); c.height = Math.ceil(size * 1.25 + pad * 2);
+  const x = c.getContext('2d');
+  x.font = font; x.textBaseline = 'middle'; x.lineJoin = 'round'; x.lineWidth = state.weight; x.strokeStyle = '#000';
+  x.strokeText(txt, pad, c.height / 2);
+  return c;
+}
+
+// Overlay: grid, symmetry guides, previews and the selection frame, redrawn on every change.
+let preview = null, pathPts = null;
+function drawOverlay(hover) {
+  octx.setTransform(1, 0, 0, 1, 0, 0);
+  octx.clearRect(0, 0, W, H);
+  if (state.mode !== 'sketch') return;
+  const lw = 1 / view_.z, g = +$('#grid').value;
+  if (g) {
+    octx.strokeStyle = 'rgba(43,123,232,.18)'; octx.lineWidth = lw; octx.beginPath();
+    for (let x = g; x < W; x += g) { octx.moveTo(x, 0); octx.lineTo(x, H); }
+    for (let y = g; y < H; y += g) { octx.moveTo(0, y); octx.lineTo(W, y); }
+    octx.stroke();
+  }
+  const k = +$('#symmetry').value;
+  if (k) {
+    octx.strokeStyle = 'rgba(43,123,232,.45)'; octx.lineWidth = lw; octx.setLineDash([6 / view_.z, 6 / view_.z]); octx.beginPath();
+    for (let i = 0; i < k; i++) { // mirror axes through the center
+      const ang = Math.PI / 2 + Math.PI * i / k, r = W;
+      octx.moveTo(W / 2 - Math.cos(ang) * r, H / 2 - Math.sin(ang) * r); octx.lineTo(W / 2 + Math.cos(ang) * r, H / 2 + Math.sin(ang) * r);
+    }
+    octx.stroke(); octx.setLineDash([]);
+  }
+  if (preview) {
+    strokeStyle(octx, false); octx.strokeStyle = '#2B7BE8';
+    withSym(octx, () => { shapePath(octx, preview.tool, preview.a, preview.b, preview.shift); octx.stroke(); });
+  }
+  if (pathPts) {
+    strokeStyle(octx, false); octx.strokeStyle = '#2B7BE8';
+    const pts = hover ? [...pathPts, hover] : pathPts;
+    withSym(octx, () => { octx.beginPath(); pts.forEach((p, i) => i ? octx.lineTo(p.x, p.y) : octx.moveTo(p.x, p.y)); octx.stroke(); });
+    octx.fillStyle = '#2B7BE8'; octx.beginPath(); octx.arc(pathPts[0].x, pathPts[0].y, 6 / view_.z, 0, 7); octx.fill();
+  }
+  if (drag?.marquee) {
+    const { a, b } = drag.marquee;
+    octx.strokeStyle = '#2B7BE8'; octx.lineWidth = lw; octx.setLineDash([5 / view_.z, 4 / view_.z]);
+    octx.strokeRect(a.x, a.y, b.x - a.x, b.y - a.y); octx.setLineDash([]);
+  }
+  if (sel) {
+    octx.save(); octx.setTransform(selMatrix()); octx.drawImage(sel.img, 0, 0); octx.restore();
+    const c = selCorners(), rh = selRotHandle(), hs = 5 / view_.z;
+    octx.strokeStyle = '#2B7BE8'; octx.lineWidth = 1.5 * lw; octx.setLineDash([5 / view_.z, 4 / view_.z]);
+    octx.beginPath(); c.forEach((p, i) => i ? octx.lineTo(p.x, p.y) : octx.moveTo(p.x, p.y)); octx.closePath(); octx.stroke(); octx.setLineDash([]);
+    octx.fillStyle = '#fff';
+    for (const p of c) { octx.fillRect(p.x - hs, p.y - hs, hs * 2, hs * 2); octx.strokeRect(p.x - hs, p.y - hs, hs * 2, hs * 2); }
+    const top = { x: (c[0].x + c[1].x) / 2, y: (c[0].y + c[1].y) / 2 };
+    octx.beginPath(); octx.moveTo(top.x, top.y); octx.lineTo(rh.x, rh.y); octx.stroke();
+    octx.beginPath(); octx.arc(rh.x, rh.y, hs * 1.3, 0, 7); octx.fill(); octx.stroke();
+  }
+}
+
+// Pointer handling. Two fingers (or the Move view tool, Space, or the middle button) pan and zoom.
+let drag = null, spaceDown = false;
+const touches = new Map();
+let pinch = null;
+function startPan(e) { drag = { pan: true, sx: e.clientX, sy: e.clientY, vx: view_.x, vy: view_.y }; $('#slab').classList.add('panning'); }
 overlay.addEventListener('pointerdown', e => {
+  if (e.pointerType === 'touch') {
+    touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (touches.size === 2) { // second finger: switch to pinch, dropping any stroke in progress
+      if (drag && !drag.pan && (drag.tool === 'pen' || drag.tool === 'eraser') && currentInk) ictx.putImageData(currentInk, 0, 0);
+      drag = null; preview = null;
+      const [a, b] = [...touches.values()];
+      pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2, z: view_.z, x: view_.x, y: view_.y };
+      composite(); drawOverlay(); return;
+    }
+  }
+  if (e.button === 1 || (e.button === 0 && (spaceDown || (state.mode === 'sketch' && state.tool.sketch === 'hand')))) {
+    overlay.setPointerCapture(e.pointerId); startPan(e); return;
+  }
   if (e.button !== 0) return;
   const p = pos(e);
   if (state.mode !== 'sketch') { colorClick(p); return; }
   overlay.setPointerCapture(e.pointerId);
   const tool = state.tool.sketch;
-  drag = { tool, start: p, last: p, mid: p };
+  if (tool === 'select') {
+    const hit = selHit(pos(e, false));
+    if (hit) { drag = { tool, hit, start: pos(e, false), s0: { ...sel } }; return; }
+    if (sel) finishSel(true);
+    drag = { tool, marquee: { a: p, b: p } }; return;
+  }
+  if (sel) finishSel(true);
+  if (tool === 'text') { const c = textCanvas(); if (c) { floatCanvas(c, p.x, p.y); setTool('select'); } return; }
+  if (tool === 'path') {
+    const q = snap(p);
+    if (!pathPts) pathPts = [q];
+    else if (pathPts.length > 2 && Math.hypot(q.x - pathPts[0].x, q.y - pathPts[0].y) < 10 / view_.z) { pathPts.push(pathPts[0]); finishPath(); return; }
+    else pathPts.push(q);
+    drawOverlay(); return;
+  }
+  drag = { tool, start: SHAPES.includes(tool) ? snap(p) : p, last: p, mid: p };
   if (tool === 'pen' || tool === 'eraser') {
     strokeStyle(ictx, tool === 'eraser');
-    ictx.beginPath(); ictx.moveTo(p.x, p.y); ictx.lineTo(p.x + .01, p.y); ictx.stroke();
+    withSym(ictx, () => { ictx.beginPath(); ictx.moveTo(p.x, p.y); ictx.lineTo(p.x + .01, p.y); ictx.stroke(); });
     ictx.globalCompositeOperation = 'source-over';
     composite();
   }
 });
 overlay.addEventListener('pointermove', e => {
+  if (e.pointerType === 'touch' && touches.has(e.pointerId)) touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (pinch && touches.size === 2) {
+    const [a, b] = [...touches.values()], r = $('#slab').getBoundingClientRect();
+    const d = Math.hypot(a.x - b.x, a.y - b.y), mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+    const z = Math.max(1, Math.min(8, pinch.z * d / pinch.d)), cx = pinch.mx - r.left, cy = pinch.my - r.top;
+    view_.z = z; view_.x = cx - (cx - pinch.x) * z / pinch.z + (mx - pinch.mx); view_.y = cy - (cy - pinch.y) * z / pinch.z + (my - pinch.my);
+    applyView(); drawOverlay(); return;
+  }
+  if (pathPts && !drag) { drawOverlay(snap(pos(e))); return; }
   if (!drag) return;
+  if (drag.pan) { view_.x = drag.vx + e.clientX - drag.sx; view_.y = drag.vy + e.clientY - drag.sy; applyView(); drawOverlay(); return; }
   const p = pos(e);
+  if (drag.tool === 'select') {
+    if (drag.marquee) { drag.marquee.b = p; drawOverlay(); return; }
+    const q = pos(e, false), s0 = drag.s0;
+    if (drag.hit === 'move') { const t = snap({ x: s0.cx + q.x - drag.start.x, y: s0.cy + q.y - drag.start.y }); sel.cx = t.x; sel.cy = t.y; }
+    else if (drag.hit === 'scale') {
+      const f = Math.max(.05, Math.hypot(q.x - s0.cx, q.y - s0.cy) / Math.max(1, Math.hypot(drag.start.x - s0.cx, drag.start.y - s0.cy)));
+      sel.sx = s0.sx * f; sel.sy = s0.sy * f;
+    } else if (drag.hit === 'rotate') {
+      let r = s0.rot + (Math.atan2(q.y - s0.cy, q.x - s0.cx) - Math.atan2(drag.start.y - s0.cy, drag.start.x - s0.cx)) * 180 / Math.PI;
+      if (e.shiftKey) r = Math.round(r / 15) * 15;
+      sel.rot = r;
+    }
+    drawOverlay(); return;
+  }
   if (drag.tool === 'pen' || drag.tool === 'eraser') {
-    const mid = { x: (drag.last.x + p.x) / 2, y: (drag.last.y + p.y) / 2 };
-    strokeStyle(ictx, drag.tool === 'eraser');
-    ictx.beginPath(); ictx.moveTo(drag.mid.x, drag.mid.y); ictx.quadraticCurveTo(drag.last.x, drag.last.y, mid.x, mid.y); ictx.stroke();
+    const mid = { x: (drag.last.x + p.x) / 2, y: (drag.last.y + p.y) / 2 }, d = drag;
+    strokeStyle(ictx, d.tool === 'eraser');
+    withSym(ictx, () => { ictx.beginPath(); ictx.moveTo(d.mid.x, d.mid.y); ictx.quadraticCurveTo(d.last.x, d.last.y, mid.x, mid.y); ictx.stroke(); });
     ictx.globalCompositeOperation = 'source-over';
     drag.last = p; drag.mid = mid;
     composite();
   } else {
-    octx.clearRect(0, 0, W, H);
-    strokeStyle(octx, false);
-    octx.strokeStyle = '#2B7BE8';
-    shapePath(octx, drag.tool, drag.start, p, e.shiftKey); octx.stroke();
+    preview = { tool: drag.tool, a: drag.start, b: snap(p), shift: e.shiftKey };
+    drawOverlay();
   }
 });
 function endDrag(e) {
+  touches.delete(e.pointerId);
+  if (pinch) { if (touches.size < 2) pinch = null; return; }
   if (!drag) return;
-  const p = pos(e), d = drag; drag = null;
-  octx.clearRect(0, 0, W, H);
-  if (d.tool !== 'pen' && d.tool !== 'eraser') {
-    if (Math.hypot(p.x - d.start.x, p.y - d.start.y) < 2) return;
+  const d = drag; drag = null;
+  if (d.pan) { $('#slab').classList.remove('panning'); return; }
+  const p = pos(e);
+  if (d.tool === 'select') {
+    if (d.marquee) liftRect(d.marquee.a, d.marquee.b);
+    drawOverlay(); return;
+  }
+  preview = null;
+  if (SHAPES.includes(d.tool)) {
+    const b = snap(p);
+    if (Math.hypot(b.x - d.start.x, b.y - d.start.y) < 2) { drawOverlay(); return; }
     strokeStyle(ictx, false);
-    shapePath(ictx, d.tool, d.start, p, e.shiftKey); ictx.stroke();
+    withSym(ictx, () => { shapePath(ictx, d.tool, d.start, b, e.shiftKey); ictx.stroke(); });
   } else {
     strokeStyle(ictx, d.tool === 'eraser');
-    ictx.beginPath(); ictx.moveTo(d.mid.x, d.mid.y); ictx.lineTo(p.x, p.y); ictx.stroke();
+    withSym(ictx, () => { ictx.beginPath(); ictx.moveTo(d.mid.x, d.mid.y); ictx.lineTo(p.x, p.y); ictx.stroke(); });
   }
   ictx.globalCompositeOperation = 'source-over';
+  drawOverlay();
   commit(true);
   refresh();
 }
 overlay.addEventListener('pointerup', endDrag);
 overlay.addEventListener('pointercancel', endDrag);
+overlay.addEventListener('dblclick', () => { if (pathPts) finishPath(); });
+function finishPath() {
+  const pts = pathPts; pathPts = null;
+  if (pts && pts.length > 1) {
+    strokeStyle(ictx, false);
+    withSym(ictx, () => { ictx.beginPath(); pts.forEach((p, i) => i ? ictx.lineTo(p.x, p.y) : ictx.moveTo(p.x, p.y)); ictx.stroke(); });
+    commit(true); refresh();
+  }
+  drawOverlay();
+}
+// Keys for drawing: Space pans, Enter/Escape finish or cancel, Delete removes the selection, and
+// Ctrl+C / Ctrl+X / Ctrl+V / Ctrl+A copy, cut, paste and select all.
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input, textarea, select, dialog')) return;
+  if (e.key === ' ' && !spaceDown) { spaceDown = true; $('#slab').classList.add('panning'); e.preventDefault(); return; }
+  if (state.mode !== 'sketch') return;
+  const k = e.key.toLowerCase(), mod = e.ctrlKey || e.metaKey;
+  if (k === 'enter') { if (pathPts) finishPath(); else if (sel) finishSel(true); }
+  else if (k === 'escape') { if (pathPts) { pathPts = null; drawOverlay(); } else if (sel) cancelSel(); }
+  else if ((k === 'delete' || k === 'backspace') && sel) { e.preventDefault(); finishSel(false); }
+  else if (mod && k === 'c' && sel) { clip = selectionImage(); toast('Copied'); }
+  else if (mod && k === 'x' && sel) { clip = selectionImage(); finishSel(false); }
+  else if (mod && k === 'v' && clip) { e.preventDefault(); if (sel) finishSel(true); const c = document.createElement('canvas'); c.width = clip.width; c.height = clip.height; c.getContext('2d').drawImage(clip, 0, 0); floatCanvas(c, W / 2 + 20, H / 2 + 20); setTool('select'); }
+  else if (mod && k === 'a') { e.preventDefault(); if (sel) finishSel(true); setTool('select'); liftRect({ x: 0, y: 0 }, { x: W, y: H }); }
+  else if (!mod && (k === '+' || k === '=')) zoomAt(1.5);
+  else if (!mod && k === '-') zoomAt(1 / 1.5);
+  else if (!mod && k === '0') { view_.z = 1; view_.x = view_.y = 0; applyView(); drawOverlay(); }
+});
+document.addEventListener('keyup', e => { if (e.key === ' ') { spaceDown = false; $('#slab').classList.remove('panning'); } });
+$('#symmetry').addEventListener('change', () => drawOverlay());
+$('#grid').addEventListener('change', () => drawOverlay());
+$('#sides').addEventListener('input', e => { $('#sides-val').textContent = e.target.value; });
+
+// Trace over a photo: shown faintly under the drawing in the Sketch step, never part of the design.
+let traceImg = null;
+$('#trace-photo').addEventListener('click', () => $('#file-trace').click());
+$('#file-trace').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = '';
+  if (!f) return;
+  const img = await loadPhoto(await fileToDataURL(f));
+  if (!img) return toast('That file could not be read as an image.');
+  traceImg = img; $('#trace-opts').hidden = false; $('#trace-on').checked = true;
+  setMode('sketch'); setTool('pen'); composite();
+  toast('Trace over the photo with the pen or shapes. It is only a guide and is not part of the design.');
+});
+$('#trace-on').addEventListener('change', () => composite());
+$('#trace-alpha').addEventListener('input', e => { $('#trace-alpha-val').textContent = e.target.value; composite(); });
+function drawTrace(target) {
+  if (!traceImg || !$('#trace-on').checked) return;
+  const s = Math.min(W / traceImg.naturalWidth, H / traceImg.naturalHeight), w = traceImg.naturalWidth * s, h = traceImg.naturalHeight * s;
+  target.globalAlpha = +$('#trace-alpha').value / 100;
+  target.drawImage(traceImg, (W - w) / 2, (H - h) / 2, w, h);
+  target.globalAlpha = 1;
+}
 
 /* ---------------- Coloring ---------------- */
 function colorClick(p) {
@@ -1221,6 +1621,7 @@ $('#m-delete').addEventListener('click', async () => {
 
 /* ---------------- Mode & tools ---------------- */
 function setMode(mode) {
+  if (mode !== 'sketch') { if (sel) finishSel(true); if (pathPts) finishPath(); }
   state.mode = mode;
   for (const k of ['sketch', 'color', 'mosaic']) $('#step-' + k).setAttribute('aria-pressed', String(mode === k));
   $('#sketch-tools').hidden = mode !== 'sketch';
@@ -1237,6 +1638,8 @@ function setMode(mode) {
   markFrom();
   if (mode === 'mosaic') heavy(() => { renderMosaic(); composite(); renderBom(); });
   else composite();
+  if (mode === 'sketch') setTool(state.tool.sketch);
+  drawOverlay();
 }
 function markFrom() {
   $('#mosaic-from-group').hidden = !sourceData;
@@ -1244,8 +1647,26 @@ function markFrom() {
   $('#mosaic-areas-hint').hidden = usePicture();
   if (state.mode === 'mosaic' && usePicture()) $('#status').textContent = 'Your picture as a hand-cut mosaic in our stones. Change the tile size or grout on the left.';
 }
+const TOOL_HINTS = {
+  select: 'Drag a box around part of the drawing to move, resize, rotate, flip or copy it.',
+  pen: 'Drag to draw freehand.', eraser: 'Drag over lines to erase them.',
+  line: 'Drag to draw a line. Hold Shift for straight angles.',
+  path: 'Click to add corners; click the first point, double-click or press Enter to finish.',
+  rect: 'Drag to draw. Hold Shift for a square.', ellipse: 'Drag to draw. Hold Shift for a circle.',
+  polygon: 'Drag to draw. Set the number of sides below.', star: 'Drag to draw. Set the number of points below.',
+  heart: 'Drag to draw a heart.', text: 'Type below, then click the design to place it.',
+  hand: 'Drag to move around when zoomed in. Pinch or Ctrl + scroll to zoom.',
+};
 function setTool(t) {
+  if (state.mode === 'sketch' && t !== 'select' && sel) finishSel(true);
+  if (pathPts && t !== 'path') finishPath();
   state.tool[state.mode] = t;
+  if (state.mode === 'sketch') {
+    $('#tool-hint').textContent = TOOL_HINTS[t] || '';
+    $('#sides-field').hidden = !['polygon', 'star'].includes(t);
+    $('#text-field').hidden = t !== 'text';
+    $('#slab').className = $('#slab').className.replace(/\btool-\w+/g, '').trim() + ' tool-' + t;
+  }
   $$('.tool').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.tool === state.tool.sketch || b.dataset.tool === state.tool.color)));
 }
 $('#step-sketch').addEventListener('click', () => setMode('sketch'));
@@ -1320,7 +1741,7 @@ document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && k === 'y') { e.preventDefault(); redo(); return; }
   if (e.ctrlKey || e.metaKey || e.altKey) return;
   if (k === 'm') { setMode('mosaic'); return; }
-  const map = { b: ['sketch', 'pen'], l: ['sketch', 'line'], r: ['sketch', 'rect'], o: ['sketch', 'ellipse'], x: ['sketch', 'eraser'], f: ['color', 'fill'], i: ['color', 'pick'], d: ['color', 'remove'] };
+  const map = { v: ['sketch', 'select'], b: ['sketch', 'pen'], l: ['sketch', 'line'], p: ['sketch', 'path'], r: ['sketch', 'rect'], o: ['sketch', 'ellipse'], g: ['sketch', 'polygon'], s: ['sketch', 'star'], k: ['sketch', 'heart'], t: ['sketch', 'text'], x: ['sketch', 'eraser'], h: ['sketch', 'hand'], f: ['color', 'fill'], i: ['color', 'pick'], d: ['color', 'remove'] };
   if (map[k]) { if (state.mode !== map[k][0]) setMode(map[k][0]); setTool(map[k][1]); }
 });
 
@@ -1871,6 +2292,7 @@ async function boot() {
   markJoint(); markLook(); setTool('pen'); state.mode = 'color'; setTool('fill');
   renderChart(); selectMat(state.selected); setMode('color');
   heavy(() => refresh());
+  applyView();
 }
 boot();
 initCapabilities();

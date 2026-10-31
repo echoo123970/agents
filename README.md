@@ -30,8 +30,12 @@ The agent definition lives in
 A single-page tool for designing marble and glass inlays. Open the file in a
 browser (no build step, no server).
 
-1. **Sketch** — draw the design in black lines (pen, line, rectangle, ellipse,
-   eraser), upload a drawing and convert it to black and white (adjustable ink
+1. **Sketch** — draw the design in black lines: select (move, resize, rotate,
+   flip, duplicate, delete, copy/paste), pen, line, path, rectangle, ellipse,
+   polygon, star, heart, text (outlined letters to color) and eraser, with
+   symmetry drawing (mirror up to 12-way), a grid with snapping, zoom and pan
+   (Ctrl + scroll, pinch, Space or the Move view tool), and tracing over a photo
+   shown faintly underneath. Or upload a drawing and convert it to black and white (adjustable ink
    threshold), or load the sample medallion.
    - **Describe a design**: type a description and Claude draws clean,
      cuttable line art. Tick *Change the current sketch* to revise it.
