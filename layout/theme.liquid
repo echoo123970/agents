@@ -176,6 +176,16 @@
     <meta name="twitter:description" content="{{ og_desc | strip_html | strip_newlines | escape }}">
     <meta name="twitter:image" content="{{ og_image }}">
 
+    {%- comment -%}
+      SEO structured data:
+        * seo-breadcrumbs   — BreadcrumbList for /pages/*, articles and the blog index,
+                              plus a noindex meta for wishlist/cart/search/customer pages.
+                              Products and collections already emit their own breadcrumbs.
+        * seo-howto-install — HowTo schema, only on /pages/installation-guide.
+    {%- endcomment -%}
+    {% render 'seo-breadcrumbs' %}
+    {%- if request.page_type == 'page' and page.handle == 'installation-guide' -%}{% render 'seo-howto-install' %}{%- endif -%}
+
     {{ content_for_header }}
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
