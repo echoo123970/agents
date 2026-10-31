@@ -105,11 +105,18 @@ template = f"""{{{{ 'mosaic-designer.css' | asset_url | stylesheet_tag }}}}
 <script src="{{{{ 'mosaic-designer.js' | asset_url }}}}" defer></script>
 """
 # Answers /collections/<handle>?view=mosaic-designs&sort_by=best-selling with that collection's
-# first 20 products (in the requested order) as JSON, for the tool's ready-design gallery.
+# first 20 marble products (in the requested order) as JSON, for the tool's ready-design gallery.
+# Marble pieces are the ones titled or tagged marble; glass pieces are left out.
 designs_view = '''{%- layout none -%}
-{%- paginate collection.products by 20 -%}
-[{%- assign sep = '' -%}
-{%- for p in collection.products -%}{%- if p.featured_image -%}{{ sep }}{"t":{{ p.title | json }},"u":{{ p.url | json }},"th":{{ p.featured_image | image_url: width: 360 | json }},"img":{{ p.featured_image | image_url: width: 1400 | json }}}{%- assign sep = ',' -%}{%- endif -%}{%- endfor -%}]
+{%- paginate collection.products by 250 -%}
+[{%- assign sep = '' -%}{%- assign n = 0 -%}
+{%- for p in collection.products -%}
+{%- assign tl = p.title | downcase -%}
+{%- if p.featured_image and tl contains 'marble' or p.featured_image and p.tags contains 'marble mosaic' -%}{%- unless tl contains 'glass' -%}
+{{ sep }}{"t":{{ p.title | json }},"u":{{ p.url | json }},"th":{{ p.featured_image | image_url: width: 360 | json }},"img":{{ p.featured_image | image_url: width: 1400 | json }}}{%- assign sep = ',' -%}{%- assign n = n | plus: 1 -%}
+{%- if n >= 20 -%}{%- break -%}{%- endif -%}
+{%- endunless -%}{%- endif -%}
+{%- endfor -%}]
 {%- endpaginate -%}
 '''
 files = {

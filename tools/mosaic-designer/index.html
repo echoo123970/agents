@@ -1154,7 +1154,13 @@ function composite(target = vctx, mode = state.mode) {
   target.globalAlpha = mode === 'sketch' ? .3 : 1;
   target.drawImage(fillsLayer, 0, 0);
   target.globalAlpha = 1;
-  if (mode === 'sketch') { if (target === vctx) drawTrace(target); target.drawImage(ink, 0, 0); return; }
+  if (mode === 'sketch') {
+    if (target === vctx && pendingImg) { // a picked picture, shown until the customer chooses what to do with it
+      const s = Math.min(W / pendingImg.naturalWidth, H / pendingImg.naturalHeight), w = pendingImg.naturalWidth * s, h = pendingImg.naturalHeight * s;
+      target.drawImage(pendingImg, (W - w) / 2, (H - h) / 2, w, h); return;
+    }
+    if (target === vctx) drawTrace(target); target.drawImage(ink, 0, 0); return;
+  }
   tctx.globalCompositeOperation = 'source-over';
   tctx.clearRect(0, 0, W, H);
   tctx.drawImage(ink, 0, 0);
@@ -1966,9 +1972,10 @@ $('#file-sketch').addEventListener('change', async e => {
   $('#up-thumb').src = img.src;
   $('#up-title').textContent = 'Your picture'; $('#up-link').hidden = true;
   upKind = isColorful(img) ? 'color' : 'bw';
+  showPending(img);
   renderUpload();
   $('#upload-panel').hidden = false;
-  $('#upload-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  $('#up-actions').scrollIntoView({ behavior: 'smooth', block: 'center' });
 });
 
 /* ---------------- Upload journeys ---------------- */
@@ -1976,7 +1983,9 @@ $('#file-sketch').addEventListener('change', async e => {
 //   black & white drawing -> keep its lines -> color with stones -> mosaic
 //   colored picture/photo -> outline to color yourself | outline already colored | straight to a mosaic
 //   photo of a mosaic     -> rebuild it tile by tile in our stones | outline already colored
-let upKind = 'color';
+let upKind = 'color', pendingImg = null;
+function showPending(img) { pendingImg = img; setMode('sketch'); composite(); }
+function clearPending() { if (pendingImg) { pendingImg = null; composite(); } }
 const UP_ACTIONS = {
   bw: [['lines', 'Color it with our stones', 'We keep your black lines. Then you fill each area with a stone and see it as a mosaic.']],
   color: [
@@ -2001,8 +2010,9 @@ function renderUpload() {
   }
 }
 $$('.up-kind button').forEach(b => b.addEventListener('click', () => { upKind = b.dataset.kind; renderUpload(); }));
-$('#up-close').addEventListener('click', () => { $('#upload-panel').hidden = true; });
+$('#up-close').addEventListener('click', () => { $('#upload-panel').hidden = true; clearPending(); });
 function runUpload(how) {
+  pendingImg = null;
   state.sourceKind = upKind;
   $('#trace-mode').value = how === 'picture' ? 'colors' : how;
   showTraceFields();
@@ -2179,9 +2189,10 @@ function autoFill(idx, mats) {
 }
 
 /* ---------------- Ready designs ---------------- */
-// Real iMosaicArt pieces to start from: the best sellers of each store collection, read live
+// Real iMosaicArt marble pieces to start from: the marble best sellers of each store collection, read live
 // from the store (templates/collection.mosaic-designs.liquid answers
-// /collections/<handle>?view=mosaic-designs&sort_by=best-selling with up to 20 products as JSON).
+// /collections/<handle>?view=mosaic-designs&sort_by=best-selling with up to 20 marble products as JSON;
+// glass pieces are left out). Categories without marble pieces are hidden.
 // A chosen piece goes through the "photo of a mosaic" journey.
 const DESIGN_CATS = [
   ['Abstract', ['abstract']], ['Animals', ['animal-mosaics']], ['Birds', ['bird-mosaics']],
@@ -2204,12 +2215,21 @@ async function loadDesigns(name) {
   designCache.set(name, items);
   return items;
 }
+let tabsChecked = false;
 function renderGallery() {
   const tabs = $('#gallery-tabs');
   if (!tabs.childElementCount) for (const [name] of DESIGN_CATS) {
     const b = document.createElement('button'); b.type = 'button'; b.textContent = name;
     b.addEventListener('click', () => { designCat = name; renderGallery(); });
     tabs.append(b);
+  }
+  if (!tabsChecked) { // load every category once and hide the ones with no marble pieces
+    tabsChecked = true;
+    Promise.all(DESIGN_CATS.map(([name]) => loadDesigns(name).then(items => [name, items.length]).catch(() => [name, -1]))).then(res => {
+      for (const [name, n] of res) { const b = [...tabs.children].find(x => x.textContent === name); if (b) b.hidden = n === 0; }
+      const first = res.find(([, n]) => n > 0);
+      if (first && res.find(([name]) => name === designCat)[1] === 0) { designCat = first[0]; renderGallery(); }
+    });
   }
   $$('#gallery-tabs button').forEach(b => b.setAttribute('aria-pressed', String(b.textContent === designCat)));
   const box = $('#gallery-grid'), want = designCat;
@@ -2244,9 +2264,10 @@ async function pickDesign(p) {
   $('#up-title').textContent = p.t;
   $('#up-link').href = p.u; $('#up-link').hidden = !p.u;
   upKind = 'mosaic';
+  showPending(img);
   renderUpload();
   $('#upload-panel').hidden = false;
-  $('#upload-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  $('#up-actions').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 /* ---------------- Save / open / export ---------------- */
