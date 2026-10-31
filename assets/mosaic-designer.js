@@ -392,13 +392,8 @@ function hoverArea(e) {
   hoverL = L; drawOverlay();
   const m = matById(state.selected);
   if (!L || !m) return;
-  const { x, y, w, h } = maskRegion(L, state.gap + 1);
-  work.width = w; work.height = h;
-  const pat = wctx.createPattern(getTile(m), 'repeat'); pat.setTransform(new DOMMatrix().translate(-x, -y).scale(PATTERN_SCALE));
-  wctx.fillStyle = pat; wctx.fillRect(0, 0, w, h);
-  wctx.globalCompositeOperation = 'destination-in'; wctx.drawImage(maskC, 0, 0); wctx.globalCompositeOperation = 'source-over';
-  octx.globalAlpha = .8; octx.drawImage(work, x, y); octx.globalAlpha = 1;
-  octx.globalCompositeOperation = 'source-atop'; octx.fillStyle = 'rgba(43,123,232,.12)'; octx.fillRect(x, y, w, h); octx.globalCompositeOperation = 'source-over';
+  // the same small hand-cut tiles the area gets when tapped, a little see-through
+  octx.globalAlpha = .85; tileArea(octx, null, m, L, state.gap + 1, '#d8d5cf'); octx.globalAlpha = 1;
 }
 
 /* ---------------- Rendering ---------------- */
