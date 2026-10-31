@@ -218,15 +218,16 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
         <span class="row"><input id="weight" type="range" min="1" max="14" value="3"><span class="val" id="weight-val">3</span></span>
       </label>
       <p class="label">Start from</p>
-      <button class="btn block" id="import-sketch" type="button">Upload a drawing…</button>
+      <button class="btn block" id="import-sketch" type="button">Upload a picture…</button>
       <div class="group" id="trace-field" hidden>
         <label class="field" for="trace-mode">Convert the upload as
           <select id="trace-mode">
-            <option value="colors">Colored picture: match to our colors</option>
-            <option value="lines">Line drawing: black lines only</option>
+            <option value="outline">Black &amp; white outline of a photo or colored picture</option>
+            <option value="lines">Line drawing: keep its black lines</option>
+            <option value="colors">Outline and color it with our stones</option>
           </select>
         </label>
-        <label class="field" for="colors" id="colors-field">Number of colors
+        <label class="field" for="colors" id="colors-field">Detail (number of areas)
           <span class="row"><input id="colors" type="range" min="2" max="16" value="8"><span class="val" id="colors-val">8</span></span>
         </label>
         <label class="field" for="threshold" id="threshold-field" hidden>Ink threshold
@@ -1331,19 +1332,15 @@ $('#file-sketch').addEventListener('change', async e => {
   const img = await loadPhoto(await fileToDataURL(f));
   if (!img) return toast('That file could not be read as an image.');
   importedImg = img; importedFile = f; lastSvg = null;
-  $('#trace-mode').value = isColorful(img) ? 'colors' : 'lines';
-  if ($('#trace-mode').value === 'colors') {
-    // a new picture: start with settings that suit portraits and photos
-    state.tileIn = .25; $('#tile-size').value = '0.25';
-    if (state.joint === '#1b1a19') { state.joint = '#8a8782'; markJoint(); }
-  }
+  // every upload becomes a black & white outline first; the customer colors it with our stones
+  $('#trace-mode').value = isColorful(img) ? 'outline' : 'lines';
   showTraceFields();
   $('#ai-redraw').hidden = !sampleFn || !imagesOk;
   heavy(runTrace);
 });
 function showTraceFields() {
   $('#trace-field').hidden = false;
-  $('#colors-field').hidden = $('#trace-mode').value !== 'colors';
+  $('#colors-field').hidden = $('#trace-mode').value === 'lines';
   $('#threshold-field').hidden = $('#trace-mode').value !== 'lines';
 }
 $('#trace-mode').addEventListener('change', () => { showTraceFields(); if (importedImg) heavy(runTrace); });
@@ -1353,8 +1350,15 @@ $('#colors').addEventListener('input', e => { $('#colors-val').textContent = e.t
 $('#colors').addEventListener('change', () => { if (importedImg) heavy(runTrace); });
 function runTrace() {
   sourceData = drawImported();
-  state.mosaicFrom = 'picture';
-  if ($('#trace-mode').value === 'colors') {
+  state.mosaicFrom = 'areas';
+  if ($('#trace-mode').value === 'outline') {
+    traceColors(); // draws the outline where the picture's colors meet
+    commit(true);
+    state.fills = [];
+    setMode('sketch');
+    refresh();
+    toast('Your picture is now a black & white outline. Go to step 2, Color, to fill it with our stones.');
+  } else if ($('#trace-mode').value === 'colors') {
     const { idx, mats } = traceColors();
     commit(true);
     autoFill(idx, mats);

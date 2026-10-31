@@ -41,9 +41,9 @@ browser (no build step, no server).
      plain HTML file hides them.
 2. **Color** — customers color with plain colors from the chart, or use *Pick any
    color* and the tool picks the closest stone in the chart. Uploading a colored
-   picture does this automatically: its colors are grouped, matched to the closest
-   chart colors, and turned into outlined areas that are already colored
-   (*Number of colors* sets how many). Areas show the stone images by default;
+   picture is turned into a black & white outline first (lines where its colors
+   meet; *Detail* sets how many areas), which the customer then colors. *Outline
+   and color it with our stones* does both in one go. Areas show the stone images by default;
    *Show colors as* can switch to plain colors.
 3. **Mosaic** — turns the design into hand-cut tiles with grout between them.
    With an uploaded picture, every tile takes the chart stone closest to the
