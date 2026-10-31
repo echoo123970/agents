@@ -1378,8 +1378,8 @@ $('#file-sketch').addEventListener('change', async e => {
   $('#up-title').textContent = 'Your picture'; $('#up-link').hidden = true;
   upKind = isColorful(img) ? 'color' : 'bw'; upAction = null; upStore = false;
   showPending(img);
-  renderUpload();
   $('#upload-panel').hidden = false;
+  applyUpload(UP_ACTIONS[upKind][0][0]);
   $('#up-actions').scrollIntoView({ behavior: 'smooth', block: 'center' });
 });
 
@@ -1393,32 +1393,25 @@ function showPending(img) { $('#draw-hint').hidden = true; pendingImg = img; set
 function clearPending() { if (pendingImg) { pendingImg = null; composite(); } }
 const UP_ACTIONS = {
   bw: [['lines', 'Color it with our stones', 'We keep your black lines. Then you fill each area with a stone and see it as a mosaic.']],
-  color: [
-    ['outline', 'Make an outline I color myself', 'Your picture becomes a black & white outline. You can edit it, then fill each area with a stone.'],
-    ['colors', 'Outline it and color it for me', 'We outline the picture and fill each area with the closest stone. You can change any of them.'],
-    ['picture', 'Turn it straight into a mosaic', 'Every tile takes the closest stone to the picture under it, like our portraits. Best for photos.'],
-  ],
-  mosaic: [
-    ['picture', 'Rebuild it in our stones', 'We read the mosaic tile by tile and remake it with the closest stones from our chart.'],
-    ['colors', 'Outline it and color it for me', 'We turn the mosaic into clear areas filled with our stones, which you can adjust and redraw.'],
-    ['outline', 'Make an outline I color myself', 'A black & white outline of the design that you can edit, then fill with stones. Best for simpler designs.'],
-  ],
+  color: [['colors', 'Make it a mosaic in our stones', 'We match every part of your photo to our closest stones. Tap any area to change its stone, then see it as a hand-cut mosaic.']],
 };
 // A design picked from our shop is already one of our mosaics: customers either change its colors
 // or clear them and repaint it themselves.
 const STORE_ACTIONS = [
-  ['colors', 'Change the colors', 'The design keeps its stones. Tap any area and pick a stone to change it.'],
+  ['colors', 'Change the colors', 'The mosaic keeps its tiles. Tap any area and pick a stone to change it.'],
   ['outline', 'Remove all colors and repaint', 'Fill a clean black & white outline of the design with your own stones. The Mosaic step shows the piece again in your colors.'],
 ];
+UP_ACTIONS.mosaic = STORE_ACTIONS; // a photo of a mosaic gets the same two choices as our own pieces
 let upAction = null; // the option shown on the canvas right now
 let upStore = false; // true while the picture is a design from our shop
 function renderUpload() {
   $$('.up-kind button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.kind === upKind)));
   $('#up-kind-label').hidden = $('.up-kind').hidden = $('#up-act-num').hidden = upStore;
-  $('#up-actions').classList.toggle('two', upStore);
+  const acts = upStore ? STORE_ACTIONS : UP_ACTIONS[upKind];
+  $('#up-actions').classList.toggle('two', acts.length === 2); $('#up-actions').classList.toggle('one', acts.length === 1); $('#up-try').hidden = acts.length < 2;
   $('#up-hint').textContent = upStore ? 'Change its colors, or clear them and paint it your way.' : "Tell us what it is and what you'd like, and we'll set it up.";
   const box = $('#up-actions'); box.textContent = '';
-  for (const [how, title, text] of upStore ? STORE_ACTIONS : UP_ACTIONS[upKind]) {
+  for (const [how, title, text] of acts) {
     const b = document.createElement('button'); b.type = 'button';
     b.setAttribute('aria-pressed', String(how === upAction));
     b.innerHTML = `<b>${title}</b><span>${text}</span>`;
@@ -1472,7 +1465,7 @@ function runTrace(quiet) {
   sourceData = drawImported();
   state.mosaicFrom = 'areas';
   if (state.sourceKind === 'mosaic') sourceData.mosaic = true;
-  if (upStore) sourceData.photo = $('#trace-mode').value === 'colors' ? true : 'final';
+  if (state.sourceKind === 'mosaic') sourceData.photo = $('#trace-mode').value === 'colors' ? true : 'final';
   if ($('#trace-mode').value === 'outline') {
     traceColors(); // draws the outline where the picture's colors meet
     commit(true);
