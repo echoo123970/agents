@@ -374,3 +374,52 @@ looking at specifically:
 - exactly **one** Product block and **one** BreadcrumbList block on a product page
   (two would mean the old inline block survived somewhere), and
 - `noindex` present on `/pages/wishlist` and absent everywhere else.
+
+---
+
+## 12. "Duplicate image alt text" — retracted, the finding was unfounded
+
+Checked against live data on 2026-10-31. **There is no duplicate alt text.**
+
+About 220 products were sampled across four different orderings (title ascending
+and descending, least-recently-updated, newest by id), plus the oldest and the
+most recently updated. **Every single one has exactly one image**, and that
+image's alt text is the product title. So:
+
+- no product has a second image, which is the only way alt text could repeat
+  *within* a product, and
+- product titles are distinct, so the alt text does not repeat *across* products.
+
+That is the third figure from the original audit that did not survive
+verification, after "1,403 missing descriptions" (actually zero empty) and "one
+draft product" (actually 126). The pattern is consistent: the original audit
+inferred catalog-wide problems from theme code and small samples without checking
+the data.
+
+### What is actually true, and smaller than it sounds
+
+**Alt text is mechanically the product title.** Not a duplicate-content problem;
+it is alt text that names the listing rather than describing the picture. Worth
+improving for image search and screen readers, but it is a quality nudge, not a
+defect, and it is the lowest-value item on the remaining list.
+
+**The theme ignores stored alt text anyway.** `templates/product.liquid` hardcodes
+
+```liquid
+<img src="..." alt="{{ product.title | escape }}" ...>
+```
+
+on the main image, so improving the `altText` stored on the media would change
+nothing on a product page until that line is changed to
+`{{ image.alt | default: product.title | escape }}`. The thumbnail strip uses
+`alt=""`, but it only renders when `product.media.size > 1`, which never happens
+on this catalog.
+
+### The real finding underneath it
+
+**Every product has exactly one image.** That is a much bigger deal than alt
+text: single-image product pages give Google Images one asset per product, give
+shoppers no detail, scale or in-situ shot, and give AI shopping agents almost
+nothing to look at. For handmade artwork sold at these prices, detail and
+in-room shots are likely the highest-return change available — but that needs
+photography, not an API call.
