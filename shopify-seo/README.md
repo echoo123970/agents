@@ -1266,7 +1266,7 @@ sitewide `@graph` is now `Organization` + `WebSite`.
 - **Four titles run 61–65 characters** against Google's ~60 display limit.
   All four are in the noindex set, so it currently costs nothing.
   → **Done via `seo.title` override, see §19.2** — and the same check found
-  1,285 over-long `seo.title`s catalogue-wide, see §19.5.
+  1,285 over-long `seo.title`s catalogue-wide, see §19.6.
 - **Collections are still entirely untouched** — see §14's "Left undone".
   Dead `mosaic-tile-art` (0 products), a duplicate pair both holding all
   1,948, `glass-mosaic-art` holding 1,624 (83%) under a *material* label,
@@ -1407,12 +1407,52 @@ same as nothing reading it.
 `validator.schema.org`, which reports all schema.org types rather than only
 Google's rich-result subset, or just view-source and search for `HowTo`.
 
-**Unverified lead:** one source claims Google deprecated **FAQ** rich results
-on 2026-05-07. Found in a single blog post and not corroborated. If true it
-applies to the FAQ page markup exactly as this applies to HowTo. Worth
-checking properly before anyone acts on it.
+### 19.5 FAQ rich results: verified, and it changes nothing here
 
-### 19.5 A new finding: 1,285 over-long `seo.title`s catalogue-wide
+The lead noted while closing §19.4 was checked and is **true**. Google retired
+FAQ rich results on **2026-05-07**. Rich Results Test support went in June
+2026, Search Console API support in August 2026. `FAQPage` remains valid
+schema.org, and Google's position is again that the markup can stay — unused
+structured data causes no problems for Search.
+
+Caveat on sourcing: every source found is a third-party SEO blog quoting
+Google's documentation. Google's own page was not read directly. They agree on
+all the dates above and differ only on whether stripping old markup is
+worthwhile, which is opinion rather than a Google requirement.
+
+**The detail that settles it for this store:** FAQ rich-result eligibility had
+already been narrowed in 2023 to well-known government and health sites. A
+mosaic retailer was never eligible, so the 2026 removal took away something
+this site never had. There is no regression to find and nothing to recover.
+
+This store carries `FAQPage` markup in four live snippets, not one:
+
+- `snippets/pg-faq.liquid` — the main FAQ page
+- `snippets/pg-maintenance.liquid`
+- `snippets/pg-order-process.liquid`
+- `snippets/pg-tech-details.liquid`
+
+**Decision: keep all four**, on the same reasoning as §19.4 and more strongly.
+A structured question-and-answer block is among the most directly consumable
+things on a site for answer engines and retrieval pipelines, which is the
+whole point of this project.
+
+**Do not test FAQ markup with the Rich Results Test** — support was removed in
+June 2026, so it reports nothing regardless of what is on the page. Exactly the
+same trap as HowTo. Use `validator.schema.org`.
+
+Sources: [Search Engine Land / I-O 2026 roundups](https://www.seostrategy.co.uk/learn/faq-schema-deprecation-2026-rich-result-vs-schema/),
+[Quattr](https://www.quattr.com/blog/faq-schema-in-2026),
+[almcorp](https://almcorp.com/blog/google-faq-rich-results-no-longer-supported/).
+
+**The pattern worth noticing.** HowTo in 2023, FAQ in 2026: Google is steadily
+withdrawing rich-result support for descriptive, non-commercial schema types
+while keeping Product, Breadcrumb and Merchant listings. That is an argument
+for keeping this markup, not removing it. The audience for FAQPage and HowTo
+is shifting from Google's SERP features to answer engines, and this catalogue
+is being optimised for both.
+
+### 19.6 A new finding: 1,285 over-long `seo.title`s catalogue-wide
 
 Found while checking whether anything else had §19.2's problem. It is far
 larger than four:
@@ -1441,7 +1481,7 @@ fix — the store already carries an unrelated `seo.hidden` definition
 (`number_integer`), which suggests one has been active at some point. That
 check comes first.
 
-### 19.6 Repo hygiene: rebase/squash merges strand this branch
+### 19.7 Repo hygiene: rebase/squash merges strand this branch
 
 Recorded because it has now cost time twice.
 
@@ -1463,7 +1503,7 @@ non-fast-forward push was refused, so the stale commits came back along with
 the problem. A fresh branch name avoids it entirely, which is what PR #18
 did.
 
-### 19.7 A latent trap on the installation guide page
+### 19.8 A latent trap on the installation guide page
 
 The page's `templateSuffix` is `"page"`, but **`templates/page.page.liquid`
 does not exist.** Shopify falls back to `templates/page.liquid`, whose
