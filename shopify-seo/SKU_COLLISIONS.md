@@ -24,7 +24,7 @@ agree on every prefix, which is a useful cross-check.
 
 ---
 
-## Group A — 11 pairs from a same-day re-import. **Your call.**
+## Group A — 11 pairs from a same-day re-import. **RESOLVED 2026-10-31.**
 
 On 2025-11-15 eleven products were created at 13:09–13:10, then created
 again at 14:22–14:23. In every pair:
@@ -56,21 +56,48 @@ circumstantial but consistent across all eleven.
 | `MAS285` | Mediterranean Seascape Mosaic Art | …Seascape **Premium** Mosaic Tile Art | both ACTIVE |
 | `MAS286` | Tuscan Vineyard Sunset Mosaic Art | …Sunset **Premium** Mosaic Tile Art | 2nd is DRAFT |
 
-**Option A1 — treat as duplicates.** Keep the 13:09 listing, set the 14:22
-copy to DRAFT and add a 301 redirect to the survivor. Nothing is deleted, so
-it is reversible. Removes 10 duplicate indexed pages.
+### Outcome
 
-**Option A2 — treat as distinct.** Give each 14:22 listing a fresh SKU:
-`MAG434`–`MAG439` for the six Geometric listings and `MAS303`–`MAS307` for
-the five Landscape ones. Keeps both pages live.
+The owner compared `MAS160`'s two images in the admin and confirmed they are
+the same artwork. Since all eleven pairs came from one import run, that
+settles the set, and **Option A1 was applied**:
 
-*(Corrected: an earlier revision of this file said `MAG430`–`MAG435`, but
-`MAG430`–`MAG433` were consumed by the Group B reassignments below on
-2026-10-31, so a distinct outcome now starts at `MAG434`.)*
+- the 13:09 listing keeps its SKU and stays ACTIVE
+- the 14:22 copy was set to DRAFT (10 of them; `MAS286`'s was already a draft)
+- a 301 redirect now points each 14:22 handle at its survivor
 
-I lean A1 on the filename evidence, but I will not act on a hunch about ten
-live products. If you can glance at one pair in the admin — say `MAS160` —
-that settles all eleven.
+Nothing was deleted, so every step is reversible. Verified by re-reading all
+22 products and listing the redirects: 11 survivors ACTIVE, 11 duplicates
+DRAFT, 11 redirects each resolving to the correct survivor handle, zero
+`userErrors`.
+
+Catalogue counts after the change: 1,948 products total, 1,812 ACTIVE,
+136 DRAFT (up from 126 — the 10 newly drafted duplicates).
+
+| SKU | Survivor (ACTIVE) | Retired (DRAFT + 301) |
+|---|---|---|
+| `MAG201` | Abstract Tessellation Grid Mosaic Art | …Grid Premium Mosaic Tile Art |
+| `MAG202` | Byzantine Interlacing Circles Mosaic Art | …Circles Premium Mosaic Tile Art |
+| `MAG253` | Op Art Cube Pattern Mosaic Art | …Pattern Premium Mosaic Tile Art |
+| `MAG254` | Moroccan Star Medallion Mosaic Art | …Medallion Premium Mosaic Tile Art |
+| `MAG255` | Roman Labyrinth Design Mosaic Art | …Design Premium Mosaic Tile Art |
+| `MAG256` | Art Deco Fan Motif Mosaic Art | …Motif Premium Mosaic Tile Art |
+| `MAS160` | Desert Oasis at Dawn Mosaic Art | …Dawn Premium Mosaic Tile Art |
+| `MAS161` | Snowy Mountain Vista Mosaic Art | …Vista Premium Mosaic Tile Art |
+| `MAS284` | Forest Stream in Autumn Mosaic Art | …Autumn Premium Mosaic Tile Art |
+| `MAS285` | Mediterranean Seascape Mosaic Art | …Seascape Premium Mosaic Tile Art |
+| `MAS286` | Tuscan Vineyard Sunset Mosaic Art | …Sunset Premium Mosaic Tile Art |
+
+### One thing a future scan will trip over
+
+**The drafted duplicates still carry their survivor's SKU, deliberately.**
+They are the same artwork, so sharing the code is correct, and the draft is
+not sellable. But it means a naive "duplicate SKU" scan over all 1,948
+products will flag these eleven again.
+
+They are not a defect. A scan that wants only real collisions should filter
+to `status:active`, which leaves zero shared SKUs across the eleven. Do not
+re-raise these as outstanding work.
 
 ---
 

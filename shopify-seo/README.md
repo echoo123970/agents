@@ -784,19 +784,41 @@ embeds the intended SKU**, and in two cases it named a free code that
 matched the artwork better than the next counter value. Worth checking
 first on any future collision.
 
-**Group A — 11 pairs from a same-day re-import. Open, awaiting the owner.**
+**Group A — 11 pairs from a same-day re-import. Resolved.**
 
 On 2025-11-15 eleven products were created at 13:09–13:10 and created again
 at 14:22–14:23: identical base title with `Premium` inserted, identical
 price, identical productType, and **both images uploaded under the same base
 filename** (e.g. `MAS160.webp` twice, hence Shopify's random suffixes).
-That reads as a re-run of one import, but `cdn.shopify.com` is unreachable
-from this environment so the pixels were never compared. Rather than draft
-ten live products on circumstantial evidence, the owner is checking one pair
-(`MAS160`) in the admin; that answer settles all eleven.
+That read as a re-run of one import, but `cdn.shopify.com` is unreachable
+from this environment so the pixels could not be compared here. Rather than
+draft ten live products on circumstantial evidence, the owner opened
+`MAS160`'s two images in the admin and confirmed they are the same artwork.
+Since the whole set came from one import run, that settled all eleven.
+
+Applied: the 13:09 listing keeps its SKU and stays ACTIVE; the 14:22 copy
+was set to DRAFT (ten of them — `MAS286`'s was already a draft); and a 301
+redirect points each retired handle at its survivor. Nothing was deleted,
+so every step is reversible.
 
 Affected: `MAG201`, `MAG202`, `MAG253`–`MAG256`, `MAS160`, `MAS161`,
 `MAS284`–`MAS286`.
+
+Verified by re-reading all 22 products and listing the redirects: 11
+survivors ACTIVE, 11 duplicates DRAFT, 11 redirects each resolving to the
+correct survivor handle, zero `userErrors`. Catalogue counts afterwards:
+1,948 total, 1,812 ACTIVE, 136 DRAFT — up from 126, which is exactly the
+ten newly drafted copies.
+
+**A trap for future scans.** The drafted duplicates keep their survivor's
+SKU on purpose: they are the same artwork, and a draft is not sellable. A
+naive duplicate-SKU scan across all 1,948 products will therefore flag these
+eleven again. They are not a defect — filter to `status:active` and the
+eleven show zero shared SKUs. Do not re-raise them as outstanding work.
+
+With Group A closed this way and Group B reassigned, **all 22 collisions
+from the 2026-10-31 audit are resolved**: 11 by fresh SKUs, 11 by retiring
+the duplicate.
 
 ### 16.2 The generated titles — 183 products, 12 artworks
 
