@@ -2283,14 +2283,22 @@ async function pickDesign(p) {
   // the mosaic takes the piece's proportions at the chosen width
   const h = Math.round(state.sizeW * img.naturalHeight / img.naturalWidth * 2) / 2;
   if (h > 0 && h !== state.sizeH) { state.sizeH = h; $('#size-h').value = h; const [fw, fh] = frameFor(state.sizeW, h); resizeFrame(fw, fh); refresh(); }
-  $('#up-thumb').src = img.src;
-  $('#up-title').textContent = p.t;
-  $('#up-link').href = p.u; $('#up-link').hidden = !p.u;
-  upKind = 'mosaic'; upAction = null;
-  showPending(img);
-  renderUpload();
-  $('#upload-panel').hidden = false;
-  $('#up-actions').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  // a piece from our shop is already a mosaic: it opens as areas filled with our stones,
+  // ready for the customer to change the stone of any area
+  $('#upload-panel').hidden = true;
+  upKind = 'mosaic'; upAction = 'colors';
+  heavy(() => {
+    try {
+      state.sourceKind = 'mosaic';
+      $('#trace-mode').value = 'colors'; showTraceFields();
+      runTrace(true);
+      toast(`${p.t}: tap any area and pick a stone to change its color.`);
+    } catch (err) {
+      console.error(err);
+      toast('That design could not be loaded. Please try another one.');
+    }
+  });
+  $('#slab').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 /* ---------------- Save / open / export ---------------- */
