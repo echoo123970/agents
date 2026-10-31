@@ -374,8 +374,11 @@ const matchList = () => {
 /* ---------------- Rendering ---------------- */
 // One of our own mosaics ("Change the colors"): the customer sees the real piece, and an area given
 // another stone is recolored in place, so its tiles, cuts and grout stay exactly as they are.
-const photoLook = () => !!(sourceData && sourceData.photo);
-function renderPhotoFills() {
+// After "Remove all colors and repaint" the customer paints the outline as usual, and the Mosaic
+// step shows the real piece again with their stones (sourceData.photo === 'final').
+const photoLook = () => !!(sourceData && sourceData.photo === true);
+const photoFinal = () => !!(sourceData && sourceData.photo);
+function renderPhotoFills(ctx = fctx) {
   const lab = getLabels(), src = sourceData.data, n = regions.length;
   const want = new Int32Array(n).fill(-1), mats = [];
   for (const f of state.fills) {
@@ -410,7 +413,7 @@ function renderPhotoFills() {
     const rgb = labToSrgb(l + (t[0] - mL) * (.35 + .65 * w), a + (t[1] - ma) * w, b + (t[2] - mb) * w);
     o[p * 4] = rgb[0]; o[p * 4 + 1] = rgb[1]; o[p * 4 + 2] = rgb[2];
   }
-  fctx.putImageData(out, 0, 0);
+  ctx.putImageData(out, 0, 0);
 }
 function renderFills() {
   fctx.clearRect(0, 0, W, H);
@@ -514,6 +517,7 @@ function renderPictureMosaic() {
 function renderMosaic() {
   if (usePicture()) return renderPictureMosaic();
   if (photoLook()) { mosctx.drawImage(fillsLayer, 0, 0); return; }
+  if (photoFinal()) return renderPhotoFills(mosctx);
   mosctx.fillStyle = state.joint; mosctx.fillRect(0, 0, W, H);
   getLabels();
   for (const f of state.fills) {
@@ -1208,7 +1212,7 @@ function setMode(mode) {
   drawOverlay();
 }
 function markFrom() {
-  $('#mosaic-from-group').hidden = !sourceData || photoLook();
+  $('#mosaic-from-group').hidden = !sourceData || photoFinal();
   $$('#mosaic-from-group .seg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.from === state.mosaicFrom)));
   $('#mosaic-areas-hint').hidden = usePicture();
   if (state.mode === 'mosaic' && usePicture()) $('#status').textContent = 'Your picture as a hand-cut mosaic in our stones. Change the tile size or grout on the left.';
@@ -1400,7 +1404,7 @@ const UP_ACTIONS = {
 // or clear them and repaint it themselves.
 const STORE_ACTIONS = [
   ['colors', 'Change the colors', 'The design keeps its stones. Tap any area and pick a stone to change it.'],
-  ['outline', 'Remove all colors and repaint', 'Start from a clean black & white outline of the design and fill each area with your own stones.'],
+  ['outline', 'Remove all colors and repaint', 'Fill a clean black & white outline of the design with your own stones. The Mosaic step shows the piece again in your colors.'],
 ];
 let upAction = null; // the option shown on the canvas right now
 let upStore = false; // true while the picture is a design from our shop
@@ -1464,7 +1468,7 @@ function runTrace(quiet) {
   sourceData = drawImported();
   state.mosaicFrom = 'areas';
   if (state.sourceKind === 'mosaic') sourceData.mosaic = true;
-  if (upStore && $('#trace-mode').value === 'colors') sourceData.photo = true;
+  if (upStore) sourceData.photo = $('#trace-mode').value === 'colors' ? true : 'final';
   if ($('#trace-mode').value === 'outline') {
     traceColors(); // draws the outline where the picture's colors meet
     commit(true);
@@ -1712,7 +1716,7 @@ function pictureURL() {
 function designJSON() {
   const used = [...new Set(state.fills.map(f => f.mat))].map(matById).filter(Boolean);
   return { app: 'imosaicart-design', version: 1, sketch: ink.toDataURL('image/png'),
-    fills: state.fills.map(({ x, y, mat, rot, orig }) => ({ x, y, mat, rot, orig })), photoLook: photoLook(),
+    fills: state.fills.map(({ x, y, mat, rot, orig }) => ({ x, y, mat, rot, orig })), photoLook: sourceData ? sourceData.photo || false : false,
     gap: state.gap, joint: state.joint, sizeW: state.sizeW, sizeH: state.sizeH, unit: state.unit, look: state.look, tileIn: state.tileIn, mosaicFrom: state.mosaicFrom,
     picture: sourceData ? pictureURL() : null, pictureRect: sourceData ? sourceRect : null, materials: used };
 }
@@ -1726,7 +1730,7 @@ async function applyDesign(d, withHistory) {
   }
   const img = await loadPhoto(d.sketch);
   const pic = d.picture ? await loadPhoto(d.picture) : null;
-  if (pic) { const c = mk(), x = c.getContext('2d'); x.drawImage(pic, 0, 0, W, H); sourceData = x.getImageData(0, 0, W, H); sourceData.photo = !!d.photoLook; sourceRect = d.pictureRect || { x: 0, y: 0, w: W, h: H }; } else sourceData = null;
+  if (pic) { const c = mk(), x = c.getContext('2d'); x.drawImage(pic, 0, 0, W, H); sourceData = x.getImageData(0, 0, W, H); sourceData.photo = d.photoLook === 'final' ? 'final' : !!d.photoLook; sourceRect = d.pictureRect || { x: 0, y: 0, w: W, h: H }; } else sourceData = null;
   state.mosaicFrom = d.mosaicFrom === 'areas' ? 'areas' : 'picture';
   if (withHistory) { history.push(snapshot()); future.length = 0; }
   ictx.clearRect(0, 0, W, H);
