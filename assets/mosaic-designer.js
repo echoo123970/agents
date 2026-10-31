@@ -1318,7 +1318,7 @@ $('#file-sketch').addEventListener('change', async e => {
   showStart(false);
   $('#up-thumb').src = img.src;
   $('#up-title').textContent = 'Your picture'; $('#up-link').hidden = true;
-  upKind = isColorful(img) ? 'color' : 'bw';
+  upKind = isColorful(img) ? 'color' : 'bw'; upAction = null;
   showPending(img);
   renderUpload();
   $('#upload-panel').hidden = false;
@@ -1346,18 +1346,35 @@ const UP_ACTIONS = {
     ['outline', 'Make an outline I color myself', 'A black & white outline of the design that you can edit, then fill with stones. Best for simpler designs.'],
   ],
 };
+let upAction = null; // the option shown on the canvas right now
 function renderUpload() {
   $$('.up-kind button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.kind === upKind)));
   const box = $('#up-actions'); box.textContent = '';
   for (const [how, title, text] of UP_ACTIONS[upKind]) {
     const b = document.createElement('button'); b.type = 'button';
+    b.setAttribute('aria-pressed', String(how === upAction));
     b.innerHTML = `<b>${title}</b><span>${text}</span>`;
-    b.addEventListener('click', () => { $('#upload-panel').hidden = true; heavy(() => runUpload(how)); });
+    b.addEventListener('click', () => applyUpload(how));
     box.appendChild(b);
   }
+  $('#up-done').hidden = !upAction;
 }
-$$('.up-kind button').forEach(b => b.addEventListener('click', () => { upKind = b.dataset.kind; renderUpload(); }));
+// Every choice takes effect at once and the panel stays open, so customers can compare.
+function applyUpload(how) {
+  upAction = how; renderUpload();
+  const img = pendingImg || importedImg;
+  heavy(() => {
+    try { runUpload(how); }
+    catch (err) {
+      console.error(err);
+      upAction = null; renderUpload(); showPending(img);
+      toast('Sorry, that did not work with this picture. Please try another option or another picture.');
+    }
+  });
+}
+$$('.up-kind button').forEach(b => b.addEventListener('click', () => { upKind = b.dataset.kind; applyUpload(UP_ACTIONS[upKind][0][0]); }));
 $('#up-close').addEventListener('click', () => { $('#upload-panel').hidden = true; clearPending(); });
+$('#up-done').addEventListener('click', () => { $('#upload-panel').hidden = true; $('#slab').scrollIntoView({ behavior: 'smooth', block: 'nearest' }); });
 function runUpload(how) {
   pendingImg = null;
   state.sourceKind = upKind;
@@ -1558,7 +1575,11 @@ async function loadDesigns(name) {
     fetch(`/collections/${h}?view=mosaic-designs&sort_by=best-selling`, { credentials: 'same-origin' })
       .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
       .then(t => JSON.parse(t).slice(0, per))));
-  const items = lists.flat().filter(p => p && p.img);
+  // Serve photos from this site's own /cdn/shop/ path: a photo from another host can be shown but
+  // not read back by the canvas, which the outline and rebuild steps need.
+  const local = u => String(u || '').replace(/^(https?:)?\/\/cdn\.shopify\.com\/s\/files\/\d+\/\d+\/\d+\/\d+\//, '/cdn/shop/')
+    .replace(/^(https?:)?\/\/[^/]+(\/cdn\/shop\/)/, '$2');
+  const items = lists.flat().filter(p => p && p.img).map(p => ({ ...p, th: local(p.th), img: local(p.img) }));
   designCache.set(name, items);
   return items;
 }
@@ -1610,7 +1631,7 @@ async function pickDesign(p) {
   $('#up-thumb').src = img.src;
   $('#up-title').textContent = p.t;
   $('#up-link').href = p.u; $('#up-link').hidden = !p.u;
-  upKind = 'mosaic';
+  upKind = 'mosaic'; upAction = null;
   showPending(img);
   renderUpload();
   $('#upload-panel').hidden = false;
