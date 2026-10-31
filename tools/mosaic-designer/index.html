@@ -132,7 +132,7 @@ details.more > .group { margin-top: 10px; }
 .start-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
 .start h2 { font-family: var(--font-display); font-weight: 600; font-size: 26px; margin: 0 0 2px; }
 .start-close { border: 0; background: none; font-size: 24px; line-height: 1; color: var(--muted); padding: 2px 6px; }
-.start-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.start-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
 @media (max-width: 900px) { .start-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .start-grid button { border: 1px solid var(--line); background: var(--bg); border-radius: 8px; padding: 14px 12px; text-align: left; display: flex; flex-direction: column; gap: 6px; }
 .start-grid button:hover { border-color: var(--accent); background: var(--accent-soft); }
@@ -799,7 +799,9 @@ function getTile(m) {
 function loadPhoto(src) {
   return new Promise(res => {
     if (photoImgs.has(src)) return res(photoImgs.get(src));
-    const img = new Image(); img.onload = () => res(img); img.onerror = () => res(null); img.src = src;
+    const img = new Image(); img.onload = () => res(img); img.onerror = () => res(null);
+    if (/^(https?:)?\/\//.test(src)) img.crossOrigin = 'anonymous'; // store photos from the theme's CDN stay readable
+    img.src = src;
     photoImgs.set(src, img);
   });
 }
@@ -2446,7 +2448,9 @@ async function initSwatches() {
 async function initCapabilities() {
   initSwatches();
   $('#ai-box').hidden = true;
-  if (!window.claude?.use) { $('#ai-off').hidden = false; return; }
+  if (!window.claude?.use) { // describing a design needs Claude; outside it, offer upload and drawing only
+    $('#ai-more').hidden = true; $('[data-start="describe"]').hidden = true; return;
+  }
   const [s, d] = await Promise.all([claude.use('sample').catch(() => null), claude.use('downloads').catch(() => null)]);
   downloadsApi = d;
   if (!s) { $('#ai-off').hidden = false; return; }
@@ -2466,7 +2470,12 @@ $('#json-dl').addEventListener('click', e => offerDownload(e, $('#json-dl').down
 
 /* ---------------- Boot ---------------- */
 async function boot() {
-  for (const m of chart) if (m.photo) await loadPhoto(m.photo);
+  await Promise.all(chart.filter(m => m.photo).map(async m => {
+    const img = await loadPhoto(m.photo);
+    // on the website the photos are the store's originals: match colors on the photo itself
+    if (img && !m.photo.startsWith('data:')) try { m.base = photoColor(img); } catch {}
+  }));
+  labCache.clear();
   const saved = store.get('mosaic.design');
   let ok = false;
   if (saved) { try { await applyDesign(saved, false); ok = true; } catch {} }
