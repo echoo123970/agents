@@ -2531,8 +2531,9 @@ async function boot() {
   // customers keep their work with Save design / Open design
   loadSample(false);
   if (!matById(state.selected)) state.selected = chart[0]?.id;
-  markJoint(); markLook(); setTool('pen'); state.mode = 'color'; setTool('fill');
-  renderChart(); selectMat(state.selected); setMode('color');
+  markJoint(); markLook(); state.mode = 'color'; setTool('fill');
+  renderChart(); selectMat(state.selected); setMode('sketch'); // customers start at step 1, Design
+  setTool('pen');
   heavy(() => refresh());
   fitSlab(); applyView();
   $('#start').hidden = false;
