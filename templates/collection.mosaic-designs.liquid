@@ -1,0 +1,5 @@
+{%- layout none -%}
+{%- paginate collection.products by 20 -%}
+[{%- assign sep = '' -%}
+{%- for p in collection.products -%}{%- if p.featured_image -%}{{ sep }}{"t":{{ p.title | json }},"u":{{ p.url | json }},"th":{{ p.featured_image | image_url: width: 360 | json }},"img":{{ p.featured_image | image_url: width: 1400 | json }}}{%- assign sep = ',' -%}{%- endif -%}{%- endfor -%}]
+{%- endpaginate -%}

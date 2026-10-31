@@ -1311,6 +1311,7 @@ $('#file-sketch').addEventListener('change', async e => {
   $('#ai-redraw').hidden = !sampleFn || !imagesOk;
   showStart(false);
   $('#up-thumb').src = img.src;
+  $('#up-title').textContent = 'Your picture'; $('#up-link').hidden = true;
   upKind = isColorful(img) ? 'color' : 'bw';
   renderUpload();
   $('#upload-panel').hidden = false;
@@ -1333,6 +1334,7 @@ const UP_ACTIONS = {
   mosaic: [
     ['picture', 'Rebuild it in our stones', 'We read the mosaic tile by tile and remake it with the closest stones from our chart.'],
     ['colors', 'Outline it and color it for me', 'We turn the mosaic into clear areas filled with our stones, which you can adjust and redraw.'],
+    ['outline', 'Make an outline I color myself', 'A black & white outline of the design that you can edit, then fill with stones. Best for simpler designs.'],
   ],
 };
 function renderUpload() {
@@ -1524,121 +1526,74 @@ function autoFill(idx, mats) {
 }
 
 /* ---------------- Ready designs ---------------- */
-// Outline designs customers can start from. Each draws closed shapes into a w × h frame,
-// so every area can be filled with a stone; they scale to any mosaic size.
-const DESIGNS = [
-  ['compass', 'Compass rose', (c, w, h) => {
-    const { cx, cy, R, pt } = geo(w, h);
-    for (const r of [1, .9, .76]) circle(c, cx, cy, R * r);
-    circle(c, cx, cy, R * .07);
-    const rad = k => (k % 2 ? .21 : (k % 4 === 0 ? .71 : .48));
-    poly(c, Array.from({ length: 16 }, (_, k) => pt(R * rad(k), -90 + k * 22.5)));
-    for (let k = 0; k < 16; k += 2) line(c, pt(R * .07, -90 + k * 22.5), pt(R * rad(k), -90 + k * 22.5));
-    for (let k = 0; k < 16; k++) line(c, pt(R * .9, -78.75 + k * 22.5), pt(R, -78.75 + k * 22.5));
-  }],
-  ['rosette', 'Flower rosette', (c, w, h) => {
-    const { cx, cy, R, pt } = geo(w, h);
-    for (const r of [1, .82, .64]) circle(c, cx, cy, R * r);
-    circle(c, cx, cy, R * .16);
-    for (let k = 0; k < 12; k++) { // petals between the heart and the inner ring
-      const a = k * 30, p0 = pt(R * .16, a), p1 = pt(R * .64, a), l = pt(R * .44, a - 13), r = pt(R * .44, a + 13);
-      c.beginPath(); c.moveTo(...p0); c.quadraticCurveTo(...l, ...p1); c.quadraticCurveTo(...r, ...p0); c.stroke();
-    }
-    for (let k = 0; k < 24; k++) line(c, pt(R * .82, k * 15), pt(R, k * 15));
-  }],
-  ['mandala', 'Mandala', (c, w, h) => {
-    const { cx, cy, R, pt } = geo(w, h);
-    for (const r of [1, .74, .46, .18]) circle(c, cx, cy, R * r);
-    for (let k = 0; k < 8; k++) { const [x, y] = pt(R * .32, k * 45); circle(c, x, y, R * .14); }
-    for (let k = 0; k < 16; k++) { // scallops on the middle ring
-      const a0 = k * 22.5, [x, y] = pt(R * .74, a0 + 11.25);
-      c.beginPath(); c.arc(x, y, R * .13, 0, Math.PI * 2); c.stroke();
-    }
-    for (let k = 0; k < 24; k++) line(c, pt(R * .87, k * 15), pt(R, k * 15));
-    circle(c, cx, cy, R * .87);
-  }],
-  ['sun', 'Sunburst', (c, w, h) => {
-    const { cx, cy, R, pt } = geo(w, h);
-    circle(c, cx, cy, R * .26); circle(c, cx, cy, R * .17);
-    for (let k = 0; k < 16; k++) {
-      const a = k * 22.5, len = k % 2 ? .78 : 1;
-      poly(c, [pt(R * .3, a - 9), pt(R * len, a), pt(R * .3, a + 9)]);
-    }
-    circle(c, cx, cy, R * .3);
-  }],
-  ['star', 'Star medallion', (c, w, h) => {
-    const { cx, cy, R, pt } = geo(w, h);
-    circle(c, cx, cy, R); circle(c, cx, cy, R * .88); circle(c, cx, cy, R * .22);
-    poly(c, [0, 120, 240].map(a => pt(R * .88, a - 90)));
-    poly(c, [60, 180, 300].map(a => pt(R * .88, a - 90)));
-    for (let k = 0; k < 12; k++) line(c, pt(R * .88, k * 30 + 15), pt(R, k * 30 + 15));
-  }],
-  ['heart', 'Heart', (c, w, h) => {
-    const s = Math.min(w, h);
-    const heart = (k) => {
-      const hw = s * .62 * k, hh = s * .56 * k, x0 = w / 2 - hw / 2, y0 = h / 2 - hh / 2 + s * .02;
-      c.beginPath(); c.moveTo(x0 + hw / 2, y0 + hh * .28);
-      c.bezierCurveTo(x0 + hw / 2, y0, x0, y0, x0, y0 + hh * .32);
-      c.bezierCurveTo(x0, y0 + hh * .62, x0 + hw / 2, y0 + hh * .78, x0 + hw / 2, y0 + hh);
-      c.bezierCurveTo(x0 + hw / 2, y0 + hh * .78, x0 + hw, y0 + hh * .62, x0 + hw, y0 + hh * .32);
-      c.bezierCurveTo(x0 + hw, y0, x0 + hw / 2, y0, x0 + hw / 2, y0 + hh * .28);
-      c.closePath(); c.stroke();
-    };
-    heart(1.25); heart(1); heart(.55);
-    const m = s * .085; c.strokeRect(m, m, w - m * 2, h - m * 2);
-  }],
-  ['waves', 'Waves', (c, w, h) => {
-    const { m } = geo(w, h);
-    for (let i = 1; i <= 5; i++) {
-      const y0 = m + (h - m * 2) * (i / 6) + h * .06, amp = h * .045, len = w / 2.5;
-      c.beginPath();
-      for (let x = m; x <= w - m; x += 4) { const y = y0 + Math.sin((x / len) * Math.PI * 2 + i) * amp; x === m ? c.moveTo(x, y) : c.lineTo(x, y); }
-      c.stroke();
-    }
-    circle(c, w * .76, h * .24, Math.min(w, h) * .1);
-  }],
-  ['diamonds', 'Diamonds', (c, w, h) => {
-    const { m } = geo(w, h), step = Math.min(w, h) / 5;
-    c.save(); c.beginPath(); c.rect(m, m, w - m * 2, h - m * 2); c.clip();
-    for (let x = -h; x < w + h; x += step) { line(c, [x, m], [x + (h - m * 2), h - m]); line(c, [x, h - m], [x + (h - m * 2), m]); }
-    c.restore();
-  }],
+// Real iMosaicArt pieces to start from: the best sellers of each store collection, read live
+// from the store (templates/collection.mosaic-designs.liquid answers
+// /collections/<handle>?view=mosaic-designs&sort_by=best-selling with up to 20 products as JSON).
+// A chosen piece goes through the "photo of a mosaic" journey.
+const DESIGN_CATS = [
+  ['Abstract', ['abstract']], ['Animals', ['animal-mosaics']], ['Birds', ['bird-mosaics']],
+  ['Flowers', ['flower-mosaics']], ['Geometric', ['geometric-mosaics']], ['Landscapes', ['landscape-mosaics']],
+  ['Nautical', ['nautical-mosaics']], ['Trees', ['tree-mosaics']], ['Roman', ['roman-mosaics']],
+  ['Religious', ['religious-mosaics']], ['Portraits', ['portrait-mosaics']], ['Van Gogh', ['van-gogh-mosaics']],
+  ['Patterns', ['patterns-mosaics']], ['Landmarks', ['landmark-mosaics']], ['Food', ['food-mosaics']],
+  ['Backsplash & table tops', ['mosaic-tile-backsplash', 'table-countertop-mosaics']],
 ];
-function geo(w, h) {
-  const m = Math.round(Math.min(w, h) * .032), cx = w / 2, cy = h / 2, R = Math.min(w, h) / 2 - m * 2.2;
-  return { m, cx, cy, R, pt: (r, deg) => [cx + r * Math.cos(deg * Math.PI / 180), cy + r * Math.sin(deg * Math.PI / 180)] };
-}
-const circle = (c, x, y, r) => { c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.stroke(); };
-const line = (c, a, b) => { c.beginPath(); c.moveTo(...a); c.lineTo(...b); c.stroke(); };
-const poly = (c, pts) => { c.beginPath(); pts.forEach((p, i) => i ? c.lineTo(...p) : c.moveTo(...p)); c.closePath(); c.stroke(); };
-// Draws a design with its frame: every design sits inside a border so the background is an area too.
-function drawDesign(c, key, w, h, lw) {
-  const d = DESIGNS.find(x => x[0] === key);
-  c.save(); c.lineWidth = lw; c.strokeStyle = '#000'; c.lineJoin = 'round'; c.lineCap = 'round';
-  const { m } = geo(w, h);
-  c.strokeRect(m, m, w - m * 2, h - m * 2);
-  d[2](c, w, h);
-  c.restore();
-}
-function useDesign(key) {
-  ictx.clearRect(0, 0, W, H); sourceData = null;
-  ictx.globalCompositeOperation = 'source-over';
-  drawDesign(ictx, key, W, H, 3);
-  commit(true); state.fills = [];
-  setMode('sketch'); setTool('pen'); refresh();
-  toast('Change anything you like with the drawing tools, then press Next: Color it.');
+const designCache = new Map(); // category name -> items
+let designCat = DESIGN_CATS[0][0];
+async function loadDesigns(name) {
+  if (designCache.has(name)) return designCache.get(name);
+  const handles = DESIGN_CATS.find(c => c[0] === name)[1], per = Math.floor(20 / handles.length);
+  const lists = await Promise.all(handles.map(h =>
+    fetch(`/collections/${h}?view=mosaic-designs&sort_by=best-selling`, { credentials: 'same-origin' })
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+      .then(t => JSON.parse(t).slice(0, per))));
+  const items = lists.flat().filter(p => p && p.img);
+  designCache.set(name, items);
+  return items;
 }
 function renderGallery() {
-  const box = $('#gallery-grid'); box.textContent = ''; // drawn in the current mosaic shape
-  for (const [key, name] of DESIGNS) {
-    const b = document.createElement('button'); b.type = 'button';
-    const cv = document.createElement('canvas'); cv.width = 240; cv.height = Math.round(240 * H / W);
-    const x = cv.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, cv.width, cv.height);
-    drawDesign(x, key, cv.width, cv.height, 1.4);
-    b.append(cv); b.insertAdjacentHTML('beforeend', `<span>${esc(name)}</span>`);
-    b.addEventListener('click', () => { $('#gallery').hidden = true; heavy(() => useDesign(key)); });
-    box.append(b);
+  const tabs = $('#gallery-tabs');
+  if (!tabs.childElementCount) for (const [name] of DESIGN_CATS) {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = name;
+    b.addEventListener('click', () => { designCat = name; renderGallery(); });
+    tabs.append(b);
   }
+  $$('#gallery-tabs button').forEach(b => b.setAttribute('aria-pressed', String(b.textContent === designCat)));
+  const box = $('#gallery-grid'), want = designCat;
+  box.innerHTML = '<p class="hint">Loading designs…</p>';
+  loadDesigns(want).then(items => {
+    if (designCat !== want) return;
+    box.textContent = '';
+    if (!items.length) { box.innerHTML = '<p class="hint">No designs in this category yet.</p>'; return; }
+    for (const p of items) {
+      const b = document.createElement('button'); b.type = 'button'; b.title = p.t;
+      b.innerHTML = `<img loading="lazy" alt="" src="${esc(p.th)}"><span>${esc(p.t)}</span>`;
+      b.addEventListener('click', () => pickDesign(p));
+      box.append(b);
+    }
+  }).catch(() => {
+    if (designCat !== want) return;
+    box.innerHTML = '<p class="hint">Our ready designs load on the iMosaicArt website. Please open this tool at imosaicart.com/pages/mosaic-designer, or upload a picture instead.</p>';
+  });
+}
+async function pickDesign(p) {
+  $('#gallery').hidden = true;
+  busy(true);
+  const img = await loadPhoto(p.img);
+  busy(false);
+  if (!img) return toast('That design could not be loaded. Please try another one.');
+  importedImg = img; importedFile = null; lastSvg = null; sourceData = null;
+  $('#ai-redraw').hidden = true;
+  // the mosaic takes the piece's proportions at the chosen width
+  const h = Math.round(state.sizeW * img.naturalHeight / img.naturalWidth * 2) / 2;
+  if (h > 0 && h !== state.sizeH) { state.sizeH = h; $('#size-h').value = h; const [fw, fh] = frameFor(state.sizeW, h); resizeFrame(fw, fh); refresh(); }
+  $('#up-thumb').src = img.src;
+  $('#up-title').textContent = p.t;
+  $('#up-link').href = p.u; $('#up-link').hidden = !p.u;
+  upKind = 'mosaic';
+  renderUpload();
+  $('#upload-panel').hidden = false;
+  $('#upload-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 /* ---------------- Save / open / export ---------------- */
