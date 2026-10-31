@@ -393,7 +393,8 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
 
     <div id="mosaic-tools" class="group" hidden>
       <p class="label">Mosaic</p>
-      <label class="field" for="tile-size">Tile size
+      <!-- tile size is set automatically (½ in, smaller for photos); kept hidden for customers -->
+      <label class="field" for="tile-size" hidden>Tile size
         <select id="tile-size">
           <option value="0.25">¼ in (6 mm)</option>
           <option value="0.375">⅜ in (1 cm)</option>
