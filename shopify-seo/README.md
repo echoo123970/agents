@@ -1259,13 +1259,14 @@ sitewide `@graph` is now `Organization` + `WebSite`.
   both changes at once: the "Local businesses" row should disappear and
   "Organisation" should drop from 2 valid items to 1 — the earlier 2/2 was a
   single `Store` node tallied under both types it qualified for.
-- **The HowTo question from §13 is still open.** Needs
-  `validator.schema.org` against `/pages/installation-guide`, or a
-  view-source for `"HowTo"`. The storefront is unreachable from this
-  environment. The working hypothesis remains that Google deprecated HowTo
-  rich results in 2023 and simply stopped reporting them.
+- **The HowTo question from §13.** → **Closed, see §19.4.** The hypothesis
+  was right: Google removed HowTo rich results in 2023, including support in
+  the Rich Results Test, so that tool cannot report it at all. The markup
+  stays.
 - **Four titles run 61–65 characters** against Google's ~60 display limit.
   All four are in the noindex set, so it currently costs nothing.
+  → **Done via `seo.title` override, see §19.2** — and the same check found
+  1,285 over-long `seo.title`s catalogue-wide, see §19.5.
 - **Collections are still entirely untouched** — see §14's "Left undone".
   Dead `mosaic-tile-art` (0 products), a duplicate pair both holding all
   1,948, `glass-mosaic-art` holding 1,624 (83%) under a *material* label,
@@ -1275,3 +1276,207 @@ sitewide `@graph` is now `Organization` + `WebSite`.
   storefront-readable) already existed on products, presumably from an SEO
   app. It is unrelated to `seo.noindex` and was left alone, but anyone
   debugging indexing should know both exist.
+
+---
+
+## 19. Follow-ups after §18 (2026-10-31)
+
+Five small items, one of which is a trap worth more than the fix it came from.
+
+### 19.1 `SEOInput` replaces, it does not merge
+
+**This cost a regression. Read it before touching `seo` on any product.**
+
+`ProductUpdateInput.seo` is a whole-object replace. Sending
+
+```graphql
+productUpdate(product: { id: "…", seo: { title: "…" } })
+```
+
+sets the title **and nulls `seo.description`**. No error, no warning, and the
+mutation reports success with `userErrors: []`.
+
+It was caught on the read-back, not from the response — the response looked
+perfect. Four products lost their `seo.description` for roughly ninety
+seconds before it was restored by re-sending both keys together.
+
+Why it had not bitten earlier: §16.2 and §18.1 both happened to write
+`title` and `description` in the same call every time, so the field was
+always fully specified. The first call in this whole project to send `seo`
+with only one key was the one that broke.
+
+**The rule: always send both `seo.title` and `seo.description`, even when
+changing one.** Read the product first if you do not already know the other
+value.
+
+This generalises. `SEOInput` is not the only Shopify input object with
+replace-not-merge semantics, and a clean `userErrors: []` says only that
+what you sent was valid — never that what you *didn't* send survived. The
+same assumption is what let §18.2's five skipped products pass nine clean
+batches.
+
+### 19.2 Four over-long titles, fixed with an override not a rename
+
+Four of the 184 ran 61–65 characters against Google's ~60 display limit:
+
+| Product | Chars | `seo.title` now | Chars |
+|---|---:|---|---:|
+| 9947820720426 | 65 | Mastercrafted Byzantine Interlacing Circles Stone Mosaic Art | 60 |
+| 9947821801770 | 64 | Stonecrafted Byzantine Interlacing Circles Stone Mosaic Art | 59 |
+| 9947822129450 | 64 | Stonecrafted Byzantine Interlacing Circles Stone Mosaic Art | 59 |
+| 9947820982570 | 62 | Mastercrafted Abstract Tessellation Grid Stone Mosaic Art | 57 |
+
+All four are in the noindex set, so this currently buys nothing — it matters
+only if one is ever promoted to canonical.
+
+**The product titles were not touched.** A product title is the merchandising
+name: it appears on the product page, in collection grids, in the cart and on
+the order confirmation. Truncating it to fit a search-results pixel budget
+would damage four surfaces to improve one. `seo.title` sets the `<title>` tag,
+which is the only thing Google renders, so an override fixes exactly the
+broken surface and leaves the house pattern intact across all 184.
+
+Only "Wall" was dropped. The decorative adjective had to stay — it is the sole
+distinguishing token between these and their siblings, so removing it would
+have collided three title tags into one.
+
+Note these are now the only four of the 184 carrying an `seo.title` override;
+the other 180 remain null and inherit the product title, as §16.2 describes.
+
+### 19.3 MAB064 was a cardinal, not a hummingbird
+
+The owner identified the bird in `MAB064` as a cardinal. "Hummingbird"
+appeared in **six** places, not the two the title and description suggest:
+
+`title`, `descriptionHtml`, `seo.title`, `seo.description`, the handle, and
+the image alt text. Plus a 301 from the old path. The image file was already
+`MAB064…jpg`, so nothing needed renaming there.
+
+Two copy decisions worth recording:
+
+- **"delicate" and "mid-flight" were dropped.** Both are hummingbird traits.
+  A cardinal is neither delicate nor usually depicted hovering, and the CDN
+  is unreachable from this environment, so the pose could not be verified.
+  Asserting it would have been inventing a fact about a picture nobody here
+  can see. The copy now reads "a striking red cardinal … the bold color and
+  quiet poise of one of nature's most recognizable birds."
+- **`seo.description` went from 500 characters to 119.** It had been a
+  verbatim copy of the body text — the same defect §18.1 fixed across the 184.
+
+Three other cardinal listings exist (`MAB002`, `MAB009`, `MAB012`, all
+2023-06-28). All three are **DRAFT**, so none competes with `MAB064` in
+search, and the owner closed the duplicate question on that basis. Worth
+knowing they are shelved rather than absent: if they are real pieces still
+for sale, that is three products' worth of idle search presence. The
+`MAB009` listing credits a named third party, Bonnie Barry, in its title and
+nowhere else — rights worth confirming before it ever goes live.
+
+### 19.4 The HowTo question is closed: the tool cannot report it
+
+§13 and §18.5 left this open. It is not a markup problem and never was.
+
+**Google removed HowTo rich results from desktop search on 13 September
+2023, and removed support from the Rich Results Test about 30 days later.**
+Search Console API support went 180 days after that, and the documentation
+was deleted. So the Rich Results Test *structurally cannot* report HowTo —
+the "5 valid items, no HowTo" result was the tool working as designed and
+says nothing about the page.
+
+Sources: [Search Engine Journal](https://www.searchenginejournal.com/google-completely-removes-how-to-rich-results/496479/),
+[Search Engine Roundtable](https://seroundtable.com/google-drops-how-to-rich-results-desktop-search-36046.html),
+[Search Engine Land](https://searchengineland.com/google-removes-12-structured-data-fields-from-the-help-documents-375622).
+
+The whole chain was verified from the Admin API without needing the
+storefront, which is the useful trick here — **theme source is readable even
+when the storefront is not**:
+
+- the page's handle is exactly `installation-guide`, published
+- the gate in `layout/theme.liquid` is `request.page_type == 'page' and
+  page.handle == 'installation-guide'`
+- `snippets/seo-howto-install.liquid` is on the live theme, 6,448 bytes
+- no page template overrides the layout, so the snippet renders
+
+**Decision: keep the markup.** Google's own position is that unused
+structured data causes no problems for Search, so it costs nothing. And
+removing it would work against the point of this project: a machine-readable
+six-step guide with its supplies and tools enumerated is exactly what answer
+engines and retrieval pipelines consume. Google not drawing a card is not the
+same as nothing reading it.
+
+**Do not re-investigate this with the Rich Results Test.** Use
+`validator.schema.org`, which reports all schema.org types rather than only
+Google's rich-result subset, or just view-source and search for `HowTo`.
+
+**Unverified lead:** one source claims Google deprecated **FAQ** rich results
+on 2026-05-07. Found in a single blog post and not corroborated. If true it
+applies to the FAQ page markup exactly as this applies to HowTo. Worth
+checking properly before anyone acts on it.
+
+### 19.5 A new finding: 1,285 over-long `seo.title`s catalogue-wide
+
+Found while checking whether anything else had §19.2's problem. It is far
+larger than four:
+
+| | Count |
+|---|---:|
+| Products with an `seo.title` override | 1,556 |
+| …ending `\| <Product Type> \| iMosaicArt` | 1,363 |
+| …of those, **over 60 characters** | **1,285** |
+| Length range | 50–121 |
+| Products with no override whose own title exceeds 60 | 37 |
+
+Something applied the alt-text house pattern to `seo.title` across the
+catalogue. On titles that were already long the result reaches 121
+characters, so Google truncates mid-phrase and the brand name — the reason
+for the suffix — never renders at all.
+
+The diagnostic number: **drop the suffix and only 61 would still exceed 60
+characters.** The suffix is the cause, not the titles. And the brand is
+already appended to the `<title>` by Shopify's own template on most themes,
+which would make it redundant twice over.
+
+**Not actioned.** Before writing to 1,285 products it needs establishing
+whether an installed SEO app owns that field and would simply overwrite the
+fix — the store already carries an unrelated `seo.hidden` definition
+(`number_integer`), which suggests one has been active at some point. That
+check comes first.
+
+### 19.6 Repo hygiene: rebase/squash merges strand this branch
+
+Recorded because it has now cost time twice.
+
+PR #15 was rebase-merged and PR #17 squash-merged. Either way the branch's
+commits are **not** ancestors of the base branch even though their content
+is, so GitHub puts the merge base far enough back that identical file content
+appears as an add/add conflict on both sides. PR #17 arrived showing 7
+commits and 605 additions for what was a 266-line change, and
+`mergeable_state: dirty`.
+
+The fix both times was to merge the base branch into the head and resolve in
+favour of the head, then verify the resolved tree hashes identically to the
+pre-merge tree — which proves the merge moved no content and only gave
+GitHub a sane merge base.
+
+**Better: restart the branch from the base branch after every merge** rather
+than carrying old commits forward. That was attempted and the
+non-fast-forward push was refused, so the stale commits came back along with
+the problem. A fresh branch name avoids it entirely, which is what PR #18
+did.
+
+### 19.7 A latent trap on the installation guide page
+
+The page's `templateSuffix` is `"page"`, but **`templates/page.page.liquid`
+does not exist.** Shopify falls back to `templates/page.liquid`, whose
+handle switch renders `pg-install`, so the page works today.
+
+Two things are wrong underneath it:
+
+- the metadata is inaccurate, and if anyone ever creates a
+  `page.page.liquid` this page silently changes
+- `templates/page.installation-guide.liquid` also exists as an unused
+  34-byte stub rendering `{% section 'page-installation' %}`, which is not
+  the real content
+
+Not changed — it is a live page and the correct value depends on whether the
+suffix should be cleared or pointed at the real template. One field to set
+once decided.
