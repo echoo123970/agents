@@ -473,5 +473,7 @@
     e47: { base: "#025f81", photo: "{{ 'sw-47.png' | asset_url }}" },
     e48: { base: "#013275", photo: "{{ 'sw-48.png' | asset_url }}" }
   };
+  // "Describe it" drawing helper (tools/mosaic-designer/ai-worker), set in the shop metafield imosaic.ai_url
+  window.IMOSAIC_AI_URL = {{ shop.metafields.imosaic.ai_url.value | json }};
 </script>
 <script src="{{ 'mosaic-designer.js' | asset_url }}" defer></script>
