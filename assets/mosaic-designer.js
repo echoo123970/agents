@@ -1517,13 +1517,13 @@ function runTrace(quiet) {
     refresh();
     if (!quiet) toast(`Colored with ${new Set(state.fills.map(f => f.mat)).size} stones from our chart. Tap any area to change it.`);
   } else {
-    const solids = traceImage();
+    traceImage();
     sourceData = null;
     commit(true);
-    state.fills = fillSolids(solids);
+    state.fills = []; // the drawing stays black & white; the customer colors it
     setMode('color');
     refresh();
-    toast('Your drawing is ready. Pick a stone and tap any area, including the black shapes. If lines are missing, adjust Ink threshold in step 1.');
+    toast('Your drawing is ready. Pick a stone and tap any area. If lines are missing, raise Ink threshold in step 1.');
   }
 }
 // The uploaded picture fitted onto a white slab, as pixels.
@@ -1545,31 +1545,31 @@ function isColorful(img) {
   return colored > 64 * 64 * .08;
 }
 // Keeps a drawing's black lines. Solid black shapes (letters, silhouettes, leaves) keep only their
-// outline, so their inside is an area that can be filled with a stone too; it starts filled with
-// the darkest matching stone so the drawing still looks the same.
+// outline, so their inside is an area that can be filled with a stone too.
 function traceImage() {
   const src = drawImported(), out = ictx.createImageData(W, H);
   const thr = +$('#threshold').value / 100 * 255, dark = new Uint8Array(N), light = new Uint8Array(N);
   for (let p = 0, i = 0; p < N; p++, i += 4) {
     const lum = .299 * src.data[i] + .587 * src.data[i + 1] + .114 * src.data[i + 2];
-    if (lum < thr) dark[p] = 1; else light[p] = 1;
+    if (lum < thr) dark[p] = 1;
   }
+  // join hairline breaks, then drop loose dots and scratches too small to be a line
+  const joined = dilate(dark, 2);
+  for (let s0 = 0; s0 < N; s0++) {
+    if (joined[s0] !== 1) continue;
+    let sp = 0, n = 0; stack[sp++] = s0; joined[s0] = 2;
+    const comp = []; let x0 = W, x1 = 0, y0 = H, y1 = 0;
+    while (sp) {
+      const q = stack[--sp], x = q % W, y = (q - x) / W; comp.push(q); n++;
+      if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+      for (const r of [x > 0 ? q - 1 : -1, x < W - 1 ? q + 1 : -1, q - W, q + W]) if (r >= 0 && r < N && joined[r] === 1) { joined[r] = 2; stack[sp++] = r; }
+    }
+    if (Math.max(x1 - x0, y1 - y0) < 14) for (const q of comp) joined[q] = 0; // a dot, not a line
+  }
+  for (let p = 0; p < N; p++) { dark[p] = joined[p] ? 1 : 0; light[p] = 1 - dark[p]; }
   const inner = dilate(light, 3); // dark pixels more than 3 px inside a shape are its fillable inside
   for (let p = 0; p < N; p++) if (dark[p] && inner[p]) out.data[p * 4 + 3] = 255;
   ictx.putImageData(out, 0, 0);
-  return { src, solid: p => dark[p] && !inner[p] };
-}
-// Fills each area that lies inside a solid shape with the stone closest to the drawing's color there.
-function fillSolids({ src, solid }) {
-  const lab = getLabels(), n = regions.length, cnt = new Uint32Array(n), rgb = new Float64Array(n * 3);
-  for (let p = 0; p < N; p++) { const L = lab[p]; if (!L || !solid(p)) continue; cnt[L]++; for (let c = 0; c < 3; c++) rgb[L * 3 + c] += src.data[p * 4 + c]; }
-  const list = matchList(), fills = [];
-  for (let L = 1; L < n; L++) {
-    if (cnt[L] < regions[L].area * .5) continue;
-    const m = nearestMat(srgbToLab(rgb[L * 3] / cnt[L], rgb[L * 3 + 1] / cnt[L], rgb[L * 3 + 2] / cnt[L]), list), s0 = regions[L].seed;
-    fills.push({ x: s0 % W, y: (s0 - s0 % W) / W, mat: m.id, rot: Math.round(hash(L, 3, 7) * 360) });
-  }
-  return fills;
 }
 function boxBlur(ch, r) {
   const tmp = new Float32Array(N), d = 2 * r + 1;
@@ -1943,8 +1943,8 @@ async function runFree(desc) {
   if (!desc) { status.textContent = 'Type what you would like first, for example: a compass rose with waves around it.'; $('#ai-prompt').focus(); return; }
   go.disabled = true; busy(true, 'Drawing your design…');
   status.textContent = 'Drawing your design… this can take up to a minute.';
-  const prompt = `black and white line art coloring page for a stone mosaic: ${desc}. Clean bold black outlines, every shape closed, flat, `
-    + 'no shading, no gray, no hatching, no words, pure white background, centered, large simple shapes';
+  const prompt = `simple coloring book page, ${desc}. Thick bold continuous black outlines of even width, every shape fully closed, `
+    + 'flat vector line art, large simple shapes, no shading, no hatching, no fur or grass texture, no sketch lines, no gray, no words, pure white background, centered';
   const w = 1024, h = Math.round(1024 * H / W / 8) * 8;
   const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=${w}&height=${h}&nologo=true&seed=${Math.floor(Math.random() * 1e6)}`;
   const img = await Promise.race([loadPhoto(url), new Promise(r => setTimeout(() => r(null), 120000))]);
@@ -1954,6 +1954,7 @@ async function runFree(desc) {
   heavy(() => {
     try {
       $('#trace-mode').value = 'lines'; showTraceFields(); state.sourceKind = 'bw';
+      $('#threshold').value = 72; $('#threshold-val').textContent = '72'; // keep the drawing's paler strokes too
       runTrace();
       status.textContent = 'Done. Color it now, or go back to Design to fix lines. Not quite right? Press Draw it again for a new version.';
     } catch (err) {
