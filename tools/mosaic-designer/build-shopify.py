@@ -2,10 +2,10 @@
 
     python3 tools/mosaic-designer/build-shopify.py <theme-root>
 
-Writes into the theme root (the shopify-live branch):
-  layout/mosaic-designer.liquid          the page as its own full-screen layout
-  templates/page.mosaic-designer.liquid  page template that uses that layout
-  assets/mosaic-designer.css             styles
+The page uses the store's normal layout (header, menu, footer, SEO and region rules) and writes:
+  templates/page.mosaic-designer.liquid  page banner + the tool, inside the site layout
+  assets/mosaic-designer.css             the tool's styles, scoped under .imd so they never
+                                         touch the rest of the site (light theme only)
   assets/mosaic-designer.js              the tool
 
 On the website the stone photos come from the theme's own sw-01.png ... sw-48.png (the
@@ -25,50 +25,77 @@ bases = {k: v['base'] for k, v in json.loads(re.search(r'window\.IMOSAIC_SWATCHE
 
 body = src[src.index('<body>') + len('<body>'):src.index('<script>')]
 assert '{{' not in body and '{%' not in body, 'markup must not contain Liquid tags'
-# the brand links back to the store
-body = body.replace('<h1 class="brand">iMosaicArt<small>Mosaic Designer</small></h1>',
-                    '<h1 class="brand"><a href="{{ routes.root_url }}" style="color:inherit;text-decoration:none">iMosaicArt</a><small>Mosaic Designer</small></h1>')
+# the page banner carries the title, so the tool's own brand heading goes
+body = body.replace('  <h1 class="brand">iMosaicArt<small>Mosaic Designer</small></h1>\n', '')
 
+
+def scope(css):
+    """Prefix every selector with .imd; :root/body become .imd; dark-mode rules are dropped."""
+    out, i = [], 0
+    while i < len(css):
+        j = css.find('{', i)
+        if j < 0:
+            break
+        sel = css[i:j].strip()
+        depth, k = 1, j + 1
+        while depth:
+            depth += {'{': 1, '}': -1}.get(css[k], 0); k += 1
+        block = css[j + 1:k - 1]
+        i = k
+        sel = re.sub(r'/\*.*?\*/', '', sel, flags=re.S).strip()
+        if sel.startswith('@media') and 'prefers-color-scheme' in sel:
+            continue
+        if sel.startswith('@media') or sel.startswith('@supports'):
+            out.append(f'{sel} {{\n{scope(block)}}}\n'); continue
+        if sel.startswith('@'):
+            out.append(f'{sel} {{{block}}}\n'); continue
+        if 'html' in [x.strip() for x in sel.split(',')]:
+            continue  # page-height rules belong to the store's own layout
+        parts = []
+        for one in sel.split(','):
+            one = one.strip()
+            if one.startswith(':root[') or one.startswith(':root:not') or one in ('html',):
+                continue
+            if one in (':root', 'body'):
+                parts.append('.imd')
+            else:
+                parts.append('.imd ' + one)
+        if parts:
+            out.append(f"{', '.join(parts)} {{{block}}}\n")
+    return ''.join(out)
+
+
+style = scope(style) + """
+/* inside the store page */
+.imd { max-width: 1440px; margin: 0 auto; padding-block: 24px 60px; border-radius: 0; }
+.imd .btn { letter-spacing: normal; text-transform: none; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; transition: none; }
+.imd .btn.primary { letter-spacing: .06em; }
+.imd table { border-spacing: 0; }
+.md-hero { background: var(--color-panel); border-bottom: 1px solid rgba(22,51,94,.08); }
+.md-hero__crumb { max-width: var(--page-width); margin: 0 auto; padding: 30px 40px 0; display: flex; align-items: center; gap: 9px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-soft); }
+.md-hero__crumb span:nth-child(2) { color: #B7C0D2; } .md-hero__crumb span:last-child { color: var(--color-navy); }
+.md-hero__inner { max-width: 820px; margin: 0 auto; padding: 36px 40px 44px; text-align: center; }
+.md-hero__eyebrow { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 18px; font-family: var(--font-accent); font-size: 13px; letter-spacing: .36em; text-transform: uppercase; color: var(--color-navy); }
+.md-hero__eyebrow::before, .md-hero__eyebrow::after { content: ""; width: 38px; height: 1px; background: var(--color-blue); }
+.md-hero__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(38px, 5vw, 64px); line-height: 1.02; margin-bottom: 18px; color: var(--color-navy); }
+.md-hero__title em { font-style: italic; color: var(--color-blue); }
+.md-hero__text { font-size: 17px; line-height: 1.7; color: var(--color-text-muted); max-width: 600px; margin: 0 auto; }
+@media (max-width: 600px) { .md-hero__crumb, .md-hero__inner { padding-left: 22px; padding-right: 22px; } }
+"""
 swatches = ',\n'.join(
     f'    {k}: {{ base: {json.dumps(b)}, photo: "{{{{ \'sw-{k[1:]}.png\' | asset_url }}}}" }}' for k, b in bases.items())
 
-# keep the store's own region rule from its main layout, so this page is hidden wherever the store is
-theme_layout = open(os.path.join(root, 'layout', 'theme.liquid'), encoding='utf-8').read()
-geo = re.search(r'\s*\{%- comment -%\} Geo restriction.*?</script>\n', theme_layout, re.S)
-geo = geo.group(0) if geo else ''
-
-# what search engines and link previews show
-TITLE = 'Design Your Own Mosaic Online | Mosaic Designer – iMosaicArt'
-DESC = ('Create your own custom mosaic online: upload a photo or drawing, or draw and write your own '
-        'design, then fill it with our 48 natural marble and engineered stones and see it as a '
-        'hand-cut mosaic with a full materials list.')
-
-layout = f'''<!doctype html>
-<html lang="{{{{ request.locale.iso_code }}}}">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>{TITLE}</title>
-  <meta name="description" content="{DESC}">
-  <link rel="canonical" href="{{{{ canonical_url }}}}">
-  <meta property="og:site_name" content="{{{{ shop.name }}}}">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="{TITLE}">
-  <meta property="og:description" content="{DESC}">
-  <meta property="og:url" content="{{{{ canonical_url }}}}">
-  <meta property="og:image" content="https://cdn.shopify.com/s/files/1/0754/6093/5978/files/imosaicart-tile-ink_22592187-c72f-491a-8167-46c80ce7a3d6.png?v=1786045537">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="{TITLE}">
-  <meta name="twitter:description" content="{DESC}">{geo}
-  <link rel="icon" type="image/png" href="https://cdn.shopify.com/s/files/1/0754/6093/5978/files/favicon-32.png?v=1783243826">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Hanken+Grotesk:wght@400;500;600&family=Marcellus&display=swap">
-  {{{{ 'mosaic-designer.css' | asset_url | stylesheet_tag }}}}
-  {{{{ content_for_header }}}}
-</head>
-<body>
-{body}<div hidden>{{{{ content_for_layout }}}}</div>
+template = f"""{{{{ 'mosaic-designer.css' | asset_url | stylesheet_tag }}}}
+<section class="md-hero">
+  <div class="md-hero__crumb"><a href="{{{{ routes.root_url }}}}">Home</a><span>/</span><span>{{{{ page.title }}}}</span></div>
+  <div class="md-hero__inner">
+    <div class="md-hero__eyebrow">Create Your Own</div>
+    <h1 class="md-hero__title">Design Your <em>Mosaic</em></h1>
+    <p class="md-hero__text">Upload a photo or drawing, or draw and write your own design. Fill it with our natural marble and engineered stones, and see it as a hand-cut mosaic with a full list of materials.</p>
+  </div>
+</section>
+<div class="imd">
+{body}</div>
 <script>
   // iMosaicArt stone photos from this theme (sw-01 ... sw-48) and each stone's average color.
   window.IMOSAIC_SWATCHES = {{
@@ -76,12 +103,9 @@ layout = f'''<!doctype html>
   }};
 </script>
 <script src="{{{{ 'mosaic-designer.js' | asset_url }}}}" defer></script>
-</body>
-</html>
-'''
+"""
 files = {
-    'layout/mosaic-designer.liquid': layout,
-    'templates/page.mosaic-designer.liquid': "{% layout 'mosaic-designer' %}\n",
+    'templates/page.mosaic-designer.liquid': template,
     'assets/mosaic-designer.css': style,
     'assets/mosaic-designer.js': main_js,
 }
@@ -91,3 +115,8 @@ for path, text in files.items():
     with open(out, 'w', encoding='utf-8') as f:
         f.write(text)
     print(f'{path}: {len(text.encode()) // 1024} KB')
+
+# the earlier stand-alone layout is no longer used
+old = os.path.join(root, 'layout', 'mosaic-designer.liquid')
+if os.path.exists(old):
+    os.remove(old); print('removed layout/mosaic-designer.liquid')
