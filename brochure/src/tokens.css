@@ -1,0 +1,41 @@
+/* ============================================================
+   BRAND TOKENS — deep gold and emerald on ivory.
+   Emerald carries the type, gold does the accent work.
+   Replace the hex values to re-colour the whole document.
+   ============================================================ */
+:root {
+  /* Grounds */
+  --light:      #FFFDF8;  /* warm white */
+  --light-alt:  #F6F1E5;  /* cream — photo wells, panels */
+  --tint:       #E2EDE5;  /* soft emerald ground for alternating pages */
+  --tint-deep:  #D5E4D9;
+  --hairline:   #DED6C4;
+
+  /* Accent — deep gold */
+  --accent:       #A8842C;
+  --accent-light: #D9BC72;
+  --accent-deep:  #7E6320;
+  --accent-pale:  #EFE2BF;
+
+  /* Ink — emerald */
+  --ink:       #0F4430;
+  --ink-soft:  #42604F;
+  --ink-light: #6D8578;
+
+  /* Inline styles that once forced white now resolve to ink */
+  --on-dark:      #0F4430;
+  --on-dark-soft: #4A6255;
+
+  /* Photographic overlays */
+  --deep: #0A2A1E;
+
+  /* Type */
+  --display: "Cormorant Garamond", "Liberation Serif", Georgia, serif;
+  --sans:    "Jost", "Liberation Sans", Helvetica, Arial, sans-serif;
+
+  /* Geometry */
+  --page-w: 338.7mm;
+  --page-h: 190.5mm;
+  --margin: 15mm;
+  --hair: 0.5pt;
+}
