@@ -2144,13 +2144,13 @@ function runTrace(quiet) {
     refresh();
     if (!quiet) toast(`Colored with ${new Set(state.fills.map(f => f.mat)).size} stones from our chart. Tap any area to change it.`);
   } else {
-    traceImage();
+    const solids = traceImage();
     sourceData = null;
     commit(true);
-    state.fills = [];
+    state.fills = fillSolids(solids);
     setMode('color');
     refresh();
-    toast('Your drawing is ready. Pick a stone and tap each area. If lines are missing, adjust Ink threshold in step 1.');
+    toast('Your drawing is ready. Pick a stone and tap any area, including the black shapes. If lines are missing, adjust Ink threshold in step 1.');
   }
 }
 // The uploaded picture fitted onto a white slab, as pixels.
@@ -2171,14 +2171,32 @@ function isColorful(img) {
   for (let i = 0; i < d.length; i += 4) if (Math.max(d[i], d[i + 1], d[i + 2]) - Math.min(d[i], d[i + 1], d[i + 2]) > 40) colored++;
   return colored > 64 * 64 * .08;
 }
+// Keeps a drawing's black lines. Solid black shapes (letters, silhouettes, leaves) keep only their
+// outline, so their inside is an area that can be filled with a stone too; it starts filled with
+// the darkest matching stone so the drawing still looks the same.
 function traceImage() {
   const src = drawImported(), out = ictx.createImageData(W, H);
-  const thr = +$('#threshold').value / 100 * 255;
-  for (let i = 0; i < N * 4; i += 4) {
+  const thr = +$('#threshold').value / 100 * 255, dark = new Uint8Array(N), light = new Uint8Array(N);
+  for (let p = 0, i = 0; p < N; p++, i += 4) {
     const lum = .299 * src.data[i] + .587 * src.data[i + 1] + .114 * src.data[i + 2];
-    if (lum < thr) out.data[i + 3] = 255;
+    if (lum < thr) dark[p] = 1; else light[p] = 1;
   }
+  const inner = dilate(light, 3); // dark pixels more than 3 px inside a shape are its fillable inside
+  for (let p = 0; p < N; p++) if (dark[p] && inner[p]) out.data[p * 4 + 3] = 255;
   ictx.putImageData(out, 0, 0);
+  return { src, solid: p => dark[p] && !inner[p] };
+}
+// Fills each area that lies inside a solid shape with the stone closest to the drawing's color there.
+function fillSolids({ src, solid }) {
+  const lab = getLabels(), n = regions.length, cnt = new Uint32Array(n), rgb = new Float64Array(n * 3);
+  for (let p = 0; p < N; p++) { const L = lab[p]; if (!L || !solid(p)) continue; cnt[L]++; for (let c = 0; c < 3; c++) rgb[L * 3 + c] += src.data[p * 4 + c]; }
+  const list = matchList(), fills = [];
+  for (let L = 1; L < n; L++) {
+    if (cnt[L] < regions[L].area * .5) continue;
+    const m = nearestMat(srgbToLab(rgb[L * 3] / cnt[L], rgb[L * 3 + 1] / cnt[L], rgb[L * 3 + 2] / cnt[L]), list), s0 = regions[L].seed;
+    fills.push({ x: s0 % W, y: (s0 - s0 % W) / W, mat: m.id, rot: Math.round(hash(L, 3, 7) * 360) });
+  }
+  return fills;
 }
 function boxBlur(ch, r) {
   const tmp = new Float32Array(N), d = 2 * r + 1;
