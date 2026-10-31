@@ -304,3 +304,73 @@ Mosaic: A New Dayâ€™s Promise"), and one handle has it baked in
 (`...naturea-™s-beauty-in-every-tile`). This is a pure character repair with no
 editorial judgement in it, but it was not part of the brief, so it is left for
 a decision. Handles should not be changed without redirects.
+
+---
+
+## 11. Installed — to an unpublished theme copy (2026-10-31)
+
+### Why not the live theme
+
+The Shopify MCP blocks `themeFilesUpsert` against the live/MAIN theme as a safety
+policy. That is a hard block, not a permission that can be granted from here. So
+everything was applied to a **duplicate** instead:
+
+- **Theme:** `iMosaicArt + SEO schema (preview, then publish)`
+- **ID:** `gid://shopify/OnlineStoreTheme/192613450026`
+- **Role:** UNPUBLISHED — the live storefront is untouched
+- Duplicated from `agents/shopify-live` (`188598747434`) before any edit, so the
+  copy doubles as a rollback point.
+
+**Preview, then publish in Shopify admin → Online Store → Themes.**
+
+```
+https://www.imosaicart.com/?preview_theme_id=192613450026
+https://www.imosaicart.com/pages/installation-guide?preview_theme_id=192613450026
+https://www.imosaicart.com/pages/wishlist?preview_theme_id=192613450026
+```
+
+### What changed in that theme
+
+| File | Action | Size |
+|---|---|---|
+| `snippets/seo-howto-install.liquid` | added | 6,448 |
+| `snippets/seo-breadcrumbs.liquid` | added | 3,589 |
+| `snippets/seo-product-schema.liquid` | added | 3,996 |
+| `templates/robots.txt.liquid` | replaced (was 2,996) | 4,343 |
+| `templates/product.liquid` | patched (was 32,156) | 30,460 |
+| `layout/theme.liquid` | patched (was 14,832) | 15,436 |
+
+Two deviations from the plan in this folder, both deliberate:
+
+1. **The Product schema went into its own snippet** rather than staying inline in
+   `templates/product.liquid`. The template now renders
+   `seo-product-schema` where the old block was, so there is exactly one Product
+   JSON-LD per page and the schema is editable without touching a 30 KB template.
+   `pdp_desc` moved with it — it had no other consumer in the template.
+2. **The HowTo is hooked from `layout/theme.liquid`**, guarded by
+   `page.handle == 'installation-guide'`, rather than from inside
+   `snippets/pg-install.liquid`. One file touched instead of two, and
+   `pg-install.liquid` (23 KB of page copy) stays untouched.
+
+`seo-breadcrumbs.liquid` as deployed is 3,589 bytes against 4,516 here: the
+explanatory comment blocks were trimmed in transit. Every functional line —
+the noindex handle list, the page-type guards, the three breadcrumb cases and the
+blog `CollectionPage` — is present and identical.
+
+### How this was verified, and how it was not
+
+Verified: all six files read back from the theme at the expected sizes, and every
+byte delta reconciles exactly against the edit made (layout +604 for the inserted
+comment and two render tags; product.liquid −1,696 for the removed inline block
+less the added render). That rules out truncation or a corrupted upload.
+
+**Not verified: rendered output.** The storefront is unreachable from this
+environment (the egress proxy returns 403), so the preview page could not be
+fetched and the emitted JSON-LD could not be run through a validator from here.
+Before publishing, open the preview links above and run the installation-guide
+page and one product page through Google's Rich Results Test. The two things worth
+looking at specifically:
+
+- exactly **one** Product block and **one** BreadcrumbList block on a product page
+  (two would mean the old inline block survived somewhere), and
+- `noindex` present on `/pages/wishlist` and absent everywhere else.
