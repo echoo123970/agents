@@ -338,7 +338,10 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
         <div class="code" id="sel-code"></div>
       </div>
     </div>
-    <p class="label" id="chart-count">Marble · 48 colors</p>
+    <div class="tabs" role="group" aria-label="Show">
+      <button type="button" data-filter="marble" aria-pressed="true">Marble</button>
+      <button type="button" data-filter="engineered" aria-pressed="false">Engineered</button>
+    </div>
     <label class="field" for="search">Search chart
       <input id="search" type="search" placeholder="Name or code">
     </label>
@@ -368,7 +371,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
     </div>
     <div class="grid2">
       <label class="field" for="m-type">Material
-        <select id="m-type"><option value="marble">Marble</option></select>
+        <select id="m-type"><option value="marble">Marble</option><option value="engineered">Engineered stone</option></select>
       </label>
       <label class="field" for="m-style">Finish
         <select id="m-style"></select>
@@ -512,7 +515,7 @@ const SAMPLE_CHART = [
   { id: 'e48', name: 'Cobalt Blue', code: 'No. 48', type: 'engineered', style: 'mottled', base: '#1e3f9e', vein: '#3d61bd' },
 ];
 for (const m of SAMPLE_CHART) Object.assign(m, (window.IMOSAIC_SWATCHES || {})[m.id]);
-const TYPE_LABEL = { marble: 'Marble', engineered: 'Marble', glass: 'Glass' };
+const TYPE_LABEL = { marble: 'Marble', engineered: 'Engineered stone', glass: 'Glass' };
 const STYLES = {
   engineered: [['mottled', 'Speckled'], ['solid', 'Solid'], ['veined', 'Veined']],
   marble: [['veined', 'Veined'], ['bold', 'Bold veins'], ['web', 'Web / breccia'], ['mottled', 'Mottled'], ['solid', 'Solid']],
@@ -634,7 +637,7 @@ function loadPhoto(src) {
     photoImgs.set(src, img);
   });
 }
-// The chart shows one list: the 48 marble colors (engineered stones count as marble too).
+// Two tabs, Marble (42) and Engineered (6); 'stone' means both and is what color matching uses.
 const inTab = (m, f = state.filter) => f === 'stone' ? m.type !== 'glass' : f === 'all' || m.type === f;
 const flatView = () => state.look === 'flat' && state.mode !== 'mosaic';
 function drawThumb(canvas, m) {
@@ -666,7 +669,7 @@ const state = {
   mode: 'color',
   tool: { sketch: 'pen', color: 'fill' },
   weight: 3, gap: 2, joint: '#1b1a19',
-  selected: 'm04', filter: 'stone', query: '',
+  selected: 'm04', filter: 'marble', query: '',
   sizeW: 36, unit: 'in',
   look: 'stone', // how the Color step shows materials: stone textures or plain colors
   tileIn: 0.5,   // mosaic tile size in inches
@@ -778,10 +781,9 @@ function nearestMat(lab, list) {
   for (const m of list) { const q = matLab(m), d = (q[0] - lab[0]) ** 2 + (q[1] - lab[1]) ** 2 + (q[2] - lab[2]) ** 2; if (d < bd) { bd = d; best = m; } }
   return best;
 }
-// Colors are matched against the chart tab the customer has open; entries without a code are left out
-// of All so unnamed custom colors don't creep into a design.
+// Colors are matched against all 48 stones, whichever tab is open.
 const matchList = () => {
-  const l = chart.filter(m => inTab(m) && (m.type !== 'glass' || m.code));
+  const l = chart.filter(m => inTab(m, 'stone') && (m.type !== 'glass' || m.code));
   return l.length ? l : chart;
 };
 
@@ -1128,7 +1130,8 @@ function renderChart() {
   const step = () => { const t0 = performance.now(); while (thumbs.length && performance.now() - t0 < 30) drawThumb(...thumbs.shift()); if (thumbs.length) setTimeout(step, 0); };
   step();
   $('#sample-note').hidden = !chartIsSample;
-  $('#chart-count').textContent = `Marble · ${chart.filter(m => inTab(m)).length} colors`;
+  const label = { marble: 'Marble', engineered: 'Engineered' };
+  $$('.tabs button').forEach(b => { b.textContent = `${label[b.dataset.filter]} ${chart.filter(m => inTab(m, b.dataset.filter)).length}`; });
 }
 function selectMat(id) {
   state.selected = id;
