@@ -2,7 +2,8 @@
 'use strict';
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
-const W = 1000, H = 750, N = W * H;
+// The design frame in pixels: the longer side is 1000, the other follows the mosaic's shape.
+let W = 1000, H = 750, N = W * H;
 const TILE = 320;           // texture tile size in px
 const PATTERN_SCALE = 1.35; // how large the veining reads on the slab
 
@@ -223,7 +224,7 @@ const state = {
   tool: { sketch: 'pen', color: 'fill' },
   weight: 3, gap: 2, joint: '#8a8782',
   selected: 'm04', filter: 'marble', query: '',
-  sizeW: 36, unit: 'in',
+  sizeW: 36, sizeH: 27, unit: 'in', // finished size of the mosaic
   look: 'stone', // how the Color step shows materials: stone textures or plain colors
   tileIn: 0.5,   // mosaic tile size in inches
   mosaicFrom: 'picture',
@@ -231,6 +232,28 @@ const state = {
   fills: [], // immutable entries: { x, y, mat, rot }
 };
 let inkVer = 0;
+const frameFor = (w, h) => { const r = Math.max(.25, Math.min(4, h / w)); return r <= 1 ? [1000, Math.round(1000 * r)] : [Math.round(1000 / r), 1000]; };
+// Changes the frame to a new shape, keeping the drawing and its colors centered and in proportion.
+function resizeFrame(newW, newH) {
+  if (newW === W && newH === H) return;
+  if (typeof sel !== 'undefined' && sel) finishSel(true);
+  const old = mk(); old.getContext('2d').drawImage(ink, 0, 0);
+  const oW = W, oH = H, s = Math.min(newW / oW, newH / oH), ox = (newW - oW * s) / 2, oy = (newH - oH * s) / 2;
+  W = newW; H = newH; N = W * H; stack = new Int32Array(N);
+  for (const c of [ink, fillsLayer, tint, maskC, work, mosaicLayer, view, overlay]) { c.width = W; c.height = H; }
+  ictx.drawImage(old, ox, oy, oW * s, oH * s);
+  state.fills = state.fills.map(f => ({ ...f, x: Math.min(W - 1, Math.round(ox + f.x * s)), y: Math.min(H - 1, Math.round(oy + f.y * s)) }));
+  if (importedImg && sourceData) { const m = sourceData.mosaic; sourceData = drawImported(); sourceData.mosaic = m; }
+  currentInk = ictx.getImageData(0, 0, W, H); inkVer++;
+  history.length = 0; future.length = 0; // earlier steps belong to the old shape
+  fitSlab();
+}
+function fitSlab() {
+  const slab = $('#slab');
+  slab.style.aspectRatio = `${W} / ${H}`;
+  slab.style.width = `min(100%, calc(70vh * ${W / H}))`;
+  slab.style.marginInline = 'auto';
+}
 
 /* ---------------- Region detection ---------------- */
 // Every closed area of the sketch gets a label; a fill points at its area through a seed point.
@@ -259,7 +282,7 @@ function getBarrier() {
   barrier = dilate(b, state.gap); barrierKey = key;
   return barrier;
 }
-const stack = new Int32Array(N);
+let stack = new Int32Array(N);
 let labels = null, labelKey = '', regions = [null]; // regions[L] = { area, x0, y0, x1, y1, seed }
 function getLabels() {
   const key = inkVer + '|' + state.gap;
@@ -973,8 +996,7 @@ function renderBom() {
   const toArea = px => { const a = px / (pxPerUnit * pxPerUnit); return imperial ? a / 144 : a / 10000; };
   $('#area-head').textContent = imperial ? 'Area (ft²)' : 'Area (m²)';
   $('#tiles-head').textContent = `Tiles (${$('#tile-size').selectedOptions[0].textContent.split(' (')[0]})`;
-  const hgt = state.sizeW * H / W;
-  $('#dims').textContent = `${fmt(state.sizeW)} × ${fmt(hgt)} ${state.unit}`;
+  $('#dims').textContent = `${fmt(state.sizeW)} × ${fmt(state.sizeH)} ${state.unit}`;
   const body = $('#bom-body'), foot = $('#bom-foot');
   body.textContent = ''; foot.textContent = '';
   if (!groups.size) {
@@ -1227,17 +1249,27 @@ $$('.tabs button').forEach(b => b.addEventListener('click', () => {
   renderChart(); selectMat(state.selected);
 }));
 $('#search').addEventListener('input', e => { state.query = e.target.value; renderChart(); selectMat(state.selected); });
-let sizeTimer = 0;
-$('#size-w').addEventListener('input', e => {
-  const v = parseFloat(e.target.value); if (!(v > 0)) return;
-  state.sizeW = v; renderBom(); scheduleSave();
-  clearTimeout(sizeTimer); sizeTimer = setTimeout(() => heavy(() => refresh()), 400); // tiles get a new size
+// Size: width × height in the chosen unit. The frame takes the mosaic's shape; tiles and areas follow.
+function applySize(w, h) {
+  if (!(w > 0 && h > 0)) return;
+  state.sizeW = w; state.sizeH = h;
+  $('#size-w').value = w; $('#size-h').value = h;
+  const [nw, nh] = frameFor(w, h);
+  heavy(() => { resizeFrame(nw, nh); refresh(); applyView(); drawOverlay(); });
+}
+$('#size-w').addEventListener('change', e => applySize(parseFloat(e.target.value), state.sizeH));
+$('#size-h').addEventListener('change', e => applySize(state.sizeW, parseFloat(e.target.value)));
+$('#size-preset').addEventListener('change', e => {
+  if (!e.target.value) return;
+  const [w, h] = e.target.value.split('x').map(Number);
+  if (state.unit !== 'in') { state.unit = 'in'; $('#size-unit').value = 'in'; }
+  applySize(w, h); e.target.value = '';
 });
 $('#size-unit').addEventListener('change', e => {
   const to = e.target.value; if (to === state.unit) return;
-  state.sizeW = to === 'cm' ? Math.round(state.sizeW * 2.54) : Math.round(state.sizeW / 2.54 * 2) / 2;
-  state.unit = to; $('#size-w').value = state.sizeW; renderBom(); scheduleSave();
-  heavy(() => refresh());
+  const conv = v => to === 'cm' ? Math.round(v * 2.54) : Math.round(v / 2.54 * 2) / 2;
+  state.unit = to; state.sizeW = conv(state.sizeW); state.sizeH = conv(state.sizeH);
+  $('#size-w').value = state.sizeW; $('#size-h').value = state.sizeH; renderBom(); scheduleSave();
 });
 $('#undo').addEventListener('click', undo);
 $('#redo').addEventListener('click', redo);
@@ -1492,14 +1524,14 @@ function autoFill(idx, mats) {
 /* ---------------- Sample medallion ---------------- */
 function loadSample(withHistory) {
   sourceData = null;
-  const cx = 500, cy = 375;
+  const cx = W / 2, cy = H / 2, sc = Math.min(W / 1000, H / 750); // drawn for the 1000 × 750 frame, scaled to fit
   if (withHistory) history.push(snapshot());
   ictx.clearRect(0, 0, W, H);
   ictx.globalCompositeOperation = 'source-over';
   ictx.lineWidth = 3; ictx.strokeStyle = '#000'; ictx.lineJoin = 'round'; ictx.lineCap = 'round';
   ictx.strokeRect(24, 24, W - 48, H - 48);
-  for (const r of [332, 300, 252, 24]) { ictx.beginPath(); ictx.arc(cx, cy, r, 0, Math.PI * 2); ictx.stroke(); }
-  const pt = (r, deg) => [cx + r * Math.cos(deg * Math.PI / 180), cy + r * Math.sin(deg * Math.PI / 180)];
+  for (const r of [332, 300, 252, 24]) { ictx.beginPath(); ictx.arc(cx, cy, r * sc, 0, Math.PI * 2); ictx.stroke(); }
+  const pt = (r, deg) => [cx + r * sc * Math.cos(deg * Math.PI / 180), cy + r * sc * Math.sin(deg * Math.PI / 180)];
   const rad = k => (k % 2 ? 70 : (k % 4 === 0 ? 236 : 160));
   ictx.beginPath();
   for (let k = 0; k < 16; k++) { const [x, y] = pt(rad(k), -90 + k * 22.5); k ? ictx.lineTo(x, y) : ictx.moveTo(x, y); }
@@ -1512,7 +1544,7 @@ function loadSample(withHistory) {
 
   const fills = [];
   const add = (x, y, mat, rot = (x * 7 + y * 13) % 360) => fills.push({ x: Math.round(x), y: Math.round(y), mat, rot });
-  add(70, 70, 'm11');
+  add(40, 40, 'm11');
   for (let k = 0; k < 16; k++) { const [x, y] = pt(316, -90 + k * 22.5); add(x, y, k % 2 ? 'm05' : 'm01'); }
   add(...pt(276, -90), 'm08');
   add(...pt(200, -67.5), 'm04');
@@ -1540,7 +1572,7 @@ function designJSON() {
   const used = [...new Set(state.fills.map(f => f.mat))].map(matById).filter(Boolean);
   return { app: 'imosaicart-design', version: 1, sketch: ink.toDataURL('image/png'),
     fills: state.fills.map(({ x, y, mat, rot }) => ({ x, y, mat, rot })),
-    gap: state.gap, joint: state.joint, sizeW: state.sizeW, unit: state.unit, look: state.look, tileIn: state.tileIn, mosaicFrom: state.mosaicFrom,
+    gap: state.gap, joint: state.joint, sizeW: state.sizeW, sizeH: state.sizeH, unit: state.unit, look: state.look, tileIn: state.tileIn, mosaicFrom: state.mosaicFrom,
     picture: sourceData ? pictureURL() : null, pictureRect: sourceData ? sourceRect : null, materials: used };
 }
 let saveTimer = 0;
@@ -1561,9 +1593,11 @@ async function applyDesign(d, withHistory) {
   currentInk = ictx.getImageData(0, 0, W, H); inkVer++;
   state.fills = (d.fills || []).filter(f => Number.isFinite(f.x) && Number.isFinite(f.y));
   Object.assign(state, { gap: d.gap ?? 2, joint: d.joint || state.joint, sizeW: d.sizeW || 36, unit: d.unit === 'cm' ? 'cm' : 'in', tileIn: +d.tileIn || .5 });
+  state.sizeH = d.sizeH || state.sizeW * .75;
+  const [fw, fh] = frameFor(state.sizeW, state.sizeH); resizeFrame(fw, fh);
   $('#tile-size').value = String(state.tileIn); if (!$('#tile-size').value) { state.tileIn = .5; $('#tile-size').value = '0.5'; } markLook();
   $('#gap').value = state.gap; $('#gap-val').textContent = state.gap;
-  $('#size-w').value = state.sizeW; $('#size-unit').value = state.unit; markJoint();
+  $('#size-w').value = state.sizeW; $('#size-h').value = state.sizeH; $('#size-unit').value = state.unit; markJoint();
 }
 $('#save-design').addEventListener('click', () => {
   showJSON('Save design', 'Keep this file to reopen the design later, or send it to a customer so they can color it. It includes the materials it uses.', designJSON(), 'mosaic-design.json');
@@ -1618,7 +1652,7 @@ $('#export').addEventListener('click', () => heavy(() => {
     ctx.fillStyle = '#16335E'; ctx.font = '600 28px "Cormorant Garamond", Georgia, serif';
     ctx.fillText('iMosaicArt · Materials', pad, y);
     ctx.font = '13px "Hanken Grotesk", sans-serif'; ctx.fillStyle = '#4A5468'; ctx.textAlign = 'right';
-    ctx.fillText(`${fmt(state.sizeW)} × ${fmt(state.sizeW * H / W)} ${state.unit}`, W - pad, y);
+    ctx.fillText(`${fmt(state.sizeW)} × ${fmt(state.sizeH)} ${state.unit}`, W - pad, y);
     ctx.textAlign = 'left'; y += 22;
     const unit = state.unit === 'in' ? 'ft²' : 'm²';
     for (const r of rows) {
@@ -1671,15 +1705,15 @@ function confirmBox(title, body, ok) {
 
 /* ---------------- Draw from a description (Claude) ---------------- */
 let lastExport = null, sampleFn = null, imagesOk = false, downloadsApi = null, aiCtl = null, lastSvg = null, importedFile = null;
-const SVG_RULES = `You draw black-and-white line art that will be cut from marble and glass (waterjet stone inlay, mosaic, stained glass).
+const svgRules = () => `You draw black-and-white line art that will be cut from marble and glass (waterjet stone inlay, mosaic, stained glass).
 Reply with only one SVG document and no other text.
 Rules:
-- Root element: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750">.
+- Root element: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}">.
 - Use only path, line, polyline, polygon, rect, circle, ellipse and g. No text, images, gradients, patterns, filters, CSS or scripts.
 - Every shape has fill="none" stroke="#000" stroke-width="3".
 - Outlines only. Every area that will be one piece of material must be a fully closed region: lines meet exactly, with no gaps.
 - No hatching, shading, texture strokes or details smaller than about 14px; shapes must be bold and practical to cut.
-- Keep everything inside x 30-970, y 30-720. Draw an outer border so the background is a region too. Aim for about 15-90 regions.`;
+- Keep everything inside x 30-${W - 30}, y 30-${H - 30}. Draw an outer border so the background is a region too. Aim for about 15-90 regions.`;
 
 function svgFromText(text) {
   const m = text.match(/<svg[\s\S]*<\/svg>/i);
@@ -1694,7 +1728,7 @@ function svgFromText(text) {
     if (el.nodeName !== 'g') { el.setAttribute('fill', 'none'); el.setAttribute('stroke', '#000'); el.setAttribute('stroke-width', '3'); el.setAttribute('stroke-linejoin', 'round'); }
   }
   root.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-  if (!root.getAttribute('viewBox')) root.setAttribute('viewBox', '0 0 1000 750');
+  if (!root.getAttribute('viewBox')) root.setAttribute('viewBox', `0 0 ${W} ${H}`);
   root.setAttribute('width', String(W)); root.setAttribute('height', String(H));
   return new XMLSerializer().serializeToString(root);
 }
@@ -1709,17 +1743,17 @@ async function runAI(kind) {
   const desc = $('#ai-prompt').value.trim();
   let input, opts = {};
   if (kind === 'redraw') {
-    input = `${SVG_RULES}\n\nThe attached image is a customer's design. Redraw it as clean outline line art that follows the rules, keeping its composition and main shapes. Ignore its colors; only the shapes matter.${desc ? '\nAlso apply these changes: ' + desc : ''}`;
+    input = `${svgRules()}\n\nThe attached image is a customer's design. Redraw it as clean outline line art that follows the rules, keeping its composition and main shapes. Ignore its colors; only the shapes matter.${desc ? '\nAlso apply these changes: ' + desc : ''}`;
     opts.images = [importedFile];
   } else {
     if (!desc) { $('#ai-prompt').focus(); return toast('Describe the design first.'); }
     if ($('#ai-edit').checked) {
-      if (lastSvg) input = `${SVG_RULES}\n\nHere is the current design:\n${lastSvg}\n\nChange it as follows and return the full updated SVG: ${desc}`;
+      if (lastSvg) input = `${svgRules()}\n\nHere is the current design:\n${lastSvg}\n\nChange it as follows and return the full updated SVG: ${desc}`;
       else if (imagesOk) {
-        input = `${SVG_RULES}\n\nThe attached image is the current design. Redraw it as outline line art, keeping it as close as possible, with these changes: ${desc}`;
+        input = `${svgRules()}\n\nThe attached image is the current design. Redraw it as outline line art, keeping it as close as possible, with these changes: ${desc}`;
         opts.images = [await new Promise(r => { const c = mk(); const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, W, H); x.drawImage(ink, 0, 0); c.toBlob(r, 'image/png'); })];
-      } else input = `${SVG_RULES}\n\nDesign: ${desc}`;
-    } else input = `${SVG_RULES}\n\nDesign: ${desc}`;
+      } else input = `${svgRules()}\n\nDesign: ${desc}`;
+    } else input = `${svgRules()}\n\nDesign: ${desc}`;
   }
   aiCtl = new AbortController();
   const status = $('#ai-status'), go = $('#ai-go'), redraw = $('#ai-redraw');
@@ -1868,7 +1902,7 @@ async function boot() {
   markJoint(); markLook(); setTool('pen'); state.mode = 'color'; setTool('fill');
   renderChart(); selectMat(state.selected); setMode('color');
   heavy(() => refresh());
-  applyView();
+  fitSlab(); applyView();
   if (!saved && !store.get('mosaic.started')) $('#start').hidden = false;
 }
 boot();
