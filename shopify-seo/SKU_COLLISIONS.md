@@ -60,8 +60,13 @@ circumstantial but consistent across all eleven.
 copy to DRAFT and add a 301 redirect to the survivor. Nothing is deleted, so
 it is reversible. Removes 10 duplicate indexed pages.
 
-**Option A2 — treat as distinct.** Give each 14:22 listing a fresh SKU
-(`MAG430`–`MAG435`, `MAS303`–`MAS307`). Keeps both pages live.
+**Option A2 — treat as distinct.** Give each 14:22 listing a fresh SKU:
+`MAG434`–`MAG439` for the six Geometric listings and `MAS303`–`MAS307` for
+the five Landscape ones. Keeps both pages live.
+
+*(Corrected: an earlier revision of this file said `MAG430`–`MAG435`, but
+`MAG430`–`MAG433` were consumed by the Group B reassignments below on
+2026-10-31, so a distinct outcome now starts at `MAG434`.)*
 
 I lean A1 on the filename evidence, but I will not act on a hunch about ten
 live products. If you can glance at one pair in the admin — say `MAS160` —
