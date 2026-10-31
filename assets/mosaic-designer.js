@@ -243,7 +243,7 @@ function resizeFrame(newW, newH) {
   for (const c of [ink, fillsLayer, tint, maskC, work, mosaicLayer, view, overlay]) { c.width = W; c.height = H; }
   ictx.drawImage(old, ox, oy, oW * s, oH * s);
   state.fills = state.fills.map(f => ({ ...f, x: Math.min(W - 1, Math.round(ox + f.x * s)), y: Math.min(H - 1, Math.round(oy + f.y * s)) }));
-  if (importedImg && sourceData) { const m = sourceData.mosaic; sourceData = drawImported(); sourceData.mosaic = m; }
+  if (importedImg && sourceData) { const m = sourceData.mosaic, ph = sourceData.photo; sourceData = drawImported(); sourceData.mosaic = m; sourceData.photo = ph; }
   currentInk = ictx.getImageData(0, 0, W, H); inkVer++;
   history.length = 0; future.length = 0; // earlier steps belong to the old shape
   fitSlab();
@@ -351,6 +351,13 @@ function srgbToLab(r, g, b) {
   const X = t((R * .4124 + G * .3576 + B * .1805) / .95047), Y = t(R * .2126 + G * .7152 + B * .0722), Z = t((R * .0193 + G * .1192 + B * .9505) / 1.08883);
   return [116 * Y - 16, 500 * (X - Y), 200 * (Y - Z)];
 }
+function labToSrgb(L, a, b) {
+  const fy = (L + 16) / 116, fx = fy + a / 500, fz = fy - b / 200;
+  const t = v => v ** 3 > .008856 ? v ** 3 : (v - 16 / 116) / 7.787;
+  const X = t(fx) * .95047, Y = t(fy), Z = t(fz) * 1.08883;
+  const g = c => { c = c <= .0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - .055; return Math.max(0, Math.min(255, Math.round(c * 255))); };
+  return [g(X * 3.2406 - Y * 1.5372 - Z * .4986), g(-X * .9689 + Y * 1.8758 + Z * .0415), g(X * .0557 - Y * .2040 + Z * 1.0570)];
+}
 const labCache = new Map();
 const matLab = m => { let v = labCache.get(m.base); if (!v) { v = srgbToLab(...hexRgb(m.base)); labCache.set(m.base, v); } return v; };
 function nearestMat(lab, list) {
@@ -365,8 +372,49 @@ const matchList = () => {
 };
 
 /* ---------------- Rendering ---------------- */
+// One of our own mosaics ("Change the colors"): the customer sees the real piece, and an area given
+// another stone is recolored in place, so its tiles, cuts and grout stay exactly as they are.
+const photoLook = () => !!(sourceData && sourceData.photo);
+function renderPhotoFills() {
+  const lab = getLabels(), src = sourceData.data, n = regions.length;
+  const want = new Int32Array(n).fill(-1), mats = [];
+  for (const f of state.fills) {
+    const L = labelOf(f); if (!L || f.orig === f.mat) continue;
+    const m = matById(f.mat); if (!m) continue;
+    let k = mats.indexOf(m); if (k < 0) { mats.push(m); k = mats.length - 1; }
+    want[L] = k;
+  }
+  // the lines between areas belong to the nearest area, so no seam of the old color is left
+  const own = new Int32Array(N);
+  for (let p = 0; p < N; p++) {
+    let L = lab[p];
+    if (!L) { const x = p % W; for (let r = 1; r <= 4 && !L; r++) L = (x >= r && lab[p - r]) || (x + r < W && lab[p + r]) || (p >= r * W && lab[p - r * W]) || (p + r * W < N && lab[p + r * W]) || 0; }
+    own[p] = L;
+  }
+  // each recolored area's own average color (in Lab), from the pixels close to it
+  const sum = new Float64Array(n * 4), pl = new Float32Array(N * 3);
+  for (let p = 0; p < N; p++) {
+    const L = own[p]; if (!L || want[L] < 0) continue;
+    const v = srgbToLab(src[p * 4], src[p * 4 + 1], src[p * 4 + 2]);
+    pl[p * 3] = v[0]; pl[p * 3 + 1] = v[1]; pl[p * 3 + 2] = v[2];
+    sum[L * 4] += v[0]; sum[L * 4 + 1] += v[1]; sum[L * 4 + 2] += v[2]; sum[L * 4 + 3]++;
+  }
+  const out = new ImageData(new Uint8ClampedArray(src), W, H), o = out.data;
+  for (let p = 0; p < N; p++) {
+    const L = own[p]; if (!L || want[L] < 0) continue;
+    const c = sum[L * 4 + 3], mL = sum[L * 4] / c, ma = sum[L * 4 + 1] / c, mb = sum[L * 4 + 2] / c;
+    const t = matLab(mats[want[L]]);
+    const l = pl[p * 3], a = pl[p * 3 + 1], b = pl[p * 3 + 2];
+    // grout and shadows (far from the area's color) keep most of their look
+    const d2 = (l - mL) ** 2 + (a - ma) ** 2 + (b - mb) ** 2, w = Math.exp(-d2 / 900);
+    const rgb = labToSrgb(l + (t[0] - mL) * (.35 + .65 * w), a + (t[1] - ma) * w, b + (t[2] - mb) * w);
+    o[p * 4] = rgb[0]; o[p * 4 + 1] = rgb[1]; o[p * 4 + 2] = rgb[2];
+  }
+  fctx.putImageData(out, 0, 0);
+}
 function renderFills() {
   fctx.clearRect(0, 0, W, H);
+  if (photoLook()) return renderPhotoFills();
   getLabels();
   for (const f of state.fills) {
     const m = matById(f.mat), L = labelOf(f);
@@ -465,6 +513,7 @@ function renderPictureMosaic() {
 }
 function renderMosaic() {
   if (usePicture()) return renderPictureMosaic();
+  if (photoLook()) { mosctx.drawImage(fillsLayer, 0, 0); return; }
   mosctx.fillStyle = state.joint; mosctx.fillRect(0, 0, W, H);
   getLabels();
   for (const f of state.fills) {
@@ -508,6 +557,7 @@ function composite(target = vctx, mode = state.mode) {
     }
     if (target === vctx) drawTrace(target); target.drawImage(ink, 0, 0); return;
   }
+  if (photoLook()) return;
   tctx.globalCompositeOperation = 'source-over';
   tctx.clearRect(0, 0, W, H);
   tctx.drawImage(ink, 0, 0);
@@ -1158,7 +1208,7 @@ function setMode(mode) {
   drawOverlay();
 }
 function markFrom() {
-  $('#mosaic-from-group').hidden = !sourceData;
+  $('#mosaic-from-group').hidden = !sourceData || photoLook();
   $$('#mosaic-from-group .seg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.from === state.mosaicFrom)));
   $('#mosaic-areas-hint').hidden = usePicture();
   if (state.mode === 'mosaic' && usePicture()) $('#status').textContent = 'Your picture as a hand-cut mosaic in our stones. Change the tile size or grout on the left.';
@@ -1414,6 +1464,7 @@ function runTrace(quiet) {
   sourceData = drawImported();
   state.mosaicFrom = 'areas';
   if (state.sourceKind === 'mosaic') sourceData.mosaic = true;
+  if (upStore && $('#trace-mode').value === 'colors') sourceData.photo = true;
   if ($('#trace-mode').value === 'outline') {
     traceColors(); // draws the outline where the picture's colors meet
     commit(true);
@@ -1557,7 +1608,7 @@ function autoFill(idx, mats) {
   for (let L = 1; L < regions.length; L++) {
     let b = 0; for (let k = 1; k < M; k++) if (votes[L * M + k] > votes[L * M + b]) b = k;
     const s = regions[L].seed;
-    fills.push({ x: s % W, y: (s - s % W) / W, mat: mats[b].id, rot: Math.round(hash(L, 3, 7) * 360) });
+    fills.push({ x: s % W, y: (s - s % W) / W, mat: mats[b].id, orig: mats[b].id, rot: Math.round(hash(L, 3, 7) * 360) });
   }
   state.fills = fills;
 }
@@ -1661,7 +1712,7 @@ function pictureURL() {
 function designJSON() {
   const used = [...new Set(state.fills.map(f => f.mat))].map(matById).filter(Boolean);
   return { app: 'imosaicart-design', version: 1, sketch: ink.toDataURL('image/png'),
-    fills: state.fills.map(({ x, y, mat, rot }) => ({ x, y, mat, rot })),
+    fills: state.fills.map(({ x, y, mat, rot, orig }) => ({ x, y, mat, rot, orig })), photoLook: photoLook(),
     gap: state.gap, joint: state.joint, sizeW: state.sizeW, sizeH: state.sizeH, unit: state.unit, look: state.look, tileIn: state.tileIn, mosaicFrom: state.mosaicFrom,
     picture: sourceData ? pictureURL() : null, pictureRect: sourceData ? sourceRect : null, materials: used };
 }
@@ -1675,7 +1726,7 @@ async function applyDesign(d, withHistory) {
   }
   const img = await loadPhoto(d.sketch);
   const pic = d.picture ? await loadPhoto(d.picture) : null;
-  if (pic) { const c = mk(), x = c.getContext('2d'); x.drawImage(pic, 0, 0, W, H); sourceData = x.getImageData(0, 0, W, H); sourceRect = d.pictureRect || { x: 0, y: 0, w: W, h: H }; } else sourceData = null;
+  if (pic) { const c = mk(), x = c.getContext('2d'); x.drawImage(pic, 0, 0, W, H); sourceData = x.getImageData(0, 0, W, H); sourceData.photo = !!d.photoLook; sourceRect = d.pictureRect || { x: 0, y: 0, w: W, h: H }; } else sourceData = null;
   state.mosaicFrom = d.mosaicFrom === 'areas' ? 'areas' : 'picture';
   if (withHistory) { history.push(snapshot()); future.length = 0; }
   ictx.clearRect(0, 0, W, H);
