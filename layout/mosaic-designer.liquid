@@ -3,8 +3,50 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Mosaic Designer – {{ shop.name }}</title>
-  <meta name="robots" content="noindex, nofollow">
+  <title>Design Your Own Mosaic Online | Mosaic Designer – iMosaicArt</title>
+  <meta name="description" content="Create your own custom mosaic online: upload a photo or drawing, or draw and write your own design, then fill it with our 48 natural marble and engineered stones and see it as a hand-cut mosaic with a full materials list.">
+  <link rel="canonical" href="{{ canonical_url }}">
+  <meta property="og:site_name" content="{{ shop.name }}">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Design Your Own Mosaic Online | Mosaic Designer – iMosaicArt">
+  <meta property="og:description" content="Create your own custom mosaic online: upload a photo or drawing, or draw and write your own design, then fill it with our 48 natural marble and engineered stones and see it as a hand-cut mosaic with a full materials list.">
+  <meta property="og:url" content="{{ canonical_url }}">
+  <meta property="og:image" content="https://cdn.shopify.com/s/files/1/0754/6093/5978/files/imosaicart-tile-ink_22592187-c72f-491a-8167-46c80ce7a3d6.png?v=1786045537">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Design Your Own Mosaic Online | Mosaic Designer – iMosaicArt">
+  <meta name="twitter:description" content="Create your own custom mosaic online: upload a photo or drawing, or draw and write your own design, then fill it with our 48 natural marble and engineered stones and see it as a hand-cut mosaic with a full materials list.">
+
+    {%- comment -%} Geo restriction: hide the storefront from selected regions. {%- endcomment -%}
+    <script>
+      (function () {
+        var BLOCKED = ['TR','SY','IR','VN','CN','IN','PK','IL','SG','ID','PH'];
+        function blockPage() {
+          try {
+            var html = document.documentElement;
+            var o = document.createElement('div');
+            o.id = 'geo-block';
+            o.setAttribute('style', 'position:fixed;inset:0;z-index:2147483647;background:#0B1C35;color:#F4F6FA;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;font-family:Georgia,"Times New Roman",serif;');
+            o.innerHTML = '<div style="max-width:520px"><div style="font-size:30px;line-height:1.3;margin-bottom:16px;letter-spacing:.02em">iMosaicArt</div><div style="font-size:18px;line-height:1.65;color:#C7CFDD">We\'re sorry — our website is not available in your region at this time.</div></div>';
+            (document.body || html).appendChild(o);
+            html.style.overflow = 'hidden';
+            if (document.body) document.body.style.overflow = 'hidden';
+          } catch (e) {}
+        }
+        try {
+          fetch('https://get.geojs.io/v1/ip/country', { cache: 'no-store' })
+            .then(function (r) { return r.text(); })
+            .then(function (cc) {
+              cc = (cc || '').trim().toUpperCase();
+              if (BLOCKED.indexOf(cc) !== -1) {
+                if (document.body) { blockPage(); }
+                else { document.addEventListener('DOMContentLoaded', blockPage); }
+              }
+            })
+            .catch(function () {});
+        } catch (e) {}
+      })();
+    </script>
+
   <link rel="icon" type="image/png" href="https://cdn.shopify.com/s/files/1/0754/6093/5978/files/favicon-32.png?v=1783243826">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
