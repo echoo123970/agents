@@ -948,3 +948,88 @@ Measured before and after, by re-reading all 183:
 - **A mangled handle.** `MAS124`'s product has the handle
   `…a-new-daya-™s-promise`, mojibake from the apostrophe in "Day's". The
   title itself is clean.
+
+---
+
+## 17. The four small findings (2026-10-31)
+
+Section 16.3 recorded four things noticed in passing. Two were fixed; two
+turned out to need the owner, for reasons worth writing down.
+
+Order history was checked first: **none of the six SKUs involved appears in
+any of the store's 93 orders**, so nothing below breaks a past invoice.
+
+### Fixed — three Nautical products moved off Geometric codes
+
+`MAG002`, `MAG009` and `MAG010` were held by products whose productType is
+"Nautical Mosaics". The `MAG` prefix is the Geometric counter, so the codes
+contradicted the categories.
+
+| Product | Was | Now |
+|---|---|---|
+| Wall Art Glass Mosaic – Sea Life Wall Art | `MAG002` | **`MAN119`** |
+| Wall Art Glass Mosaic – Ocean Mosaic Scene | `MAG009` | **`MAN120`** |
+| Underwater Mosaic View – Pool Mosaic Design | `MAG010` | **`MAN121`** |
+
+Applied across all 5 variants of each and verified by re-read. The three old
+codes are now unused — confirmed by querying for them and getting nothing
+back. Gaps in a counter sequence are harmless; they are not free for reuse
+by convention, since reusing a retired code is how collisions start.
+
+### Fixed — the mojibake handle
+
+`MAS124`'s product carried the handle
+`landscape-mosaics-sunrise-over-the-ocean-mosaic-a-new-daya-™s-promise` —
+mojibake from the apostrophe in "Day's". Changed to
+`…-a-new-days-promise`, with a 301 redirect from the old path so no inbound
+link breaks. Shopify stored the redirect with the `™` percent-encoded as
+`%e2%84%a2`, which is what a browser sends.
+
+The product title itself was always clean; only the handle was mangled.
+
+### Not fixed — the ChatGPT image filename
+
+`MAG432`'s product ("Geometric Mosaic – Flower Mosaic Artwork") carries the
+image `ChatGPT_Image_Aug_4_2026_01_17_45_PM.png`. Every other product's image
+is named after its SKU.
+
+This **is** technically fixable from here, which is worth recording because
+the obvious objection is that `cdn.shopify.com` is unreachable from this
+environment: `FileCreateInput` accepts both `filename` and `originalSource`,
+and `originalSource` can be the existing CDN URL — Shopify fetches its own
+CDN server-side, so the image never has to pass through here.
+
+It was not done, because renaming is the wrong fix. The filename is not the
+problem; it is the *tell*. Every other image is named after its SKU because
+it came from a photograph of a real piece. Renaming this one to `MAG432.png`
+would make the catalogue look consistent while leaving open the question the
+filename raises — whether that listing has a real artwork behind it. That is
+a content decision for the owner, and concealing the signal would make it
+harder to notice, not easier.
+
+### Not fixed — the Bird/floral mismatch, and a typo that collides
+
+`MAB062`'s product is productType "Bird Mosaics", but its title says
+"Watercolor Floral Art – Ladscape Mosaic" and mentions no bird. Its sibling
+(`MB128`, the 2025-02-08 listing the owner ruled distinct) is also Bird
+Mosaics and also says floral/landscape.
+
+Two reasons this is not a safe unilateral fix:
+
+1. **The correct type cannot be determined from the record.** Title says
+   floral/landscape; the `MAB` prefix and the productType both say Bird.
+   Only the image settles it, and the images are not reachable from here.
+2. **Fixing the obvious typo would create a worse problem.** "Ladscape" →
+   "Landscape" is plainly correct, but it would make this title
+   byte-identical to its sibling's — two ACTIVE products with the same
+   title, which is the cannibalisation pattern §16.2 exists to avoid.
+
+Both images, for whoever decides:
+
+- `MAB062` — https://cdn.shopify.com/s/files/1/0754/6093/5978/files/MAB062_53eb8193-fc1a-4434-8749-ea7439d0f15e.jpg?v=1730141244
+- `MB128` — https://cdn.shopify.com/s/files/1/0754/6093/5978/files/MAB062_a83faf6b-52a3-4808-b7cb-2597dfb9a505.jpg?v=1739033528
+
+Both are 1407×601 and were uploaded under the same base filename, which is
+why they read as duplicates on the first pass. The owner ruled them distinct.
+If that holds, they need titles that tell them apart as well as a correct
+productType; if it does not, one should be retired the way Group A was.
