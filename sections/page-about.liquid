@@ -1,0 +1,260 @@
+  <style>
+    .ab { background:#F4F6FA; color:#16335E; }
+    .ab-container { max-width:1320px; margin:0 auto; padding:0 40px; }
+    .ab-eyebrow { display:flex; align-items:center; gap:12px; margin-bottom:26px; font-family:'Marcellus',serif; font-size:13px; letter-spacing:.36em; text-transform:uppercase; color:#16335E; }
+    .ab-eyebrow__ln { width:42px; height:1px; background:#2B7BE8; }
+    .ab-i { font-style:italic; color:#2B7BE8; }
+    .ab-kicker { font-family:'Marcellus',serif; font-size:13px; letter-spacing:.36em; text-transform:uppercase; color:#16335E; margin-bottom:18px; }
+    .ab-h2 { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(32px,3.8vw,50px); line-height:1.08; margin:0 0 24px; color:#16335E; }
+    .ab-h2--c { margin:0; }
+    .ab-center { text-align:center; margin-bottom:56px; }
+    .ab-center .ab-kicker { margin-bottom:14px; }
+    .ab-ico { width:58px; height:58px; border-radius:50%; border:1px solid #2B7BE8; color:#2B7BE8; display:flex; align-items:center; justify-content:center; margin:0 auto 24px; }
+    .ab-ico--sm { width:54px; height:54px; margin-bottom:22px; }
+
+    .ab-hero__grid { display:grid; grid-template-columns:1.02fr 1fr; gap:64px; align-items:center; padding:64px 0 76px; }
+    .ab-hero__title { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(44px, 5vw, 66px); line-height:1.02; letter-spacing:-.01em; margin:0 0 26px; color:#16335E; }
+    .ab-hero__text { font-size:17px; line-height:1.75; color:#5E6B85; max-width:520px; margin:0 0 36px; }
+    .ab-hero__ctas { display:flex; gap:16px; flex-wrap:wrap; }
+    .ab-btn { min-width:230px; justify-content:center; font-size:13px; letter-spacing:.14em; text-transform:uppercase; padding:17px 36px; display:inline-flex; align-items:center; transition:all .25s ease; }
+    .ab-btn--dark { background:#16335E; color:#F4F6FA; border:1px solid #16335E; }
+    .ab-btn--dark:hover { background:#22467E; border-color:#22467E; }
+    .ab-btn--outline { background:transparent; color:#16335E; border:1px solid rgba(22,51,94,.35); }
+    .ab-btn--outline:hover { background:#16335E; color:#F4F6FA; border-color:#16335E; }
+    .ab-hero__media { position:relative; }
+    .ab-hero__img { position:relative; overflow:hidden; background:#DCE6F5; }
+    .ab-hero__img img { width:100%; height:auto; display:block; }
+    .ab-hero__badge { position:absolute; left:-30px; top:78%; transform:translateY(-50%); background:#FFFFFF; padding:22px 26px; box-shadow:0 24px 60px rgba(22,51,94,.18); max-width:240px; }
+    .ab-hero__badge-n { font-family:'Cormorant Garamond',serif; font-size:38px; line-height:1; color:#16335E; font-variant-numeric:lining-nums; font-feature-settings:"lnum" 1; }
+    .ab-hero__badge-l { font-size:12.5px; letter-spacing:.1em; text-transform:uppercase; color:#7E8AA0; margin-top:8px; }
+
+    .ab-stats { background:#16335E; color:#DCE6F5; }
+    .ab-stats__grid { display:grid; grid-template-columns:repeat(4,1fr); gap:24px; padding:46px 0; }
+    .ab-stat { text-align:center; }
+    .ab-stat__n { font-family:'Cormorant Garamond',serif; font-size:clamp(34px,3.4vw,46px); line-height:1; color:#fff; font-variant-numeric:lining-nums; font-feature-settings:"lnum" 1; }
+    .ab-stat__l { font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:#9AA4B8; margin-top:10px; }
+
+    .ab-story__grid { display:grid; grid-template-columns:1fr 1.05fr; gap:72px; align-items:center; padding:104px 0; }
+    .ab-story__img { position:relative; overflow:hidden; background:#DCE6F5; }
+    .ab-story__img img { width:100%; height:auto; display:block; }
+    .ab-hero__img img, .ab-story__img img { transition:transform .7s cubic-bezier(.2,.7,.2,1); }
+    .ab-hero__img:hover img, .ab-story__img:hover img { transform:scale(1.05); }
+    .ab-story__p { font-size:16px; line-height:1.78; color:#5E6B85; margin:0 0 20px; }
+    .ab-story__p:last-child { margin-bottom:0; }
+
+    .ab-pillars { background:#fff; border-top:1px solid rgba(22,51,94,.08); border-bottom:1px solid rgba(22,51,94,.08); }
+    .ab-pillars__inner { padding-top:100px; padding-bottom:100px; }
+    .ab-pillars__grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0; }
+    .ab-pillar { padding:0 40px; text-align:center; border-left:1px solid rgba(22,51,94,.1); }
+    .ab-pillar:first-child { border-left:none; }
+    .ab-pillar__t { font-family:'Cormorant Garamond',serif; font-weight:600; font-size:24px; margin:0 0 14px; color:#16335E; }
+    .ab-pillar__d { font-size:14.5px; line-height:1.7; color:#5E6B85; margin:0; }
+
+    .ab-gallery { padding:100px 0 80px; }
+    .ab-gallery__grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+    .ab-gtile { position:relative; overflow:hidden; aspect-ratio:4/5; background:#DCE6F5; }
+    .ab-gtile img { width:100%; height:100%; object-fit:cover; transition:transform .65s cubic-bezier(.2,.7,.2,1); }
+    .ab-gtile:hover img { transform:scale(1.05); }
+    .ab-gallery__cta { text-align:center; margin-top:44px; }
+    .ab-ghostbtn { display:inline-block; font-size:12.5px; letter-spacing:.16em; text-transform:uppercase; color:#16335E; border:1px solid rgba(22,51,94,.3); padding:15px 34px; transition:all .25s ease; }
+    .ab-ghostbtn:hover { background:#2B7BE8; color:#fff; border-color:#2B7BE8; }
+
+    .ab-promise { background:#EEF1F6; border-top:1px solid rgba(22,51,94,.08); }
+    .ab-promise__inner { padding-top:100px; padding-bottom:100px; }
+    .ab-promise__grid { display:grid; grid-template-columns:repeat(5,1fr); gap:0; }
+    .ab-promise__col { padding:0 32px; text-align:center; border-left:1px solid rgba(22,51,94,.12); }
+    .ab-promise__col:first-child { border-left:none; }
+    .ab-promise__t { font-family:'Cormorant Garamond',serif; font-weight:600; font-size:21px; margin:0 0 12px; color:#16335E; }
+    .ab-promise__d { font-size:14px; line-height:1.65; color:#5E6B85; margin:0; }
+
+    .ab-quote { max-width:920px; margin:0 auto; padding:100px 40px; text-align:center; }
+    .ab-quote__mark { color:#2B7BE8; font-size:46px; font-family:'Cormorant Garamond',serif; line-height:1; margin-bottom:18px; }
+    .ab-quote__t { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:500; font-size:clamp(26px,3.2vw,38px); line-height:1.35; color:#16335E; margin:0 0 28px; }
+    .ab-quote__by { font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:#7E8AA0; }
+
+    .ab-cta { background:#16335E; color:#DCE6F5; }
+    .ab-cta__inner { display:flex; align-items:center; justify-content:space-between; gap:48px; flex-wrap:wrap; padding-top:84px; padding-bottom:84px; }
+    .ab-cta__copy { max-width:620px; }
+    .ab-cta__eyebrow { font-family:'Marcellus',serif; font-size:13px; letter-spacing:.36em; text-transform:uppercase; color:#7BB0F4; margin-bottom:18px; }
+    .ab-cta__title { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(32px,3.8vw,50px); line-height:1.08; margin:0 0 16px; color:#fff; }
+    .ab-cta__text { font-size:16px; line-height:1.7; color:#9AA4B8; margin:0; }
+    .ab-cta__actions { display:flex; gap:14px; flex-wrap:wrap; }
+    .ab-cta__btn { font-size:13px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; padding:18px 36px; white-space:nowrap; transition:all .25s ease; }
+    .ab-cta__btn--blue { background:#2B7BE8; color:#fff; }
+    .ab-cta__btn--blue:hover { background:#5C9AF0; }
+    .ab-cta__btn--ghost { background:transparent; color:#fff; border:1px solid rgba(220,230,245,.4); }
+    .ab-cta__btn--ghost:hover { background:rgba(255,255,255,.1); }
+
+    .ab { overflow-x: clip; }
+    @media (max-width:1100px) {
+      .ab-hero__grid { gap:44px; }
+      .ab-story__grid { gap:48px; }
+    }
+    @media (max-width:990px) {
+      .ab-hero__grid, .ab-story__grid { grid-template-columns:1fr; gap:40px; }
+      .ab-story__grid { padding:70px 0; }
+      .ab-hero__media { min-height:0; }
+      .ab-stats__grid { grid-template-columns:repeat(2,1fr); gap:34px 24px; }
+      .ab-pillars__grid { grid-template-columns:1fr; gap:48px; }
+      .ab-pillar { border-left:none; }
+      .ab-promise__grid { grid-template-columns:repeat(3,1fr); gap:44px 24px; }
+      .ab-promise__col { border-left:none; }
+      .ab-gallery__grid { grid-template-columns:repeat(2,1fr); }
+      .ab-pillars__inner, .ab-promise__inner { padding-top:70px; padding-bottom:70px; }
+    }
+    @media (max-width:600px) {
+      .ab-container { padding:0 22px; }
+      .ab-hero__grid { padding:40px 0 52px; }
+      .ab-hero__media { min-height:0; }
+      .ab-hero__badge { left:16px; top:auto; bottom:16px; transform:none; padding:15px 18px; max-width:200px; }
+      .ab-hero__badge-n { font-size:32px; }
+      .ab-hero__ctas { flex-direction:column; }
+      .ab-btn { min-width:0; width:100%; }
+      .ab-stats__grid { grid-template-columns:repeat(2,1fr); gap:26px 16px; padding:36px 0; }
+      .ab-promise__grid { grid-template-columns:1fr 1fr; gap:34px 20px; }
+      .ab-gallery__grid { grid-template-columns:1fr; }
+      .ab-quote { padding:64px 22px; }
+      .ab-cta__inner { padding-top:56px; padding-bottom:56px; }
+      .ab-cta__actions { width:100%; }
+      .ab-cta__btn { flex:1; text-align:center; }
+    }
+    @media (max-width:400px) {
+      .ab-stats__grid { grid-template-columns:1fr; }
+    }
+    @media (max-width:749px) {
+      .ab-promise__inner { padding-top:84px; }
+      .ab-pillars__inner { padding-top:52px; padding-bottom:82px; }
+      /* Our Craft, In Real Spaces, Our Promise → horizontal swipe rows */
+      .ab-pillars__grid, .ab-gallery__grid, .ab-promise__grid {
+        display:flex; grid-template-columns:none; gap:14px;
+        overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+      }
+      .ab-pillars__grid::-webkit-scrollbar, .ab-gallery__grid::-webkit-scrollbar, .ab-promise__grid::-webkit-scrollbar { display:none; }
+      .ab-pillar { flex:0 0 74%; scroll-snap-align:start; }
+      .ab-gtile { flex:0 0 74%; scroll-snap-align:start; }
+      .ab-promise__col { flex:0 0 62%; scroll-snap-align:start; border-left:none; }
+    }
+  </style>
+
+  {%- assign cm_url = '/pages/custom-mosaics' -%}
+{%- if pages['custom-mosaics'] != empty and pages['custom-mosaics'].handle -%}{%- assign cm_url = pages['custom-mosaics'].url -%}{%- endif -%}
+{%- assign pf_url = '/pages/portfolio-mosaics' -%}
+{%- if pages['portfolio-mosaics'] != empty and pages['portfolio-mosaics'].handle -%}{%- assign pf_url = pages['portfolio-mosaics'].url -%}{%- endif -%}
+  <div class="ab">
+    <!-- HERO -->
+    <section class="ab-hero"><div class="ab-container">
+      <div class="ab-hero__grid">
+        <div class="ab-hero__copy">
+          <div class="ab-eyebrow"><span class="ab-eyebrow__ln"></span>Our Story</div>
+          <h1 class="ab-hero__title">Where Every Tile<br>Tells a <span class="ab-i">Story.</span></h1>
+          <p class="ab-hero__text">For thousands of years, mosaic has turned humble fragments of stone and glass into art that outlives empires. iMosaicArt carries that ancient craft into your home — every piece cut, shaped and placed entirely by hand, made to order, and built to be treasured for generations.</p>
+          <div class="ab-hero__ctas">
+            <a href="{{ routes.all_products_collection_url }}" class="ab-btn ab-btn--dark">Explore the Collection</a>
+            <a href="{{ cm_url }}" class="ab-btn ab-btn--outline">Commission a Piece</a>
+          </div>
+        </div>
+        <div class="ab-hero__media">
+          <div class="ab-hero__img"><img src="https://cdn.shopify.com/s/files/1/0754/6093/5978/files/582695010_728452473633017_4431294266214909288_n.jpg?v=1782975293" alt="Master artisan hand-cutting a mosaic in the studio" loading="eager"></div>
+          <div class="ab-hero__badge">
+            <div class="ab-hero__badge-n">100%</div>
+            <div class="ab-hero__badge-l">Hand-cut by master artisans</div>
+          </div>
+        </div>
+      </div>
+    </div></section>
+
+    <!-- STATS -->
+    <section class="ab-stats"><div class="ab-container">
+      <div class="ab-stats__grid">
+          <div class="ab-stat"><div class="ab-stat__n">15+</div><div class="ab-stat__l">Years of Experience</div></div>
+          <div class="ab-stat"><div class="ab-stat__n">100%</div><div class="ab-stat__l">Handmade</div></div>
+          <div class="ab-stat"><div class="ab-stat__n">1000s</div><div class="ab-stat__l">Tiles Per Piece</div></div>
+          <div class="ab-stat"><div class="ab-stat__n">Worldwide</div><div class="ab-stat__l">Free Shipping</div></div>
+      </div>
+    </div></section>
+
+    <!-- STORY -->
+    <section class="ab-story"><div class="ab-container">
+      <div class="ab-story__grid">
+        <div class="ab-story__img"><img src="{{ 'about-hands-tesserae.png' | asset_url }}" alt="Artisan placing hand-cut tesserae" loading="lazy"></div>
+        <div class="ab-story__copy">
+          <div class="ab-kicker">How We Began</div>
+          <h2 class="ab-h2">A Passion for an Ancient Craft</h2>
+          <p class="ab-story__p">iMosaicArt was born from a simple belief: that the handmade still matters. In a world of mass production, we set out to revive the timeless art of mosaic — and to make it possible for anyone, anywhere, to own a true handcrafted original.</p>
+          <p class="ab-story__p">With over 15 years of experience, our studio brings together a team of dedicated mosaic artists who have spent decades mastering their craft. Working in the finest natural marble and hand-cut glass, they translate a photograph, a painting or a fleeting idea into thousands of carefully placed tesserae — each one chosen for its color, grain and character.</p>
+          <p class="ab-story__p">We marry traditional technique with modern precision, so every piece is not only breathtaking but built to last — a work of art for your walls, your floors and your story.</p>
+        </div>
+      </div>
+    </div></section>
+
+    <!-- CRAFT PILLARS -->
+    <section class="ab-pillars"><div class="ab-container ab-pillars__inner">
+      <div class="ab-center">
+        <div class="ab-kicker">Our Craft</div>
+        <h2 class="ab-h2 ab-h2--c">The Difference Is in the Hands</h2>
+      </div>
+      <div class="ab-pillars__grid">
+          <div class="ab-pillar"><div class="ab-ico"><svg class="ab-ico__svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M11 3 8 9l4 12 4-12-3-6"/><path d="M2 9h20"/></svg></div><h3 class="ab-pillar__t">The Finest Materials</h3><p class="ab-pillar__d">Only natural marble and hand-cut glass — chosen for depth of color and a beauty that never fades.</p></div>
+          <div class="ab-pillar"><div class="ab-ico"><svg class="ab-ico__svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></div><h3 class="ab-pillar__t">Master Artisans</h3><p class="ab-pillar__d">Years of mastery in every cut. Each tessera is shaped and placed entirely by hand in our studio.</p></div>
+          <div class="ab-pillar"><div class="ab-ico"><svg class="ab-ico__svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v6l4 2"/><path d="M16 2l6 6"/></svg></div><h3 class="ab-pillar__t">Timeless Technique</h3><p class="ab-pillar__d">Ancient mosaic methods refined with modern precision — visually stunning and built to last generations.</p></div>
+      </div>
+    </div></section>
+
+    <!-- GALLERY -->
+    <section class="ab-gallery"><div class="ab-container">
+      <div class="ab-center">
+        <div class="ab-kicker">In Real Spaces</div>
+        <h2 class="ab-h2 ab-h2--c">Crafted Here, Treasured Everywhere</h2>
+      </div>
+      <div class="ab-gallery__grid">
+        <div class="ab-gtile"><img src="{{ 'religious-lady-jesus.png' | asset_url }}" alt="Mosaic in a real space" loading="lazy"></div>
+        <div class="ab-gtile"><img src="{{ 'bird-peacock.jpg' | asset_url }}" alt="Mosaic in a real space" loading="lazy"></div>
+        <div class="ab-gtile"><img src="{{ 'portrait-pearl.png' | asset_url }}" alt="Mosaic in a real space" loading="lazy"></div>
+      </div>
+      <div class="ab-gallery__cta"><a href="{{ pf_url }}" class="ab-ghostbtn">View Our Portfolio</a></div>
+    </div></section>
+
+    <!-- PROMISE -->
+    <section class="ab-promise"><div class="ab-container ab-promise__inner">
+      <div class="ab-center">
+        <div class="ab-kicker">Our Promise</div>
+        <h2 class="ab-h2 ab-h2--c">What You Can Count On</h2>
+      </div>
+      <div class="ab-promise__grid">
+          <div class="ab-promise__col"><div class="ab-ico ab-ico--sm"><svg class="ab-ico__svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path fill="currentColor" stroke="none" d="M12 1.8c.62 5.3 1.9 6.58 8.2 8.2-6.3 1.62-7.58 2.9-8.2 8.2-.62-5.3-1.9-6.58-8.2-8.2 6.3-1.62 7.58-2.9 8.2-8.2z"/></svg></div><h3 class="ab-promise__t">Premium Craft</h3><p class="ab-promise__d">Handcrafted from the finest stone and glass for lasting beauty.</p></div>
+          <div class="ab-promise__col"><div class="ab-ico ab-ico--sm"><svg class="ab-ico__svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-2.4-5.9"/><path d="M20.7 3.6V9.1H15.2"/></svg></div><h3 class="ab-promise__t">Satisfaction Promise</h3><p class="ab-promise__d">Love it or return it — 100% satisfaction guaranteed.</p></div>
+          <div class="ab-promise__col"><div class="ab-ico ab-ico--sm"><svg class="ab-ico__svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path fill="currentColor" stroke="none" d="M22 16v-2l-8.5-5V3.5a1.5 1.5 0 0 0-3 0V9L2 14v2l8.5-2.5V19L8 20.5V22l3.5-1 3.5 1v-1.5L13.5 19v-5.5L22 16z"/></svg></div><h3 class="ab-promise__t">Safe Worldwide Shipping</h3><p class="ab-promise__d">Carefully crated and insured to arrive in perfect condition.</p></div>
+          <div class="ab-promise__col"><div class="ab-ico ab-ico--sm"><svg class="ab-ico__svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l8 3v5.5c0 5-3.4 8.6-8 10.5-4.6-1.9-8-5.5-8-10.5V5.5z"/><path d="M9 12l2 2 4-4.5"/></svg></div><h3 class="ab-promise__t">Secure &amp; Easy</h3><p class="ab-promise__d">Multiple payment options with a fast, encrypted checkout.</p></div>
+          <div class="ab-promise__col"><div class="ab-ico ab-ico--sm"><svg class="ab-ico__svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M8.5 12.5L7 22l5-3 5 3-1.5-9.5"/></svg></div><h3 class="ab-promise__t">Lifetime Warranty</h3><p class="ab-promise__d">Every mosaic is backed by a lifetime warranty, protecting your investment for years to come.</p></div>
+      </div>
+    </div></section>
+
+    <!-- QUOTE -->
+    <section class="ab-quote">
+      <div class="ab-quote__mark">&ldquo;</div>
+      <p class="ab-quote__t">We don't just make mosaics. We preserve a craft that has survived for millennia, one handcut tile at a time — so a piece of it can live in your home.</p>
+      <div class="ab-quote__by">The iMosaicArt Studio</div>
+    </section>
+
+    <!-- CTA BAND -->
+    <section class="ab-cta"><div class="ab-container ab-cta__inner">
+      <div class="ab-cta__copy">
+        <div class="ab-cta__eyebrow">Begin Your Piece</div>
+        <h2 class="ab-cta__title">Bring a timeless work of art into your space.</h2>
+        <p class="ab-cta__text">Browse our handcrafted collection or commission a one-of-a-kind mosaic designed around your vision — with free worldwide shipping on every order.</p>
+      </div>
+      <div class="ab-cta__actions">
+        <a href="{{ routes.all_products_collection_url }}" class="ab-cta__btn ab-cta__btn--blue">Shop Mosaics</a>
+        <a href="{{ cm_url }}" class="ab-cta__btn ab-cta__btn--ghost">Start a Commission</a>
+      </div>
+    </div></section>
+  </div>
+
+
+{% schema %}
+{
+  "name": "About page",
+  "settings": [],
+  "presets": [{ "name": "About page" }]
+}
+{% endschema %}

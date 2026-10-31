@@ -1,0 +1,191 @@
+<style>
+  .ct-hero { background: var(--color-panel); border-bottom: 1px solid rgba(22,51,94,.08); }
+  .ct-hero__crumb-wrap { padding-top: 30px; }
+  .ct-hero__crumb { display: flex; align-items: center; gap: 9px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-soft); }
+  .ct-hero__crumb-sep { color: #B7C0D2; }
+  .ct-hero__crumb-current { color: var(--color-navy); }
+  .ct-hero__inner { max-width: 1080px; margin: 0 auto; padding: 46px 40px 52px; text-align: center; }
+  .ct-hero__eyebrow { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 22px; }
+  .ct-hero__rule { width: 38px; height: 1px; background: var(--color-blue); }
+  .ct-hero__eyebrow-text { font-family: var(--font-accent); font-size: 13px; letter-spacing: .36em; text-transform: uppercase; color: var(--color-navy); }
+  .ct-hero__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(30px,5.4vw,62px); line-height: 1.02; letter-spacing: -.01em; margin-bottom: 22px; color: var(--color-navy); white-space: nowrap; }
+  .ct-hero__title em, .ct-hero__title i { font-style: italic; color: var(--color-blue); }
+  .ct-hero__text { font-size: 17px; line-height: 1.7; color: var(--color-text-muted); max-width: 560px; margin: 0 auto; }
+
+  .ct { padding-top: 80px; padding-bottom: 90px; }
+  .ct__grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 64px; align-items: start; }
+  .ct__details-eyebrow { font-family: var(--font-accent); font-size: 13px; letter-spacing: .3em; text-transform: uppercase; color: var(--color-navy); margin-bottom: 8px; }
+  .ct__details-heading { font-family: var(--font-display); font-weight: 500; font-size: clamp(28px,3vw,38px); line-height: 1.1; margin-bottom: 36px; color: var(--color-navy); }
+  .ct__rows { display: flex; flex-direction: column; gap: 22px; margin-bottom: 42px; }
+  .ct__row { display: flex; align-items: center; gap: 18px; }
+  .ct__row-icon { flex-shrink: 0; width: 50px; height: 50px; border-radius: 50%; background: var(--color-panel); display: flex; align-items: center; justify-content: center; color: var(--color-blue); font-size: 20px; }
+  .ct__row-label { display: block; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--color-text-faint); margin-bottom: 4px; }
+  .ct__row-value { display: block; font-size: 17px; line-height: 1.5; color: var(--color-navy); }
+  .ct__hours { background: #fff; border: 1px solid rgba(22,51,94,.1); padding: 26px 28px; margin-bottom: 34px; }
+  .ct__hours-title { font-family: var(--font-accent); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--color-navy); margin-bottom: 16px; }
+  .ct__hours-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(22,51,94,.08); }
+  .ct__hours-row--last { border-bottom: none; }
+  .ct__hours-row span { font-size: 15px; color: var(--color-text-muted); }
+  .ct__hours-val { color: var(--color-navy) !important; font-weight: 600; }
+  .ct__social-label { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--color-text-faint); margin-bottom: 14px; }
+  .ct__social { display: flex; gap: 12px; }
+  .ct__social-link { width: 44px; height: 44px; border: 1px solid rgba(22,51,94,.2); display: flex; align-items: center; justify-content: center; color: var(--color-navy); transition: all .25s ease; }
+  .ct__social-link svg { width: 19px; height: 19px; }
+  .ct__social-link:hover { background: var(--color-navy); color: #fff; border-color: var(--color-navy); }
+
+  .ct__form-card { background: var(--color-navy); padding: 52px 50px; }
+  .ct__form-eyebrow { font-family: var(--font-accent); font-size: 13px; letter-spacing: .3em; text-transform: uppercase; color: var(--color-blue-light); margin-bottom: 10px; }
+  .ct__form-heading { font-family: var(--font-display); font-weight: 500; font-size: clamp(28px,3vw,38px); line-height: 1.1; margin-bottom: 32px; color: #fff; }
+  .ct__form-label { display: block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--color-text-faint); margin-bottom: 9px; }
+  .ct__form-label span { color: var(--color-blue-light); }
+  .ct__field { width: 100%; background: rgba(255,255,255,.06); border: 1px solid rgba(220,230,245,.22); outline: none; color: #fff; font-family: var(--font-body); font-size: 15px; padding: 15px 18px; margin-bottom: 22px; transition: border-color .2s ease; }
+  .ct__field:focus { border-color: var(--color-blue); }
+  .ct__field::placeholder { color: var(--color-text-faint); }
+  .ct__field--area { resize: vertical; margin-bottom: 26px; }
+  .ct__submit { width: 100%; background: var(--color-blue); color: #fff; border: none; font-family: var(--font-body); font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding: 17px 28px; cursor: pointer; transition: background .25s ease; }
+  .ct__submit:hover { background: #1E63C4; }
+  .ct__form-error { font-size: 13px; color: #F2B8B8; margin-bottom: 18px; }
+  .ct__success { min-height: 440px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .ct__success-icon { width: 72px; height: 72px; border-radius: 50%; background: rgba(43,123,232,.18); display: flex; align-items: center; justify-content: center; margin-bottom: 26px; }
+  .ct__success-title { font-family: var(--font-display); font-weight: 500; font-size: 32px; margin-bottom: 12px; color: #fff; }
+  .ct__success-text { font-size: 16px; line-height: 1.65; color: var(--color-text-faint); max-width: 340px; }
+
+  @media (max-width: 990px) {
+    .ct__grid { grid-template-columns: 1fr; gap: 40px; }
+    .ct__form-card { padding: 36px 28px; }
+  }
+  @media (max-width: 600px) {
+    .ct-hero__title { white-space: normal; }
+  }
+
+  /* AAA Form Builder app form — restyled to match the contact card design */
+  .ct__form-card .aaa_formbuilder_container { background: transparent !important; width: 100% !important; }
+  .ct__form-card .aaaformbuilder_form .form-group { margin-bottom: 22px; box-sizing: border-box; }
+  .ct__form-card .aaaformbuilder_form label { display: block; font-family: var(--font-body); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--color-text-faint) !important; margin-bottom: 9px; font-weight: 400; }
+  .ct__form-card .aaaformbuilder_form .required { color: var(--color-blue-light) !important; }
+  .ct__form-card .aaaformbuilder_form .form-control { width: 100%; box-sizing: border-box; background: rgba(255,255,255,.06); border: 1px solid rgba(220,230,245,.22); border-radius: 0; outline: none; box-shadow: none; color: #fff; font-family: var(--font-body); font-size: 15px; padding: 15px 18px; }
+  .ct__form-card .aaaformbuilder_form .form-control:focus { border-color: var(--color-blue); }
+  .ct__form-card .aaaformbuilder_form .form-control::placeholder { color: var(--color-text-faint); }
+  .ct__form-card .aaaformbuilder_form textarea.form-control { min-height: 130px; resize: vertical; }
+  .ct__form-card .aaaformbuilder_form .aaa_captcha_cont { margin-bottom: 18px; color: var(--color-text-faint); font-size: 13px; letter-spacing: .08em; }
+  .ct__form-card .aaaformbuilder_form .aaa_captcha_cont label { display: inline; margin-right: 10px; text-transform: uppercase; }
+  .ct__form-card .aaaformbuilder_form .aaa_captcha_result { background: rgba(255,255,255,.06); border: 1px solid rgba(220,230,245,.22); color: #fff; padding: 8px 10px; }
+  .ct__form-card .aaa_formbuilder_container .aaaformbuilder_form .fb-submit button { width: 100% !important; background: var(--color-blue) !important; color: #fff !important; border: none !important; border-radius: 0 !important; font-family: var(--font-body) !important; font-size: 13px !important; font-weight: 600 !important; letter-spacing: .14em !important; text-transform: uppercase !important; padding: 17px 28px !important; cursor: pointer !important; }
+  .ct__form-card .aaa_formbuilder_container .aaaformbuilder_form .fb-submit button:hover { background: #1E63C4 !important; }
+  /* Make app-injected success / validation messages visible on the navy card */
+  .ct__form-card .aaa_formbuilder_container { color: #EAE1D2; }
+  .ct__form-card .aaa_formbuilder_container p,
+  .ct__form-card .aaa_formbuilder_container .aaa_success,
+  .ct__form-card .aaa_formbuilder_container .aaa_form_success,
+  .ct__form-card .aaa_formbuilder_container .success-message,
+  .ct__form-card .aaa_formbuilder_container .aaa_message,
+  .ct__form-card .aaa_formbuilder_container .aaa_error,
+  .ct__form-card .aaa_formbuilder_container .error-message { color: #EAE1D2 !important; }
+</style>
+
+<!-- HERO -->
+<section class="ct-hero">
+  <div class="page-width ct-hero__crumb-wrap">
+    <div class="ct-hero__crumb">
+      <a href="{{ routes.root_url }}" class="nav-link">Home</a>
+      <span class="ct-hero__crumb-sep">/</span>
+      <span class="ct-hero__crumb-current">{{ page.title | default: 'Contact Us' }}</span>
+    </div>
+  </div>
+  <div class="ct-hero__inner">
+    <div class="ct-hero__eyebrow"><span class="ct-hero__rule"></span><span class="ct-hero__eyebrow-text">{{ section.settings.eyebrow }}</span><span class="ct-hero__rule"></span></div>
+    {%- if section.settings.heading != blank -%}<h1 class="ct-hero__title">{{ section.settings.heading }}</h1>{%- endif -%}
+    {%- if section.settings.text != blank -%}<p class="ct-hero__text">{{ section.settings.text }}</p>{%- endif -%}
+  </div>
+</section>
+
+<section class="ct page-width">
+  <div class="ct__grid">
+    <!-- DETAILS -->
+    <div class="ct__details">
+      <div class="ct__details-eyebrow">Contact Details</div>
+      <h2 class="ct__details-heading">{{ section.settings.details_heading }}</h2>
+      <div class="ct__rows">
+        {%- if section.settings.phone != blank -%}
+          <a href="tel:{{ section.settings.phone | replace: ' ', '' | replace: '(', '' | replace: ')', '' | replace: '-', '' }}" class="ct__row">
+            <span class="ct__row-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+            <span><span class="ct__row-label">Call Us</span><span class="ct__row-value">{{ section.settings.phone }}</span></span>
+          </a>
+        {%- endif -%}
+        {%- if section.settings.email != blank -%}
+          <a href="mailto:{{ section.settings.email }}" class="ct__row">
+            <span class="ct__row-icon">✉</span>
+            <span><span class="ct__row-label">Email Us</span><span class="ct__row-value">{{ section.settings.email }}</span></span>
+          </a>
+        {%- endif -%}
+        {%- if section.settings.address != blank -%}
+          <div class="ct__row">
+            <span class="ct__row-icon">⚲</span>
+            <span><span class="ct__row-label">Visit Our Studio</span><span class="ct__row-value">{{ section.settings.address }}</span></span>
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.hours_1 != blank or section.settings.hours_2 != blank -%}
+        <div class="ct__hours">
+          <div class="ct__hours-title">⏱ Opening Hours</div>
+          {%- if section.settings.hours_1 != blank -%}
+            <div class="ct__hours-row"><span>{{ section.settings.hours_1_label }}</span><span class="ct__hours-val">{{ section.settings.hours_1 }}</span></div>
+          {%- endif -%}
+          {%- if section.settings.hours_2 != blank -%}
+            <div class="ct__hours-row ct__hours-row--last"><span>{{ section.settings.hours_2_label }}</span><span class="ct__hours-val">{{ section.settings.hours_2 }}</span></div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      <div class="ct__social-wrap">
+        <div class="ct__social-label">Follow Us</div>
+        <div class="ct__social">
+          <a href="{{ settings.social_instagram_link | default: 'https://instagram.com/imosaicart' }}" target="_blank" rel="noopener" class="ct__social-link" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="{{ settings.social_pinterest_link | default: 'https://pinterest.com/imosaicart' }}" target="_blank" rel="noopener" class="ct__social-link" aria-label="Pinterest">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.08 2.45 7.58 5.96 9.12-.08-.78-.16-1.97.03-2.82.18-.76 1.15-4.87 1.15-4.87s-.29-.59-.29-1.46c0-1.37.79-2.39 1.78-2.39.84 0 1.25.63 1.25 1.39 0 .85-.54 2.11-.82 3.28-.23.98.49 1.78 1.46 1.78 1.75 0 3.1-1.85 3.1-4.51 0-2.36-1.7-4.01-4.12-4.01-2.81 0-4.46 2.1-4.46 4.28 0 .85.33 1.76.73 2.25.08.1.09.18.07.28-.07.31-.24.98-.27 1.11-.04.18-.14.22-.33.13-1.24-.58-2.01-2.38-2.01-3.84 0-3.12 2.27-5.99 6.54-5.99 3.43 0 6.1 2.45 6.1 5.72 0 3.41-2.15 6.16-5.13 6.16-1 0-1.95-.52-2.27-1.14l-.62 2.35c-.22.86-.83 1.94-1.24 2.6.93.29 1.92.44 2.95.44 5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg>
+          </a>
+          <a href="{{ settings.social_facebook_link | default: 'https://facebook.com/imosaicart' }}" target="_blank" rel="noopener" class="ct__social-link" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.52 1.49-3.91 3.78-3.91 1.09 0 2.24.2 2.24.2v2.47h-1.26c-1.24 0-1.63.78-1.63 1.57v1.88h2.78l-.44 2.91h-2.34V22c4.78-.76 8.43-4.92 8.43-9.94z"/></svg>
+          </a>
+          <a href="{{ settings.social_youtube_link | default: 'https://youtube.com/@imosaicart' }}" target="_blank" rel="noopener" class="ct__social-link" aria-label="YouTube">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 12s0-3.2-.41-4.74a2.5 2.5 0 0 0-1.76-1.77C19.29 5.08 12 5.08 12 5.08s-7.29 0-8.83.41a2.5 2.5 0 0 0-1.76 1.77C1 8.8 1 12 1 12s0 3.2.41 4.74a2.5 2.5 0 0 0 1.76 1.77c1.54.41 8.83.41 8.83.41s7.29 0 8.83-.41a2.5 2.5 0 0 0 1.76-1.77C23 15.2 23 12 23 12zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <div class="ct__form-card">
+      <div class="ct__form-eyebrow">Get in Touch</div>
+      <h2 class="ct__form-heading">Send Us a Message</h2>
+      {%- comment -%} Contact form handled by the AAA Form Builder app (form 16104); restyled below to match the design. {%- endcomment -%}
+      <div class="aaa_formbuilder_container" style="width: 100%; margin: 0 auto; float: none;"><form method="post" action="" class="aaaformbuilder_form  aaa_formbuilder_form_id_16104" enctype="multipart/form-data"><input type="hidden" name="url" class="get_current_page_url" value="{{ canonical_url }}"><input type="hidden" name="container_id" value=""><input type="hidden" name="form_id" value="16104"><input type="hidden" name="form_domain" value="aml89.myshopify.com"><input type="hidden" name="" value="Thank You! We'll be in touch" class="success_msg"><input type="hidden" name="" value="Please fill all the required fields" class="error_msg"><input type="hidden" name="" value="Please enter a valid email address." class="emailerror_msg"><input type="hidden" name="" value="" class="aaa_thankyoupageurl"><input type="hidden" name="uploadeLimit" class="formUploadLimit" value="10"><input type="hidden" name="allowefiletype" class="allowedfiletype" value=""><input type="hidden" name="conditionallogic" class="conditionallogic" value=""><div class="fb-text form-group field-first-name"><label for="first-name" class="fb-text-label">Name <span class="required">*</span></label> <input type="text" required="" placeholder="Enter your full name" class="form-control field__input" name="first-name" id="first-name" aria-required="true"></div><div class="fb-email form-group field-replyemail"><label for="replyemail" class="fb-email-label">Email <span class="required">*</span></label> <input type="email" required="" placeholder="Enter your email address" class="form-control field__input" name="replyemail" id="replyemail" aria-required="true"></div><div class="fb-undefined form-group field-textarea-1481364899702"><label for="textarea-1481364899702" class="fb-textarea-label">Special Message</label><textarea placeholder="Tell us about your space, idea or question…" class="form-control field__input" name="textarea-1481364899702" id="textarea-1481364899702"></textarea></div><div class="fb-submit form-group field-button-1481029333721"><div class="aaa_captcha_cont"><label>Captcha</label><span class="rand1">7</span> + <span class="rand2">8</span> = <input type="text" class="aaa_captcha_result" style="width: 60px; display: inline-block;"></div><button type="submit" class="button-input btn button btn-default" name="button-1481029333721" id="button-1481029333721">Send Message</button></div></form></div>
+      <script> function isMyScriptLoaded() { var url = 'https://shopifycdn.aaawebstore.com/formbuilder/appfiles/aaa_form_builder_script_minify_v1.js?shop=aml89.myshopify.com'; var jsFound = 0; var scripts = document.getElementsByTagName('script');  for (var i = scripts.length; i--;) { if (scripts[i].src == url) { jsFound = 1; } } if(!jsFound) { var headTag = document.getElementsByTagName('head')[0]; var jqTag = document.createElement('script'); jqTag.type = 'text/javascript'; jqTag.src = url; jqTag.onload = ''; headTag.appendChild(jqTag); } } isMyScriptLoaded(); </script>
+    </div>
+  </div>
+</section>
+
+
+{% schema %}
+{
+  "name": "Contact page",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Reach Us" },
+    { "type": "richtext", "id": "heading", "label": "Heading", "default": "<p>Let's Create Something <em>Timeless</em></p>" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Questions about a piece, a custom commission, or your order? Our studio team is here to help — reach out and we'll respond within one business day." },
+    { "type": "text", "id": "details_heading", "label": "Details heading", "default": "We'd Love to Hear From You" },
+    { "type": "text", "id": "phone", "label": "Phone", "default": "+1 (315) 217-5538" },
+    { "type": "text", "id": "email", "label": "Email", "default": "info@imosaicart.com" },
+    { "type": "text", "id": "address", "label": "Address", "default": "28 Liberty St, New York, NY 10005, United States" },
+    { "type": "header", "content": "Opening hours" },
+    { "type": "text", "id": "hours_1_label", "label": "Row 1 label", "default": "Monday – Saturday" },
+    { "type": "text", "id": "hours_1", "label": "Row 1 hours", "default": "8:00am – 7:00pm" },
+    { "type": "text", "id": "hours_2_label", "label": "Row 2 label", "default": "Sunday" },
+    { "type": "text", "id": "hours_2", "label": "Row 2 hours", "default": "9:00am – 2:00pm" }
+  ],
+  "presets": [{ "name": "Contact page" }]
+}
+{% endschema %}

@@ -1,0 +1,230 @@
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(22,51,94,.1);
+  }
+  .site-header__inner {
+    height: 78px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .site-header__logo { display: flex; align-items: center; gap: 13px; }
+  .site-header__logo-img { width: 44px; height: 44px; object-fit: contain; }
+  .site-header__mark { color: var(--color-blue); font-size: 26px; }
+  .site-header__name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 29px;
+    letter-spacing: .005em;
+    color: var(--color-navy);
+    line-height: 1;
+  }
+  .site-header__name-accent { font-style: italic; color: var(--color-blue); }
+  .site-header__nav {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+    font-size: 12.5px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: #46546E;
+  }
+  .site-header__icons { display: flex; align-items: center; gap: 20px; color: var(--color-navy); }
+  .site-header__icon { display: flex; background: none; border: none; padding: 0; color: inherit; cursor: pointer; }
+  .site-header__cart { position: relative; }
+  .site-header__cart-count {
+    position: absolute;
+    top: -7px;
+    right: -8px;
+    background: var(--color-blue);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 3px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .site-header__wish { position: relative; }
+  .site-header__wish-count {
+    position: absolute;
+    top: -7px;
+    right: -8px;
+    background: var(--color-blue);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .site-header__wish-count[hidden] { display: none; }
+  .site-header__burger { display: none; }
+
+  .mobile-nav {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 24px 20px;
+    border-top: 1px solid rgba(22,51,94,.1);
+    background: #fff;
+  }
+  .mobile-nav[open] { display: flex; }
+  .mobile-nav__close { align-self: flex-end; background: none; border: none; font-size: 28px; line-height: 1; color: var(--color-navy); cursor: pointer; }
+  .mobile-nav__link {
+    padding: 12px 4px;
+    font-size: 13px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: #46546E;
+    border-bottom: 1px solid rgba(22,51,94,.08);
+  }
+
+  @media (max-width: 990px) {
+    .site-header__nav { display: none; }
+    .site-header__burger { display: flex; }
+  }
+  @media (max-width: 750px) {
+    .site-header__inner { height: 64px; }
+    .site-header__name { font-size: 23px; }
+  }
+  @media (max-width: 600px) {
+    .site-header__inner { gap: 12px; }
+    .site-header__icons { gap: 14px; }
+    .site-header__name { font-size: 20px; }
+    .site-header__icon { padding: 10px; margin: -10px; }
+    .mobile-nav__link { padding: 13px 8px; }
+  }
+</style>
+
+<header class="site-header" role="banner">
+  <div class="page-width site-header__inner">
+    <a href="{{ routes.root_url }}" class="site-header__logo">
+      {%- if settings.logo != blank -%}
+        <img src="{{ settings.logo | image_url: width: 200 }}" alt="{{ shop.name | escape }}" width="44" height="44" class="site-header__logo-img">
+      {%- else -%}
+        <img src="{{ 'mark-color.png' | asset_url }}" alt="{{ shop.name | escape }}" width="44" height="44" class="site-header__logo-img">
+      {%- endif -%}
+      <span class="site-header__name">iMosaic<span class="site-header__name-accent">Art</span></span>
+    </a>
+
+    <nav class="site-header__nav" role="navigation">
+      {%- if section.settings.menu != blank and section.settings.menu.links.size > 0 -%}
+        {%- for link in section.settings.menu.links -%}
+          {%- assign lt = link.title | downcase | strip -%}
+          {%- unless lt == 'mosaic tile art' -%}
+            {%- assign disp = link.title -%}
+            {%- assign href = link.url -%}
+            {%- if lt == 'about us' -%}{%- assign disp = 'About' -%}{%- endif -%}
+            {%- if lt == 'contact us' -%}{%- assign disp = 'Journal' -%}{%- assign href = blogs.news.url | default: '/blogs/news' -%}{%- endif -%}
+            <a href="{{ href }}" class="nav-link">{{ disp }}</a>
+          {%- endunless -%}
+        {%- endfor -%}
+      {%- else -%}
+        <a href="{{ routes.all_products_collection_url }}" class="nav-link">Mosaics</a>
+        <a href="/pages/custom-mosaics" class="nav-link">Custom Mosaics</a>
+        <a href="/pages/about-us" class="nav-link">About</a>
+        <a href="{{ blogs.news.url | default: '/blogs/news' }}" class="nav-link">Journal</a>
+      {%- endif -%}
+    </nav>
+
+    <div class="site-header__icons">
+      <button type="button" aria-label="Search" class="site-header__icon" data-search-toggle>
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+      </button>
+      <a href="{{ routes.account_url }}" aria-label="Account" class="site-header__icon">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+      </a>
+      <a href="/pages/wishlist" aria-label="Wishlist" class="site-header__icon site-header__wish">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>
+        <span class="site-header__wish-count" data-wl-header-count hidden></span>
+      </a>
+      <a href="{{ routes.cart_url }}" aria-label="Cart" class="site-header__icon site-header__cart">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+        <span class="site-header__cart-count">{{ cart.item_count }}</span>
+      </a>
+      <button type="button" class="site-header__icon site-header__burger" data-menu-toggle aria-label="Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="hsearch" data-hsearch hidden>
+    <div class="page-width hsearch__inner">
+      <form action="{{ routes.search_url }}" method="get" class="hsearch__form" data-predictive data-money-format="{{ shop.money_format }}">
+        <input type="hidden" name="options[prefix]" value="last">
+        <svg class="hsearch__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7E8AA0" stroke-width="1.7"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+        <input type="search" name="q" placeholder="Search mosaics by name, subject or style…" class="hsearch__input" data-predictive-input>
+        <button type="button" class="hsearch__close" data-search-close aria-label="Close">&times;</button>
+        <div class="psg" data-predictive-results hidden></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="mobile-nav" id="MobileNav">
+    <button type="button" class="mobile-nav__close" data-menu-close aria-label="Close">&times;</button>
+    {%- if section.settings.menu != blank and section.settings.menu.links.size > 0 -%}
+      {%- for link in section.settings.menu.links -%}
+        {%- assign lt = link.title | downcase | strip -%}
+        {%- unless lt == 'mosaic tile art' -%}
+          {%- assign disp = link.title -%}
+          {%- assign href = link.url -%}
+          {%- if lt == 'about us' -%}{%- assign disp = 'About' -%}{%- endif -%}
+          {%- if lt == 'contact us' -%}{%- assign disp = 'Journal' -%}{%- assign href = blogs.news.url | default: '/blogs/news' -%}{%- endif -%}
+          <a href="{{ href }}" class="mobile-nav__link">{{ disp }}</a>
+        {%- endunless -%}
+      {%- endfor -%}
+    {%- else -%}
+      <a href="{{ routes.all_products_collection_url }}" class="mobile-nav__link">Mosaics</a>
+      <a href="/pages/custom-mosaics" class="mobile-nav__link">Custom Mosaics</a>
+      <a href="/pages/about-us" class="mobile-nav__link">About</a>
+      <a href="{{ blogs.news.url | default: '/blogs/news' }}" class="mobile-nav__link">Journal</a>
+    {%- endif -%}
+  </div>
+</header>
+
+
+<script>
+  (function () {
+    function updateWishCount() {
+      var el = document.querySelector('[data-wl-header-count]');
+      if (!el) return;
+      var n = 0;
+      try { n = (JSON.parse(localStorage.getItem('ima_wishlist') || '[]') || []).length; } catch (e) {}
+      if (n > 0) { el.textContent = n; el.hidden = false; } else { el.hidden = true; }
+    }
+    updateWishCount();
+    window.addEventListener('storage', function (e) { if (e.key === 'ima_wishlist') updateWishCount(); });
+    // reflect changes made by heart buttons on this page
+    document.addEventListener('click', function (e) {
+      if (e.target.closest('[data-wish-add], [data-wishlist], [data-wl-remove]')) setTimeout(updateWishCount, 60);
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    }
+  ]
+}
+{% endschema %}
