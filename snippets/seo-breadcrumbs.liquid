@@ -36,6 +36,30 @@
 
 {%- comment -%}
   ------------------------------------------------------------------
+  Near-duplicate product listings.
+
+  A 2025-11-16 import generated 183 products across only 12 artwork
+  subjects. They ARE distinct artworks -- each has its own SKU and its
+  own image -- so they stay live, browsable and buyable. But their
+  titles differ only by a decorative adjective and their descriptions
+  are byte-identical, so 23 of them competing for one query means none
+  of them ranks. One listing per subject stays in search; the rest
+  carry the seo.noindex metafield and are excluded here.
+
+  "follow" is deliberate: these pages still pass link equity on to the
+  canonical listing and the rest of the catalogue. They are removed
+  from search results, not cut off from the site.
+
+  To put one back in the index, clear its seo.noindex metafield. No
+  theme change is needed, and nothing here hardcodes a product.
+  ------------------------------------------------------------------
+{%- endcomment -%}
+{%- if request.page_type == 'product' and product.metafields.seo.noindex.value == true -%}
+  <meta name="robots" content="noindex, follow">
+{%- endif -%}
+
+{%- comment -%}
+  ------------------------------------------------------------------
   2. BREADCRUMBS
   ------------------------------------------------------------------
 {%- endcomment -%}
