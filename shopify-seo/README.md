@@ -735,3 +735,148 @@ production time and custom sizing — what a buyer actually asks on a product
 page — and it emits no JSON-LD, so there is no duplicate structured data.
 Removing it would cost conversions to solve a problem search engines do not
 have with ordinary ecommerce boilerplate.
+
+---
+
+## 16. SKU collisions and the generated-title cleanup (2026-10-31)
+
+### 16.1 SKU collisions — 22, not 21
+
+A full export of all 1,948 products (first variant's SKU, which after the
+propagation pass represents the product) found **22 SKUs shared by 45
+products**. The earlier figure of 21 was a miscount that dropped a row.
+
+The 22 split into two groups needing different decisions. `SKU_COLLISIONS.md`
+holds the full decision list; this is the outcome.
+
+**Group B — 11 genuine collisions between different artworks. Resolved.**
+
+Twelve products were given fresh codes; in each case the older listing kept
+the existing SKU. Every variant was updated, not just the first, because the
+propagation pass had put the same SKU on all of them.
+
+| Old SKU | Product moved off it | New SKU | Why that code |
+|---|---|---|---|
+| `MAA010` | Horse Mosaic – Handmade Horse Mural (DRAFT) | `MA010` | its own image file is named `MA010_…` |
+| `MAS123` | Sunrise Over the Ocean Mosaic | `MAS124` | its own image file is named `MAS124_…` |
+| `MAG002` | Mosaic Tile Medallion – Compass Mosaic | `MAG430` | file said `MAG037`, already in use |
+| `MAG010` | Mosaic Medallion – Round Mosaic Art Design | `MAG431` | file said `MAP010`, already in use |
+| `MAG009` | Geometric Mosaic – Flower Mosaic Artwork | `MAG432` | counter |
+| `MAG165` | Geometric Symphony Mosaic Tile Art | `MAG433` | counter |
+| `MAF152` | Fiery Elegance: Crafted Glass Mosaic Tile Art | `MF453` | counter |
+| `MAK005` | Colorful Floral Mosaic – Abstract Mosaic Art | `MK027` | counter |
+| `MAR049` | Our Lady of Guadalupe Mosaic | `MAR108` | counter |
+| `MAB062` | Watercolor Floral Art – Landscape Mosaic | `MB128` | counter |
+| `MAM011` | Ethereal Woman with Golden Curls (Portrait) | `MAP069` | counter |
+| `MAM011` | Medusa with Golden Curls (Roman) | `MAM066` | counter |
+
+Verified by re-reading all 23 affected products: the 12 carry their new
+codes on every variant, and the 11 retained products still hold the
+originals. Zero `userErrors`.
+
+A useful technique came out of this: **the uploaded image filename often
+embeds the intended SKU**, and in two cases it named a free code that
+matched the artwork better than the next counter value. Worth checking
+first on any future collision.
+
+**Group A — 11 pairs from a same-day re-import. Open, awaiting the owner.**
+
+On 2025-11-15 eleven products were created at 13:09–13:10 and created again
+at 14:22–14:23: identical base title with `Premium` inserted, identical
+price, identical productType, and **both images uploaded under the same base
+filename** (e.g. `MAS160.webp` twice, hence Shopify's random suffixes).
+That reads as a re-run of one import, but `cdn.shopify.com` is unreachable
+from this environment so the pixels were never compared. Rather than draft
+ten live products on circumstantial evidence, the owner is checking one pair
+(`MAS160`) in the admin; that answer settles all eleven.
+
+Affected: `MAG201`, `MAG202`, `MAG253`–`MAG256`, `MAS160`, `MAS161`,
+`MAS284`–`MAS286`.
+
+### 16.2 The generated titles — 183 products, 12 artworks
+
+The earlier note called this "278 generated titles". Measured properly, it
+is **183 products across 12 distinct subjects**:
+
+| Subject | Listings | | Subject | Listings |
+|---|---:|---|---|---:|
+| Tuscan Vineyard Sunset | 23 | | Op Art Cube Pattern | 9 |
+| Mediterranean Seascape | 23 | | Moroccan Star Medallion | 9 |
+| Forest Stream in Autumn | 22 | | Roman Labyrinth Design | 8 |
+| Desert Oasis at Dawn | 22 | | Art Deco Fan Motif | 8 |
+| Snowy Mountain Vista | 22 | | Abstract Tessellation Grid | 8 |
+| Venetian Canal View | 21 | | Byzantine Interlacing Circles | 8 |
+
+All created 2025-11-16 by a generator that prefixed one of 16 adjectives to
+a subject and appended `Premium  Tile Art Stone Mosaic Art`.
+
+What the records actually show, checked rather than assumed:
+
+- Each listing has its **own SKU** and its **own 512×512 image** — so these
+  are distinct uploads, consistent with the owner's correction that they are
+  not duplicates.
+- **The adjective is not an identifier.** Within Tuscan Vineyard Sunset,
+  "Hand-Set" appears 6 times, "Signature" 4, "Luxury" 3, "Exclusive" 3,
+  "Contemporary" 3. 23 listings carry only 114 distinct titles across the
+  whole set.
+- **Every description is byte-identical except for the adjective**, and
+  says "a fresh interpretation of the original design" — the generator
+  describing its own output.
+- The broken suffix appeared in **four fields per product**, not one:
+  `title`, `descriptionHtml`, `seo.title` and `seo.description`. The SEO
+  pair is what Google displays, so that was the more consequential half.
+
+**What was fixed.** The owner chose the minimal option — repair the defects,
+leave the 183 live and separate. Applied to all four fields on all 183:
+
+- the double space in `Premium  Tile Art`
+- the `Premium … Premium` redundancy (the suffix's own "Premium" is gone, so
+  it no longer collides with the adjective)
+- the stacked `Tile Art Stone Mosaic Art` tail, which repeated "Art" twice
+
+`<Adjective> <Subject> Premium  Tile Art Stone Mosaic Art`
+→ `<Adjective> <Subject> Stone Mosaic Wall Art`
+
+Side effect worth knowing: `seo.title` is now **null** on all 183. Shopify
+treats an SEO title identical to the product title as "no override" and
+clears it, so the field inherits the product title instead of duplicating
+it. The rendered `<title>` is the same string either way; the override is
+simply gone. `seo.description` remains set on all 183.
+
+Measured before and after, by re-reading all 183:
+
+| | Before | After |
+|---|---|---|
+| Products with the broken suffix | 183 | **0** |
+| Fields per product carrying it | 4 | 0 |
+| Product title length | 59–78 | 46–65 |
+| Titles within Google's ~60 char display | 0 | **179 of 183** |
+| Distinct titles | 114 | 114 (unchanged by design) |
+
+**Deliberately not changed, and why:**
+
+- **Handles.** All 183 still contain `…premium-tile-art-stone-mosaic-art`.
+  Rewriting them changes live URLs and needs a redirect plan.
+- **Title uniqueness.** 41 groups still share a title. The mapping is 1:1,
+  so no new collisions were introduced and none were removed — that is the
+  option chosen.
+- **The cannibalisation itself.** 23 pages competing for one query is not a
+  wording problem and renaming cannot fix it. The structural options are a
+  canonical-plus-noindex pass or folding each subject into one product with
+  variations; both remain open.
+- **`seo.description` length.** Still 433–452 characters against Google's
+  ~155 display limit, and it opens by repeating the title verbatim. A
+  pre-existing defect, outside the chosen scope, left for a decision.
+
+### 16.3 Side findings, recorded not fixed
+
+- **An unlabelled AI image on a live product.** `MAG432`'s "Flower Mosaic
+  Artwork" carries `ChatGPT_Image_Aug_4_2026_01_17_45_PM.png`. Every other
+  product's image is named after its SKU.
+- **Three Nautical products carry Geometric codes** — the retained
+  `MAG002`, `MAG009` and `MAG010` are all productType "Nautical Mosaics".
+- **`MAB062` is productType "Bird Mosaics"** but neither title mentions a
+  bird; both say floral/landscape.
+- **A mangled handle.** `MAS124`'s product has the handle
+  `…a-new-daya-™s-promise`, mojibake from the apostrophe in "Day's". The
+  title itself is clean.
