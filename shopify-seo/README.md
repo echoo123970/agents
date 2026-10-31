@@ -861,10 +861,14 @@ With Group A closed this way and Group B reassigned, **all 22 collisions
 from the 2026-10-31 audit are resolved**: 11 by fresh SKUs, 11 by retiring
 the duplicate.
 
-### 16.2 The generated titles — 183 products, 12 artworks
+### 16.2 The generated titles — 184 products, 12 artworks
 
 The earlier note called this "278 generated titles". Measured properly, it
-is **183 products across 12 distinct subjects**:
+is **184 products across 12 distinct subjects**.
+
+One of those 184 escaped this scan and was only found later, by the
+verification pass in §18.2. The count below is the corrected one; the work
+described in this section covered 183 of them.
 
 | Subject | Listings | | Subject | Listings |
 |---|---:|---|---|---:|
@@ -873,7 +877,7 @@ is **183 products across 12 distinct subjects**:
 | Forest Stream in Autumn | 22 | | Roman Labyrinth Design | 8 |
 | Desert Oasis at Dawn | 22 | | Art Deco Fan Motif | 8 |
 | Snowy Mountain Vista | 22 | | Abstract Tessellation Grid | 8 |
-| Venetian Canal View | 21 | | Byzantine Interlacing Circles | 8 |
+| Venetian Canal View | 22 | | Byzantine Interlacing Circles | 8 |
 
 All created 2025-11-16 by a generator that prefixed one of 16 adjectives to
 a subject and appended `Premium  Tile Art Stone Mosaic Art`.
@@ -895,7 +899,8 @@ What the records actually show, checked rather than assumed:
   pair is what Google displays, so that was the more consequential half.
 
 **What was fixed.** The owner chose the minimal option — repair the defects,
-leave the 183 live and separate. Applied to all four fields on all 183:
+leave them live and separate. Applied to all four fields on the 183 known at
+the time (the 184th is handled in §18.2):
 
 - the double space in `Premium  Tile Art`
 - the `Premium … Premium` redundancy (the suffix's own "Premium" is gone, so
@@ -925,6 +930,7 @@ Measured before and after, by re-reading all 183:
 
 - **Handles.** All 183 still contain `…premium-tile-art-stone-mosaic-art`.
   Rewriting them changes live URLs and needs a redirect plan.
+  → **Done, see §18.1.**
 - **Title uniqueness.** 41 groups still share a title. The mapping is 1:1,
   so no new collisions were introduced and none were removed — that is the
   option chosen.
@@ -932,15 +938,17 @@ Measured before and after, by re-reading all 183:
   wording problem and renaming cannot fix it. The structural options are a
   canonical-plus-noindex pass or folding each subject into one product with
   variations; both remain open.
+  → **Resolved by noindex, see §18.3.**
 - **`seo.description` length.** Still 433–452 characters against Google's
   ~155 display limit, and it opens by repeating the title verbatim. A
   pre-existing defect, outside the chosen scope, left for a decision.
+  → **Done, see §18.1.**
 
 ### 16.3 Side findings, recorded not fixed
 
 - **An unlabelled AI image on a live product.** `MAG432`'s "Flower Mosaic
   Artwork" carries `ChatGPT_Image_Aug_4_2026_01_17_45_PM.png`. Every other
-  product's image is named after its SKU.
+  product's image is named after its SKU. → **Resolved, see §17.**
 - **Three Nautical products carry Geometric codes** — the retained
   `MAG002`, `MAG009` and `MAG010` are all productType "Nautical Mosaics".
 - **`MAB062` is productType "Bird Mosaics"** but neither title mentions a
@@ -987,7 +995,7 @@ link breaks. Shopify stored the redirect with the `™` percent-encoded as
 
 The product title itself was always clean; only the handle was mangled.
 
-### Not fixed — the ChatGPT image filename
+### Fixed, after the owner answered — the ChatGPT image filename
 
 `MAG432`'s product ("Geometric Mosaic – Flower Mosaic Artwork") carries the
 image `ChatGPT_Image_Aug_4_2026_01_17_45_PM.png`. Every other product's image
@@ -999,13 +1007,26 @@ environment: `FileCreateInput` accepts both `filename` and `originalSource`,
 and `originalSource` can be the existing CDN URL — Shopify fetches its own
 CDN server-side, so the image never has to pass through here.
 
-It was not done, because renaming is the wrong fix. The filename is not the
-problem; it is the *tell*. Every other image is named after its SKU because
-it came from a photograph of a real piece. Renaming this one to `MAG432.png`
-would make the catalogue look consistent while leaving open the question the
-filename raises — whether that listing has a real artwork behind it. That is
-a content decision for the owner, and concealing the signal would make it
-harder to notice, not easier.
+It was held back at first, because renaming looked like the wrong fix. The
+filename is not the problem; it is the *tell*. Every other image is named
+after its SKU because it came from a photograph of a real piece. Renaming
+this one to `MAG432.png` would make the catalogue look consistent while
+leaving open the question the filename raises — whether that listing has a
+real artwork behind it. That is a content decision, so it went to the owner
+rather than being silently tidied away.
+
+**The owner confirmed there is real artwork behind the listing**, which
+answers the question the filename raised and makes the rename a plain
+consistency fix. Applied.
+
+One correction to the method above: the fix needed neither `fileCreate` nor
+a re-upload. `FileUpdateInput` also accepts `filename`, which renames the
+file **in place** and preserves the `MediaImage` ID. The first attempt did go
+the create-and-delete route and produced a duplicate; that duplicate was
+removed with `fileDelete` and the original renamed instead, so
+`MediaImage/44140124340522` is unchanged and nothing re-pointed.
+
+Verified by re-read: the image is now `MAG432.png` on the original media ID.
 
 ### Fixed — the Bird/floral pair turned out to be one product
 
@@ -1052,6 +1073,205 @@ prefix query and a direct node fetch to confirm).
 shows honestly that it was once treated as distinct. It is a consumed code,
 not a reusable gap.
 
-**Still unanswered: the productType.** Both listings remain "Bird Mosaics"
-while the title says floral/landscape. Whether there is a bird in the image
-was never established, so the type was left alone rather than guessed.
+**Answered: the productType was right all along.** Both listings remain
+"Bird Mosaics" while the title says floral/landscape, which looked like a
+mis-typed product. The owner checked the image and confirmed **there is a
+bird in it**. So "Bird Mosaics" is correct and no change was needed — the
+title is simply incomplete, not contradictory. Recorded here because the
+earlier note framed this as a likely defect, and it was not one.
+
+---
+
+## 18. Handles, meta descriptions and the cannibalisation fix (2026-10-31)
+
+Everything §16.2 left open is now closed. The owner asked for all three
+items — handles, meta descriptions, cannibalisation — and chose "finish all
+184 anyway" when told that noindexing most of them would make the first two
+largely redundant for search. That call is recorded because it was the right
+one for a reason beyond SEO: the handles and descriptions are what a customer
+sees in the address bar and what gets pasted into a message, indexed or not.
+
+### 18.1 Handles and meta descriptions rewritten, with 184 redirects
+
+**Handles.** The suffix was replaced in place, not regenerated:
+
+```
+…-premium-tile-art-stone-mosaic-art   →   …-stone-mosaic-wall-art
+```
+
+Using `rindex` on the old suffix rather than a plain `replace`, so the 70
+listings carrying a `-2`/`-3`/`-4`/`-5`/`-6` disambiguator keep it. Checked
+for collisions against the full 1,948-handle set before anything was written:
+zero.
+
+**Shopify does not create redirects on an API handle change.** This was
+verified by probing rather than assumed — the admin UI offers a redirect
+checkbox, the API does not, and nothing appears. So every rename needed an
+explicit `urlRedirectCreate`.
+
+Each product was sent as one `productUpdate` carrying both the new handle and
+the new `seo.description`, followed in the same document by its
+`urlRedirectCreate`. Ordering matters: GraphQL executes top-level fields
+serially, so putting all the product updates before all the redirects
+guarantees the old path is free before a redirect tries to claim it.
+
+**Meta descriptions.** 433–452 characters down to 128–147:
+
+```
+<Subject> in hand-cut stone mosaic, set piece by piece and made to order.
+Free worldwide shipping on every piece.
+```
+
+`<Subject>` is the title minus the ` Stone Mosaic Wall Art` tail, so it drops
+the decorative adjective too. The old text opened by repeating the full title
+verbatim and then said "a fresh interpretation of the original design", which
+is the generator describing itself — of no use to a searcher. The new text
+leads with the material and the made-to-order fact, which are the two things
+that actually distinguish this catalogue.
+
+| | Before | After |
+|---|---|---|
+| `seo.description` length | 433–452 | **128–147** |
+| Handles carrying `premium-tile-art` | 184 | **0** |
+| 301 redirects from old product paths | 0 | **184** |
+
+### 18.2 What the verification pass caught
+
+The work went out in nine batches of ~20. Every batch returned zero
+`userErrors`, which is exactly the trap: no error does not mean no defect.
+Re-reading all 184 from Shopify and diffing against the source payload found
+two problems that the success responses had hidden.
+
+**Five products were silently skipped.** Rows 45–49 — one batch segment never
+went out at all. No error anywhere, because the mutation that would have
+carried them was never sent. Found only because the diff compared live state
+against the intended state rather than trusting the responses.
+
+**There were 184 products, not 183.** `MAS144`
+(`9947825340714`, Classic Venetian Canal View) was missing from the original
+set because its `seo.title` contains a **double space** — `Premium  Tile Art`
+— while its `title` has a single one. The original scan matched the
+single-spaced string against the wrong field and silently dropped the record.
+That listing had never been touched by any of this work: old title, old
+description, old `seo.title`, old handle, and alt text still holding the raw
+unformatted title. It received the full treatment in one call — all four
+text fields, the handle, the house-pattern alt text, and a redirect.
+
+The subject table in §16.2 is the confirmation: Venetian Canal View was
+counted at 21 and is in fact 22, and the missing one is a Venetian Canal
+View. 183 + 1 = 184.
+
+Final state, re-read from Shopify after the fixes:
+
+| Check | Result |
+|---|---|
+| Handles matching intended value | **184 / 184** |
+| `seo.description` matching intended value | **184 / 184** |
+| Redirects present with correct target | **184 / 184** |
+| Products anywhere in the catalogue still titled `Premium Tile Art` | **0** |
+| Duplicate handles across all 1,948 products | **0** |
+
+Total redirects in the shop is now 234.
+
+**The lesson worth keeping:** a batch API that reports per-item errors tells
+you nothing about items it never received. Verification has to diff live
+state against intent, and it has to run over the whole intended set, not a
+sample. A five-product hole and an entire missing record both survived nine
+clean responses and a spot-check.
+
+### 18.3 Cannibalisation — noindex, driven by a metafield
+
+The owner chose canonical-plus-noindex over consolidation. The reasoning is
+in PR #16 and worth restating: folding 23 artworks into one product with
+variations would discard 172 real SKUs and claim these are sizes of one
+piece, which they are not. A `rel=canonical` would claim they are duplicates
+of each other, which they also are not — different images, different SKUs.
+Google would likely ignore it, and if honoured it would bury 172 real
+artworks. `noindex, follow` is the only option that removes the competition
+without lying about the catalogue or hiding the work.
+
+**Picking the 12 that stay indexed.** Sales would have been the right
+tiebreaker. There are none: all 58 orders placed since the 2025-11-16 import
+were checked line by line, and **not one touched any of the 184**. So the
+canonical per subject is the listing with the clean handle (no numeric
+disambiguator) and the lowest product ID — the first-created record, holding
+the oldest URL and whatever link equity accrued to it.
+
+| Subject | Canonical listing |
+|---|---|
+| Abstract Tessellation Grid | Fine Abstract Tessellation Grid |
+| Art Deco Fan Motif | Bespoke Art Deco Fan Motif |
+| Byzantine Interlacing Circles | Heritage Byzantine Interlacing Circles |
+| Desert Oasis at Dawn | Heritage Desert Oasis at Dawn |
+| Forest Stream in Autumn | Heritage Forest Stream in Autumn |
+| Mediterranean Seascape | Signature Mediterranean Seascape |
+| Moroccan Star Medallion | Luxury Moroccan Star Medallion |
+| Op Art Cube Pattern | Exclusive Op Art Cube Pattern |
+| Roman Labyrinth Design | Decorative Roman Labyrinth Design |
+| Snowy Mountain Vista | Signature Snowy Mountain Vista |
+| Tuscan Vineyard Sunset | Exclusive Tuscan Vineyard Sunset |
+| Venetian Canal View | Decorative Venetian Canal View |
+
+**The mechanism.** A pinned boolean metafield definition `seo.noindex` with
+storefront read access, set to `true` on the other **172** listings. The
+theme reads it in `snippets/seo-breadcrumbs.liquid` and emits
+`<meta name="robots" content="noindex, follow">`.
+
+A metafield rather than a handle list in the theme, so putting a listing back
+in the index is a checkbox in the admin — no theme edit, no deploy. And
+`follow` rather than `nofollow`, so these pages still pass link equity to the
+canonical listing and the rest of the catalogue. They leave search results;
+they are not cut off from the site.
+
+The products stay **ACTIVE, browsable and buyable**. This is a search-results
+change only. Nothing was drafted, deleted or hidden from navigation.
+
+Verified across the full catalogue, not just the target set:
+
+| Check | Result |
+|---|---|
+| Products scanned | 1,948 |
+| Expected flagged | 172 |
+| Actually flagged | **172** |
+| Missing the flag | **0** |
+| Flagged in error | **0** |
+| Canonical listings carrying the flag | **0 of 12** |
+
+### 18.4 Deployed — PR #16 merged to the live theme
+
+Merged at the owner's go-ahead. The GitHub-synced theme `agents/shopify-live`
+picked up both files within seconds, confirmed by reading the live theme's
+file contents back out of Shopify — `layout/theme.liquid` and
+`snippets/seo-breadcrumbs.liquid` both timestamped at the merge, and the
+noindex block present and reading `product.metafields.seo.noindex.value`.
+
+That merge is what made the 172 flags take effect. They were set *before* it,
+deliberately: nothing else in the store reads that key, so the flags sat
+completely inert until the theme shipped. One deploy, immediate effect, and
+no window in which pages were half-configured.
+
+The same PR dropped the `Store` / LocalBusiness node described in §15. The
+sitewide `@graph` is now `Organization` + `WebSite`.
+
+### 18.5 Still open
+
+- **Rich Results re-test.** Not yet re-run since the deploy. It will confirm
+  both changes at once: the "Local businesses" row should disappear and
+  "Organisation" should drop from 2 valid items to 1 — the earlier 2/2 was a
+  single `Store` node tallied under both types it qualified for.
+- **The HowTo question from §13 is still open.** Needs
+  `validator.schema.org` against `/pages/installation-guide`, or a
+  view-source for `"HowTo"`. The storefront is unreachable from this
+  environment. The working hypothesis remains that Google deprecated HowTo
+  rich results in 2023 and simply stopped reporting them.
+- **Four titles run 61–65 characters** against Google's ~60 display limit.
+  All four are in the noindex set, so it currently costs nothing.
+- **Collections are still entirely untouched** — see §14's "Left undone".
+  Dead `mosaic-tile-art` (0 products), a duplicate pair both holding all
+  1,948, `glass-mosaic-art` holding 1,624 (83%) under a *material* label,
+  and four thin collections (4, 6, 13, 13). This is the largest remaining
+  structural item.
+- **A pre-existing `seo.hidden` metafield definition** (`number_integer`,
+  storefront-readable) already existed on products, presumably from an SEO
+  app. It is unrelated to `seo.noindex` and was left alone, but anyone
+  debugging indexing should know both exist.

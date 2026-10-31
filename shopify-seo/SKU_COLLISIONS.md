@@ -163,18 +163,36 @@ The `MAM011` pair was not revisited and stands as distinct.
 
 ---
 
-## Side findings, not SKU problems
+## Side findings, not SKU problems — all four now closed
 
-Noticed while reading these records. None are urgent; none are fixed.
+Noticed while reading these records. All four were resolved on 2026-10-31;
+see README §17. Two of the SKU references below were wrong when first
+written and are corrected here.
 
-- **An unlabelled AI image on a live product.** `MAG009`'s "Flower Mosaic
-  Artwork" has the image `ChatGPT_Image_Aug_4_2026_01_17_45_PM.png`. Every
-  other product's image is named after its SKU. Worth a look.
+- **An unlabelled AI image on a live product.** The image
+  `ChatGPT_Image_Aug_4_2026_01_17_45_PM.png` belongs to **`MAG432`**, not
+  `MAG009` as first recorded. Every other product's image is named after its
+  SKU. **Resolved:** the owner confirmed there is real artwork behind the
+  listing, so the file was renamed to `MAG432.png` in place — `FileUpdateInput`
+  accepts `filename`, which preserves the `MediaImage` ID.
 - **Three Nautical products carry Geometric (`MAG`) codes** — `MAG002`,
   `MAG009`, `MAG010` are all productType "Nautical Mosaics". Pre-existing,
-  unrelated to the collision.
+  unrelated to the collision. **Resolved:** reassigned to `MAN119`, `MAN120`,
+  `MAN121` after confirming none of the 93 orders on record touched them.
 - **`MAB062` is productType "Bird Mosaics"** but neither title mentions a
-  bird; both say floral/landscape.
-- **A mangled handle.** `MAS123`'s "Sunrise Over the Ocean" has the handle
-  `…a-new-daya-™s-promise` — mojibake from the curly apostrophe in "Day's".
-  The title itself is clean.
+  bird; both say floral/landscape. **Resolved, and it was not a defect:** the
+  owner checked the image and confirmed there *is* a bird in it. "Bird
+  Mosaics" was correct; the title is merely incomplete.
+- **A mangled handle.** The mojibake handle `…a-new-daya-™s-promise` belongs
+  to **`MAS124`**, not `MAS123` as first recorded — mojibake from the curly
+  apostrophe in "Day's". The title itself was clean. **Resolved:** handle
+  repaired and a 301 added from the old path (which Shopify had stored
+  percent-encoded as `%e2%84%a2`).
+
+---
+
+## The generated-title set is a separate matter
+
+The 2025-11-16 generated-title cleanup is **not** a SKU collision problem and
+is not tracked here. Each of those 184 listings has its own unique SKU. See
+README §16.2 and §18.
