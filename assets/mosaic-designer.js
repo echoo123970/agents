@@ -600,7 +600,7 @@ function composite(target = vctx, mode = state.mode) {
   tctx.globalCompositeOperation = 'source-over';
   target.drawImage(tint, 0, 0);
 }
-function busy(on) { $('#busy').hidden = !on; }
+function busy(on, label = 'Working…') { $('#busy').textContent = label; $('#busy').hidden = !on; }
 function refresh({ fills = true } = {}) {
   if (fills) renderFills();
   if (state.mode === 'mosaic') renderMosaic();
@@ -1941,7 +1941,7 @@ let freeAI = false;
 async function runFree(desc) {
   const status = $('#ai-status'), go = $('#ai-go');
   if (!desc) { status.textContent = 'Type what you would like first, for example: a compass rose with waves around it.'; $('#ai-prompt').focus(); return; }
-  go.disabled = true; busy(true);
+  go.disabled = true; busy(true, 'Drawing your design…');
   status.textContent = 'Drawing your design… this can take up to a minute.';
   const prompt = `black and white line art coloring page for a stone mosaic: ${desc}. Clean bold black outlines, every shape closed, flat, `
     + 'no shading, no gray, no hatching, no words, pure white background, centered, large simple shapes';
