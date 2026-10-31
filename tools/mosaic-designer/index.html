@@ -353,7 +353,9 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
       <button class="btn" id="import-chart" type="button">Import chart</button>
       <button class="btn" id="export-chart" type="button">Export chart</button>
       <button class="btn" id="reset-chart" type="button">Reset chart</button>
+      <button class="btn primary" id="import-swatches" type="button" hidden style="grid-column: 1 / -1">Import our swatch photos from Shopify</button>
     </div>
+    <p class="hint" id="import-status" hidden></p>
   </aside>
 </main>
 
@@ -560,9 +562,9 @@ function makeTile(m) {
   if (m.photo) {
     const img = photoImgs.get(m.photo);
     if (img && img.complete && img.naturalWidth) {
-      const s = Math.max(TILE / img.naturalWidth, TILE / img.naturalHeight);
-      const w = img.naturalWidth * s, h = img.naturalHeight * s;
-      ctx.drawImage(img, (TILE - w) / 2, (TILE - h) / 2, w, h);
+      // the middle half of the photo, so tiles show stone rather than the photo's edges
+      const side = Math.min(img.naturalWidth, img.naturalHeight) / 2;
+      ctx.drawImage(img, (img.naturalWidth - side) / 2, (img.naturalHeight - side) / 2, side, side, 0, 0, TILE, TILE);
       return c;
     }
   }
@@ -1731,7 +1733,87 @@ $('#ai-go').addEventListener('click', () => runAI('describe'));
 $('#ai-redraw').addEventListener('click', () => runAI('redraw'));
 $('#ai-stop').addEventListener('click', () => aiCtl?.abort());
 
+/* ---------------- Real swatch photos ---------------- */
+// The store's color-palette page shows sw-01.png ... sw-48.png from the live theme: 01-42 natural
+// marble, 43-48 engineered stone. An editor imports them once through their Shopify connector; the
+// photos are stored with this page and listed in the db doc below, so every viewer sees them.
+const SWATCH_DOC = 'swatches/photos';
+const swatchId = n => (n <= 42 ? 'm' : 'e') + String(n).padStart(2, '0');
+// Average color of a photo's middle, so color matching follows the real stone.
+function photoColor(img) {
+  const c = document.createElement('canvas'); c.width = c.height = 24;
+  const side = Math.min(img.naturalWidth, img.naturalHeight) / 2;
+  const x = c.getContext('2d');
+  x.drawImage(img, (img.naturalWidth - side) / 2, (img.naturalHeight - side) / 2, side, side, 0, 0, 24, 24);
+  const d = x.getImageData(0, 0, 24, 24).data; let r = 0, g = 0, b = 0;
+  for (let i = 0; i < d.length; i += 4) { r += d[i]; g += d[i + 1]; b += d[i + 2]; }
+  const n = d.length / 4, h = v => Math.round(v / n).toString(16).padStart(2, '0');
+  return '#' + h(r) + h(g) + h(b);
+}
+async function applySwatchPhotos(map) {
+  let n = 0;
+  for (const [id, assetId] of Object.entries(map || {})) {
+    const m = matById(id);
+    if (!m || typeof assetId !== 'string' || !/^[0-9a-f]{32}$/.test(assetId)) continue;
+    const src = '/_blob/' + assetId, img = await loadPhoto(src);
+    if (!img) continue;
+    m.photo = src; m.base = photoColor(img); n++;
+  }
+  if (!n) return;
+  tileCache.clear(); labCache.clear();
+  $('#sample-note').textContent = 'Stones show the real swatch photos from the iMosaicArt palette. Glass colors are placeholders until the glass chart is added.';
+  renderChart(); selectMat(state.selected); heavy(() => refresh());
+}
+async function importSwatches(mcp, assets, db) {
+  const btn = $('#import-swatches'), status = $('#import-status');
+  btn.disabled = true; status.hidden = false;
+  const map = {}, failed = [];
+  try {
+    for (let start = 1; start <= 48; start += 3) {
+      const names = [start, start + 1, start + 2].filter(n => n <= 48).map(n => `assets/sw-${String(n).padStart(2, '0')}.png`);
+      status.textContent = `Importing swatch ${start} of 48…`;
+      const res = await mcp.callTool('Shopify', 'graphql_query', {
+        query: `query($names: [String!]) { themes(first: 1, roles: [MAIN]) { nodes { files(first: 3, filenames: $names) { nodes { filename body { ... on OnlineStoreThemeFileBodyBase64 { contentBase64 } } } } } } }`,
+        variables: { names }, first: 1,
+      }, { cache: false });
+      const nodes = res.payload?.data?.themes?.nodes?.[0]?.files?.nodes || [];
+      for (const name of names) {
+        const node = nodes.find(f => f.filename === name), b64 = node?.body?.contentBase64;
+        const num = +name.match(/sw-(\d+)/)[1];
+        if (!b64) { failed.push(num); continue; }
+        const bytes = Uint8Array.from(atob(b64), ch => ch.charCodeAt(0));
+        const up = await assets.upload(new Blob([bytes], { type: 'image/png' }), { type: 'image/png' });
+        map[swatchId(num)] = up.id;
+      }
+    }
+    await db.doc(SWATCH_DOC).set({ map, importedAt: new Date().toISOString() });
+    await applySwatchPhotos(map);
+    status.textContent = failed.length ? `Imported ${48 - failed.length} swatch photos. Not found in the theme: ${failed.join(', ')}.` : 'Imported all 48 swatch photos. Every visitor now sees them.';
+  } catch (e) {
+    const copy = {
+      server_not_connected: 'Connect Shopify in claude.ai Settings → Connectors, then try again.',
+      needs_reauth: 'Reconnect Shopify in claude.ai Settings → Connectors, then try again.',
+      not_in_manifest: 'Shopify access is turned off for this page. Allow it from the page\'s Permissions menu, then try again.',
+      approval_required: 'Importing needs your approval for Shopify. Click again and choose Allow.',
+      quota_or_state: 'There is no room left to store the photos with this page.',
+    };
+    status.textContent = copy[e?.code] || 'The import stopped partway. Click the button to try again.';
+  } finally { btn.disabled = false; }
+}
+async function initSwatches() {
+  if (!window.claude?.use) return;
+  const db = await claude.use('db').catch(() => null);
+  if (db) {
+    try { const snap = await db.doc(SWATCH_DOC).get(); if (snap.exists) await applySwatchPhotos(snap.data().map); } catch {}
+  }
+  const [mcp, assets] = await Promise.all([claude.use('mcp').catch(() => null), claude.use('assets').catch(() => null)]);
+  if (!mcp || !assets || !db) return; // only editors with the Shopify connector can import
+  $('#import-swatches').hidden = false;
+  $('#import-swatches').addEventListener('click', () => importSwatches(mcp, assets, db));
+}
+
 async function initCapabilities() {
+  initSwatches();
   $('#ai-box').hidden = true;
   if (!window.claude?.use) { $('#ai-off').hidden = false; return; }
   const [s, d] = await Promise.all([claude.use('sample').catch(() => null), claude.use('downloads').catch(() => null)]);
