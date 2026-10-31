@@ -73,9 +73,18 @@ button { cursor: pointer; }
 .btn.block { width: 100%; }
 
 /* Workbench */
+/* desktop: tools | canvas over materials list | chart. Phones: canvas, tools, chart, then the list */
 .bench { display: grid; grid-template-columns: 220px minmax(0, 1fr) 300px; gap: 16px; align-items: start; }
-@media (max-width: 1100px) { .bench { grid-template-columns: 200px minmax(0, 1fr); } .chart { grid-column: 1 / -1; } }
-@media (max-width: 720px) { .bench { grid-template-columns: minmax(0, 1fr); } .stage { order: -1; } }
+.bench > .tools { grid-column: 1; grid-row: 1 / span 2; }
+.bench > .stage { grid-column: 2; grid-row: 1; }
+.bench > .bom-wrap { grid-column: 2; grid-row: 2; min-width: 0; }
+.bench > .chart { grid-column: 3; grid-row: 1 / span 2; }
+@media (max-width: 1100px) { .bench { grid-template-columns: 200px minmax(0, 1fr); } .bench > .chart { grid-column: 1 / -1; grid-row: 3; } }
+@media (max-width: 720px) {
+  .bench { grid-template-columns: minmax(0, 1fr); }
+  .bench > .stage { grid-column: 1; grid-row: 1; } .bench > .tools { grid-column: 1; grid-row: 2; }
+  .bench > .chart { grid-column: 1; grid-row: 3; } .bench > .bom-wrap { grid-column: 1; grid-row: 4; }
+}
 
 .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 .label { font-family: var(--font-accent); font-size: 11.5px; font-weight: 400; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); margin: 0; }
@@ -111,6 +120,29 @@ button { cursor: pointer; }
 .slab-wrap.tool-select #overlay { cursor: default; }
 .slab-wrap.tool-text #overlay { cursor: text; }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.toolgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
+.tool { padding: 7px 2px 6px; font-size: 11px; gap: 3px; }
+details.more { border-top: 1px solid var(--line); padding-top: 10px; }
+details.more > summary { cursor: pointer; font-weight: 600; font-size: 13px; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+details.more > summary::-webkit-details-marker { display: none; }
+details.more > summary::after { content: '+'; font-size: 18px; color: var(--muted); line-height: 1; }
+details.more[open] > summary::after { content: '−'; }
+details.more > .group { margin-top: 10px; }
+.start { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.start-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.start h2 { font-family: var(--font-display); font-weight: 600; font-size: 26px; margin: 0 0 2px; }
+.start-close { border: 0; background: none; font-size: 24px; line-height: 1; color: var(--muted); padding: 2px 6px; }
+.start-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 900px) { .start-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.start-grid button { border: 1px solid var(--line); background: var(--bg); border-radius: 8px; padding: 14px 12px; text-align: left; display: flex; flex-direction: column; gap: 6px; }
+.start-grid button:hover { border-color: var(--accent); background: var(--accent-soft); }
+.start-grid svg { width: 26px; height: 26px; stroke: var(--accent); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.start-grid b { font-size: 14.5px; }
+.start-grid span { font-size: 12.5px; color: var(--muted); line-height: 1.4; }
+.stepnav { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.step-help { flex: 1; min-width: 200px; margin: 0; display: flex; flex-direction: column; gap: 2px; font-size: 13px; color: var(--muted); }
+.step-help > b { color: var(--ink); font-family: var(--font-accent); font-weight: 400; letter-spacing: .14em; text-transform: uppercase; font-size: 11.5px; }
+@media (max-width: 520px) { .stepnav #prev-step { order: 2; } .stepnav #next-step { order: 3; flex: 1; } .step-help { order: 1; flex-basis: 100%; } }
 #sel-actions .toolgrid { grid-template-columns: 1fr 1fr; }
 #sel-actions .btn { padding: 6px 4px; font-size: 12.5px; }
 #overlay { touch-action: none; cursor: crosshair; }
@@ -153,7 +185,7 @@ tfoot td { font-weight: 600; border-bottom: 0; }
 .swatch canvas { width: 100%; aspect-ratio: 1; border-radius: 3px; display: block; }
 .swatch { text-align: center; }
 .swatch .sn { font-family: var(--font-accent); font-size: 11.5px; line-height: 1.2; color: var(--ink); }
-.swatch .sc { font-family: var(--font-display); font-size: 15px; line-height: 1; color: var(--muted); }
+.swatch .sc { font-family: var(--font-display); font-size: 15px; line-height: 1; color: var(--muted); font-variant-numeric: lining-nums; }
 .swatch[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
 .swatch .edit { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; border-radius: 50%; border: 0; background: rgba(0,0,0,.55); color: #fff; font-size: 12px; line-height: 22px; padding: 0; opacity: 0; }
 .swatch:hover .edit, .swatch:focus-within .edit { opacity: 1; }
@@ -186,14 +218,15 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
 <header class="topbar">
   <h1 class="brand">iMosaicArt<small>Mosaic Designer</small></h1>
   <div class="steps" role="group" aria-label="Step">
-    <button id="step-sketch" type="button" aria-pressed="false"><span class="n">1</span>Sketch</button>
+    <button id="step-sketch" type="button" aria-pressed="false"><span class="n">1</span>Design</button>
     <button id="step-color" type="button" aria-pressed="true"><span class="n">2</span>Color</button>
     <button id="step-mosaic" type="button" aria-pressed="false"><span class="n">3</span>Mosaic</button>
   </div>
   <div class="actions">
+    <button class="btn" id="new-design" type="button">New design</button>
     <button class="btn" id="undo" type="button" title="Undo (Ctrl+Z)">Undo</button>
     <button class="btn" id="redo" type="button" title="Redo (Ctrl+Shift+Z)">Redo</button>
-    <button class="btn" id="open-design" type="button">Open</button>
+    <button class="btn" id="open-design" type="button">Open design</button>
     <button class="btn" id="save-design" type="button">Save design</button>
     <button class="btn primary" id="export" type="button">Export</button>
   </div>
@@ -203,33 +236,20 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
   <!-- Tools -->
   <aside class="panel tools" aria-label="Tools">
     <div id="sketch-tools" class="group" hidden>
-      <div class="group" id="ai-box">
-        <p class="label">Describe a design</p>
-        <label class="field" for="ai-prompt"><span class="sr">What should we draw?</span>
-          <textarea id="ai-prompt" rows="4" placeholder="Compass rose medallion with a wave border"></textarea>
-        </label>
-        <label class="check" for="ai-edit"><input type="checkbox" id="ai-edit"> Change the current sketch instead</label>
-        <div class="row">
-          <button class="btn primary" id="ai-go" type="button" style="flex:1">Draw it</button>
-          <button class="btn" id="ai-stop" type="button" hidden>Stop</button>
-        </div>
-        <p class="hint" id="ai-status">Claude draws black outlines you can edit, then color.</p>
-      </div>
-      <p class="hint" id="ai-off" hidden>Drawing from a description works when this page is opened in Claude.</p>
       <p class="label">Draw</p>
       <div class="toolgrid" role="group" aria-label="Drawing tools">
-        <button class="tool" type="button" data-tool="select"><svg viewBox="0 0 24 24"><path d="M5 3l12 9-5 1 3 6-2 1-3-6-4 4z"/></svg>Select<kbd>V</kbd></button>
-        <button class="tool" type="button" data-tool="pen"><svg viewBox="0 0 24 24"><path d="M4 20c4-1 6-4 9-8l4-5-3-2-5 5c-3 3-5 6-5 10z"/></svg>Pen<kbd>B</kbd></button>
-        <button class="tool" type="button" data-tool="line"><svg viewBox="0 0 24 24"><path d="M5 19L19 5"/></svg>Line<kbd>L</kbd></button>
-        <button class="tool" type="button" data-tool="path"><svg viewBox="0 0 24 24"><path d="M4 18l5-11 6 8 5-9"/><circle cx="4" cy="18" r="1.5"/><circle cx="20" cy="6" r="1.5"/></svg>Path<kbd>P</kbd></button>
-        <button class="tool" type="button" data-tool="rect"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12"/></svg>Rectangle<kbd>R</kbd></button>
-        <button class="tool" type="button" data-tool="ellipse"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="8" ry="6"/></svg>Ellipse<kbd>O</kbd></button>
-        <button class="tool" type="button" data-tool="polygon"><svg viewBox="0 0 24 24"><path d="M12 3l8 6-3 10H7L4 9z"/></svg>Polygon<kbd>G</kbd></button>
-        <button class="tool" type="button" data-tool="star"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6-5.3-3-5.3 3 1.2-6L3.4 9.3l6-.7z"/></svg>Star<kbd>S</kbd></button>
-        <button class="tool" type="button" data-tool="heart"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>Heart<kbd>K</kbd></button>
-        <button class="tool" type="button" data-tool="text"><svg viewBox="0 0 24 24"><path d="M5 6V4h14v2M12 4v16M9 20h6"/></svg>Text<kbd>T</kbd></button>
-        <button class="tool" type="button" data-tool="eraser"><svg viewBox="0 0 24 24"><path d="M8 20h12M5 15l8-9 6 6-7 8H9z"/></svg>Eraser<kbd>X</kbd></button>
-        <button class="tool" type="button" data-tool="hand"><svg viewBox="0 0 24 24"><path d="M8 12V6a1.5 1.5 0 0 1 3 0v5V4.5a1.5 1.5 0 0 1 3 0V11V6a1.5 1.5 0 0 1 3 0v8c0 4-2.5 6-6 6s-5-2-6.5-4.5L4 13a1.4 1.4 0 0 1 2.3-1.6z"/></svg>Move view<kbd>H</kbd></button>
+        <button class="tool" type="button" data-tool="select" title="Select (V)"><svg viewBox="0 0 24 24"><path d="M5 3l12 9-5 1 3 6-2 1-3-6-4 4z"/></svg>Select</button>
+        <button class="tool" type="button" data-tool="pen" title="Pen (B)"><svg viewBox="0 0 24 24"><path d="M4 20c4-1 6-4 9-8l4-5-3-2-5 5c-3 3-5 6-5 10z"/></svg>Pen</button>
+        <button class="tool" type="button" data-tool="line" title="Line (L)"><svg viewBox="0 0 24 24"><path d="M5 19L19 5"/></svg>Line</button>
+        <button class="tool" type="button" data-tool="path" title="Path (P)"><svg viewBox="0 0 24 24"><path d="M4 18l5-11 6 8 5-9"/><circle cx="4" cy="18" r="1.5"/><circle cx="20" cy="6" r="1.5"/></svg>Path</button>
+        <button class="tool" type="button" data-tool="rect" title="Rectangle (R)"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12"/></svg>Rectangle</button>
+        <button class="tool" type="button" data-tool="ellipse" title="Ellipse (O)"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="8" ry="6"/></svg>Ellipse</button>
+        <button class="tool" type="button" data-tool="polygon" title="Polygon (G)"><svg viewBox="0 0 24 24"><path d="M12 3l8 6-3 10H7L4 9z"/></svg>Polygon</button>
+        <button class="tool" type="button" data-tool="star" title="Star (S)"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6-5.3-3-5.3 3 1.2-6L3.4 9.3l6-.7z"/></svg>Star</button>
+        <button class="tool" type="button" data-tool="heart" title="Heart (K)"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>Heart</button>
+        <button class="tool" type="button" data-tool="text" title="Text (T)"><svg viewBox="0 0 24 24"><path d="M5 6V4h14v2M12 4v16M9 20h6"/></svg>Text</button>
+        <button class="tool" type="button" data-tool="eraser" title="Eraser (X)"><svg viewBox="0 0 24 24"><path d="M8 20h12M5 15l8-9 6 6-7 8H9z"/></svg>Eraser</button>
+        <button class="tool" type="button" data-tool="hand" title="Move view (H)"><svg viewBox="0 0 24 24"><path d="M8 12V6a1.5 1.5 0 0 1 3 0v5V4.5a1.5 1.5 0 0 1 3 0V11V6a1.5 1.5 0 0 1 3 0v8c0 4-2.5 6-6 6s-5-2-6.5-4.5L4 13a1.4 1.4 0 0 1 2.3-1.6z"/></svg>Move view</button>
       </div>
       <p class="hint" id="tool-hint">Drag to draw. Hold Shift for straight angles, squares and circles.</p>
       <label class="field" for="weight">Line weight
@@ -264,7 +284,9 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
         </div>
         <p class="hint">Drag inside to move, a corner to resize, the round handle to rotate. Ctrl+C and Ctrl+V copy and paste.</p>
       </div>
-      <p class="label">Helpers</p>
+      <details class="more">
+        <summary>Symmetry, grid &amp; tracing</summary>
+        <div class="group">
       <div class="grid2">
         <label class="field" for="symmetry">Symmetry
           <select id="symmetry">
@@ -284,7 +306,9 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
           <span class="row"><input id="trace-alpha" type="range" min="10" max="80" value="35"><span class="val" id="trace-alpha-val">35</span></span>
         </label>
       </div>
-      <p class="label">Start from</p>
+        </div>
+      </details>
+      <p class="label">Picture</p>
       <button class="btn block" id="import-sketch" type="button">Upload a picture…</button>
       <div class="group" id="trace-field" hidden>
         <label class="field" for="trace-mode">Convert the upload as
@@ -302,21 +326,47 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
         </label>
       </div>
       <button class="btn block" id="ai-redraw" type="button" hidden>Redraw upload as clean lines (AI)</button>
-      <button class="btn block" id="sample" type="button">Load sample medallion</button>
+      <details class="more" id="ai-more">
+        <summary>Describe a design (AI)</summary>
+        <div class="group">
+      <div class="group" id="ai-box">
+        <p class="label">Describe a design</p>
+        <label class="field" for="ai-prompt"><span class="sr">What should we draw?</span>
+          <textarea id="ai-prompt" rows="4" placeholder="Compass rose medallion with a wave border"></textarea>
+        </label>
+        <label class="check" for="ai-edit"><input type="checkbox" id="ai-edit"> Change the current sketch instead</label>
+        <div class="row">
+          <button class="btn primary" id="ai-go" type="button" style="flex:1">Draw it</button>
+          <button class="btn" id="ai-stop" type="button" hidden>Stop</button>
+        </div>
+        <p class="hint" id="ai-status">Claude draws black outlines you can edit, then color.</p>
+      </div>
+      <p class="hint" id="ai-off" hidden>Drawing from a description works when this page is opened in Claude.</p>
+        </div>
+      </details>
+      <details class="more">
+        <summary>Start over</summary>
+        <div class="group">
+          <button class="btn block" id="sample" type="button">Load our sample medallion</button>
       <button class="btn block danger" id="clear-sketch" type="button">Clear sketch</button>
+        </div>
+      </details>
     </div>
 
     <div id="color-tools" class="group">
       <p class="label">Color</p>
       <div class="toolgrid" role="group" aria-label="Coloring tools">
-        <button class="tool" type="button" data-tool="fill"><svg viewBox="0 0 24 24"><path d="M5 11l7-7 7 7-7 7z"/><path d="M19 15c1 2 2 3 2 4a2 2 0 0 1-4 0c0-1 1-2 2-4z"/></svg>Fill<kbd>F</kbd></button>
-        <button class="tool" type="button" data-tool="pick"><svg viewBox="0 0 24 24"><path d="M14 4l6 6-9 9H5v-6z"/><path d="M12 6l6 6"/></svg>Pick<kbd>I</kbd></button>
-        <button class="tool" type="button" data-tool="remove"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>Remove<kbd>D</kbd></button>
+        <button class="tool" type="button" data-tool="fill" title="Fill (F)"><svg viewBox="0 0 24 24"><path d="M5 11l7-7 7 7-7 7z"/><path d="M19 15c1 2 2 3 2 4a2 2 0 0 1-4 0c0-1 1-2 2-4z"/></svg>Fill</button>
+        <button class="tool" type="button" data-tool="pick" title="Pick (I)"><svg viewBox="0 0 24 24"><path d="M14 4l6 6-9 9H5v-6z"/><path d="M12 6l6 6"/></svg>Pick</button>
+        <button class="tool" type="button" data-tool="remove" title="Remove (D)"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>Remove</button>
       </div>
-      <p class="hint">Pick a color from the chart, then tap any area of the design.</p>
+      <p class="hint">Pick a stone from the chart, then tap any area of your design.</p>
       <label class="field" for="any-color">Pick any color
         <span class="row"><input type="color" id="any-color" value="#c0603f"><span class="hint" id="any-color-match">We use the closest color in our chart.</span></span>
       </label>
+      <details class="more">
+        <summary>More options</summary>
+        <div class="group">
       <p class="label">Show colors as</p>
       <div class="seg" role="group" aria-label="Show colors as">
         <button type="button" data-look="stone" aria-pressed="true">Stone</button>
@@ -327,6 +377,8 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
       </label>
       <p class="hint">Raise this if a fill leaks through a small gap in the lines.</p>
       <button class="btn block danger" id="clear-colors" type="button">Clear all colors</button>
+        </div>
+      </details>
     </div>
 
     <div id="mosaic-tools" class="group" hidden>
@@ -366,6 +418,18 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
 
   <!-- Slab -->
   <section class="stage" aria-label="Design">
+    <div class="start" id="start" hidden>
+      <div class="start-head">
+        <div><h2>Create your mosaic</h2><p class="hint">How would you like to start? You can change everything afterwards.</p></div>
+        <button class="start-close" type="button" id="start-close" aria-label="Close">×</button>
+      </div>
+      <div class="start-grid">
+        <button type="button" data-start="upload"><svg viewBox="0 0 24 24"><path d="M4 16v3h16v-3M12 4v11M7 9l5-5 5 5"/></svg><b>Upload a picture</b><span>A photo, logo or drawing becomes an outline you fill with our stones.</span></button>
+        <button type="button" data-start="describe"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg><b>Describe it</b><span>Type your idea and we draw the outline for you.</span></button>
+        <button type="button" data-start="draw"><svg viewBox="0 0 24 24"><path d="M4 20c4-1 6-4 9-8l4-5-3-2-5 5c-3 3-5 6-5 10z"/></svg><b>Draw it myself</b><span>Shapes, text, symmetry and freehand on a blank canvas.</span></button>
+        <button type="button" data-start="sample"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4l2 8-2 8-2-8z"/></svg><b>Explore a sample</b><span>Try coloring our compass-rose medallion.</span></button>
+      </div>
+    </div>
     <div class="slab-wrap mode-color" id="slab">
       <div id="slab-inner">
         <canvas id="view" width="1000" height="750" aria-label="Design canvas"></canvas>
@@ -378,28 +442,13 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
         <button type="button" id="zoom-in" title="Zoom in (+)" aria-label="Zoom in">+</button>
       </div>
     </div>
-    <div class="statusline">
-      <span id="status">Tap an area to fill it with <b id="status-mat">—</b></span>
-      <span id="dims">36 × 27 in</span>
+    <div class="stepnav">
+      <button class="btn" type="button" id="prev-step">← Back</button>
+      <p class="step-help"><b id="step-title">Step 2 of 3 · Color</b><span id="status">Tap an area to fill it with <b id="status-mat">—</b></span></p>
+      <button class="btn primary" type="button" id="next-step">Next: See the mosaic →</button>
     </div>
+    <div class="statusline"><span></span><span id="dims">36 × 27 in</span></div>
 
-    <div class="bom">
-      <div class="bom-head">
-        <h2>Materials used</h2>
-        <div class="bom-size">
-          <label for="size-w">Finished width</label>
-          <input id="size-w" type="number" min="1" step="0.5" value="36">
-          <select id="size-unit" aria-label="Unit"><option value="in">in</option><option value="cm">cm</option></select>
-        </div>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Material</th><th>Type</th><th class="num">Pieces</th><th class="num" id="tiles-head">Tiles</th><th class="num">Share</th><th class="num" id="area-head">Area (ft²)</th></tr></thead>
-          <tbody id="bom-body"></tbody>
-          <tfoot id="bom-foot"></tfoot>
-        </table>
-      </div>
-    </div>
   </section>
 
   <!-- Chart -->
@@ -433,6 +482,26 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
     <p class="hint" id="import-status" hidden></p>
     </div>
   </aside>
+
+  <section class="bom-wrap" aria-label="Materials used">
+    <div class="bom">
+      <div class="bom-head">
+        <h2>Materials used</h2>
+        <div class="bom-size">
+          <label for="size-w">Finished width</label>
+          <input id="size-w" type="number" min="1" step="0.5" value="36">
+          <select id="size-unit" aria-label="Unit"><option value="in">in</option><option value="cm">cm</option></select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Material</th><th>Type</th><th class="num">Pieces</th><th class="num" id="tiles-head">Tiles</th><th class="num">Share</th><th class="num" id="area-head">Area (ft²)</th></tr></thead>
+          <tbody id="bom-body"></tbody>
+          <tfoot id="bom-foot"></tfoot>
+        </table>
+      </div>
+    </div>
+  </section>
 </main>
 
 <!-- Material editor -->
@@ -1631,10 +1700,14 @@ function setMode(mode) {
   $('#joint-group').hidden = mode === 'sketch';
   $('#slab').classList.toggle('mode-color', mode !== 'sketch');
   $('#status').innerHTML = {
-    sketch: 'Draw the design in black lines. Colors you have added show faintly behind it.',
-    color: 'Tap an area to fill it with <b id="status-mat"></b>',
-    mosaic: 'Your design as a hand-cut mosaic. Tap an area to change it to <b id="status-mat"></b>',
+    sketch: 'Draw or upload your design. Every closed shape becomes one piece you can fill with stone.',
+    color: 'Pick a stone from the chart, then tap an area to fill it with <b id="status-mat"></b>.',
+    mosaic: 'Your design as a hand-cut mosaic. Tap an area to change it to <b id="status-mat"></b>.',
   }[mode];
+  $('#step-title').textContent = { sketch: 'Step 1 of 3 · Design', color: 'Step 2 of 3 · Color', mosaic: 'Step 3 of 3 · Mosaic' }[mode];
+  $('#prev-step').hidden = mode === 'sketch';
+  $('#prev-step').textContent = mode === 'mosaic' ? '← Back to colors' : '← Back to design';
+  $('#next-step').textContent = { sketch: 'Next: Color it →', color: 'Next: See the mosaic →', mosaic: 'Export my design' }[mode];
   renderChart(); selectMat(state.selected); renderBom();
   markFrom();
   if (mode === 'mosaic') heavy(() => { renderMosaic(); composite(); renderBom(); });
@@ -1673,6 +1746,38 @@ function setTool(t) {
 $('#step-sketch').addEventListener('click', () => setMode('sketch'));
 $('#step-color').addEventListener('click', () => setMode('color'));
 $('#step-mosaic').addEventListener('click', () => setMode('mosaic'));
+$('#prev-step').addEventListener('click', () => setMode(state.mode === 'mosaic' ? 'color' : 'sketch'));
+$('#next-step').addEventListener('click', () => {
+  if (state.mode === 'sketch') setMode('color');
+  else if (state.mode === 'color') setMode('mosaic');
+  else $('#export').click();
+  $('#slab').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+});
+
+/* ---------------- Start choices ---------------- */
+function showStart(on) {
+  $('#start').hidden = !on;
+  if (on) $('#start').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  else store.set('mosaic.started', true);
+}
+$('#new-design').addEventListener('click', () => showStart(true));
+$('#start-close').addEventListener('click', () => showStart(false));
+$$('#start [data-start]').forEach(b => b.addEventListener('click', () => {
+  const how = b.dataset.start;
+  showStart(false);
+  if (how === 'upload') { setMode('sketch'); $('#file-sketch').click(); }
+  else if (how === 'describe') {
+    setMode('sketch'); $('#ai-more').open = true;
+    if (sampleFn) $('#ai-prompt').focus(); else toast('Describing a design works when this tool is opened in Claude. You can upload or draw instead.');
+  } else if (how === 'draw') {
+    heavy(() => {
+      ictx.clearRect(0, 0, W, H); sourceData = null;
+      commit(true); state.fills = [];
+      setMode('sketch'); setTool('pen'); refresh();
+      toast('A blank canvas is ready. Undo brings back your previous design.');
+    });
+  } else if (how === 'sample') heavy(() => { loadSample(true); setMode('color'); refresh(); });
+}));
 $$('.tool').forEach(b => b.addEventListener('click', () => {
   const sketchTool = !!b.closest('#sketch-tools');
   if ((state.mode === 'sketch') !== sketchTool) setMode(sketchTool ? 'sketch' : 'color');
@@ -2294,6 +2399,7 @@ async function boot() {
   renderChart(); selectMat(state.selected); setMode('color');
   heavy(() => refresh());
   applyView();
+  if (!saved && !store.get('mosaic.started')) $('#start').hidden = false;
 }
 boot();
 initCapabilities();
