@@ -371,6 +371,36 @@ const matchList = () => {
   return l.length ? l : chart;
 };
 
+// The Mosaic step shows the whole piece: areas the customer left white are laid in Thassos White
+// (or the lightest stone), which they can change like any other area.
+function fillRest() {
+  const lab = getLabels(), done = new Uint8Array(regions.length);
+  for (const f of state.fills) done[lab[f.y * W + f.x]] = 1;
+  const white = matById('m03') || chart.reduce((a, m) => (matLab(m)[0] > matLab(a)[0] ? m : a), chart[0]);
+  const add = [];
+  for (let L = 1; L < regions.length; L++) if (!done[L]) { const s0 = regions[L].seed; add.push({ x: s0 % W, y: (s0 - s0 % W) / W, mat: white.id, rot: Math.round(hash(L, 3, 7) * 360) }); }
+  if (!add.length) return;
+  commit(false); state.fills = state.fills.concat(add);
+  toast(`Areas you left white are laid in ${white.name}. Tap any area to change its stone.`);
+}
+// While coloring, the area under the pointer shows the chosen stone, so customers can try it first.
+let hoverL = 0;
+function hoverArea(e) {
+  const tool = state.tool[state.mode];
+  const p = pos(e), L = (state.mode !== 'sketch' && !usePicture() && (state.mode === 'mosaic' || tool === 'fill')) ? getLabels()[Math.floor(p.y) * W + Math.floor(p.x)] : 0;
+  if (L === hoverL) return;
+  hoverL = L; drawOverlay();
+  const m = matById(state.selected);
+  if (!L || !m) return;
+  const { x, y, w, h } = maskRegion(L, state.gap + 1);
+  work.width = w; work.height = h;
+  const pat = wctx.createPattern(getTile(m), 'repeat'); pat.setTransform(new DOMMatrix().translate(-x, -y).scale(PATTERN_SCALE));
+  wctx.fillStyle = pat; wctx.fillRect(0, 0, w, h);
+  wctx.globalCompositeOperation = 'destination-in'; wctx.drawImage(maskC, 0, 0); wctx.globalCompositeOperation = 'source-over';
+  octx.globalAlpha = .8; octx.drawImage(work, x, y); octx.globalAlpha = 1;
+  octx.globalCompositeOperation = 'source-atop'; octx.fillStyle = 'rgba(43,123,232,.12)'; octx.fillRect(x, y, w, h); octx.globalCompositeOperation = 'source-over';
+}
+
 /* ---------------- Rendering ---------------- */
 // One of our own mosaics ("Change the colors"): the customer sees the real piece, and an area given
 // another stone is recolored in place, so its tiles, cuts and grout stay exactly as they are.
@@ -428,7 +458,7 @@ function renderFills() {
       wctx.fillStyle = m.base; wctx.fillRect(0, 0, w, h);
       wctx.globalCompositeOperation = 'destination-in'; wctx.drawImage(maskC, 0, 0); wctx.globalCompositeOperation = 'source-over';
       fctx.drawImage(work, x, y);
-    } else tileArea(fctx, f, m, L, state.gap + 1, state.joint); // the area as mosaic tiles cut from the swatch photo
+    } else tileArea(fctx, f, m, L, state.gap + 1, '#d8d5cf'); // the area as mosaic tiles cut from the swatch photo
   }
 }
 // Lays every colored area with square tiles of its stone, each showing a different part of the
@@ -566,7 +596,7 @@ function composite(target = vctx, mode = state.mode) {
   tctx.clearRect(0, 0, W, H);
   tctx.drawImage(ink, 0, 0);
   tctx.globalCompositeOperation = 'source-in';
-  tctx.fillStyle = state.joint; tctx.fillRect(0, 0, W, H);
+  tctx.fillStyle = '#1b1a19'; tctx.fillRect(0, 0, W, H); // the drawing stays black & white while coloring
   tctx.globalCompositeOperation = 'source-over';
   target.drawImage(tint, 0, 0);
 }
@@ -896,6 +926,7 @@ overlay.addEventListener('pointermove', e => {
     applyView(); drawOverlay(); return;
   }
   if (pathPts && !drag) { drawOverlay(snap(pos(e))); return; }
+  if (!drag && state.mode !== 'sketch') { hoverArea(e); return; }
   if (!drag) return;
   if (drag.pan) { view_.x = drag.vx + e.clientX - drag.sx; view_.y = drag.vy + e.clientY - drag.sy; applyView(); drawOverlay(); return; }
   const p = pos(e);
@@ -952,6 +983,7 @@ function endDrag(e) {
   refresh();
 }
 overlay.addEventListener('pointerup', endDrag);
+overlay.addEventListener('pointerleave', () => { if (hoverL) { hoverL = 0; drawOverlay(); } });
 overlay.addEventListener('pointercancel', endDrag);
 overlay.addEventListener('dblclick', () => { if (pathPts) finishPath(); });
 function finishPath() {
@@ -1188,13 +1220,15 @@ $('#m-delete').addEventListener('click', async () => {
 
 /* ---------------- Mode & tools ---------------- */
 function setMode(mode) {
+  if (mode === 'mosaic' && state.mode !== 'mosaic' && !usePicture() && !photoFinal()) fillRest();
+  hoverL = 0;
   if (mode !== 'sketch') { if (sel) finishSel(true); if (pathPts) finishPath(); $('#draw-hint').hidden = true; }
   state.mode = mode;
   for (const k of ['sketch', 'color', 'mosaic']) $('#step-' + k).setAttribute('aria-pressed', String(mode === k));
   $('#sketch-tools').hidden = mode !== 'sketch';
   $('#color-tools').hidden = mode !== 'color';
   $('#mosaic-tools').hidden = mode !== 'mosaic';
-  $('#joint-group').hidden = mode === 'sketch';
+  $('#joint-group').hidden = mode !== 'mosaic';
   $('#slab').classList.toggle('mode-color', mode !== 'sketch');
   $('#status').innerHTML = {
     sketch: 'Draw or upload your design. Every closed shape becomes one piece you can fill with stone.',
@@ -1267,6 +1301,7 @@ $('#start-close').addEventListener('click', () => showStart(false));
 $$('#start [data-start]').forEach(b => b.addEventListener('click', () => {
   const how = b.dataset.start;
   showStart(false);
+  $('#sketch-tools').classList.toggle('draw-only', how === 'draw'); // drawing from scratch needs no picture tools
   if (how === 'upload') { setMode('sketch'); $('#file-sketch').click(); }
   else if (how === 'describe') {
     setMode('sketch'); $('#ai-more').open = true;
