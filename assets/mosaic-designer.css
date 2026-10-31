@@ -80,6 +80,11 @@
 .imd .joint { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--line); padding: 0; }
 .imd .joint[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--panel) inset; }
 .imd .stage { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.imd .draw-hint { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 32px; text-align: center; pointer-events: none; color: var(--muted, #5b6478); font-size: 15px; line-height: 1.6; }
+.imd .draw-hint b { font-size: 20px; color: var(--ink, #16335e); font-weight: 600; }
+.imd .draw-hint span { max-width: 460px; }
+.imd #sketch-tools.flash { animation: flash 1.2s ease 2; border-radius: 6px; }
+@keyframes flash { 50% { box-shadow: 0 0 0 3px var(--accent); } }
 .imd .slab-wrap { position: relative; width: 100%; aspect-ratio: 4 / 3; max-width: 100%; background: var(--slab); border-radius: 4px; box-shadow: 0 8px 22px rgba(22,51,94,.12); overflow: hidden; }
 .imd .slab-wrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .imd #slab-inner { position: absolute; inset: 0; transform-origin: 0 0; }

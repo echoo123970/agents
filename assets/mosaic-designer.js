@@ -590,7 +590,7 @@ function commit(inkChanged) {
   history.push(snapshot());
   if (history.length > 30) history.shift();
   future.length = 0;
-  if (inkChanged) { currentInk = ictx.getImageData(0, 0, W, H); inkVer++; }
+  if (inkChanged) { currentInk = ictx.getImageData(0, 0, W, H); inkVer++; $('#draw-hint').hidden = true; }
 }
 function restore(s) {
   if (s.ink !== currentInk) {
@@ -844,6 +844,7 @@ const touches = new Map();
 let pinch = null;
 function startPan(e) { drag = { pan: true, sx: e.clientX, sy: e.clientY, vx: view_.x, vy: view_.y }; $('#slab').classList.add('panning'); }
 overlay.addEventListener('pointerdown', e => {
+  $('#draw-hint').hidden = true;
   if (e.pointerType === 'touch') {
     touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (touches.size === 2) { // second finger: switch to pinch, dropping any stroke in progress
@@ -1187,7 +1188,7 @@ $('#m-delete').addEventListener('click', async () => {
 
 /* ---------------- Mode & tools ---------------- */
 function setMode(mode) {
-  if (mode !== 'sketch') { if (sel) finishSel(true); if (pathPts) finishPath(); }
+  if (mode !== 'sketch') { if (sel) finishSel(true); if (pathPts) finishPath(); $('#draw-hint').hidden = true; }
   state.mode = mode;
   for (const k of ['sketch', 'color', 'mosaic']) $('#step-' + k).setAttribute('aria-pressed', String(mode === k));
   $('#sketch-tools').hidden = mode !== 'sketch';
@@ -1256,7 +1257,7 @@ function showStart(on) {
   if (on) $('#start').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   else store.set('mosaic.started', true);
 }
-$('#new-design').addEventListener('click', () => { $('#gallery').hidden = true; showStart(true); });
+$('#new-design').addEventListener('click', () => { $('#gallery').hidden = true; $('#upload-panel').hidden = true; clearPending(); showStart(true); });
 function showGallery() {
   renderGallery(); $('#gallery').hidden = false;
   $('#gallery').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -1271,11 +1272,14 @@ $$('#start [data-start]').forEach(b => b.addEventListener('click', () => {
     setMode('sketch'); $('#ai-more').open = true;
     if (sampleFn) $('#ai-prompt').focus(); else toast('Describing a design works when this tool is opened in Claude. You can upload or draw instead.');
   } else if (how === 'draw') {
+    $('#upload-panel').hidden = true; $('#gallery').hidden = true; $('#trace-field').hidden = true; pendingImg = null; upStore = false;
     heavy(() => {
       ictx.clearRect(0, 0, W, H); sourceData = null;
       commit(true); state.fills = [];
       setMode('sketch'); setTool('pen'); refresh();
-      toast('A blank canvas is ready. Undo brings back your previous design.');
+      $('#draw-hint').hidden = false;
+      $('.bench').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      $('#sketch-tools').classList.add('flash'); setTimeout(() => $('#sketch-tools').classList.remove('flash'), 2400);
     });
   } else if (how === 'gallery') showGallery();
 }));
@@ -1385,7 +1389,7 @@ $('#file-sketch').addEventListener('change', async e => {
 //   colored picture/photo -> outline to color yourself | outline already colored | straight to a mosaic
 //   photo of a mosaic     -> rebuild it tile by tile in our stones | outline already colored
 let upKind = 'color', pendingImg = null;
-function showPending(img) { pendingImg = img; setMode('sketch'); composite(); }
+function showPending(img) { $('#draw-hint').hidden = true; pendingImg = img; setMode('sketch'); composite(); }
 function clearPending() { if (pendingImg) { pendingImg = null; composite(); } }
 const UP_ACTIONS = {
   bw: [['lines', 'Color it with our stones', 'We keep your black lines. Then you fill each area with a stone and see it as a mosaic.']],
