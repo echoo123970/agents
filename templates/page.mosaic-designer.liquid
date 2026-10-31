@@ -141,7 +141,7 @@
       <details class="more">
         <summary>Start over</summary>
         <div class="group">
-          <button class="btn block" id="sample" type="button">Load our sample medallion</button>
+          <button class="btn block" id="sample" type="button">Choose a ready design</button>
       <button class="btn block danger" id="clear-sketch" type="button">Clear sketch</button>
         </div>
       </details>
@@ -222,8 +222,15 @@
         <button type="button" data-start="upload"><svg viewBox="0 0 24 24"><path d="M4 16v3h16v-3M12 4v11M7 9l5-5 5 5"/></svg><b>Upload a picture</b><span>A drawing, a photo, or a picture of a mosaic. We'll ask what you'd like to do with it.</span></button>
         <button type="button" data-start="describe"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg><b>Describe it</b><span>Type your idea and we draw the outline for you.</span></button>
         <button type="button" data-start="draw"><svg viewBox="0 0 24 24"><path d="M4 20c4-1 6-4 9-8l4-5-3-2-5 5c-3 3-5 6-5 10z"/></svg><b>Draw it myself</b><span>Shapes, text, symmetry and freehand on a blank canvas.</span></button>
-        <button type="button" data-start="sample"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4l2 8-2 8-2-8z"/></svg><b>Explore a sample</b><span>Try coloring our compass-rose medallion.</span></button>
+        <button type="button" data-start="gallery"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4l2 8-2 8-2-8z"/></svg><b>Choose a ready design</b><span>Compass rose, rosette, mandala and more. Pick one and make it yours.</span></button>
       </div>
+    </div>
+    <div class="start" id="gallery" hidden>
+      <div class="start-head">
+        <div><h2>Choose a ready design</h2><p class="hint">Pick a design to start from. You can change, add or remove anything, then color it with our stones.</p></div>
+        <button class="start-close" type="button" id="gallery-close" aria-label="Close">×</button>
+      </div>
+      <div class="gallery-grid" id="gallery-grid"></div>
     </div>
     <div class="start" id="upload-panel" hidden>
       <div class="start-head">

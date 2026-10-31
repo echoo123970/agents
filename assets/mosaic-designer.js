@@ -1196,7 +1196,12 @@ function showStart(on) {
   if (on) $('#start').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   else store.set('mosaic.started', true);
 }
-$('#new-design').addEventListener('click', () => showStart(true));
+$('#new-design').addEventListener('click', () => { $('#gallery').hidden = true; showStart(true); });
+function showGallery() {
+  renderGallery(); $('#gallery').hidden = false;
+  $('#gallery').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+$('#gallery-close').addEventListener('click', () => { $('#gallery').hidden = true; });
 $('#start-close').addEventListener('click', () => showStart(false));
 $$('#start [data-start]').forEach(b => b.addEventListener('click', () => {
   const how = b.dataset.start;
@@ -1212,7 +1217,7 @@ $$('#start [data-start]').forEach(b => b.addEventListener('click', () => {
       setMode('sketch'); setTool('pen'); refresh();
       toast('A blank canvas is ready. Undo brings back your previous design.');
     });
-  } else if (how === 'sample') heavy(() => { loadSample(true); setMode('color'); refresh(); });
+  } else if (how === 'gallery') showGallery();
 }));
 $$('.tool').forEach(b => b.addEventListener('click', () => {
   const sketchTool = !!b.closest('#sketch-tools');
@@ -1282,10 +1287,7 @@ $('#clear-sketch').addEventListener('click', async () => {
   if (!(await confirmBox('Clear the sketch?', 'This removes every line and color. You can undo this.', 'Clear sketch'))) return;
   ictx.clearRect(0, 0, W, H); sourceData = null; state.fills = []; commit(true); refresh();
 });
-$('#sample').addEventListener('click', async () => {
-  if (!(await confirmBox('Load the sample medallion?', 'It replaces the current sketch and colors. You can undo this.', 'Load sample'))) return;
-  heavy(() => { loadSample(true); refresh(); });
-});
+$('#sample').addEventListener('click', () => { showStart(false); showGallery(); });
 document.addEventListener('keydown', e => {
   if (e.target.closest('input, textarea, select, dialog')) return;
   const k = e.key.toLowerCase();
@@ -1521,42 +1523,122 @@ function autoFill(idx, mats) {
   state.fills = fills;
 }
 
-/* ---------------- Sample medallion ---------------- */
-function loadSample(withHistory) {
-  sourceData = null;
-  const cx = W / 2, cy = H / 2, sc = Math.min(W / 1000, H / 750); // drawn for the 1000 × 750 frame, scaled to fit
-  if (withHistory) history.push(snapshot());
-  ictx.clearRect(0, 0, W, H);
-  ictx.globalCompositeOperation = 'source-over';
-  ictx.lineWidth = 3; ictx.strokeStyle = '#000'; ictx.lineJoin = 'round'; ictx.lineCap = 'round';
-  ictx.strokeRect(24, 24, W - 48, H - 48);
-  for (const r of [332, 300, 252, 24]) { ictx.beginPath(); ictx.arc(cx, cy, r * sc, 0, Math.PI * 2); ictx.stroke(); }
-  const pt = (r, deg) => [cx + r * sc * Math.cos(deg * Math.PI / 180), cy + r * sc * Math.sin(deg * Math.PI / 180)];
-  const rad = k => (k % 2 ? 70 : (k % 4 === 0 ? 236 : 160));
-  ictx.beginPath();
-  for (let k = 0; k < 16; k++) { const [x, y] = pt(rad(k), -90 + k * 22.5); k ? ictx.lineTo(x, y) : ictx.moveTo(x, y); }
-  ictx.closePath(); ictx.stroke();
-  for (let k = 0; k < 16; k += 2) { const a = -90 + k * 22.5; ictx.beginPath(); ictx.moveTo(...pt(24, a)); ictx.lineTo(...pt(rad(k), a)); ictx.stroke(); }
-  // Sixteen keystones in the outer band
-  for (let k = 0; k < 16; k++) { const a = -90 + k * 22.5 + 11.25; ictx.beginPath(); ictx.moveTo(...pt(300, a)); ictx.lineTo(...pt(332, a)); ictx.stroke(); }
-  currentInk = ictx.getImageData(0, 0, W, H); inkVer++;
-  if (withHistory) future.length = 0;
-
-  const fills = [];
-  const add = (x, y, mat, rot = (x * 7 + y * 13) % 360) => fills.push({ x: Math.round(x), y: Math.round(y), mat, rot });
-  add(40, 40, 'm11');
-  for (let k = 0; k < 16; k++) { const [x, y] = pt(316, -90 + k * 22.5); add(x, y, k % 2 ? 'm05' : 'm01'); }
-  add(...pt(276, -90), 'm08');
-  add(...pt(200, -67.5), 'm04');
-  add(cx, cy, 'e48');
-  for (let k = 0; k < 16; k += 2) {
-    const a = -90 + k * 22.5, tip = pt(rad(k), a), cardinal = k % 4 === 0;
-    for (const side of [-1, 1]) {
-      const v = pt(70, a + side * 22.5), c = pt(24, a);
-      add((c[0] + v[0] + tip[0]) / 3, (c[1] + v[1] + tip[1]) / 3, cardinal ? (side < 0 ? 'm01' : 'm15') : (side < 0 ? 'm40' : 'm03'));
+/* ---------------- Ready designs ---------------- */
+// Outline designs customers can start from. Each draws closed shapes into a w × h frame,
+// so every area can be filled with a stone; they scale to any mosaic size.
+const DESIGNS = [
+  ['compass', 'Compass rose', (c, w, h) => {
+    const { cx, cy, R, pt } = geo(w, h);
+    for (const r of [1, .9, .76]) circle(c, cx, cy, R * r);
+    circle(c, cx, cy, R * .07);
+    const rad = k => (k % 2 ? .21 : (k % 4 === 0 ? .71 : .48));
+    poly(c, Array.from({ length: 16 }, (_, k) => pt(R * rad(k), -90 + k * 22.5)));
+    for (let k = 0; k < 16; k += 2) line(c, pt(R * .07, -90 + k * 22.5), pt(R * rad(k), -90 + k * 22.5));
+    for (let k = 0; k < 16; k++) line(c, pt(R * .9, -78.75 + k * 22.5), pt(R, -78.75 + k * 22.5));
+  }],
+  ['rosette', 'Flower rosette', (c, w, h) => {
+    const { cx, cy, R, pt } = geo(w, h);
+    for (const r of [1, .82, .64]) circle(c, cx, cy, R * r);
+    circle(c, cx, cy, R * .16);
+    for (let k = 0; k < 12; k++) { // petals between the heart and the inner ring
+      const a = k * 30, p0 = pt(R * .16, a), p1 = pt(R * .64, a), l = pt(R * .44, a - 13), r = pt(R * .44, a + 13);
+      c.beginPath(); c.moveTo(...p0); c.quadraticCurveTo(...l, ...p1); c.quadraticCurveTo(...r, ...p0); c.stroke();
     }
+    for (let k = 0; k < 24; k++) line(c, pt(R * .82, k * 15), pt(R, k * 15));
+  }],
+  ['mandala', 'Mandala', (c, w, h) => {
+    const { cx, cy, R, pt } = geo(w, h);
+    for (const r of [1, .74, .46, .18]) circle(c, cx, cy, R * r);
+    for (let k = 0; k < 8; k++) { const [x, y] = pt(R * .32, k * 45); circle(c, x, y, R * .14); }
+    for (let k = 0; k < 16; k++) { // scallops on the middle ring
+      const a0 = k * 22.5, [x, y] = pt(R * .74, a0 + 11.25);
+      c.beginPath(); c.arc(x, y, R * .13, 0, Math.PI * 2); c.stroke();
+    }
+    for (let k = 0; k < 24; k++) line(c, pt(R * .87, k * 15), pt(R, k * 15));
+    circle(c, cx, cy, R * .87);
+  }],
+  ['sun', 'Sunburst', (c, w, h) => {
+    const { cx, cy, R, pt } = geo(w, h);
+    circle(c, cx, cy, R * .26); circle(c, cx, cy, R * .17);
+    for (let k = 0; k < 16; k++) {
+      const a = k * 22.5, len = k % 2 ? .78 : 1;
+      poly(c, [pt(R * .3, a - 9), pt(R * len, a), pt(R * .3, a + 9)]);
+    }
+    circle(c, cx, cy, R * .3);
+  }],
+  ['star', 'Star medallion', (c, w, h) => {
+    const { cx, cy, R, pt } = geo(w, h);
+    circle(c, cx, cy, R); circle(c, cx, cy, R * .88); circle(c, cx, cy, R * .22);
+    poly(c, [0, 120, 240].map(a => pt(R * .88, a - 90)));
+    poly(c, [60, 180, 300].map(a => pt(R * .88, a - 90)));
+    for (let k = 0; k < 12; k++) line(c, pt(R * .88, k * 30 + 15), pt(R, k * 30 + 15));
+  }],
+  ['heart', 'Heart', (c, w, h) => {
+    const s = Math.min(w, h);
+    const heart = (k) => {
+      const hw = s * .62 * k, hh = s * .56 * k, x0 = w / 2 - hw / 2, y0 = h / 2 - hh / 2 + s * .02;
+      c.beginPath(); c.moveTo(x0 + hw / 2, y0 + hh * .28);
+      c.bezierCurveTo(x0 + hw / 2, y0, x0, y0, x0, y0 + hh * .32);
+      c.bezierCurveTo(x0, y0 + hh * .62, x0 + hw / 2, y0 + hh * .78, x0 + hw / 2, y0 + hh);
+      c.bezierCurveTo(x0 + hw / 2, y0 + hh * .78, x0 + hw, y0 + hh * .62, x0 + hw, y0 + hh * .32);
+      c.bezierCurveTo(x0 + hw, y0, x0 + hw / 2, y0, x0 + hw / 2, y0 + hh * .28);
+      c.closePath(); c.stroke();
+    };
+    heart(1.25); heart(1); heart(.55);
+    const m = s * .085; c.strokeRect(m, m, w - m * 2, h - m * 2);
+  }],
+  ['waves', 'Waves', (c, w, h) => {
+    const { m } = geo(w, h);
+    for (let i = 1; i <= 5; i++) {
+      const y0 = m + (h - m * 2) * (i / 6) + h * .06, amp = h * .045, len = w / 2.5;
+      c.beginPath();
+      for (let x = m; x <= w - m; x += 4) { const y = y0 + Math.sin((x / len) * Math.PI * 2 + i) * amp; x === m ? c.moveTo(x, y) : c.lineTo(x, y); }
+      c.stroke();
+    }
+    circle(c, w * .76, h * .24, Math.min(w, h) * .1);
+  }],
+  ['diamonds', 'Diamonds', (c, w, h) => {
+    const { m } = geo(w, h), step = Math.min(w, h) / 5;
+    c.save(); c.beginPath(); c.rect(m, m, w - m * 2, h - m * 2); c.clip();
+    for (let x = -h; x < w + h; x += step) { line(c, [x, m], [x + (h - m * 2), h - m]); line(c, [x, h - m], [x + (h - m * 2), m]); }
+    c.restore();
+  }],
+];
+function geo(w, h) {
+  const m = Math.round(Math.min(w, h) * .032), cx = w / 2, cy = h / 2, R = Math.min(w, h) / 2 - m * 2.2;
+  return { m, cx, cy, R, pt: (r, deg) => [cx + r * Math.cos(deg * Math.PI / 180), cy + r * Math.sin(deg * Math.PI / 180)] };
+}
+const circle = (c, x, y, r) => { c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.stroke(); };
+const line = (c, a, b) => { c.beginPath(); c.moveTo(...a); c.lineTo(...b); c.stroke(); };
+const poly = (c, pts) => { c.beginPath(); pts.forEach((p, i) => i ? c.lineTo(...p) : c.moveTo(...p)); c.closePath(); c.stroke(); };
+// Draws a design with its frame: every design sits inside a border so the background is an area too.
+function drawDesign(c, key, w, h, lw) {
+  const d = DESIGNS.find(x => x[0] === key);
+  c.save(); c.lineWidth = lw; c.strokeStyle = '#000'; c.lineJoin = 'round'; c.lineCap = 'round';
+  const { m } = geo(w, h);
+  c.strokeRect(m, m, w - m * 2, h - m * 2);
+  d[2](c, w, h);
+  c.restore();
+}
+function useDesign(key) {
+  ictx.clearRect(0, 0, W, H); sourceData = null;
+  ictx.globalCompositeOperation = 'source-over';
+  drawDesign(ictx, key, W, H, 3);
+  commit(true); state.fills = [];
+  setMode('sketch'); setTool('pen'); refresh();
+  toast('Change anything you like with the drawing tools, then press Next: Color it.');
+}
+function renderGallery() {
+  const box = $('#gallery-grid'); box.textContent = ''; // drawn in the current mosaic shape
+  for (const [key, name] of DESIGNS) {
+    const b = document.createElement('button'); b.type = 'button';
+    const cv = document.createElement('canvas'); cv.width = 240; cv.height = Math.round(240 * H / W);
+    const x = cv.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, cv.width, cv.height);
+    drawDesign(x, key, cv.width, cv.height, 1.4);
+    b.append(cv); b.insertAdjacentHTML('beforeend', `<span>${esc(name)}</span>`);
+    b.addEventListener('click', () => { $('#gallery').hidden = true; heavy(() => useDesign(key)); });
+    box.append(b);
   }
-  state.fills = fills.filter(f => matById(f.mat));
 }
 
 /* ---------------- Save / open / export ---------------- */
@@ -1894,9 +1976,9 @@ async function boot() {
     if (img && !m.photo.startsWith('data:')) try { m.base = photoColor(img); } catch {}
   }));
   labCache.clear();
-  // every visit opens on the compass medallion with the start choices above it;
+  // every visit opens on a blank canvas with the start choices above it;
   // customers keep their work with Save design / Open design
-  loadSample(false);
+  ictx.clearRect(0, 0, W, H); currentInk = ictx.getImageData(0, 0, W, H); inkVer++; state.fills = [];
   if (!matById(state.selected)) state.selected = chart[0]?.id;
   markJoint(); markLook(); state.mode = 'color'; setTool('fill');
   renderChart(); selectMat(state.selected); setMode('sketch'); // customers start at step 1, Design
