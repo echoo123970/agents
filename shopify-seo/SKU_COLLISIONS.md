@@ -152,6 +152,15 @@ If distinct: `MAB062` newer → **`MB128`**; the Portrait "Ethereal Woman" →
 **`MAP069`**, the Roman "Medusa" → **`MAM066`**.
 If duplicates: keep one of each pair, DRAFT + redirect the other.
 
+**Updated 2026-10-31.** The owner first ruled both pairs distinct and the
+fresh SKUs were assigned. On a later look at the two images, `MAB062` and
+`MB128` were confirmed to be **the same product**, so that half was reversed:
+the 2024-10-28 listing survives (it carries five size variants against the
+newer one's single size), the 2025-02-08 listing is drafted and parked on
+`…-landscape-mosaic-retired-duplicate`, and the survivor took over the
+correctly spelled handle with a 301 from the old typo'd path. See README §17.
+The `MAM011` pair was not revisited and stands as distinct.
+
 ---
 
 ## Side findings, not SKU problems

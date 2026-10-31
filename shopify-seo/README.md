@@ -1007,29 +1007,51 @@ filename raises — whether that listing has a real artwork behind it. That is
 a content decision for the owner, and concealing the signal would make it
 harder to notice, not easier.
 
-### Not fixed — the Bird/floral mismatch, and a typo that collides
+### Fixed — the Bird/floral pair turned out to be one product
 
-`MAB062`'s product is productType "Bird Mosaics", but its title says
-"Watercolor Floral Art – Ladscape Mosaic" and mentions no bird. Its sibling
-(`MB128`, the 2025-02-08 listing the owner ruled distinct) is also Bird
-Mosaics and also says floral/landscape.
+`MAB062`'s listing was productType "Bird Mosaics" with a title reading
+"Watercolor Floral Art – **Lad**scape Mosaic" and no bird mentioned. Its
+sibling (`MB128`, 2025-02-08) was also Bird Mosaics and also floral/landscape.
 
-Two reasons this is not a safe unilateral fix:
+The owner compared both images and confirmed **they are the same product** —
+reversing the earlier §16.1 B4 call that treated them as distinct.
 
-1. **The correct type cannot be determined from the record.** Title says
-   floral/landscape; the `MAB` prefix and the productType both say Bird.
-   Only the image settles it, and the images are not reachable from here.
-2. **Fixing the obvious typo would create a worse problem.** "Ladscape" →
-   "Landscape" is plainly correct, but it would make this title
-   byte-identical to its sibling's — two ACTIVE products with the same
-   title, which is the cannibalisation pattern §16.2 exists to avoid.
+One detail changed which listing should survive. The two had different variant
+structures:
 
-Both images, for whoever decides:
+| | Created | Variants | Sizes |
+|---|---|---:|---|
+| `MAB062` | 2024-10-28 | **5** | 130×65 cm up to 260×130 cm |
+| `MB128` | 2025-02-08 | 1 | 140×75 cm only |
 
-- `MAB062` — https://cdn.shopify.com/s/files/1/0754/6093/5978/files/MAB062_53eb8193-fc1a-4434-8749-ea7439d0f15e.jpg?v=1730141244
-- `MB128` — https://cdn.shopify.com/s/files/1/0754/6093/5978/files/MAB062_a83faf6b-52a3-4808-b7cb-2597dfb9a505.jpg?v=1739033528
+The older listing is the more complete one, so it survives — which also
+matches the Group A precedent of keeping the earlier record. Retiring the
+newer would have cost customers four size options.
 
-Both are 1407×601 and were uploaded under the same base filename, which is
-why they read as duplicates on the first pass. The owner ruled them distinct.
-If that holds, they need titles that tell them apart as well as a correct
-productType; if it does not, one should be retired the way Group A was.
+Applied:
+
+- `MB128`'s listing set to DRAFT and its handle moved aside to
+  `…-landscape-mosaic-retired-duplicate`, which **released the correctly
+  spelled handle**
+- the survivor took that handle, so its URL is now
+  `/products/bird-mosaics-watercolor-floral-art-landscape-mosaic`
+- the survivor's title and image alt text corrected, "Ladscape" → "Landscape"
+- a 301 redirect from the old typo'd path to the new one
+
+The typo is now gone from the title, the alt text and the URL. Because the
+retired listing's original handle became the survivor's, anyone holding the
+old `…-landscape-mosaic` link lands on the survivor with no redirect needed.
+
+Verified by re-read: survivor ACTIVE on the clean handle with five `MAB062`
+variants and corrected alt; duplicate DRAFT on the parked handle; redirect
+confirmed by three separate lookups (Shopify's redirect search does not do
+substring matches, so the first check returned nothing and needed a path-
+prefix query and a direct node fetch to confirm).
+
+`MB128` stays on the retired draft rather than being reverted, so the record
+shows honestly that it was once treated as distinct. It is a consumed code,
+not a reusable gap.
+
+**Still unanswered: the productType.** Both listings remain "Bird Mosaics"
+while the title says floral/landscape. Whether there is a bird in the image
+was never established, so the type was left alone rather than guessed.
