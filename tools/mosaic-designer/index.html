@@ -2612,6 +2612,7 @@ async function runFree(desc) {
   if (!desc) { status.textContent = 'Type what you would like first, for example: a compass rose with waves around it.'; $('#ai-prompt').focus(); return; }
   go.disabled = true; busy(true, 'Drawing your design…');
   status.textContent = 'Drawing your design… this can take up to a minute.';
+  if (window.IMOSAIC_AI_URL) return runOpenAI(desc, status, go);
   const prompt = `simple coloring book page, ${desc}. Thick bold continuous black outlines of even width, every shape fully closed, `
     + 'flat vector line art, large simple shapes, no shading, no hatching, no fur or grass texture, no sketch lines, no gray, no words, pure white background, centered';
   const w = 1024, h = Math.round(1024 * H / W / 8) * 8;
@@ -2630,6 +2631,29 @@ async function runFree(desc) {
   }
   busy(false); go.disabled = false;
   if (!img) { status.textContent = 'Our drawing service is busy right now. Please try again in a minute, or upload or draw your design instead.'; return; }
+  useDrawing(img, status);
+}
+// With the store's drawing helper set up (ai-worker/worker.js, OpenAI behind it), the description is
+// drawn there; the key stays on the helper.
+async function runOpenAI(desc, status, go) {
+  const r = W / H, size = r > 1.2 ? '1536x1024' : r < .83 ? '1024x1536' : '1024x1024';
+  go.disabled = true; busy(true, 'Drawing your design…');
+  status.textContent = 'Drawing your design… this can take up to a minute.';
+  let img = null, msg = '';
+  try {
+    const res = await fetch(window.IMOSAIC_AI_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: desc, size }) });
+    if (res.ok) img = await loadPhoto(URL.createObjectURL(await res.blob()));
+    else msg = (await res.json().catch(() => ({}))).error || '';
+  } catch (e) { console.error(e); }
+  busy(false); go.disabled = false;
+  if (!img) {
+    status.textContent = msg && msg !== 'busy' ? `Sorry, we could not draw that: ${msg}` : 'Our drawing service is busy right now. Please try again in a minute, or upload or draw your design instead.';
+    return;
+  }
+  useDrawing(img, status);
+}
+// A drawing made from a description goes through the black & white drawing journey: lines kept, ready to color.
+function useDrawing(img, status) {
   importedImg = img; importedFile = null; lastSvg = null; sourceData = null; upStore = false;
   heavy(() => {
     try {

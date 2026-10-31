@@ -101,6 +101,8 @@ template = f"""{{{{ 'mosaic-designer.css' | asset_url | stylesheet_tag }}}}
   window.IMOSAIC_SWATCHES = {{
 {swatches}
   }};
+  // "Describe it" drawing helper (tools/mosaic-designer/ai-worker), set in the shop metafield imosaic.ai_url
+  window.IMOSAIC_AI_URL = {{{{ shop.metafields.imosaic.ai_url.value | json }}}};
 </script>
 <script src="{{{{ 'mosaic-designer.js' | asset_url }}}}" defer></script>
 """
