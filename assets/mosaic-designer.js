@@ -1318,7 +1318,7 @@ $('#file-sketch').addEventListener('change', async e => {
   showStart(false);
   $('#up-thumb').src = img.src;
   $('#up-title').textContent = 'Your picture'; $('#up-link').hidden = true;
-  upKind = isColorful(img) ? 'color' : 'bw'; upAction = null;
+  upKind = isColorful(img) ? 'color' : 'bw'; upAction = null; upStore = false;
   showPending(img);
   renderUpload();
   $('#upload-panel').hidden = false;
@@ -1346,11 +1346,21 @@ const UP_ACTIONS = {
     ['outline', 'Make an outline I color myself', 'A black & white outline of the design that you can edit, then fill with stones. Best for simpler designs.'],
   ],
 };
+// A design picked from our shop is already one of our mosaics: customers either change its colors
+// or clear them and repaint it themselves.
+const STORE_ACTIONS = [
+  ['colors', 'Change the colors', 'The design keeps its stones. Tap any area and pick a stone to change it.'],
+  ['outline', 'Remove all colors and repaint', 'Start from a clean black & white outline of the design and fill each area with your own stones.'],
+];
 let upAction = null; // the option shown on the canvas right now
+let upStore = false; // true while the picture is a design from our shop
 function renderUpload() {
   $$('.up-kind button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.kind === upKind)));
+  $('#up-kind-label').hidden = $('.up-kind').hidden = $('#up-act-num').hidden = upStore;
+  $('#up-actions').classList.toggle('two', upStore);
+  $('#up-hint').textContent = upStore ? 'Change its colors, or clear them and paint it your way.' : "Tell us what it is and what you'd like, and we'll set it up.";
   const box = $('#up-actions'); box.textContent = '';
-  for (const [how, title, text] of UP_ACTIONS[upKind]) {
+  for (const [how, title, text] of upStore ? STORE_ACTIONS : UP_ACTIONS[upKind]) {
     const b = document.createElement('button'); b.type = 'button';
     b.setAttribute('aria-pressed', String(how === upAction));
     b.innerHTML = `<b>${title}</b><span>${text}</span>`;
@@ -1628,22 +1638,15 @@ async function pickDesign(p) {
   // the mosaic takes the piece's proportions at the chosen width
   const h = Math.round(state.sizeW * img.naturalHeight / img.naturalWidth * 2) / 2;
   if (h > 0 && h !== state.sizeH) { state.sizeH = h; $('#size-h').value = h; const [fw, fh] = frameFor(state.sizeW, h); resizeFrame(fw, fh); refresh(); }
-  // a piece from our shop is already a mosaic: it opens as areas filled with our stones,
-  // ready for the customer to change the stone of any area
-  $('#upload-panel').hidden = true;
-  upKind = 'mosaic'; upAction = 'colors';
-  heavy(() => {
-    try {
-      state.sourceKind = 'mosaic';
-      $('#trace-mode').value = 'colors'; showTraceFields();
-      runTrace(true);
-      toast(`${p.t}: tap any area and pick a stone to change its color.`);
-    } catch (err) {
-      console.error(err);
-      toast('That design could not be loaded. Please try another one.');
-    }
-  });
-  $('#slab').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  // a piece from our shop opens with its areas already filled; customers can change the colors
+  // or clear them and repaint
+  $('#up-thumb').src = img.src;
+  $('#up-title').textContent = p.t;
+  $('#up-link').href = p.u; $('#up-link').hidden = !p.u;
+  upKind = 'mosaic'; upStore = true;
+  $('#upload-panel').hidden = false;
+  applyUpload('colors');
+  $('#upload-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 /* ---------------- Save / open / export ---------------- */

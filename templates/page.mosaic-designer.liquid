@@ -235,16 +235,16 @@
     </div>
     <div class="start" id="upload-panel" hidden>
       <div class="start-head">
-        <div class="up-head"><img id="up-thumb" alt="Your upload"><div><h2 id="up-title">Your picture</h2><p class="hint">Tell us what it is and what you'd like, and we'll set it up. <a id="up-link" href="#" target="_blank" rel="noopener" hidden>See it in our shop</a></p></div></div>
+        <div class="up-head"><img id="up-thumb" alt="Your upload"><div><h2 id="up-title">Your picture</h2><p class="hint"><span id="up-hint">Tell us what it is and what you'd like, and we'll set it up.</span> <a id="up-link" href="#" target="_blank" rel="noopener" hidden>See it in our shop</a></p></div></div>
         <button class="start-close" type="button" id="up-close" aria-label="Cancel">×</button>
       </div>
-      <p class="label">1 · What is this picture?</p>
+      <p class="label" id="up-kind-label">1 · What is this picture?</p>
       <div class="seg up-kind" role="group" aria-label="What is this picture">
         <button type="button" data-kind="bw">Black &amp; white drawing</button>
         <button type="button" data-kind="color">Colored picture or photo</button>
         <button type="button" data-kind="mosaic">Photo of a mosaic</button>
       </div>
-      <p class="label">2 · What would you like? <span class="hint" style="text-transform:none;letter-spacing:0">Try each one; the design changes as you click.</span></p>
+      <p class="label" id="up-act-label"><span id="up-act-num">2 · </span>What would you like? <span class="hint" style="text-transform:none;letter-spacing:0">Try each one; the design changes as you click.</span></p>
       <div class="start-grid up-actions" id="up-actions"></div>
       <div class="row" style="justify-content: flex-end"><button class="btn primary" type="button" id="up-done" hidden>Continue with this →</button></div>
     </div>

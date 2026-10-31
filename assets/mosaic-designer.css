@@ -116,8 +116,9 @@
 .imd .up-kind button { font-size: 12.5px; }
 .imd .up-actions button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 1px var(--accent); }
 .imd .up-actions { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.imd .up-actions.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (max-width: 900px) {
-.imd .up-actions { grid-template-columns: minmax(0, 1fr); }
+.imd .up-actions, .imd .up-actions.two { grid-template-columns: minmax(0, 1fr); }
 }
 .imd .sizebar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
 .imd .sizebar .label { margin: 0; }
