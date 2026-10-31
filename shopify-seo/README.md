@@ -557,19 +557,37 @@ An earlier draft of this section claimed the store "already had richer
 alt text on 1,941 of 1,948 products" in the form
 `Title | Category | iMosaicArt`. That was wrong — generalised from the
 handful of records inspected closely during the mojibake repair, which do
-use that form. Measured across 1,750 products, the real split is:
+use that form. Measured across all 1,948 products, the real split was:
 
 | Stored alt | Count | Share |
 |---|---:|---:|
-| Exactly the product title | 1,425 | 81% |
-| `Title \| Category \| iMosaicArt` | 296 | 17% |
+| Exactly the product title | 1,623 | 83% |
+| `Title \| Category \| iMosaicArt` | 296 | 15% |
 | Something else | 22 | 1% |
 | Missing (the 7 filled above) | 7 | <1% |
 
-Four products in five therefore carry alt text that is a verbatim copy of
-the title — not broken, but adding nothing a crawler or screen reader did
-not already have. Upgrading those 1,425 to the house pattern is an open
-decision, not a defect.
+Four products in five therefore carried alt text that was a verbatim copy
+of the title — not broken, but adding nothing a crawler or screen reader
+did not already have.
+
+**Upgraded 2026-10-31.** All 1,623 were rewritten to the house pattern
+`<Title> | <Product Type> | iMosaicArt` via twelve `fileUpdate` batches of
+120–140 records, with zero `userErrors` across every batch. A sample from
+five separate batches was re-read afterwards and all five carry the new
+value. Every product image in the catalogue now stores alt text that names
+the subject, its category and the brand.
+
+Two caveats worth recording:
+
+- The alt text is derived from the stored title, so where a title is itself
+  awkward the alt inherits it — e.g. `Premium Venetian Canal View Premium
+  Tile Art Stone Mosaic Art | Landscape Mosaics | iMosaicArt`, with
+  "Premium" twice and a double space. That is faithful to the product
+  record by design; it will read better automatically once the 278
+  generated titles are rewritten.
+- 325 products were deliberately skipped: 296 already had the house
+  pattern, 22 had some other deliberate alt text, and 7 were the ones
+  filled from empty earlier in this section.
 
 `patches/02-render-stored-alt-text.patch` fixes this across 15 files,
 reading the image's own alt and falling back to the previous title so
