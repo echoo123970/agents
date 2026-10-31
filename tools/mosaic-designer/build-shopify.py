@@ -104,8 +104,17 @@ template = f"""{{{{ 'mosaic-designer.css' | asset_url | stylesheet_tag }}}}
 </script>
 <script src="{{{{ 'mosaic-designer.js' | asset_url }}}}" defer></script>
 """
+# Answers /collections/<handle>?view=mosaic-designs&sort_by=best-selling with that collection's
+# first 20 products (in the requested order) as JSON, for the tool's ready-design gallery.
+designs_view = '''{%- layout none -%}
+{%- paginate collection.products by 20 -%}
+[{%- assign sep = '' -%}
+{%- for p in collection.products -%}{%- if p.featured_image -%}{{ sep }}{"t":{{ p.title | json }},"u":{{ p.url | json }},"th":{{ p.featured_image | image_url: width: 360 | json }},"img":{{ p.featured_image | image_url: width: 1400 | json }}}{%- assign sep = ',' -%}{%- endif -%}{%- endfor -%}]
+{%- endpaginate -%}
+'''
 files = {
     'templates/page.mosaic-designer.liquid': template,
+    'templates/collection.mosaic-designs.liquid': designs_view,
     'assets/mosaic-designer.css': style,
     'assets/mosaic-designer.js': main_js,
 }
