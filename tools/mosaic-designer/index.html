@@ -2527,16 +2527,15 @@ async function boot() {
     if (img && !m.photo.startsWith('data:')) try { m.base = photoColor(img); } catch {}
   }));
   labCache.clear();
-  const saved = store.get('mosaic.design');
-  let ok = false;
-  if (saved) { try { await applyDesign(saved, false); ok = true; } catch {} }
-  if (!ok) loadSample(false);
+  // every visit opens on the compass medallion with the start choices above it;
+  // customers keep their work with Save design / Open design
+  loadSample(false);
   if (!matById(state.selected)) state.selected = chart[0]?.id;
   markJoint(); markLook(); setTool('pen'); state.mode = 'color'; setTool('fill');
   renderChart(); selectMat(state.selected); setMode('color');
   heavy(() => refresh());
   fitSlab(); applyView();
-  if (!saved && !store.get('mosaic.started')) $('#start').hidden = false;
+  $('#start').hidden = false;
 }
 boot();
 initCapabilities();
