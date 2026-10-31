@@ -488,3 +488,113 @@ kept only as a fallback if the GitHub connection is ever removed.
 Theme `192613450026` ("iMosaicArt + SEO schema") is also now redundant and can
 be deleted; `Copy of agents/shopify-live` (`192613744938`) remains as the
 pre-change backup.
+
+## 14. Mojibake repair and the alt-text audit
+
+### Mojibake: 28 records, not 8
+
+The audit figure of "8 descriptions" was low on two counts. My first scan
+regex matched `â€` but not `Ã©`, and it only looked at descriptions. A full
+catalog pass found the corruption in three places. All of it was the same
+fault — UTF-8 bytes decoded as cp1252 — so all of it was repaired with
+`s.encode('cp1252').decode('utf-8')`:
+
+| Where | Count | Mutation |
+|---|---|---|
+| Product descriptions | 12 | `â€™` → `’`, `Ã©` → `é` |
+| Product titles | 8 | e.g. `A New Dayâ€™s Promise` → `A New Day’s Promise` |
+| Media alt text | 8 | e.g. `Natureâ€™s Beauty` → `Nature’s Beauty` |
+
+Every mutation returned `userErrors: []`. A follow-up pass over all 1,948
+products (8 pages of 250, sorted by ID) found no remaining mojibake in any
+title or alt, which matches the corruption being confined to one import.
+
+### Alt text: the catalog was almost clean; the theme was the problem
+
+Scanning all 1,948 products found **7** missing image alt text. They were
+filled in following the store's existing pattern,
+`<Title> | <Product Type> | iMosaicArt`:
+
+| Product | Alt text written |
+|---|---|
+| 8340510146858 | `iMosaicArt Gift Art Card \| iMosaicArt` (no product type set) |
+| 8421270749482 | `Geometric Mosaic - Flower Mosaic Artwork \| Geometric Mosaics \| …` |
+| 9346325283114 | `Elegance in Mosaic: Girl with a Pearl Earring… \| Portrait Mosaics \| …` |
+| 9545387966762 | `Mosaic Reproduction of Bouguereau's Birth of Venus \| Nautical Mosaics \| …` |
+| 9545388261674 | `Underwater Scene - Marble Mosaic Tile Design Art \| Nautical Mosaics \| …` |
+| 9787683602730 | `Forest Tree Mosaic Rug: A Tranquil Woodland Escape \| Tree Mosaics \| …` |
+| 10057535521066 | `Hand-Crafted Fruit Bowl Mosaic… \| Food Mosaics \| …` |
+
+Beyond products:
+
+- **Collections** — 5 of 28 had an image with no alt (`featured-mosaics`,
+  `cloud-search-all-products`, `globofilter-best-selling-products-index`,
+  `new-arrivals`, `best-sellers`). All filled. Three more
+  (`limited-edition`, `studio-specials`, `mosaic-tile-art`) have no image
+  at all, so there is nothing to caption.
+- **Blog** — 2 of 42 article images had no alt, both promo banners
+  (Black Friday, Cyber Monday). Both filled.
+- **Inline `<img>` in page and article HTML** — 136 tags across 19 pages
+  and 42 articles; 5 have an empty alt. Note that an earlier count of 12
+  was wrong: my regex only matched `alt="…"` and missed the 8 that use
+  `alt='…'`, which were already captioned.
+
+### The finding that mattered: stored alt text was never rendered
+
+None of the above was reaching a visitor. Every `<img>` in the theme built
+its alt attribute from a title rather than from the image:
+
+```liquid
+<img src="{{ product.featured_media | image_url: width: 1100 }}"
+     alt="{{ product.title | escape }}">
+```
+
+So the alt text stored against each image — including the richer
+`Title | Category | iMosaicArt` pattern the store already used — was
+discarded on every product card, product page, collection card, article
+card and article hero. Filling in alt text in the admin had no effect on
+the rendered page.
+
+`patches/02-render-stored-alt-text.patch` fixes this across 15 files,
+reading the image's own alt and falling back to the previous title so
+nothing regresses where no alt is stored:
+
+```liquid
+alt="{{ product.featured_media.alt | default: product.title | escape }}"
+```
+
+It also fills three genuinely empty alt attributes: the Instagram tiles
+(each is a link wrapping only an image, so `alt=""` left the link with no
+accessible name) and the installation guide's hero and per-step photos
+(illustrative content, not decoration). Empty alt attributes that are
+correct were left alone — lightbox placeholders filled in by JS, gallery
+thumbnail buttons that duplicate the labelled main image, and the
+decorative login/register side panels. No `<img>` in the theme lacks an
+alt attribute.
+
+**This patch is not deployed.** Pushing to `shopify-live` publishes
+straight to the live storefront and was blocked as a production deploy, so
+it is held here for approval. To ship it:
+
+```sh
+git checkout shopify-live && git am shopify-seo/patches/02-render-stored-alt-text.patch
+git push origin shopify-live
+```
+
+### Left undone, and why
+
+- **4 promo images in the Black Friday article** and **1 on the
+  `custom-mosaics` page** have `alt=""`. Their filenames carry no
+  information (`Gemini_Generated_Image_4vplbq…`), the CDN is unreachable
+  from this environment, so I cannot see what they depict. Writing a
+  description would mean inventing one. They need someone to open them in
+  the admin; `alt=""` is at least the correct treatment if they turn out
+  to be decorative.
+- **The Files library** holds roughly 3,500+ images, a large share with no
+  alt. This is an asset bin, not rendered output: a file's alt text only
+  reaches a page where the theme reads it, and products, collections,
+  articles and inline HTML are all covered above. Many are orphaned
+  uploads named `230.jpg`, `56.png` or `istockphoto-1471980340…`, which
+  cannot be captioned honestly either. Those named by SKU (`MAF151.jpg`,
+  `MAK001.webp`) *could* be captioned by resolving the SKU to its product
+  title, if the media bin is ever worth tidying for its own sake.
