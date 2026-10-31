@@ -58,7 +58,7 @@
       </div>
 
       <div id="RecoverPassword" style="display:none;">
-        <h1 class="auth__title">Reset your password</h1>
+        <h2 class="auth__title">Reset your password</h2>
         <p class="auth__subtitle">We'll send you an email to reset it.</p>
         {%- form 'recover_customer_password' -%}
           {%- if form.posted_successfully? -%}<div class="auth__notice">We've sent you an email with a link to update your password.</div>{%- endif -%}
