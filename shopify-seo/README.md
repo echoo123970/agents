@@ -1841,3 +1841,145 @@ Before this catalogue can be called clean, it needs a sweep for the *shape* of
 machine-generated content — adjective-prefix repetition, byte-identical
 descriptions, doubled whitespace — rather than for any particular defective
 string.
+
+## 22. The glass collection, and a second corrupted set (2026-11-01)
+
+### 22.1 `glass-mosaic-art` fixed by membership, not by renaming
+
+§20.3 established that the collection made a false material claim: at least 262
+stone-titled products sat inside a collection named "Glass Mosaic Art". It was
+left as an open merchandising decision — rename, split, or accept.
+
+The owner chose a fourth option: **fix the membership**. Keep only products
+whose title contains "glass", or whose `custom.style_filter` metafield is
+`Tiled Glass Artistry`.
+
+| | |
+|---|---:|
+| Members before | 1,624 |
+| Members after | **414** |
+| Removed | 1,210 |
+| Qualifying products already inside | 414 of 414 |
+| Qualifying products that needed adding | 0 |
+
+Verified by paginating the collection's live membership afterwards and diffing
+it against the computed keep-set: zero extras, zero missing, exact match. Among
+the removals was **a gift card** (`GIFTCARD-100`), which had been sitting in a
+product collection.
+
+### 22.2 Three measurement traps, each of which produced a wrong number first
+
+This is the §21.7 lesson repeating three times in one task.
+
+**`collection_id` cannot be combined with a title or tag predicate.** The query
+`collection_id:444066398506 AND title:*glass*` returns **0** — while
+`collection_id:444066398506 AND status:active` returns 1,487 and is correct.
+Sampling proved glass-titled products *were* in the collection. Any sizing
+built on the combined query would have reported that the glass collection
+contained no glass.
+
+**Shopify's tag search tokenizes; smart-collection tag rules do not.**
+`tag:glass` matched 206 products — but those products are tagged `glass mosaic`
+and `glass mosaic art`, not `glass`. A rule-based collection using
+`TAGGED_WITH "glass"` would have matched **none** of them, because
+`CollectionSourceInclusionConditionProductTagRelation` offers only
+`TAGGED_WITH` and `NOT_TAGGED_WITH` — exact match, no contains.
+
+**`Tiled Glass Artistry` is not a tag at all.** Neither is
+`Style_Tiled Glass Artistry`; zero products carry either, and no tag in the
+store begins with `Style_`. It is a value of the `custom.style_filter`
+metafield, which the Globo filter app renders on the storefront as a `Style_…`
+chip — which is why it reads like a tag. Matching on it required reading the
+metafield, since the definition was not admin-filterable.
+
+### 22.3 What `glass-mosaic-art` actually was
+
+A **manual** collection. §14 and §20.1 discussed its rules; it had none. In the
+2026-10 model its single `CollectionConditionsSource` held
+`inclusion.matchType: null`, `conditions: []`, and 1,624 manual
+`inclusion.selections`.
+
+That decided the method. Membership was changed with
+`collectionUpdate(sourcesToUpdate: [{condition: {inclusion:
+{selectionsToRemove: […]}}}])` in batches of 250 — `collectionAddProducts` and
+`collectionRemoveProducts` no longer exist in this API version.
+
+**The collection is still manual.** A new `Tiled Glass Artistry` product will
+not join on its own. Converting it to a self-maintaining rule needs the
+`style_filter` definition enabled as a collection condition
+(`useAsCollectionCondition` is currently `false`) — a real configuration
+change, still open.
+
+**12 products have "glass" in the title but are styled `Handcrafted Marble
+Art`** (414 keeps against 402 metafield matches). The rule is an OR, so they
+stayed. On each of those twelve, either the title or the style value is wrong.
+
+### 22.4 A second corrupted set — and it was live
+
+§20.7 recorded 11 draft products whose `seo.description` had been mangled by a
+find-and-replace that turned every "a" into "this" and every "the" into "its"
+(`hthisndcrthisfted mosthisic thisrt`). They were drafts, so Google could not
+see them.
+
+Fixing them surfaced the real problem. The 11 were found by matching the title
+`Premium Mosaic Tile Art`. Reading their ID-neighbors instead revealed **8
+more products with the identical corruption — all of them ACTIVE**, titled
+`… Handcrafted Floral Mosaic`. Same generator run, 2025-11-15 14:22–14:23.
+
+Searching the title pattern `Handcrafted Floral Mosaic` returned 16 products,
+but only 8 were corrupted; the other 8 are from 2023 and 2024 and are clean.
+**The title pattern over-matched in one direction and under-matched in the
+other.** Neither the first scan nor the second was a sound way to find this.
+
+A ninth defect turned up in the same sweep: product `9787679080746` carried
+**mojibake** (`natureâ€™s`, `dÃ©cor`) that survived the §14 repair.
+
+Twenty descriptions were rewritten in total — 11 drafts, 8 live, 1 mojibake —
+each 125–149 characters, US spelling, no double spaces.
+
+### 22.5 The sweep that should have been used from the start
+
+**Shopify's product search indexes `seo.description`.** This was not known
+during §14, §18, §19 or §21, and it makes every title-pattern scan in those
+sections unnecessary.
+
+It was proven, not assumed: a phrase occurring *only* in a freshly written
+`seo.description` and in no product title or body was searched for, and
+returned exactly the one product.
+
+That turns the §21.7 problem into a solved one. A catalogue-wide sweep for the
+corruption signature now costs a single query:
+
+```graphql
+productsCount(query: "mosthisic") { count }        # 0
+productsCount(query: "hthisndcrthisfted") { count } # 0
+productsCount(query: "thisnd OR thisny OR thisre OR thist") { count } # 0
+productsCount(query: "â€™") { count }               # 0
+productsCount(query: "Ã¢") { count }                # 0
+```
+
+All zero across all 1,948 products. The catalogue is clean of this corruption
+class and of mojibake — verified by search, not by sampling.
+
+### 22.6 Housekeeping
+
+Reading the `style_filter` metafield required enabling `adminFilterable` on the
+definition, because scanning 1,946 metafield values directly would have been
+far more expensive. The capability was **restored to `false`** afterwards
+(`status: NOT_FILTERABLE`). No customer-visible setting was changed.
+
+The pre-change snapshot of all 1,624 original `glass-mosaic-art` members is
+held outside the repository, in the session scratchpad, so the removal is
+reversible.
+
+### 22.7 Still open
+
+1. **Convert `glass-mosaic-art` to a rule?** It is manual; new glass products
+   will not join automatically.
+2. **The 12 glass-titled, marble-styled products** — title or metafield is
+   wrong on each.
+3. **The 34 Floral duplicates** — the §18.3 noindex treatment, still unapplied.
+4. **884 of 1,750 titles still render over 60 characters.**
+5. **`MAR058`** — needs the image to settle Last Supper vs Nativity.
+6. **`cloud-search-all-products`** — publish as a Shop All page, or leave
+   hidden.
