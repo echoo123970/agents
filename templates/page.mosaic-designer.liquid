@@ -17,7 +17,7 @@
     <button id="step-mosaic" type="button" aria-pressed="false"><span class="n">3</span>Mosaic</button>
   </div>
   <div class="actions">
-    <button class="btn" id="new-design" type="button">New design</button>
+    <button class="btn" id="new-design" type="button" title="Start a new design the same way, from step 1">New design</button>
     <button class="btn" id="undo" type="button" title="Undo (Ctrl+Z)">Undo</button>
     <button class="btn" id="redo" type="button" title="Redo (Ctrl+Shift+Z)">Redo</button>
     <button class="btn" id="open-design" type="button">Open design</button>
@@ -236,8 +236,8 @@
         <span class="hint" id="pb-sub">Type what you'd like, then choose what we make.</span>
       </div>
       <div class="seg pb-mode" id="ai-mode" role="group" aria-label="What should we make?">
-        <button type="button" data-aimode="lines" aria-pressed="true"><b>Black &amp; white design</b><span>I color it myself with your stones</span></button>
-        <button type="button" data-aimode="color" aria-pressed="false"><b>Ready mosaic</b><span>Made in your stones; I can change any stone</span></button>
+        <button type="button" data-aimode="lines" aria-pressed="true"><b>Black &amp; white design</b><span>You color it with our stones</span></button>
+        <button type="button" data-aimode="color" aria-pressed="false"><b>Ready mosaic</b><span>Made in our stones; you can change any stone</span></button>
       </div>
       <div class="pb-main">
         <textarea id="ai-prompt" rows="2" placeholder="For example: a compass rose with waves around it"></textarea>

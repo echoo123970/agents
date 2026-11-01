@@ -1309,7 +1309,14 @@ function showStart(on) {
   if (on) $('#start').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   else store.set('mosaic.started', true);
 }
-$('#new-design').addEventListener('click', () => { $('#gallery').hidden = true; $('#upload-panel').hidden = true; clearPending(); showStart(true); });
+// New design starts over the same way the customer began (a new description, a blank canvas, another
+// upload or another of our designs) and goes back to step 1; "Start options" offers the other ways.
+let journey = null;
+$('#new-design').addEventListener('click', () => {
+  $('#gallery').hidden = true; $('#upload-panel').hidden = true; clearPending();
+  const b = journey && $(`#start [data-start="${journey}"]`);
+  if (b) b.click(); else showStart(true);
+});
 // the ready-designs gallery's back link returns to the four ways to start
 $('#gallery-close').addEventListener('click', () => showStart(true));
 function showGallery() {
@@ -1333,6 +1340,7 @@ function resetDesign() {
 }
 $$('#start [data-start]').forEach(b => b.addEventListener('click', () => {
   const how = b.dataset.start;
+  journey = how;
   showStart(false);
   $('.bench').classList.add('has-design');
   aiBar = how === 'describe';
