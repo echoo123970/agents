@@ -110,8 +110,9 @@ template = f"""{{{{ 'mosaic-designer.css' | asset_url | stylesheet_tag }}}}
 # first 20 marble products (in the requested order) as JSON, for the tool's ready-design gallery.
 # Marble pieces are the ones whose style filter, title or tags say marble; anything mentioning glass is left out.
 designs_view = '''{%- layout none -%}
-{%- comment -%} pieces kept out of the designer (glass labelled marble, or not wanted there) {%- endcomment -%}
-{%- assign hide = 'abstract-mosaics_abstract-gray-cascade-marble-mosaic-art,animal-mosaics_leopard-portrait-marble-mosaic-art,religious-mosaics_christ-bearing-the-cross-mosaic,religious-mosaics_christ-embracing-the-faithful-mosaic,religious-mosaics_christ-comforts-the-holy-women-mosaic,religious-mosaics_christ-consoling-the-virgin-mary-mosaic' | split: ',' -%}
+{%- comment -%} pieces kept out of the designer (glass labelled marble, or not wanted there): the
+handles listed in the shop metafield imosaic.designer_hide, a list that can change without a theme edit {%- endcomment -%}
+{%- assign hide = shop.metafields.imosaic.designer_hide.value -%}
 {%- paginate collection.products by 250 -%}
 [{%- assign sep = '' -%}{%- assign n = 0 -%}
 {%- for p in collection.products -%}
