@@ -115,8 +115,10 @@ never state anything beyond this without a source.
   `redirectNewHandle: true`.
 - Title ≤ 70 characters. **Page title** metafield `global.title_tag`
   ≤ 60 characters. **Meta description** metafield `global.description_tag`
-  140–160 characters. **Excerpt** (`summary`) filled — reuse the meta
-  description. Every article must have all three.
+  140–160 characters. **Excerpt** (`summary`) filled with one answer-first
+  sentence (130–160 characters) that answers the article's question on its own
+  (e.g. "A handmade mosaic costs about $770 … $90–$230 per sq ft."), not a
+  teaser like "Learn how…"; reuse the same sentence as the meta description. Every article must have all three.
 - One primary keyword phrase in the title, handle, first 100 words, one H2,
   image alt text and meta description.
 - Body uses `<h2>`/`<h3>` only (the theme supplies the H1); 700–1,600 words.
