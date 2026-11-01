@@ -43,6 +43,10 @@
 .imd .btn:disabled { opacity: .4; cursor: default; }
 .imd .btn.block { width: 100%; }
 .imd .bench { display: grid; grid-template-columns: 220px minmax(0, 1fr) 300px; gap: 16px; align-items: start; }
+.imd .topbar.choosing { display: none; }
+.imd .bench.choosing { display: block; max-width: 920px; margin: 0 auto; }
+.imd .bench.choosing > :not(.stage), .imd .bench.choosing .stage > :not(#start) { display: none !important; }
+.imd .bench.choosing:not(.has-design) #start .start-close { display: none; }
 .imd .bench > .tools { grid-column: 1; grid-row: 1 / span 2; }
 .imd .bench > .stage { grid-column: 2; grid-row: 1; }
 .imd .bench > .bom-wrap { grid-column: 2; grid-row: 2; min-width: 0; }

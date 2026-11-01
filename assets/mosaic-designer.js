@@ -1304,6 +1304,8 @@ $('#next-step').addEventListener('click', () => {
 /* ---------------- Start choices ---------------- */
 function showStart(on) {
   $('#start').hidden = !on;
+  $('.topbar').classList.toggle('choosing', on); $('.bench').classList.toggle('choosing', on);
+  if (!on) { fitSlab(); applyView(); } // the canvas was hidden while choosing; size it now
   if (on) $('#start').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   else store.set('mosaic.started', true);
 }
@@ -1332,6 +1334,7 @@ function resetDesign() {
 $$('#start [data-start]').forEach(b => b.addEventListener('click', () => {
   const how = b.dataset.start;
   showStart(false);
+  $('.bench').classList.add('has-design');
   aiBar = how === 'describe';
   resetDesign();
   $('#sketch-tools').classList.toggle('draw-only', how === 'draw' || how === 'describe'); // drawing from scratch needs no picture tools
