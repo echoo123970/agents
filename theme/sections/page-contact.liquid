@@ -1,0 +1,169 @@
+<!-- HERO -->
+<section class="ct-hero">
+  <div class="page-width ct-hero__crumb-wrap">
+    <div class="ct-hero__crumb">
+      <a href="{{ routes.root_url }}" class="nav-link">Home</a>
+      <span class="ct-hero__crumb-sep">/</span>
+      <span class="ct-hero__crumb-current">{{ page.title | default: 'Contact Us' }}</span>
+    </div>
+  </div>
+  <div class="ct-hero__inner">
+    <div class="ct-hero__eyebrow"><span class="ct-hero__rule"></span><span class="ct-hero__eyebrow-text">{{ section.settings.eyebrow }}</span><span class="ct-hero__rule"></span></div>
+    {%- if section.settings.heading != blank -%}<h1 class="ct-hero__title">{{ section.settings.heading }}</h1>{%- endif -%}
+    {%- if section.settings.text != blank -%}<p class="ct-hero__text">{{ section.settings.text }}</p>{%- endif -%}
+  </div>
+</section>
+
+<section class="ct page-width">
+  <div class="ct__grid">
+    <!-- DETAILS -->
+    <div class="ct__details">
+      <div class="ct__details-eyebrow">Contact Details</div>
+      <h2 class="ct__details-heading">{{ section.settings.details_heading }}</h2>
+      <div class="ct__rows">
+        {%- if section.settings.phone != blank -%}
+          <a href="tel:{{ section.settings.phone | replace: ' ', '' | replace: '(', '' | replace: ')', '' | replace: '-', '' }}" class="ct__row">
+            <span class="ct__row-icon">☎</span>
+            <span><span class="ct__row-label">Call Us</span><span class="ct__row-value">{{ section.settings.phone }}</span></span>
+          </a>
+        {%- endif -%}
+        {%- if section.settings.email != blank -%}
+          <a href="mailto:{{ section.settings.email }}" class="ct__row">
+            <span class="ct__row-icon">✉</span>
+            <span><span class="ct__row-label">Email Us</span><span class="ct__row-value">{{ section.settings.email }}</span></span>
+          </a>
+        {%- endif -%}
+        {%- if section.settings.address != blank -%}
+          <div class="ct__row">
+            <span class="ct__row-icon">⚲</span>
+            <span><span class="ct__row-label">Visit Our Studio</span><span class="ct__row-value">{{ section.settings.address }}</span></span>
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.hours_1 != blank or section.settings.hours_2 != blank -%}
+        <div class="ct__hours">
+          <div class="ct__hours-title">⏱ Opening Hours</div>
+          {%- if section.settings.hours_1 != blank -%}
+            <div class="ct__hours-row"><span>{{ section.settings.hours_1_label }}</span><span class="ct__hours-val">{{ section.settings.hours_1 }}</span></div>
+          {%- endif -%}
+          {%- if section.settings.hours_2 != blank -%}
+            <div class="ct__hours-row ct__hours-row--last"><span>{{ section.settings.hours_2_label }}</span><span class="ct__hours-val">{{ section.settings.hours_2 }}</span></div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      <div class="ct__social-wrap">
+        <div class="ct__social-label">Follow Us</div>
+        <div class="ct__social">
+          {%- if settings.social_instagram_link != blank -%}<a href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener" class="ct__social-link">IG</a>{%- endif -%}
+          {%- if settings.social_pinterest_link != blank -%}<a href="{{ settings.social_pinterest_link }}" target="_blank" rel="noopener" class="ct__social-link">PIN</a>{%- endif -%}
+          {%- if settings.social_facebook_link != blank -%}<a href="{{ settings.social_facebook_link }}" target="_blank" rel="noopener" class="ct__social-link">FB</a>{%- endif -%}
+          {%- if settings.social_youtube_link != blank -%}<a href="{{ settings.social_youtube_link }}" target="_blank" rel="noopener" class="ct__social-link">YT</a>{%- endif -%}
+        </div>
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <div class="ct__form-card">
+      {%- form 'contact', class: 'ct__form' -%}
+        {%- if form.posted_successfully? -%}
+          <div class="ct__success">
+            <div class="ct__success-icon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#7BB0F4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <h3 class="ct__success-title">Message Sent</h3>
+            <p class="ct__success-text">Thank you for reaching out. Our studio team will get back to you within one business day.</p>
+          </div>
+        {%- else -%}
+          <div class="ct__form-eyebrow">Get in Touch</div>
+          <h2 class="ct__form-heading">Send Us a Message</h2>
+          {%- if form.errors -%}<div class="ct__form-error">{{ form.errors | default_errors }}</div>{%- endif -%}
+          <label class="ct__form-label">Your Name</label>
+          <input class="ct__field" type="text" name="contact[name]" placeholder="Jane Doe">
+          <label class="ct__form-label">Email <span>*</span></label>
+          <input class="ct__field" type="email" name="contact[email]" required placeholder="you@email.com">
+          <label class="ct__form-label">Special Message</label>
+          <textarea class="ct__field ct__field--area" name="contact[body]" rows="5" placeholder="Tell us about your space, idea or question…"></textarea>
+          <button type="submit" class="ct__submit">Send Message</button>
+        {%- endif -%}
+      {%- endform -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  .ct-hero { background: var(--color-panel); border-bottom: 1px solid rgba(22,51,94,.08); }
+  .ct-hero__crumb-wrap { padding-top: 30px; }
+  .ct-hero__crumb { display: flex; align-items: center; gap: 9px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-soft); }
+  .ct-hero__crumb-sep { color: #B7C0D2; }
+  .ct-hero__crumb-current { color: var(--color-navy); }
+  .ct-hero__inner { max-width: 760px; margin: 0 auto; padding: 46px 40px 52px; text-align: center; }
+  .ct-hero__eyebrow { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 22px; }
+  .ct-hero__rule { width: 38px; height: 1px; background: var(--color-blue); }
+  .ct-hero__eyebrow-text { font-family: var(--font-accent); font-size: 13px; letter-spacing: .36em; text-transform: uppercase; color: var(--color-navy); }
+  .ct-hero__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(44px,5.4vw,72px); line-height: 1.02; letter-spacing: -.01em; margin-bottom: 22px; color: var(--color-navy); }
+  .ct-hero__title em, .ct-hero__title i { font-style: italic; color: var(--color-blue); }
+  .ct-hero__text { font-size: 17px; line-height: 1.7; color: var(--color-text-muted); max-width: 560px; margin: 0 auto; }
+
+  .ct { padding-top: 80px; padding-bottom: 90px; }
+  .ct__grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 64px; align-items: start; }
+  .ct__details-eyebrow { font-family: var(--font-accent); font-size: 13px; letter-spacing: .3em; text-transform: uppercase; color: var(--color-navy); margin-bottom: 8px; }
+  .ct__details-heading { font-family: var(--font-display); font-weight: 500; font-size: clamp(28px,3vw,38px); line-height: 1.1; margin-bottom: 36px; color: var(--color-navy); }
+  .ct__rows { display: flex; flex-direction: column; gap: 22px; margin-bottom: 42px; }
+  .ct__row { display: flex; align-items: center; gap: 18px; }
+  .ct__row-icon { flex-shrink: 0; width: 50px; height: 50px; border-radius: 50%; background: var(--color-panel); display: flex; align-items: center; justify-content: center; color: var(--color-blue); font-size: 20px; }
+  .ct__row-label { display: block; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--color-text-faint); margin-bottom: 4px; }
+  .ct__row-value { display: block; font-size: 17px; line-height: 1.5; color: var(--color-navy); }
+  .ct__hours { background: #fff; border: 1px solid rgba(22,51,94,.1); padding: 26px 28px; margin-bottom: 34px; }
+  .ct__hours-title { font-family: var(--font-accent); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--color-navy); margin-bottom: 16px; }
+  .ct__hours-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(22,51,94,.08); }
+  .ct__hours-row--last { border-bottom: none; }
+  .ct__hours-row span { font-size: 15px; color: var(--color-text-muted); }
+  .ct__hours-val { color: var(--color-navy) !important; font-weight: 600; }
+  .ct__social-label { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--color-text-faint); margin-bottom: 14px; }
+  .ct__social { display: flex; gap: 12px; }
+  .ct__social-link { width: 44px; height: 44px; border: 1px solid rgba(22,51,94,.2); display: flex; align-items: center; justify-content: center; color: var(--color-navy); font-size: 12px; letter-spacing: .05em; transition: all .25s ease; }
+  .ct__social-link:hover { background: var(--color-navy); color: #fff; border-color: var(--color-navy); }
+
+  .ct__form-card { background: var(--color-navy); padding: 52px 50px; }
+  .ct__form-eyebrow { font-family: var(--font-accent); font-size: 13px; letter-spacing: .3em; text-transform: uppercase; color: var(--color-blue-light); margin-bottom: 10px; }
+  .ct__form-heading { font-family: var(--font-display); font-weight: 500; font-size: clamp(28px,3vw,38px); line-height: 1.1; margin-bottom: 32px; color: #fff; }
+  .ct__form-label { display: block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--color-text-faint); margin-bottom: 9px; }
+  .ct__form-label span { color: var(--color-blue-light); }
+  .ct__field { width: 100%; background: rgba(255,255,255,.06); border: 1px solid rgba(220,230,245,.22); outline: none; color: #fff; font-family: var(--font-body); font-size: 15px; padding: 15px 18px; margin-bottom: 22px; transition: border-color .2s ease; }
+  .ct__field:focus { border-color: var(--color-blue); }
+  .ct__field::placeholder { color: var(--color-text-faint); }
+  .ct__field--area { resize: vertical; margin-bottom: 26px; }
+  .ct__submit { width: 100%; background: var(--color-blue); color: #fff; border: none; font-family: var(--font-body); font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding: 17px 28px; cursor: pointer; transition: background .25s ease; }
+  .ct__submit:hover { background: #1E63C4; }
+  .ct__form-error { font-size: 13px; color: #F2B8B8; margin-bottom: 18px; }
+  .ct__success { min-height: 440px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .ct__success-icon { width: 72px; height: 72px; border-radius: 50%; background: rgba(43,123,232,.18); display: flex; align-items: center; justify-content: center; margin-bottom: 26px; }
+  .ct__success-title { font-family: var(--font-display); font-weight: 500; font-size: 32px; margin-bottom: 12px; color: #fff; }
+  .ct__success-text { font-size: 16px; line-height: 1.65; color: var(--color-text-faint); max-width: 340px; }
+
+  @media (max-width: 990px) {
+    .ct__grid { grid-template-columns: 1fr; gap: 40px; }
+    .ct__form-card { padding: 36px 28px; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Contact page",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Reach Us" },
+    { "type": "richtext", "id": "heading", "label": "Heading", "default": "<p>Let's Create Something <em>Timeless</em></p>" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Questions about a piece, a custom commission, or your order? Our studio team is here to help — reach out and we'll respond within one business day." },
+    { "type": "text", "id": "details_heading", "label": "Details heading", "default": "We'd Love to Hear From You" },
+    { "type": "text", "id": "phone", "label": "Phone", "default": "+1 (315) 217-5538" },
+    { "type": "text", "id": "email", "label": "Email", "default": "info@imosaicart.com" },
+    { "type": "text", "id": "address", "label": "Address", "default": "28 Liberty St, New York, NY 10005, United States" },
+    { "type": "header", "content": "Opening hours" },
+    { "type": "text", "id": "hours_1_label", "label": "Row 1 label", "default": "Monday – Saturday" },
+    { "type": "text", "id": "hours_1", "label": "Row 1 hours", "default": "8:00am – 7:00pm" },
+    { "type": "text", "id": "hours_2_label", "label": "Row 2 label", "default": "Sunday" },
+    { "type": "text", "id": "hours_2", "label": "Row 2 hours", "default": "9:00am – 2:00pm" }
+  ],
+  "presets": [{ "name": "Contact page" }]
+}
+{% endschema %}

@@ -3,108 +3,27 @@
     "main": {
       "type": "main-product",
       "blocks": {
-        "title": { "type": "title", "settings": {} },
-        "price": { "type": "price", "settings": {} },
-        "rating": {
-          "type": "rating",
-          "settings": {}
-        },
-        "variant_picker": {
-          "type": "variant_picker",
-          "settings": { "picker_type": "button" }
-        },
-        "quantity_selector": { "type": "quantity_selector", "settings": {} },
-        "buy_buttons": {
-          "type": "buy_buttons",
-          "settings": {
-            "show_dynamic_checkout": true,
-            "show_gift_card_recipient": false
-          }
-        },
-        "product_specs": {
-          "type": "custom_liquid",
-          "settings": {
-            "custom_liquid": "<div class=\"product-specs\" style=\"margin-top:1rem;border-top:1px solid rgba(0,0,0,.08);padding-top:1rem;\">{% if product.metafields.custom.material != blank %}<p><strong>Material:</strong> {{ product.metafields.custom.material }}</p>{% endif %}{% if product.metafields.custom.dimensions != blank %}<p><strong>Dimensions:</strong> {{ product.metafields.custom.dimensions }}</p>{% endif %}{% if product.metafields.custom.frame_type != blank %}<p><strong>Frame:</strong> {{ product.metafields.custom.frame_type }}</p>{% endif %}{% if product.metafields.custom.style != blank %}<p><strong>Style:</strong> {{ product.metafields.custom.style }}</p>{% endif %}{% if product.metafields.custom.artist != blank %}<p><strong>Artist:</strong> {{ product.metafields.custom.artist }}</p>{% endif %}</div>"
-          }
-        },
-        "care": {
-          "type": "collapsible_tab",
-          "settings": {
-            "heading": "Care instructions",
-            "content": "",
-            "page": "",
-            "icon": "checkmark"
-          }
-        },
-        "shipping": {
-          "type": "collapsible_tab",
-          "settings": {
-            "heading": "Shipping & returns",
-            "content": "<p>Carefully packaged and shipped with tracking. Easy returns within 30 days.</p>",
-            "icon": "truck"
-          }
-        },
-        "description": { "type": "description", "settings": {} },
-        "complementary": {
-          "type": "complementary",
-          "settings": {
-            "product_list_limit": 4,
-            "products_per_page": 4,
-            "pagination_style": "dots",
-            "heading": "Pairs well with"
-          }
-        },
-        "share": {
-          "type": "share",
-          "settings": { "share_label": "Share this piece" }
-        }
+        "description": { "type": "description", "settings": { "heading": "Description" } },
+        "materials": { "type": "collapsible", "settings": { "heading": "Materials & Craft", "content": "<p>Hand-cut from natural stone and glass tesserae, assembled tile by tile by master artisans. Mounted on a fiber-mesh backing for easy installation. Each piece is unique; slight variation in color and texture is part of its handmade character.</p>" } },
+        "shipping": { "type": "collapsible", "settings": { "heading": "Shipping & Returns", "content": "<p>Made to order with a 4–5 week handling time, then shipped free worldwide via DHL, UPS or FedEx with full tracking (transit around 10 days). Carefully packed in thick paper and heavy-duty film. Covered by our 30-day returns policy and lifetime warranty.</p>" } },
+        "t1": { "type": "trust", "settings": { "icon": "✈", "label": "Free worldwide shipping" } },
+        "t2": { "type": "trust", "settings": { "icon": "↺", "label": "30-day returns policy" } },
+        "t3": { "type": "trust", "settings": { "icon": "♦", "label": "Lifetime warranty" } },
+        "t4": { "type": "trust", "settings": { "icon": "✦", "label": "Hand-cut by master artisans" } }
       },
-      "block_order": [
-        "title",
-        "price",
-        "rating",
-        "variant_picker",
-        "quantity_selector",
-        "buy_buttons",
-        "product_specs",
-        "care",
-        "shipping",
-        "description",
-        "complementary",
-        "share"
-      ],
-      "settings": {
-        "enable_sticky_info": true,
-        "color_scheme": "scheme-1",
-        "media_size": "large",
-        "constrain_to_viewport": true,
-        "media_fit": "contain",
-        "gallery_layout": "thumbnail",
-        "media_position": "left",
-        "image_zoom": "lightbox",
-        "mobile_thumbnails": "show",
-        "hide_variants": true,
-        "enable_video_looping": false,
-        "padding_top": 36,
-        "padding_bottom": 12
-      }
+      "block_order": ["description", "materials", "shipping", "t1", "t2", "t3", "t4"]
     },
-    "recommendations": {
-      "type": "related-products",
-      "settings": {
-        "heading": "You may also like",
-        "heading_size": "h2",
-        "products_to_show": 4,
-        "columns_desktop": 4,
-        "color_scheme": "scheme-1",
-        "image_ratio": "adapt",
-        "show_secondary_image": true,
-        "enable_quick_add": true,
-        "columns_mobile": "2",
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
-    }
+    "quote-form": { "type": "custom-quote-form", "settings": {} },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "f1": { "type": "faq", "settings": { "question": "Are your mosaics weatherproof and waterproof?", "answer": "Yes — every mosaic is fully weatherproof and waterproof, made from durable natural stone and glass. They're suitable for indoor and outdoor spaces, including pools, bathrooms and kitchens." } },
+        "f2": { "type": "faq", "settings": { "question": "What is the production and shipping time?", "answer": "Each mosaic is handcrafted to order with a 4–5 week handling time, then transit typically takes around 10 days, shipped free worldwide with full tracking." } },
+        "f3": { "type": "faq", "settings": { "question": "Can I order a custom size or design?", "answer": "Absolutely. Use the Request a Quote form to share your dimensions or your own image, and our artisans will hand-cut a one-of-a-kind piece tailored to your space." } }
+      },
+      "block_order": ["f1", "f2", "f3"]
+    },
+    "related": { "type": "related-products", "settings": {} }
   },
-  "order": ["main", "recommendations"]
+  "order": ["main", "quote-form", "faq", "related"]
 }

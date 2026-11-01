@@ -1,0 +1,33 @@
+<section class="collection page-width">
+  <div class="collection__head">
+    <div class="eyebrow">Browse</div>
+    <h1 class="section-title">{{ page_title }}</h1>
+  </div>
+  <div class="cat-grid__grid" style="grid-template-columns: repeat(4, 1fr); display:grid; gap:18px;">
+    {%- for collection in collections -%}
+      <a href="{{ collection.url }}" class="cat-card">
+        {%- if collection.featured_image != blank -%}
+          <img src="{{ collection.featured_image | image_url: width: 600 }}" alt="{{ collection.title | escape }}" width="600" height="800" class="cat-img cover-img" loading="lazy">
+        {%- else -%}
+          {{ 'collection-1' | placeholder_svg_tag: 'cat-img cover-img' }}
+        {%- endif -%}
+        <span class="cat-grid__scrim" style="position:absolute;inset:0;background:linear-gradient(to top, rgba(11,28,53,.72), rgba(11,28,53,0) 55%);"></span>
+        <span class="cat-veil"></span>
+        <span class="cat-frame"></span>
+        <span class="cat-label">{{ collection.title }}</span>
+        <span class="cat-cta">View Collection</span>
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+
+<style>
+  .collection { padding-top: 64px; padding-bottom: 96px; }
+  .collection__head { text-align: center; margin-bottom: 56px; }
+  .collection__head .eyebrow { margin-bottom: 14px; }
+  @media (max-width: 990px) { .cat-grid__grid { grid-template-columns: repeat(2, 1fr) !important; } }
+</style>
+
+{% schema %}
+{ "name": "List collections", "settings": [] }
+{% endschema %}

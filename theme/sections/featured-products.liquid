@@ -1,0 +1,56 @@
+{%- assign products_to_show = section.settings.collection.products | default: collections.all.products -%}
+<section class="bestsellers page-width">
+  <div class="bestsellers__head">
+    <div>
+      {%- if section.settings.eyebrow != blank -%}<div class="eyebrow">{{ section.settings.eyebrow }}</div>{%- endif -%}
+      {%- if section.settings.heading != blank -%}<h2 class="section-title">{{ section.settings.heading }}</h2>{%- endif -%}
+    </div>
+    {%- if section.settings.button_label != blank -%}
+      <a href="{{ section.settings.button_link | default: section.settings.collection.url }}" class="btn btn--ghost">{{ section.settings.button_label }}</a>
+    {%- endif -%}
+  </div>
+  <div class="bestsellers__grid" style="grid-template-columns: repeat({{ section.settings.columns }}, 1fr);">
+    {%- for product in products_to_show limit: section.settings.product_limit -%}
+      {% render 'card-product', product: product %}
+    {%- else -%}
+      {%- for i in (1..section.settings.columns) -%}
+        <div class="prod-card">
+          <div class="prod-card__media">{{ 'product-1' | placeholder_svg_tag: 'prod-img cover-img' }}</div>
+          <div class="prod-card__sub">Mosaic</div>
+          <div class="prod-title prod-card__title">Example Mosaic</div>
+          <div class="prod-card__price">From $1,200</div>
+        </div>
+      {%- endfor -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+<style>
+  .bestsellers { padding-top: 90px; padding-bottom: 100px; }
+  .bestsellers__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 46px; flex-wrap: wrap; }
+  .bestsellers__grid { display: grid; gap: 28px 22px; }
+  .prod-card { display: block; }
+  .prod-card__media { position: relative; overflow: hidden; aspect-ratio: 4/5; background: var(--color-light-text); margin-bottom: 16px; }
+  .prod-card__badge { position: absolute; top: 14px; left: 14px; background: #fff; color: var(--color-blue); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; padding: 6px 11px; }
+  .prod-card__sub { font-family: var(--font-accent); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--color-text-faint); margin-bottom: 6px; }
+  .prod-card__title { font-family: var(--font-display); font-size: 23px; line-height: 1.15; color: var(--color-navy); margin-bottom: 8px; }
+  .prod-card__price { font-size: 14px; color: var(--color-text-muted); letter-spacing: .02em; }
+  @media (max-width: 990px) { .bestsellers__grid { grid-template-columns: repeat(2, 1fr) !important; } }
+  @media (max-width: 600px) { .bestsellers { padding-top: 60px; padding-bottom: 70px; } }
+</style>
+
+{% schema %}
+{
+  "name": "Featured products",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Collector's Favorites" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Our Iconic Mosaic Masterpieces" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "range", "id": "product_limit", "min": 4, "max": 12, "step": 1, "label": "Products to show", "default": 8 },
+    { "type": "range", "id": "columns", "min": 3, "max": 4, "step": 1, "label": "Columns", "default": 4 },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "View All Mosaics" },
+    { "type": "url", "id": "button_link", "label": "Button link" }
+  ],
+  "presets": [{ "name": "Featured products" }]
+}
+{% endschema %}

@@ -1,0 +1,51 @@
+<section class="auth">
+  <div class="auth__panel">
+    {%- if section.settings.image != blank -%}
+      <img src="{{ section.settings.image | image_url: width: 1100 }}" alt="" width="1100" height="1100" class="auth__panel-img">
+    {%- endif -%}
+    <div class="auth__panel-veil"></div>
+    <div class="auth__panel-content">
+      <div class="auth__panel-eyebrow">{{ section.settings.panel_eyebrow }}</div>
+      <h2 class="auth__panel-heading">{{ section.settings.panel_heading }}</h2>
+      <p class="auth__panel-text">{{ section.settings.panel_text }}</p>
+    </div>
+  </div>
+
+  <div class="auth__form-wrap">
+    <div class="auth__form">
+      <div class="auth__tabs">
+        <a href="{{ routes.account_login_url }}" class="auth__tab">Sign In</a>
+        <span class="auth__tab is-active">Create Account</span>
+      </div>
+      <h1 class="auth__title">{{ section.settings.form_heading }}</h1>
+      <p class="auth__subtitle">{{ section.settings.form_subtitle }}</p>
+      {%- form 'create_customer' -%}
+        {%- if form.errors -%}<div class="auth__error">{{ form.errors | default_errors }}</div>{%- endif -%}
+        <label class="auth__label">First Name</label>
+        <input type="text" name="customer[first_name]" class="auth__field" placeholder="Jane">
+        <label class="auth__label">Last Name</label>
+        <input type="text" name="customer[last_name]" class="auth__field" placeholder="Doe">
+        <label class="auth__label">Email Address</label>
+        <input type="email" name="customer[email]" class="auth__field" placeholder="you@email.com" required>
+        <label class="auth__label">Password</label>
+        <input type="password" name="customer[password]" class="auth__field" placeholder="••••••••" required>
+        <button type="submit" class="auth__submit">Create Account</button>
+      {%- endform -%}
+      <p class="auth__switch">Already have an account? <a href="{{ routes.account_login_url }}" class="auth__switch-link">Sign in</a></p>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Register",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Panel image" },
+    { "type": "text", "id": "panel_eyebrow", "label": "Panel eyebrow", "default": "Welcome to the Home of Mosaics" },
+    { "type": "text", "id": "panel_heading", "label": "Panel heading", "default": "Where Art Meets Elegance" },
+    { "type": "textarea", "id": "panel_text", "label": "Panel text", "default": "Create an account to track orders, save your favorite mosaics, and earn rewards on every handcrafted piece." },
+    { "type": "text", "id": "form_heading", "label": "Form heading", "default": "Create Your Account" },
+    { "type": "text", "id": "form_subtitle", "label": "Form subtitle", "default": "Join the home of mosaics." }
+  ]
+}
+{% endschema %}
