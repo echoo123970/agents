@@ -7,7 +7,8 @@
     * products     -> templates/product.liquid
     * collections  -> sections/main-collection.liquid
 
-  This snippet covers: content pages (/pages/*), blog articles, and the blog index.
+  This snippet covers: content pages (/pages/*), blog articles, and the blog index,
+  plus the ItemList (not the breadcrumbs) for product collections.
   Render it once from layout/theme.liquid.
 {%- endcomment -%}
 
@@ -136,4 +137,53 @@
     }
   }
   </script>
+{%- endif -%}
+
+{%- comment -%}
+  CollectionPage + ItemList for product collections, so answer engines can enumerate
+  what a collection actually contains instead of seeing a wall of links. Mirrors the
+  blog block above, which already does this for articles.
+
+  BreadcrumbList is deliberately NOT emitted here -- sections/main-collection.liquid
+  already renders one, and two would be a duplicate.
+
+  Page 1 only: outside a paginate tag collection.products returns the first 50
+  products whatever ?page= says, so emitting this on page 2+ would repeat page 1.
+
+  Noindexed products are skipped. There is no point enumerating listings we have asked
+  Google not to index -- the generated near-duplicates carry the seo.noindex metafield.
+  numberOfItems reports the collection's real size; itemListElement carries what fits.
+{%- endcomment -%}
+{%- if request.page_type == 'collection' and current_page == 1 and collection.products.size > 0 -%}
+  {%- assign coll_n = 0 -%}
+  {%- capture coll_items -%}
+    {%- for p in collection.products limit: 25 -%}
+      {%- unless p.metafields.seo.noindex.value == true -%}
+        {%- assign coll_n = coll_n | plus: 1 -%}
+        {%- if coll_n > 1 -%},{%- endif -%}
+        {"@type":"ListItem","position":{{ coll_n }},"url":"{{ site }}{{ p.url }}","name":{{ p.title | json }}}
+      {%- endunless -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+  {%- if coll_n > 0 -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": "{{ canonical_url }}#collectionpage",
+    "name": {{ collection.title | json }},
+    "url": "{{ canonical_url }}",
+    {%- if collection.description != blank %}
+    "description": {{ collection.description | strip_html | strip_newlines | truncatewords: 40 | json }},
+    {%- endif %}
+    "isPartOf": { "@id": "{{ site }}/#website" },
+    "publisher": { "@id": "{{ site }}/#organization" },
+    "mainEntity": {
+      "@type": "ItemList",
+      "numberOfItems": {{ collection.all_products_count }},
+      "itemListElement": [{{ coll_items }}]
+    }
+  }
+  </script>
+  {%- endif -%}
 {%- endif -%}
