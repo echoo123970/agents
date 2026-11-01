@@ -390,7 +390,8 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
         </label>
       </div>
       <button class="btn block" id="ai-redraw" type="button" hidden>Redraw upload as clean lines (AI)</button>
-      <details class="more">
+      <!-- "Start over" is covered by New design and Start options in the top bar; kept hidden -->
+      <details class="more" hidden>
         <summary>Start over</summary>
         <div class="group">
           <button class="btn block" id="sample" type="button">Start from one of our designs</button>
