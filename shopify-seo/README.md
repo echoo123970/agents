@@ -2292,11 +2292,16 @@ correct, untouched" in §24.5 for exactly that reason, and it was not correct.
 
 The only thing that found it was a person looking at the picture.
 
-`MAR061` is the one remaining product in the `MAR055`–`MAR072` run that has
-never been checked against its image, and it is internally consistent in the
-same way `MAR059` was. It also carries the same 312-character body-dump meta
-description, which is a weak signal it came off the same conveyor. **Unverified,
-not verified-correct** — the distinction §18.2 and §21.7 keep insisting on.
+`MAR061` was the one remaining product in the `MAR055`–`MAR072` run never
+checked against its image, and it was internally consistent in the same way
+`MAR059` was. It also carried the same 312-character body-dump meta
+description, which was a weak signal it came off the same conveyor.
+**Unverified, not verified-correct** — the distinction §18.2 and §21.7 keep
+insisting on.
+
+The owner has since looked at it. It is Christ, which its title, handle and alt
+text all already said. **The weak signal was right about the meta description
+and wrong about the subject** — see §24.8.
 
 ### 24.7 Still open
 
@@ -2305,10 +2310,47 @@ not verified-correct** — the distinction §18.2 and §21.7 keep insisting on.
    crawlable at `/collections/all`, so the exposure is live, not hypothetical.
    Proposal: keep 20 canonical, noindex the rest, delete nothing. Gates item 2.
 2. **884 of 1,811 active titles render over 60 characters.** Blocked on item 1.
-3. **`MAR061`** — never checked against its image, and internally consistent
-   in the same way `MAR059` was (§24.6a).
-4. **Rich Results re-test** — the only item that cannot be done from this
+3. **Rich Results re-test** — the only item that cannot be done from this
    environment.
+
+### 24.8 Addendum: `MAR061` closed, and twelve meta descriptions rewritten
+
+Written after §24 was merged. The work below happened afterwards and belongs
+with it.
+
+**`MAR061` needed no correction to its subject.** The owner confirmed it is
+Christ; its title, handle and alt text already said so. §24.6a was right that
+internal consistency proves nothing, and in this instance the consistency
+happened to be correct.
+
+**But checking it found the defect it shared with `MAR059`.** Its meta
+description was 312 characters of dumped body copy, double the useful limit.
+Rewritten to 141.
+
+**That one check exposed eleven more.** A sweep of the whole
+`MAR055`–`MAR072` run showed most of the batch still carrying the same
+body-dump pattern at 360–540 characters, every one of them truncated in search
+results: `MAR056`, `MAR062`, `MAR063`, `MAR064`, `MAR065`, `MAR066`, `MAR067`,
+`MAR068`, `MAR069`, `MAR071`, `MAR072`. All eleven rewritten from their own
+body copy, 126–138 characters each.
+
+**Two carried broken quotation marks** that would have rendered as-is in a
+search result:
+
+| SKU | Opened with |
+|---|---|
+| `MAR067` | `St. Joseph and the Christ Child"` — a closing quote with no opening one |
+| `MAR071` | `'Queen of Heaven"` — an apostrophe paired with a double quote |
+
+Final state of the run, verified by a fresh read of all eighteen: titles,
+handles and alt text agree; every meta description is 111–141 characters; no
+quote defects; US spelling throughout.
+
+**The pattern worth keeping.** Three times in this run, checking one product
+because of a weak signal revealed a defect across a dozen more — the eleven
+here, the sixteen handles in §24.1, the eight live corrupted descriptions in
+§22.4. In each case the first product was found by accident and the rest by
+sweeping the batch it came from. **Sweep the cohort, not the symptom.**
 
 ## 25. The repository consolidated (2026-11-01)
 
@@ -2408,5 +2450,4 @@ is untouched and theme deployment is unaffected.
    crossed with 16 adjectives, one title live six times, all crawlable at
    `/collections/all`. Gates item 2.
 2. **884 of 1,811 active titles render over 60 characters.**
-3. **`MAR061`** — never checked against its image (§24.6a).
-4. **Rich Results re-test.**
+3. **Rich Results re-test.**
