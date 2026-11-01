@@ -79,6 +79,9 @@ button { cursor: pointer; }
 .topbar.choosing { display: none; }
 .bench.choosing { display: block; max-width: 920px; margin: 0 auto; }
 .bench.choosing > :not(.stage), .bench.choosing .stage > :not(#start) { display: none !important; }
+.topbar.picking { display: none; }
+.bench.picking { display: block; max-width: 1100px; margin: 0 auto; }
+.bench.picking > :not(.stage), .bench.picking .stage > :not(#gallery) { display: none !important; }
 .bench.choosing:not(.has-design) #start .start-close { display: none; } /* nothing to go back to yet */
 .bench > .tools { grid-column: 1; grid-row: 1 / span 2; }
 .bench > .stage { grid-column: 2; grid-row: 1; }
@@ -539,7 +542,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
         <canvas id="view" width="1400" height="1050" aria-label="Design canvas"></canvas>
         <canvas id="overlay" width="1400" height="1050"></canvas>
       </div>
-      <div class="busy" id="busy" hidden>Working…</div>
+      <div class="busy" id="busy" hidden>Preparing your design…</div>
       <div class="zoombar" role="group" aria-label="Zoom">
         <button type="button" id="zoom-out" title="Zoom out (−)" aria-label="Zoom out">−</button>
         <button type="button" id="zoom-fit" title="Fit (0)">100%</button>
@@ -1360,7 +1363,7 @@ function composite(target = vctx, mode = state.mode) {
   tctx.globalCompositeOperation = 'source-over';
   target.drawImage(tint, 0, 0);
 }
-function busy(on, label = 'Working…') { $('#busy').textContent = label; $('#busy').hidden = !on; }
+function busy(on, label = 'Preparing your design…') { $('#busy').textContent = label; $('#busy').hidden = !on; }
 function refresh({ fills = true } = {}) {
   if (fills) renderFills();
   if (state.mode === 'mosaic') renderMosaic();
@@ -2082,6 +2085,9 @@ function showGallery() {
   $('#gallery').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 $('#gallery-close').addEventListener('click', () => { $('#gallery').hidden = true; });
+// while the designs list is open only the list shows; the tool appears once a design is picked
+new MutationObserver(() => { const on = !$('#gallery').hidden; $('.topbar').classList.toggle('picking', on); $('.bench').classList.toggle('picking', on); if (!on) { fitSlab(); applyView(); } })
+  .observe($('#gallery'), { attributes: true, attributeFilter: ['hidden'] });
 $('#start-close').addEventListener('click', () => showStart(false));
 // Every start choice begins a fresh design: the old drawing, colors, picture and settings are cleared
 // (Undo still brings the previous design back).
