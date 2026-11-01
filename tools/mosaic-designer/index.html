@@ -122,6 +122,12 @@ button { cursor: pointer; }
 .prompt-bar .pb-ideas button { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 4px 11px; font-size: 12.5px; color: var(--ink); }
 .prompt-bar .pb-ideas button:hover { border-color: var(--accent); }
 .prompt-bar #ai-status { margin: 0; }
+.prompt-bar .pb-mode { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border: 0; padding: 0; background: none; }
+.prompt-bar .pb-mode button { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; border: 1px solid var(--line); border-radius: var(--radius); padding: 8px 12px; background: var(--bg); }
+.prompt-bar .pb-mode button b { font-size: 14px; color: var(--ink); }
+.prompt-bar .pb-mode button span { font-size: 12px; color: var(--muted, #5b6478); }
+.prompt-bar .pb-mode button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 1px var(--accent); }
+@media (max-width: 640px) { .prompt-bar .pb-mode { grid-template-columns: 1fr; } }
 .ai-open { border-color: var(--accent); color: var(--accent); font-weight: 600; }
 @media (max-width: 640px) { .prompt-bar .pb-main { flex-direction: column; } .prompt-bar .pb-actions { width: 100%; } }
 .ai-wait { position: absolute; inset: 0; z-index: 4; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: rgba(255,255,255,.82); color: var(--muted, #5b6478); font-size: 14px; text-align: center; }
@@ -488,7 +494,11 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
     <section class="prompt-bar" id="ai-box" hidden aria-label="Describe your design">
       <div class="pb-head">
         <label class="pb-title" for="ai-prompt">Describe your design</label>
-        <span class="hint">Type what you'd like. We draw it in black &amp; white for you to color with our stones.</span>
+        <span class="hint" id="pb-sub">Type what you'd like, then choose what we make.</span>
+      </div>
+      <div class="seg pb-mode" id="ai-mode" role="group" aria-label="What should we make?">
+        <button type="button" data-aimode="lines" aria-pressed="true"><b>Black &amp; white design</b><span>I color it myself with your stones</span></button>
+        <button type="button" data-aimode="color" aria-pressed="false"><b>Ready mosaic</b><span>Made in your stones; I can change any stone</span></button>
       </div>
       <div class="pb-main">
         <textarea id="ai-prompt" rows="2" placeholder="For example: a compass rose with waves around it"></textarea>
@@ -1184,10 +1194,12 @@ let freeAI = false;
 // The describe bar sits above the canvas on the Design step: open for the "Describe it" journey, and
 // one click away (the button at the top of the drawing tools) for the others.
 let aiBar = false;
+let aiMode = 'lines'; // what "Describe it" makes: 'lines' (black & white to color) or 'color' (a ready mosaic)
 function showAiBar() {
   const can = !!(window.__imdSample || freeAI) && state.mode === 'sketch';
   $('#ai-box').hidden = !(can && aiBar);
   $('#ai-open').hidden = !(can && !aiBar);
+  $('#ai-mode').hidden = !window.IMOSAIC_AI_URL; // only the store's helper can make a color design
 }
 let sourceData = null;        // the uploaded picture on the slab, as pixels
 let sourceRect = { x: 0, y: 0, w: W, h: H }; // where the picture sits on the slab
@@ -2736,6 +2748,7 @@ function aiLoading(on, label = 'Drawing your design') {
 }
 // Without this the model tends to draw the mosaic's tiles itself; the tool lays the stone tiles, so the
 // drawing should be just the main shapes, each one large open area.
+const COLOR_SHAPES = '. Keep it to large simple shapes; do not draw mosaic tiles, tessellation, grout lines or small details';
 const OUTLINE_ONLY = '. Draw only the outlines of the main shapes, like a simple coloring page. Do not draw mosaic tiles, tessellation, '
   + 'cells, grids or patterns inside the shapes; leave every shape as one large open area';
 async function runOpenAI(desc, status, go) {
@@ -2749,7 +2762,7 @@ async function runOpenAI(desc, status, go) {
   status.textContent = 'This usually takes 20 to 60 seconds. Please keep this page open.';
   try {
     const ctl = new AbortController(), stop = setTimeout(() => ctl.abort(), 150000);
-    const res = await fetch(window.IMOSAIC_AI_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: desc.slice(0, 180) + OUTLINE_ONLY, size, image }), signal: ctl.signal });
+    const res = await fetch(window.IMOSAIC_AI_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: desc.slice(0, 180) + (aiMode === 'color' ? COLOR_SHAPES : OUTLINE_ONLY), size, image, mode: aiMode }), signal: ctl.signal });
     clearTimeout(stop);
     const type = res.headers.get('Content-Type') || '';
     if (res.ok && type.startsWith('image/')) img = await loadPhoto(URL.createObjectURL(await res.blob()));
@@ -2775,6 +2788,16 @@ function useDrawing(img, status) {
   importedImg = img; importedFile = null; lastSvg = null; sourceData = null; upStore = false;
   heavy(() => {
     try {
+      if (aiMode === 'color' && window.IMOSAIC_AI_URL && !keep) {
+        // a ready mosaic: the picture's colors become areas filled with our closest stones
+        $('#trace-mode').value = 'colors'; showTraceFields(); state.sourceKind = 'color';
+        $('#colors').value = 10; $('#colors-val').textContent = '10';
+        runTrace(true);
+        setMode('mosaic'); refresh(); aiButtons(); clearPrompt();
+        status.textContent = 'Done. Change any stone in step 2, or go back to step 1 to change the design or describe a change.';
+        toast('Here is your design as a mosaic in our stones. Tap any area to change its stone.');
+        return;
+      }
       if (keep) {
         $('#threshold').value = 72; $('#threshold-val').textContent = '72';
         traceImage();
@@ -2842,6 +2865,12 @@ async function runAI(kind) {
   }
 }
 $('#ai-go').addEventListener('click', () => { aiEdit = true; runAI('describe'); });
+$$('#ai-mode button').forEach(b => b.addEventListener('click', () => {
+  aiMode = b.dataset.aimode;
+  $$('#ai-mode button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  $('#ai-status').textContent = aiMode === 'color' ? 'We make a picture from your words and lay it as a mosaic in our stones. You can change any stone.'
+    : 'We draw black & white outlines from your words. You then color them with our stones.';
+}));
 $('#ai-open').addEventListener('click', () => { aiBar = true; showAiBar(); $('#ai-box').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('#ai-prompt').focus({ preventScroll: true }); });
 $$('#ai-ideas button').forEach(b => b.addEventListener('click', () => { $('#ai-prompt').value = b.textContent; $('#ai-prompt').focus(); }));
 $('#ai-prompt').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#ai-go').click(); } });
