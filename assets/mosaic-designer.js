@@ -3,7 +3,7 @@
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 // The design frame in pixels: the longer side is 1000, the other follows the mosaic's shape.
-let W = 1000, H = 750, N = W * H;
+let W = 1400, H = 1050, N = W * H;
 const TILE = 320;           // texture tile size in px
 const PATTERN_SCALE = 1.35; // how large the veining reads on the slab
 
@@ -222,7 +222,7 @@ const mosaicLayer = mk(), mosctx = mosaicLayer.getContext('2d');
 const state = {
   mode: 'color',
   tool: { sketch: 'pen', color: 'fill' },
-  weight: 3, gap: 2, joint: '#8a8782',
+  weight: 4, gap: 2, joint: '#8a8782',
   selected: 'm04', filter: 'marble', query: '',
   sizeW: 36, sizeH: 27, unit: 'in', // finished size of the mosaic
   look: 'stone', // how the Color step shows materials: stone textures or plain colors
@@ -232,16 +232,37 @@ const state = {
   fills: [], // immutable entries: { x, y, mat, rot }
 };
 let inkVer = 0;
-const frameFor = (w, h) => { const r = Math.max(.25, Math.min(4, h / w)); return r <= 1 ? [1000, Math.round(1000 * r)] : [Math.round(1000 / r), 1000]; };
+// the canvas's long side in pixels: high enough that large mosaics keep sharp tiles and lines
+const FRAME = 1400;
+const frameFor = (w, h) => { const r = Math.max(.25, Math.min(4, h / w)); return r <= 1 ? [FRAME, Math.round(FRAME * r)] : [Math.round(FRAME / r), FRAME]; };
 // Changes the frame to a new shape, keeping the drawing and its colors centered and in proportion.
 function resizeFrame(newW, newH) {
   if (newW === W && newH === H) return;
   if (typeof sel !== 'undefined' && sel) finishSel(true);
   const old = mk(); old.getContext('2d').drawImage(ink, 0, 0);
-  const oW = W, oH = H, s = Math.min(newW / oW, newH / oH), ox = (newW - oW * s) / 2, oy = (newH - oH * s) / 2;
+  const oW = W, oH = H;
+  let s = Math.min(newW / oW, newH / oH), ox = (newW - oW * s) / 2, oy = (newH - oH * s) / 2;
+  // a drawn design grows with the mosaic: it is scaled to fill the new frame, not shrunk to fit
+  // the old one (a design from a picture keeps following the picture)
+  if (!sourceData && currentInk) {
+    const d = currentInk.data; let x0 = oW, y0 = oH, x1 = -1, y1 = -1;
+    for (let y = 0; y < oH; y += 2) for (let x = 0; x < oW; x += 2) if (d[(y * oW + x) * 4 + 3]) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+    if (x1 > x0 && y1 > y0) {
+      const bw = x1 - x0 + 1, bh = y1 - y0 + 1, m = .05; // the design fills the frame, 5% from the edge
+      const mm = m * Math.min(newW, newH);
+      s = Math.min((newW - 2 * mm) / bw, (newH - 2 * mm) / bh);
+      ox = (newW - bw * s) / 2 - x0 * s; oy = (newH - bh * s) / 2 - y0 * s;
+    }
+  }
   W = newW; H = newH; N = W * H; stack = new Int32Array(N);
   for (const c of [ink, fillsLayer, tint, maskC, work, mosaicLayer, view, overlay]) { c.width = W; c.height = H; }
+  ictx.imageSmoothingQuality = 'high';
   ictx.drawImage(old, ox, oy, oW * s, oH * s);
+  { // keep lines crisp: scaled lines become solid black again instead of soft gray edges
+    const id = ictx.getImageData(0, 0, W, H), a = id.data;
+    for (let i = 0; i < a.length; i += 4) { const on = a[i + 3] > 96; a[i] = a[i + 1] = a[i + 2] = 0; a[i + 3] = on ? 255 : 0; }
+    ictx.putImageData(id, 0, 0);
+  }
   state.fills = state.fills.map(f => ({ ...f, x: Math.min(W - 1, Math.round(ox + f.x * s)), y: Math.min(H - 1, Math.round(oy + f.y * s)) }));
   if (importedImg && sourceData) { const m = sourceData.mosaic, ph = sourceData.photo; sourceData = drawImported(); sourceData.mosaic = m; sourceData.photo = ph; }
   currentInk = ictx.getImageData(0, 0, W, H); inkVer++;
