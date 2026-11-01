@@ -399,6 +399,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
     </div>
 
     <div id="color-tools" class="group" hidden>
+      <button class="btn block ai-open" type="button" hidden>✦ Add or change something (AI)</button>
       <p class="label">Color</p>
       <div class="toolgrid" role="group" aria-label="Coloring tools">
         <button class="tool" type="button" data-tool="fill" title="Fill: tap an area to lay the chosen stone in it (F)"><svg viewBox="0 0 24 24"><path d="M5 11l7-7 7 7-7 7z"/><path d="M19 15c1 2 2 3 2 4a2 2 0 0 1-4 0c0-1 1-2 2-4z"/></svg>Fill</button>
@@ -427,6 +428,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
     </div>
 
     <div id="mosaic-tools" class="group" hidden>
+      <button class="btn block ai-open" type="button" hidden>✦ Add or change something (AI)</button>
       <p class="label">Mosaic</p>
       <!-- tile size is set automatically (½ in, smaller for photos); kept hidden for customers -->
       <label class="field" for="tile-size" hidden>Tile size
@@ -1203,9 +1205,10 @@ let freeAI = false;
 let aiBar = false;
 let aiMode = 'lines'; // what "Describe it" makes: 'lines' (black & white to color) or 'color' (a ready mosaic)
 function showAiBar() {
-  const can = !!(window.__imdSample || freeAI) && state.mode === 'sketch';
+  // available on every step, so a design can be refined ("add a dolphin") while coloring too
+  const can = !!(window.__imdSample || freeAI) && !usePicture();
   $('#ai-box').hidden = !(can && aiBar);
-  $('#ai-open').hidden = !(can && !aiBar);
+  $$('.ai-open').forEach(b => { b.hidden = !(can && !aiBar); });
   $('#ai-mode').hidden = !window.IMOSAIC_AI_URL; // only the store's helper can make a color design
 }
 let sourceData = null;        // the uploaded picture on the slab, as pixels
@@ -2822,7 +2825,13 @@ function useDrawing(img, status) {
         // a ready mosaic: the picture's colors become areas filled with our closest stones
         $('#trace-mode').value = 'colors'; showTraceFields(); state.sourceKind = 'color';
         $('#colors').value = 10; $('#colors-val').textContent = '10';
+        const prevFills = aiEdit ? state.fills.slice() : [];
         runTrace(true);
+        // a change keeps the stones the customer already picked, wherever their areas still are
+        if (prevFills.length) {
+          const pick = new Map(); for (const f of prevFills) { const L = labelOf(f); if (L && f.mat !== f.orig) pick.set(L, f.mat); }
+          state.fills = state.fills.map(f => { const L = labelOf(f); return pick.has(L) ? { ...f, mat: pick.get(L) } : f; });
+        }
         setMode('mosaic'); refresh(); aiButtons(); clearPrompt();
         status.textContent = 'Done. Change any stone in step 2, or go back to step 1 to change the design or describe a change.';
         toast('Here is your design as a mosaic in our stones. Tap any area to change its stone.');
@@ -2840,11 +2849,15 @@ function useDrawing(img, status) {
       }
       $('#trace-mode').value = 'lines'; showTraceFields(); state.sourceKind = 'bw';
       $('#threshold').value = 72; $('#threshold-val').textContent = '72'; // keep the drawing's paler strokes too
+      // a change made while coloring keeps the stones already chosen (areas whose tap point is still inside)
+      const prevFills = state.fills.slice(), prevMode = state.mode;
       runTrace();
       status.textContent = window.IMOSAIC_AI_URL ? 'Done. Describe a change (for example "add a dog") and press Change my design, or press Start from scratch for a new drawing.'
         : 'Done. Fix lines with the drawing tools, or press Draw it again for a new version. Then press Next: Color it.';
       // stay on Design so details can be changed by describing them, drawn by hand, or started again
-      setMode('sketch'); aiButtons(); clearPrompt();
+      if (aiEdit && prevMode !== 'sketch' && prevFills.length) { state.fills = prevFills.filter(f => labelOf(f)); setMode(prevMode); refresh(); }
+      else setMode('sketch');
+      aiButtons(); clearPrompt();
       toast('Your design is ready. Describe a change, draw on it, or press Next: Color it.');
     } catch (err) {
       console.error(err);
@@ -2901,7 +2914,7 @@ $$('#ai-mode button').forEach(b => b.addEventListener('click', () => {
   $('#ai-status').textContent = aiMode === 'color' ? 'We turn your words into a mosaic made in our stones. Then you can change any stone you like.'
     : 'We turn your words into a black & white design. Then you color each part with our stones.';
 }));
-$('#ai-open').addEventListener('click', () => { aiBar = true; showAiBar(); $('#ai-box').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('#ai-prompt').focus({ preventScroll: true }); });
+$$('.ai-open').forEach(b => b.addEventListener('click', () => { aiBar = true; showAiBar(); $('#ai-box').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('#ai-prompt').focus({ preventScroll: true }); }));
 $$('#ai-ideas button').forEach(b => b.addEventListener('click', () => { $('#ai-prompt').value = b.textContent; $('#ai-prompt').focus(); }));
 $('#ai-prompt').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#ai-go').click(); } });
 $('#ai-new').addEventListener('click', () => { aiEdit = false; runAI('describe'); });
