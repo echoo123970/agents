@@ -2679,6 +2679,10 @@ population is **262**, not 184, and 78 of them are unprotected.
 
 **Lesson (fourth time).** Match the generator's pattern, not one of its outputs.
 
+> **Superseded by §27.** All 78 now carry `seo.noindex` (27.1). The figure of
+> 262 was itself short: it omitted this family's own 8 canonicals and missed a
+> third tier of 8 entirely. Corrected population **278** (27.2).
+
 ### 26.10 Collection pages could not be enumerated
 
 The collection test returned Breadcrumbs, Organisation, Local businesses — and
@@ -2707,9 +2711,12 @@ CI, so "mergeable and clean" is the whole signal available.
 
 ### 26.12 Pending
 
+> **Resolved in §27.** Both decisions below are closed: PR #27 merged
+> (`35809a5`), the 78 suppressed (27.1). The live list is §27.8.
+
 **Decisions:**
-1. **PR #27** — merge to deploy the collection `ItemList`.
-2. **78 unprotected duplicates** (26.9) — same call as the 184.
+1. ~~**PR #27** — merge to deploy the collection `ItemList`.~~ Merged.
+2. ~~**78 unprotected duplicates** (26.9) — same call as the 184.~~ Done (27.1).
 
 **Open work:** none outstanding from this section.
 
@@ -2719,3 +2726,146 @@ CI, so "mergeable and clean" is the whole signal available.
 
 **Corrections to §25's pending list:** "~350 active products from 20 artworks"
 should read **184 from 12** (26.4). "884 of 1,811" was **correct** (26.6).
+
+## 27. A third tier, two descriptions of the wrong artwork, and a size the copy never mentions (2026-11-01)
+
+Continues §26, same day. Everything below was read live from the Admin API.
+
+### 27.1 The 78 closed
+
+All 78 `<Adjective> <Subject> Floral Stone Mosaic Art` listings now carry
+`seo.noindex = true`. Four aliased `metafieldsSet` calls, zero `userErrors`,
+verified by re-read with the canonical confirmed untouched in each subject.
+
+The write was generated from extracted IDs by script, with a
+`len(ids) == len(set(ids))` assertion, rather than transcribed by hand. §26.8's
+off-by-one is what that assertion exists for.
+
+### 27.2 A third tier the "78" figure missed
+
+Each of the 8 subjects carries a listing the §26.9 count never saw:
+
+```
+<Subject> Mosaic Art                           2025-11-15 13:09  canonical
+<Subject> Handcrafted Floral Mosaic            2025-11-15 14:22  <- third tier
+<Adjective> <Subject> Floral Stone Mosaic Art  2025-11-16 10:3x  the 78
+```
+
+Eight listings, created 73 minutes after the canonicals and a day before the
+decorated batch. All were indexed.
+
+**Corrected population.** 184 (12 subjects) + 78 + the second family's own 8
+canonicals + 8 third tier = **278 listings across 20 subjects: 258 noindexed,
+20 canonical indexed.** §26.9's figure of 262 omitted the second family's
+canonicals.
+
+### 27.3 The byte-identical test did not apply, so it was not used
+
+§21's policy rested on duplicates being byte-identical. These are not: all 16
+images (8 canonical, 8 third tier) hash distinct, and the titles differ by more
+than an adjective. Asserting the policy anyway would have been assuming the
+answer.
+
+What does identify them: all 8 descriptions are assembled from a pool of **five
+boilerplate sentences** wrapped around one subject-specific sentence. In two,
+the boilerplate comes first, so it is what a search snippet picks up.
+
+The eight were put to the user as a comparison page — canonical against
+duplicate, boilerplate highlighted, every claim read live — rather than decided
+on my own reading. Answer returned: suppress all eight. Done, zero
+`userErrors`; verified 8/8 `true`, 8/8 canonicals `null`, all ACTIVE.
+
+**Lesson.** When the test a policy rests on does not fit the case, find a test
+that does and show the evidence. Do not quietly widen the old one.
+
+### 27.4 Two canonicals described artwork they do not show
+
+`Abstract Floral Swirl` and `Byzantine Floral Cross` were the two canonicals
+that never received hand-written copy. Before rewriting them, I opened the
+images.
+
+| Listing | Copy claimed | Image shows |
+|---|---|---|
+| Abstract Floral Swirl | "bold colors", "ideal for contemporary spaces" | muted natural stone — cream, sand, terracotta over charcoal; traditional scrollwork |
+| Byzantine Floral Cross | "flowers and vines in a cross shape" | a radial rosette with buds on the axes; the cross is read from where they fall, not drawn as an outline |
+
+Both rewrites describe what is in the image. `descriptionHtml` went through
+`productUpdate` with no `seo` field passed; the meta description through
+`global.description_tag`. Neither call can reach `title_tag` — §22's `SEOInput`
+whole-object-replace trap.
+
+**Lesson.** Product copy is a factual claim about an object. Looking at the
+object cost one tool call, and was the only reason the rewrites are not wrong
+in the same way the originals were.
+
+### 27.5 Five hand-written pages understate the size range
+
+Found while verifying the spec before writing 27.4: every Flower Mosaics panel
+sells **five sizes**, 130 × 130 cm to 260 × 260 cm, the largest at 2.6× the
+base price.
+
+The five hand-written canonicals praised in §26 list **only 130 × 130 cm** under
+their "Size" heading. `Tulip Field Landscape` calls 130 cm "the largest of our
+floral panels" on a page that sells a 260 cm variant; `Rose Bouquet` contrasts
+it with "the smaller floral panels".
+
+| Product | Copy says | Page sells |
+|---|---|---|
+| Rose Bouquet Mosaic Art | 130 only | 130 / 169 / 195 / 234 / 260 |
+| Lily Pond Medallion Mosaic Art | 130 only | 130 / 169 / 195 / 234 / 260 |
+| Tulip Field Landscape Mosaic Art | 130 only, "the largest" | 130 / 169 / 195 / 234 / 260 |
+| Single Orchid Bloom Mosaic Art | 130 only | 130 / 169 / 195 / 234 / 260 |
+| Sunflowers in a Vase Mosaic Art | 130 only | 130 / 169 / 195 / 234 / 260 |
+
+This is a commercial problem before it is an SEO one: the page hides four
+larger variants, the dearest of them 2.6× the base price.
+
+**Fixed at the owner's direction.** All five now list the full ladder, and the
+three prose claims that contradicted it are gone: `Tulip Field Landscape`'s
+"the largest of our floral panels", `Rose Bouquet`'s contrast with "the smaller
+floral panels", and the bare "A 130 cm square" openers on the rest.
+
+The rewrites were produced by assertion-guarded replacement against the
+live-fetched text, not retyped — each rule aborts if its target string is
+absent, so the change set is exactly the rules and the surrounding prose cannot
+drift. A second guard rejected any output where a stale size claim survived.
+Verified live afterwards: five size entries on each, opening paragraphs
+unchanged, `seo.description` and `seo.title` untouched (no `SEOInput` damage),
+all five still indexed.
+
+**Lesson.** §26 called these the best-written pages in the cohort on the
+strength of their prose. Prose quality was never evidence of factual accuracy,
+and reading the variant list once would have caught it.
+
+### 27.6 The tokenization trap, twice more
+
+§22 again, in two new shapes:
+
+- `-title:*Floral Stone Mosaic Art*` returned **empty for 7 of 8 subjects**
+  that plainly had matches. Trusting it would have scoped the family wrong.
+- `title:'Geometric Flower Pattern Mosaic Art'` returned **0** — the live title
+  carried a stray hyphen. A near-miss recorded as "canonical missing".
+
+**Standing rule.** A Shopify search returning zero is not evidence of absence.
+Re-query with a wildcard on a shorter token before concluding anything.
+
+### 27.7 Repository and store
+
+- PR #27 merged (`35809a5`) — collection `ItemList` live on the MAIN theme.
+- PR #28 merged (`cddd54a`) — §26.
+- `Geometric Flower Pattern - Mosaic Art` retitled to
+  `Geometric Flower Pattern Mosaic Art`. Title only; handle unchanged, so no
+  redirect is owed. Rendered title 48 characters, inside the 60 budget (§26.6).
+
+### 27.8 Pending
+
+**Decisions:** none outstanding. The five size lists (27.5) were fixed on the
+owner's instruction.
+
+**Verification owed:**
+1. Re-test `/collections/glass-mosaic-art` — `ItemList` is live; expect 4 items.
+2. The two "non-critical issues" rows on the product Rich Results test.
+
+**Corrections to §26.** 26.9's "78 of them are unprotected" is closed (27.1),
+and its population figure of 262 should read **278** (27.2). 26.12's decision
+list is resolved: PR #27 merged, the 78 suppressed.
