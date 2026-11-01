@@ -47,6 +47,8 @@
 .imd .bench.choosing { display: block; max-width: 920px; margin: 0 auto; }
 .imd .bench.choosing > :not(.stage), .imd .bench.choosing .stage > :not(#start) { display: none !important; }
 .imd .topbar.picking { display: none; }
+.imd .bench.prompting { display: block; max-width: 980px; margin: 0 auto; }
+.imd .bench.prompting > :not(.stage), .imd .bench.prompting .stage > :not(#ai-box) { display: none !important; }
 .imd .bench.picking { display: block; max-width: 1100px; margin: 0 auto; }
 .imd .bench.picking > :not(.stage), .imd .bench.picking .stage > :not(#gallery) { display: none !important; }
 .imd .bench.choosing:not(.has-design) #start .start-close { display: none; }

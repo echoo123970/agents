@@ -1392,6 +1392,7 @@ $('#start-close').addEventListener('click', () => showStart(false));
 // Every start choice begins a fresh design: the old drawing, colors, picture and settings are cleared
 // (Undo still brings the previous design back).
 function resetDesign() {
+  setPrompting(false);
   $('#upload-panel').hidden = true; $('#gallery').hidden = true; $('#trace-field').hidden = true; $('#draw-hint').hidden = true;
   pendingImg = null; upStore = false; upAction = null; importedImg = null; importedFile = null; lastSvg = null; sourceData = null;
   state.mosaicFrom = 'areas'; state.sourceKind = null;
@@ -1409,6 +1410,7 @@ $$('#start [data-start]').forEach(b => b.addEventListener('click', () => {
   $('.bench').classList.add('has-design');
   aiBar = how === 'describe';
   resetDesign();
+  setPrompting(how === 'describe');
   $('#sketch-tools').classList.toggle('draw-only', how === 'draw' || how === 'describe'); // drawing from scratch needs no picture tools
   if (how === 'upload') { setMode('sketch'); $('#file-sketch').click(); }
   else if (how === 'describe') {
@@ -2103,7 +2105,7 @@ async function runFree(desc) {
     img = await fetchDrawing(url.replace(/seed=\d+/, 'seed=' + Math.floor(Math.random() * 1e6)));
   }
   aiLoading(false);
-  if (!img) { status.textContent = 'Our drawing service is busy right now. Please try again in a minute, or upload or draw your design instead.'; return; }
+  if (!img) { status.textContent = 'Our drawing service is busy right now. Please try again in a minute, or upload or draw your design instead.'; backToPrompt(); return; }
   useDrawing(img, status);
 }
 // With the store's drawing helper set up (ai-worker/worker.js, OpenAI behind it), the description is
@@ -2121,6 +2123,15 @@ function aiButtons() {
 function clearPrompt() { if (!window.IMOSAIC_AI_URL) return; $('#ai-prompt').value = ''; $('#ai-prompt').placeholder = 'Describe a change, for example: add a dog on the boat'; }
 // true when the canvas has any drawing on it
 function inkUsed() { const d = currentInk?.data; if (!d) return false; for (let i = 3; i < d.length; i += 64) if (d[i]) return true; return false; }
+// Until the first drawing arrives, "Describe your idea" shows only its box; the canvas appears for the
+// spinner and the result.
+// after a failed drawing with nothing on the canvas, go back to just the describe box
+function backToPrompt() { if (journey === 'describe' && state.mode === 'sketch' && !inkUsed() && !sourceData) setPrompting(true); }
+function setPrompting(on) {
+  const was = $('.bench').classList.contains('prompting');
+  $('.bench').classList.toggle('prompting', on);
+  if (was && !on) { fitSlab(); applyView(); }
+}
 // While a drawing is being made: a spinner and running timer on the canvas and on the button.
 let aiTimer = 0;
 function aiLoading(on, label = 'Drawing your design') {
@@ -2128,6 +2139,7 @@ function aiLoading(on, label = 'Drawing your design') {
   clearInterval(aiTimer);
   go.disabled = $('#ai-new').disabled = on;
   go.classList.toggle('loading', on); wait.hidden = !on;
+  if (on) setPrompting(false);
   if (!on) { aiButtons(); return; }
   const t0 = Date.now(), tick = () => {
     const s = Math.round((Date.now() - t0) / 1000), t = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
@@ -2166,7 +2178,7 @@ async function runOpenAI(desc, status, go) {
   aiLoading(false);
   if (!img) {
     status.textContent = msg && msg !== 'busy' ? `Sorry, we could not draw that: ${msg}.` : 'Our drawing service is busy right now. Please try again in a minute, or upload or draw your design instead.';
-    toast(status.textContent);
+    toast(status.textContent); backToPrompt();
     return;
   }
   useDrawing(img, status);
