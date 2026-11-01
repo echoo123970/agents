@@ -7,7 +7,7 @@
 //
 // Settings (Cloudflare dashboard -> Worker -> Settings -> Variables and secrets):
 //   OPENAI_API_KEY        secret, required
-//   OPENAI_IMAGE_MODEL    optional, default "gpt-image-1"
+//   OPENAI_IMAGE_MODEL    optional, default "gpt-image-2"
 //   OPENAI_IMAGE_QUALITY  optional, "medium" (default, clean closed outlines), "low" (cheaper) or "high"
 //   ALLOWED_ORIGINS       optional, default "https://www.imosaicart.com,https://imosaicart.com"
 
@@ -37,7 +37,7 @@ export default {
 
     const style = 'Thick bold continuous black outlines of even width, every shape fully closed, flat line art, large simple shapes, '
       + 'no shading, no hatching, no fur or grass texture, no gray, no text or letters, pure white background.';
-    const model = env.OPENAI_IMAGE_MODEL || 'gpt-image-1', quality = env.OPENAI_IMAGE_QUALITY || 'medium';
+    const model = env.OPENAI_IMAGE_MODEL || 'gpt-image-2', quality = env.OPENAI_IMAGE_QUALITY || 'medium';
     const sketch = typeof body.image === 'string' && body.image.startsWith('data:image/png;base64,') && body.image.length < 8e6 ? body.image : null;
 
     let r;
