@@ -233,7 +233,11 @@
     <section class="prompt-bar" id="ai-box" hidden aria-label="Describe your design">
       <div class="pb-head">
         <label class="pb-title" for="ai-prompt">Describe your design</label>
-        <span class="hint">Type what you'd like. We draw it in black &amp; white for you to color with our stones.</span>
+        <span class="hint" id="pb-sub">Type what you'd like, then choose what we make.</span>
+      </div>
+      <div class="seg pb-mode" id="ai-mode" role="group" aria-label="What should we make?">
+        <button type="button" data-aimode="lines" aria-pressed="true"><b>Black &amp; white design</b><span>I color it myself with your stones</span></button>
+        <button type="button" data-aimode="color" aria-pressed="false"><b>Ready mosaic</b><span>Made in your stones; I can change any stone</span></button>
       </div>
       <div class="pb-main">
         <textarea id="ai-prompt" rows="2" placeholder="For example: a compass rose with waves around it"></textarea>

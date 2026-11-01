@@ -493,10 +493,12 @@ let freeAI = false;
 // The describe bar sits above the canvas on the Design step: open for the "Describe it" journey, and
 // one click away (the button at the top of the drawing tools) for the others.
 let aiBar = false;
+let aiMode = 'lines'; // what "Describe it" makes: 'lines' (black & white to color) or 'color' (a ready mosaic)
 function showAiBar() {
   const can = !!(window.__imdSample || freeAI) && state.mode === 'sketch';
   $('#ai-box').hidden = !(can && aiBar);
   $('#ai-open').hidden = !(can && !aiBar);
+  $('#ai-mode').hidden = !window.IMOSAIC_AI_URL; // only the store's helper can make a color design
 }
 let sourceData = null;        // the uploaded picture on the slab, as pixels
 let sourceRect = { x: 0, y: 0, w: W, h: H }; // where the picture sits on the slab
@@ -2045,6 +2047,7 @@ function aiLoading(on, label = 'Drawing your design') {
 }
 // Without this the model tends to draw the mosaic's tiles itself; the tool lays the stone tiles, so the
 // drawing should be just the main shapes, each one large open area.
+const COLOR_SHAPES = '. Keep it to large simple shapes; do not draw mosaic tiles, tessellation, grout lines or small details';
 const OUTLINE_ONLY = '. Draw only the outlines of the main shapes, like a simple coloring page. Do not draw mosaic tiles, tessellation, '
   + 'cells, grids or patterns inside the shapes; leave every shape as one large open area';
 async function runOpenAI(desc, status, go) {
@@ -2058,7 +2061,7 @@ async function runOpenAI(desc, status, go) {
   status.textContent = 'This usually takes 20 to 60 seconds. Please keep this page open.';
   try {
     const ctl = new AbortController(), stop = setTimeout(() => ctl.abort(), 150000);
-    const res = await fetch(window.IMOSAIC_AI_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: desc.slice(0, 180) + OUTLINE_ONLY, size, image }), signal: ctl.signal });
+    const res = await fetch(window.IMOSAIC_AI_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: desc.slice(0, 180) + (aiMode === 'color' ? COLOR_SHAPES : OUTLINE_ONLY), size, image, mode: aiMode }), signal: ctl.signal });
     clearTimeout(stop);
     const type = res.headers.get('Content-Type') || '';
     if (res.ok && type.startsWith('image/')) img = await loadPhoto(URL.createObjectURL(await res.blob()));
@@ -2084,6 +2087,16 @@ function useDrawing(img, status) {
   importedImg = img; importedFile = null; lastSvg = null; sourceData = null; upStore = false;
   heavy(() => {
     try {
+      if (aiMode === 'color' && window.IMOSAIC_AI_URL && !keep) {
+        // a ready mosaic: the picture's colors become areas filled with our closest stones
+        $('#trace-mode').value = 'colors'; showTraceFields(); state.sourceKind = 'color';
+        $('#colors').value = 10; $('#colors-val').textContent = '10';
+        runTrace(true);
+        setMode('mosaic'); refresh(); aiButtons(); clearPrompt();
+        status.textContent = 'Done. Change any stone in step 2, or go back to step 1 to change the design or describe a change.';
+        toast('Here is your design as a mosaic in our stones. Tap any area to change its stone.');
+        return;
+      }
       if (keep) {
         $('#threshold').value = 72; $('#threshold-val').textContent = '72';
         traceImage();
@@ -2151,6 +2164,12 @@ async function runAI(kind) {
   }
 }
 $('#ai-go').addEventListener('click', () => { aiEdit = true; runAI('describe'); });
+$$('#ai-mode button').forEach(b => b.addEventListener('click', () => {
+  aiMode = b.dataset.aimode;
+  $$('#ai-mode button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  $('#ai-status').textContent = aiMode === 'color' ? 'We make a picture from your words and lay it as a mosaic in our stones. You can change any stone.'
+    : 'We draw black & white outlines from your words. You then color them with our stones.';
+}));
 $('#ai-open').addEventListener('click', () => { aiBar = true; showAiBar(); $('#ai-box').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('#ai-prompt').focus({ preventScroll: true }); });
 $$('#ai-ideas button').forEach(b => b.addEventListener('click', () => { $('#ai-prompt').value = b.textContent; $('#ai-prompt').focus(); }));
 $('#ai-prompt').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#ai-go').click(); } });
