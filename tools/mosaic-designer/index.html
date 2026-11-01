@@ -111,8 +111,19 @@ button { cursor: pointer; }
 /* Stage */
 .stage { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 #sketch-tools.draw-only :is(#trace-photo, #trace-opts, #pic-label, #import-sketch, #trace-field, #ai-redraw) { display: none !important; }
-#ai-box .row { flex-wrap: wrap; }
-#ai-box .row .btn { flex: 1 1 100% !important; }
+.prompt-bar { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 4px 14px rgba(22,51,94,.06); }
+.prompt-bar .pb-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.prompt-bar .pb-title { font-family: var(--font-display, inherit); font-size: 20px; color: var(--ink); font-weight: 600; }
+.prompt-bar .pb-main { display: flex; gap: 10px; align-items: stretch; }
+.prompt-bar textarea { flex: 1; min-width: 0; resize: vertical; font-size: 15px; line-height: 1.45; padding: 10px 12px; border: 1.5px solid var(--accent); border-radius: var(--radius); background: var(--bg); color: var(--ink); }
+.prompt-bar .pb-actions { display: flex; flex-direction: column; gap: 6px; width: 190px; }
+.prompt-bar .pb-actions .btn { width: 100%; padding: 9px 12px; }
+.prompt-bar .pb-ideas { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.prompt-bar .pb-ideas button { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 4px 11px; font-size: 12.5px; color: var(--ink); }
+.prompt-bar .pb-ideas button:hover { border-color: var(--accent); }
+.prompt-bar #ai-status { margin: 0; }
+.ai-open { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+@media (max-width: 640px) { .prompt-bar .pb-main { flex-direction: column; } .prompt-bar .pb-actions { width: 100%; } }
 .ai-wait { position: absolute; inset: 0; z-index: 4; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: rgba(255,255,255,.82); color: var(--muted, #5b6478); font-size: 14px; text-align: center; }
 .ai-wait b { font-size: 18px; color: var(--ink, #16335e); font-weight: 600; font-variant-numeric: tabular-nums; }
 .spinner { width: 42px; height: 42px; border-radius: 50%; border: 4px solid rgba(43,123,232,.2); border-top-color: var(--accent, #2B7BE8); animation: spin .9s linear infinite; }
@@ -274,6 +285,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
   <!-- Tools -->
   <aside class="panel tools" aria-label="Tools">
     <div id="sketch-tools" class="group" hidden>
+      <button class="btn block ai-open" id="ai-open" type="button" hidden>✦ Describe it with AI</button>
       <p class="label">Draw</p>
       <div class="toolgrid" role="group" aria-label="Drawing tools">
         <button class="tool" type="button" data-tool="select" title="Select (V)"><svg viewBox="0 0 24 24"><path d="M5 3l12 9-5 1 3 6-2 1-3-6-4 4z"/></svg>Select</button>
@@ -364,25 +376,6 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
         </label>
       </div>
       <button class="btn block" id="ai-redraw" type="button" hidden>Redraw upload as clean lines (AI)</button>
-      <details class="more" id="ai-more">
-        <summary>Describe a design (AI)</summary>
-        <div class="group">
-      <div class="group" id="ai-box">
-        <p class="label">Describe a design</p>
-        <label class="field" for="ai-prompt"><span class="sr">What should we draw?</span>
-          <textarea id="ai-prompt" rows="4" placeholder="Compass rose medallion with a wave border"></textarea>
-        </label>
-        <label class="check" for="ai-edit"><input type="checkbox" id="ai-edit"> Add to my current sketch (keep what I drew)</label>
-        <div class="row">
-          <button class="btn primary" id="ai-go" type="button" style="flex:1">Draw it</button>
-          <button class="btn" id="ai-new" type="button" hidden>Start from scratch</button>
-          <button class="btn" id="ai-stop" type="button" hidden>Stop</button>
-        </div>
-        <p class="hint" id="ai-status">Claude draws black outlines you can edit, then color.</p>
-      </div>
-      <p class="hint" id="ai-off" hidden>Drawing from a description works when this page is opened in Claude.</p>
-        </div>
-      </details>
       <details class="more">
         <summary>Start over</summary>
         <div class="group">
@@ -492,6 +485,31 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
       <div class="start-grid up-actions" id="up-actions"></div>
       <div class="row" style="justify-content: flex-end"><button class="btn primary" type="button" id="up-done" hidden>Continue with this →</button></div>
     </div>
+    <section class="prompt-bar" id="ai-box" hidden aria-label="Describe your design">
+      <div class="pb-head">
+        <label class="pb-title" for="ai-prompt">Describe your design</label>
+        <span class="hint">Type what you'd like. We draw it in black &amp; white for you to color with our stones.</span>
+      </div>
+      <div class="pb-main">
+        <textarea id="ai-prompt" rows="2" placeholder="For example: a compass rose with waves around it"></textarea>
+        <div class="pb-actions">
+          <button class="btn primary" id="ai-go" type="button">Draw it</button>
+          <button class="btn" id="ai-new" type="button" hidden>Start from scratch</button>
+          <button class="btn" id="ai-stop" type="button" hidden>Stop</button>
+        </div>
+      </div>
+      <div class="pb-ideas" id="ai-ideas" aria-label="Ideas">
+        <span class="hint">Ideas:</span>
+        <button type="button">Compass rose medallion</button>
+        <button type="button">Tree of life</button>
+        <button type="button">Sailboat on waves</button>
+        <button type="button">Flower medallion</button>
+        <button type="button">Family name in a wreath</button>
+      </div>
+      <label class="check" for="ai-edit" hidden><input type="checkbox" id="ai-edit"> Add to my current sketch (keep what I drew)</label>
+      <p class="hint" id="ai-status">We draw black outlines you can edit, then color.</p>
+      <p class="hint" id="ai-off" hidden>Drawing from a description is not available right now.</p>
+    </section>
     <div class="slab-wrap mode-color" id="slab">
       <div class="ai-wait" id="ai-wait" hidden><span class="spinner"></span><b id="ai-wait-text">Drawing your design…</b><span>This usually takes 20 to 60 seconds.</span></div>
       <div class="draw-hint" id="draw-hint" hidden><b>Your blank canvas</b><span>Pick a tool on the left (Pen, Line, Rectangle, Ellipse, Star, Heart, Text…) and drag here to draw. Closed shapes become areas you fill with our stones in step 2, and step 3 turns them into a hand-cut mosaic.</span></div>
@@ -1162,6 +1180,15 @@ function tilePath(ctx, x0, y0, sz, tx, ty, seed) {
   ctx.lineTo(x0 + sz + c(4), y0 + sz + c(5)); ctx.lineTo(x0 + c(6), y0 + sz + c(7));
   ctx.closePath();
 }
+let freeAI = false;
+// The describe bar sits above the canvas on the Design step: open for the "Describe it" journey, and
+// one click away (the button at the top of the drawing tools) for the others.
+let aiBar = false;
+function showAiBar() {
+  const can = !!(window.__imdSample || freeAI) && state.mode === 'sketch';
+  $('#ai-box').hidden = !(can && aiBar);
+  $('#ai-open').hidden = !(can && !aiBar);
+}
 let sourceData = null;        // the uploaded picture on the slab, as pixels
 let sourceRect = { x: 0, y: 0, w: W, h: H }; // where the picture sits on the slab
 let pictureCounts = new Map(); // material id -> tiles, from the last picture mosaic
@@ -1215,7 +1242,7 @@ function renderPictureMosaic() {
 function renderMosaic() {
   if (usePicture()) return renderPictureMosaic();
   if (photoLook()) { mosctx.drawImage(fillsLayer, 0, 0); return; }
-  if (photoFinal()) return renderPhotoFills(mosctx);
+  if (photoFinal()) { renderPhotoFills(mosctx); const l = newLines(state.joint); if (l) mosctx.drawImage(l, 0, 0); return; }
   mosctx.fillStyle = state.joint; mosctx.fillRect(0, 0, W, H);
   getLabels();
   for (const f of state.fills) {
@@ -1259,7 +1286,7 @@ function composite(target = vctx, mode = state.mode) {
     }
     if (target === vctx) drawTrace(target); target.drawImage(ink, 0, 0); return;
   }
-  if (photoLook()) return;
+  if (photoLook()) { const l = newLines('#1b1a19'); if (l) target.drawImage(l, 0, 0); return; }
   tctx.globalCompositeOperation = 'source-over';
   tctx.clearRect(0, 0, W, H);
   tctx.drawImage(ink, 0, 0);
@@ -1894,6 +1921,7 @@ function setMode(mode) {
   state.mode = mode;
   for (const k of ['sketch', 'color', 'mosaic']) $('#step-' + k).setAttribute('aria-pressed', String(mode === k));
   $('#sketch-tools').hidden = mode !== 'sketch';
+  showAiBar();
   $('#color-tools').hidden = mode !== 'color';
   $('#mosaic-tools').hidden = mode !== 'mosaic';
   $('#joint-group').hidden = mode !== 'mosaic';
@@ -1979,7 +2007,7 @@ function resetDesign() {
   pendingImg = null; upStore = false; upAction = null; importedImg = null; importedFile = null; lastSvg = null; sourceData = null;
   state.mosaicFrom = 'areas'; state.sourceKind = null;
   $('#threshold').value = 55; $('#threshold-val').textContent = '55';
-  $('#ai-prompt').value = ''; $('#ai-edit').checked = false;
+  $('#ai-prompt').value = ''; $('#ai-edit').checked = false; $('#ai-prompt').placeholder = 'For example: a compass rose with waves around it';
   traceImg = null; $('#trace-opts').hidden = true; // no photo to trace over
   ictx.globalCompositeOperation = 'source-over'; ictx.clearRect(0, 0, W, H);
   commit(true); state.fills = [];
@@ -1988,12 +2016,13 @@ function resetDesign() {
 $$('#start [data-start]').forEach(b => b.addEventListener('click', () => {
   const how = b.dataset.start;
   showStart(false);
+  aiBar = how === 'describe';
   resetDesign();
-  $('#sketch-tools').classList.toggle('draw-only', how === 'draw'); // drawing from scratch needs no picture tools
+  $('#sketch-tools').classList.toggle('draw-only', how === 'draw' || how === 'describe'); // drawing from scratch needs no picture tools
   if (how === 'upload') { setMode('sketch'); $('#file-sketch').click(); }
   else if (how === 'describe') {
-    setMode('sketch'); $('#ai-more').open = true;
-    if (sampleFn || freeAI) { $('#ai-prompt').focus(); $('#ai-more').scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    setMode('sketch');
+    if (sampleFn || freeAI) { $('#ai-box').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('#ai-prompt').focus({ preventScroll: true }); }
     else toast('Describing a design is not available here. You can upload or draw instead.');
   } else if (how === 'draw') {
     heavy(() => {
@@ -2189,6 +2218,7 @@ function runTrace(quiet) {
   if ($('#trace-mode').value === 'outline') {
     traceColors(); // draws the outline where the picture's colors meet
     commit(true);
+    if (sourceData.photo) sourceData.base = inkMask();
     state.fills = [];
     setMode('sketch');
     refresh();
@@ -2196,6 +2226,7 @@ function runTrace(quiet) {
   } else if ($('#trace-mode').value === 'colors') {
     const { idx, mats } = traceColors();
     commit(true);
+    if (sourceData.photo) sourceData.base = inkMask();
     autoFill(idx, mats);
     setMode('color');
     refresh();
@@ -2209,6 +2240,24 @@ function runTrace(quiet) {
     refresh();
     toast('Your drawing is ready. Pick a stone and tap any area. If lines are missing, raise Ink threshold in step 1.');
   }
+}
+// Which pixels of the drawing are ink.
+function inkMask() { const d = currentInk.data, m = new Uint8Array(N); for (let p = 0; p < N; p++) m[p] = d[p * 4 + 3] > 0 ? 1 : 0; return m; }
+// Lines the customer added to one of our mosaics (by hand or by describing a change): ink that is not
+// near the piece's own outline. They are drawn over the real mosaic so the changes show.
+let newLinesCache = { ver: -1, canvas: null };
+function newLines(color) {
+  if (!sourceData?.photo || !sourceData.base || sourceData.base.length !== N) return null;
+  if (newLinesCache.ver !== inkVer) {
+    const near = dilate(sourceData.base, 3), d = currentInk.data, c = mk(), x = c.getContext('2d'), out = x.createImageData(W, H);
+    let any = false;
+    for (let p = 0; p < N; p++) if (d[p * 4 + 3] && !near[p]) { out.data[p * 4 + 3] = 255; any = true; }
+    x.putImageData(out, 0, 0);
+    newLinesCache = { ver: inkVer, canvas: any ? c : null };
+  }
+  const c = newLinesCache.canvas; if (!c) return null;
+  const t = mk(), tx = t.getContext('2d'); tx.drawImage(c, 0, 0); tx.globalCompositeOperation = 'source-in'; tx.fillStyle = color; tx.fillRect(0, 0, W, H);
+  return t;
 }
 // The uploaded picture fitted onto a white slab, as pixels.
 function drawImported() {
@@ -2622,7 +2671,6 @@ const AI_ERRORS = {
 };
 // On the website (outside Claude) a description is drawn by a free public image service as black &
 // white line art, which then goes through the black & white drawing journey: lines kept, ready to color.
-let freeAI = false;
 async function runFree(desc) {
   const status = $('#ai-status'), go = $('#ai-go');
   if (!desc) { status.textContent = 'Type what you would like first, for example: a compass rose with waves around it.'; $('#ai-prompt').focus(); return; }
@@ -2661,6 +2709,8 @@ function aiButtons() {
   $('#ai-new').hidden = !can;
   $('label[for="ai-edit"]').hidden = true;
 }
+// after a drawing, the box is ready for the next change
+function clearPrompt() { if (!window.IMOSAIC_AI_URL) return; $('#ai-prompt').value = ''; $('#ai-prompt').placeholder = 'Describe a change, for example: add a dog on the boat'; }
 // true when the canvas has any drawing on it
 function inkUsed() { const d = currentInk?.data; if (!d) return false; for (let i = 3; i < d.length; i += 64) if (d[i]) return true; return false; }
 // While a drawing is being made: a spinner and running timer on the canvas and on the button.
@@ -2714,16 +2764,29 @@ async function runOpenAI(desc, status, go) {
 }
 // A drawing made from a description goes through the black & white drawing journey: lines kept, ready to color.
 function useDrawing(img, status) {
+  // one of our mosaics (or a mosaic photo): the new outline replaces the drawing, but the real piece
+  // stays underneath, so the Mosaic step shows it with the changes and the customer's stones
+  const keep = sourceData?.photo ? { photo: sourceData, img: importedImg, rect: sourceRect } : null;
   importedImg = img; importedFile = null; lastSvg = null; sourceData = null; upStore = false;
   heavy(() => {
     try {
+      if (keep) {
+        $('#threshold').value = 72; $('#threshold-val').textContent = '72';
+        traceImage();
+        importedImg = keep.img; sourceRect = keep.rect; sourceData = keep.photo; sourceData.photo = 'final';
+        commit(true); state.fills = [];
+        setMode('sketch'); refresh(); aiButtons(); clearPrompt();
+        status.textContent = 'Done. Describe another change, draw on it, or press Next: Color it. Areas you leave white keep their original stones.';
+        toast('Your design is changed. Color the new parts in step 2.');
+        return;
+      }
       $('#trace-mode').value = 'lines'; showTraceFields(); state.sourceKind = 'bw';
       $('#threshold').value = 72; $('#threshold-val').textContent = '72'; // keep the drawing's paler strokes too
       runTrace();
       status.textContent = window.IMOSAIC_AI_URL ? 'Done. Describe a change (for example "add a dog") and press Change my design, or press Start from scratch for a new drawing.'
         : 'Done. Fix lines with the drawing tools, or press Draw it again for a new version. Then press Next: Color it.';
       // stay on Design so details can be changed by describing them, drawn by hand, or started again
-      setMode('sketch'); aiButtons();
+      setMode('sketch'); aiButtons(); clearPrompt();
       toast('Your design is ready. Describe a change, draw on it, or press Next: Color it.');
     } catch (err) {
       console.error(err);
@@ -2774,6 +2837,9 @@ async function runAI(kind) {
   }
 }
 $('#ai-go').addEventListener('click', () => { aiEdit = true; runAI('describe'); });
+$('#ai-open').addEventListener('click', () => { aiBar = true; showAiBar(); $('#ai-box').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('#ai-prompt').focus({ preventScroll: true }); });
+$$('#ai-ideas button').forEach(b => b.addEventListener('click', () => { $('#ai-prompt').value = b.textContent; $('#ai-prompt').focus(); }));
+$('#ai-prompt').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#ai-go').click(); } });
 $('#ai-new').addEventListener('click', () => { aiEdit = false; runAI('describe'); });
 $('#ai-prompt').addEventListener('focus', () => { if (freeAI) aiButtons(); });
 $('#ai-redraw').addEventListener('click', () => runAI('redraw'));
@@ -2860,9 +2926,8 @@ async function initSwatches() {
 
 async function initCapabilities() {
   initSwatches();
-  $('#ai-box').hidden = true;
   if (!window.claude?.use) { // on the website a free image service draws descriptions
-    freeAI = true; $('#ai-box').hidden = false;
+    freeAI = true; showAiBar();
     aiButtons();
     $('#ai-status').textContent = 'We draw black & white outlines from your words. You then color them with our stones.';
     return;
@@ -2870,9 +2935,9 @@ async function initCapabilities() {
   const [s, d] = await Promise.all([claude.use('sample').catch(() => null), claude.use('downloads').catch(() => null)]);
   downloadsApi = d;
   if (!s) { $('#ai-off').hidden = false; return; }
-  sampleFn = s;
+  sampleFn = s; window.__imdSample = true;
   imagesOk = !!(await s.limits().catch(() => null))?.images;
-  $('#ai-box').hidden = false;
+  showAiBar();
 }
 // Inside Claude the sandbox blocks plain download links; offer the file through the viewer instead.
 async function offerDownload(e, filename, getData) {
