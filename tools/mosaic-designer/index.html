@@ -2251,7 +2251,8 @@ function traceImage() {
     if (Math.max(x1 - x0, y1 - y0) < 14) for (const q of comp) joined[q] = 0; // a dot, not a line
   }
   for (let p = 0; p < N; p++) { dark[p] = joined[p] ? 1 : 0; light[p] = 1 - dark[p]; }
-  const inner = dilate(light, 3); // dark pixels more than 3 px inside a shape are its fillable inside
+  // only shapes much wider than a drawn line (letters, silhouettes) get a fillable inside; bold lines stay lines
+  const inner = dilate(light, Math.max(4, Math.round(Math.min(W, H) / 110)));
   for (let p = 0; p < N; p++) if (dark[p] && inner[p]) out.data[p * 4 + 3] = 255;
   ictx.putImageData(out, 0, 0);
 }
