@@ -141,6 +141,8 @@ button { cursor: pointer; }
 .spinner { width: 42px; height: 42px; border-radius: 50%; border: 4px solid rgba(43,123,232,.2); border-top-color: var(--accent, #2B7BE8); animation: spin .9s linear infinite; }
 #ai-go.loading::before { content: ""; display: inline-block; width: 14px; height: 14px; margin-right: 8px; border-radius: 50%; border: 2px solid rgba(255,255,255,.45); border-top-color: #fff; animation: spin .9s linear infinite; vertical-align: -2px; }
 @keyframes spin { to { transform: rotate(360deg); } }
+.start-open { margin-top: 6px; }
+.linkish { background: none; border: 0; padding: 0; color: var(--accent); text-decoration: underline; font: inherit; cursor: pointer; }
 .draw-hint { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 32px; text-align: center; pointer-events: none; color: var(--muted, #5b6478); font-size: 15px; line-height: 1.6; }
 .draw-hint b { font-size: 20px; color: var(--ink, #16335e); font-weight: 600; }
 .draw-hint span { max-width: 460px; }
@@ -288,9 +290,8 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
     <button class="btn" id="new-design" type="button" title="Start a new design the same way, from step 1">New design</button>
     <button class="btn" id="undo" type="button" title="Undo (Ctrl+Z)">Undo</button>
     <button class="btn" id="redo" type="button" title="Redo (Ctrl+Shift+Z)">Redo</button>
-    <button class="btn" id="open-design" type="button">Open design</button>
-    <button class="btn" id="save-design" type="button">Save design</button>
-    <button class="btn primary" id="export" type="button">Export</button>
+    <button class="btn" id="save-design" type="button" title="Download a work file to reopen this design later and keep editing it">Save to continue later</button>
+    <button class="btn primary" id="export" type="button" title="Download a picture of your design with its list of stones">⬇ Download picture</button>
   </div>
 </header>
 
@@ -468,7 +469,8 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
   <section class="stage" aria-label="Design">
     <div class="start" id="start">
       <div class="start-head">
-        <div><h2>Create your mosaic</h2><p class="hint">Choose how you'd like to begin. You can change the design, the stones and the size at any step.</p></div>
+        <div><h2>Create your mosaic</h2><p class="hint">Choose how you'd like to begin. You can change the design, the stones and the size at any step.</p>
+          <p class="hint start-open">Saved a design before? <button type="button" class="linkish" id="open-design">Continue a saved design</button></p></div>
         <button class="start-close" type="button" id="start-close" aria-label="Close">×</button>
       </div>
       <div class="start-grid">
@@ -1955,7 +1957,7 @@ function setMode(mode) {
   }[mode];
   $('#step-title').textContent = { sketch: 'Step 1 of 3 · Design', color: 'Step 2 of 3 · Color', mosaic: 'Step 3 of 3 · Mosaic' }[mode];
   $('#prev-step').textContent = { sketch: '← Start options', color: '← Back to design', mosaic: '← Back to colors' }[mode];
-  $('#next-step').textContent = { sketch: 'Next: Color it →', color: 'Next: See the mosaic →', mosaic: 'Export my design' }[mode];
+  $('#next-step').textContent = { sketch: 'Next: Color it →', color: 'Next: See the mosaic →', mosaic: '⬇ Download picture' }[mode];
   renderChart(); selectMat(state.selected); renderBom();
   markFrom();
   if (mode === 'mosaic') heavy(() => { renderMosaic(); composite(); renderBom(); });
@@ -2580,7 +2582,7 @@ async function applyDesign(d, withHistory) {
   $('#size-w').value = state.sizeW; $('#size-h').value = state.sizeH; $('#size-unit').value = state.unit; markJoint();
 }
 $('#save-design').addEventListener('click', () => {
-  showJSON('Save design', 'Keep this file to reopen the design later, or send it to a customer so they can color it. It includes the materials it uses.', designJSON(), 'mosaic-design.json');
+  showJSON('Save to continue later', 'Download this file and keep it. Next time, open the Mosaic Designer and choose "Continue a saved design" to carry on where you left off.', designJSON(), 'mosaic-design.json');
 });
 $('#open-design').addEventListener('click', () => $('#file-design').click());
 $('#file-design').addEventListener('change', async e => {
@@ -2588,8 +2590,9 @@ $('#file-design').addEventListener('change', async e => {
   if (!f) return;
   try {
     await applyDesign(JSON.parse(await f.text()), true);
+    showStart(false); $('.bench').classList.add('has-design');
     renderChart(); selectMat(state.selected); setMode('color');
-    heavy(() => refresh()); toast('Design opened');
+    heavy(() => refresh()); toast('Your saved design is open. Carry on where you left off.');
   } catch { toast('That file is not an iMosaicArt mosaic design file.'); }
 });
 $('#export-chart').addEventListener('click', () => showJSON('Export chart', 'Share this file with your team or load it on another device with Import chart.', { app: 'imosaicart-chart', version: 1, materials: chart }, 'material-chart.json'));
