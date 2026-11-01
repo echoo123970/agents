@@ -1159,7 +1159,9 @@ function hoverArea(e) {
 // step shows the real piece again with their stones (sourceData.photo === 'final').
 const photoLook = () => !!(sourceData && sourceData.photo === true);
 const photoFinal = () => !!(sourceData && sourceData.photo);
-function renderPhotoFills(ctx = fctx) {
+// fade: areas not given a stone yet show as pale gray (repainting one of our mosaics), so the real
+// piece stays visible while the customer colors it
+function renderPhotoFills(ctx = fctx, fade = false) {
   const lab = getLabels(), src = sourceData.data, n = regions.length;
   const want = new Int32Array(n).fill(-1), mats = [];
   for (const f of state.fills) {
@@ -1185,7 +1187,9 @@ function renderPhotoFills(ctx = fctx) {
   }
   const out = new ImageData(new Uint8ClampedArray(src), W, H), o = out.data;
   for (let p = 0; p < N; p++) {
-    const L = own[p]; if (!L || want[L] < 0) continue;
+    const L = own[p];
+    if (fade && (!L || want[L] < 0)) { const g = .299 * src[p * 4] + .587 * src[p * 4 + 1] + .114 * src[p * 4 + 2], v = 205 + g * .19; o[p * 4] = o[p * 4 + 1] = o[p * 4 + 2] = v; continue; }
+    if (!L || want[L] < 0) continue;
     const c = sum[L * 4 + 3], mL = sum[L * 4] / c, ma = sum[L * 4 + 1] / c, mb = sum[L * 4 + 2] / c;
     const t = matLab(mats[want[L]]);
     const l = pl[p * 3], a = pl[p * 3 + 1], b = pl[p * 3 + 2];
@@ -1199,6 +1203,7 @@ function renderPhotoFills(ctx = fctx) {
 function renderFills() {
   fctx.clearRect(0, 0, W, H);
   if (photoLook()) return renderPhotoFills();
+  if (photoFinal()) return renderPhotoFills(fctx, true); // repainting one of our mosaics: same piece, faded until colored
   getLabels();
   for (const f of state.fills) {
     const m = matById(f.mat), L = labelOf(f);
@@ -1354,7 +1359,7 @@ function composite(target = vctx, mode = state.mode) {
     }
     if (target === vctx) drawTrace(target); target.drawImage(ink, 0, 0); return;
   }
-  if (photoLook()) { const l = newLines('#1b1a19'); if (l) target.drawImage(l, 0, 0); return; }
+  if (photoFinal()) { const l = newLines('#1b1a19'); if (l) target.drawImage(l, 0, 0); return; }
   tctx.globalCompositeOperation = 'source-over';
   tctx.clearRect(0, 0, W, H);
   tctx.drawImage(ink, 0, 0);
