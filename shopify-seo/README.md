@@ -2621,10 +2621,22 @@ exactly one underscore each, and **0 collisions** with the hyphenated form.
 Google treats hyphens, not underscores, as word separators.
 
 The fix is mechanical (`handle.replace('_','-',1)` with `redirectNewHandle:
-true`, which mints the 301 in the same transaction). It was not applied from
-the cache. A 39-product live sample found one drift; widening to the 100
-at-risk products found **15**, every one in the MAR055–MAR072 batch reconciled
-in §24:
+true`, which mints the 301 in the same transaction). **All 495 were rewritten**,
+every target derived from a live read, zero `userErrors`.
+
+Two things nearly went wrong first.
+
+**`redirectNewHandle` is a field inside `ProductUpdateInput`, not an argument
+on `productUpdate`.** Passing it as an argument is rejected outright by API
+2026-10, which is the lucky outcome: had the wrong shape been accepted and
+ignored, all 495 live product URLs would have been renamed with **no redirects
+at all**. The working shape was confirmed on a single product, and the 301 was
+then verified by querying `urlRedirects` rather than trusting the mutation's
+echo.
+
+**The cache was wrong on fifteen of them.** A 39-product live sample found one
+drift; widening to the 100 at-risk products found **15**, every one in the
+MAR055–MAR072 batch reconciled in §24:
 
 ```
 cache: religious-mosaics_the-nativity-scene-mosaic-with-three-kings
@@ -2636,9 +2648,22 @@ the wrong artwork** and minted 301s pointing at the wrong pieces — undoing §2
 precisely. This is §24.4's error wearing a different hat, and the only reason it
 did not land is that the field had been checked live first.
 
+A third, smaller error: a hand-count of one batch said 80 renames where 79 had
+been written. Reconciling the written ids against the source list after every
+round caught it. Counting several hundred items by eye does not hold; the
+reconciliation step is what makes a bulk rename safe.
+
+Verified three ways: per-round reconciliation (final `495/495, remaining: 0`),
+a 25-product sample spread across the range re-read live (all hyphenated, no
+underscores), and redirect spot-checks from three separate batches.
+
 **Lesson, and it is the same one as 26.6.** A cache is stale exactly where the
 work was done. The fields you edited are the fields most likely to have drifted,
 so they are the worst possible candidates for a cached read.
+
+**Second lesson.** Before a bulk write, prove the mutation shape on one row and
+verify its *side effect*, not its return value. A rename that silently skips its
+redirect looks identical in the response to one that does not.
 
 ### 26.9 A second duplicate family, found the same way as the first
 
@@ -2686,9 +2711,7 @@ CI, so "mergeable and clean" is the whole signal available.
 1. **PR #27** — merge to deploy the collection `ItemList`.
 2. **78 unprotected duplicates** (26.9) — same call as the 184.
 
-**Open work:**
-3. **495 underscore handles** — re-read all 495 live (not from cache, per 26.8),
-   then rewrite with `redirectNewHandle: true`.
+**Open work:** none outstanding from this section.
 
 **Verification owed:**
 4. The two "non-critical issues" rows on the product Rich Results test.
