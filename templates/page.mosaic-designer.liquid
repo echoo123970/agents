@@ -149,10 +149,10 @@
         <button type="button" data-look="stone" aria-pressed="true">Stone</button>
         <button type="button" data-look="flat" aria-pressed="false">Plain colors</button>
       </div>
-      <label class="field" for="gap">Gap closing
+      <!-- gap closing is set automatically (small breaks in lines are joined); kept hidden for customers -->
+      <label class="field" for="gap" hidden>Gap closing
         <span class="row"><input id="gap" type="range" min="0" max="8" value="2"><span class="val" id="gap-val">2</span></span>
       </label>
-      <p class="hint">Raise this if a fill leaks through a small gap in the lines.</p>
       <button class="btn block danger" id="clear-colors" type="button">Clear all colors</button>
         </div>
       </details>
