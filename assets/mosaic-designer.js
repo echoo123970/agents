@@ -1288,6 +1288,8 @@ function setTool(t) {
 $('#step-sketch').addEventListener('click', () => setMode('sketch'));
 $('#step-color').addEventListener('click', () => setMode('color'));
 $('#step-mosaic').addEventListener('click', () => setMode('mosaic'));
+// the four ways to start, from anywhere (the design stays until one is chosen)
+$('#to-start').addEventListener('click', () => { $('#upload-panel').hidden = true; $('#gallery').hidden = true; clearPending(); showStart(true); $('#start').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
 $('#prev-step').addEventListener('click', () => {
   if (state.mode === 'sketch') { // step 1 goes back to the four ways to start; the design stays until one is chosen
     $('#upload-panel').hidden = true; $('#gallery').hidden = true; clearPending(); showStart(true); return;
