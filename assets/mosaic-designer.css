@@ -83,6 +83,11 @@
 .imd #sketch-tools.draw-only :is(#trace-photo, .imd #trace-opts, .imd #pic-label, .imd #import-sketch, .imd #trace-field, .imd #ai-redraw) { display: none !important; }
 .imd #ai-box .row { flex-wrap: wrap; }
 .imd #ai-box .row .btn { flex: 1 1 100% !important; }
+.imd .ai-wait { position: absolute; inset: 0; z-index: 4; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: rgba(255,255,255,.82); color: var(--muted, #5b6478); font-size: 14px; text-align: center; }
+.imd .ai-wait b { font-size: 18px; color: var(--ink, #16335e); font-weight: 600; font-variant-numeric: tabular-nums; }
+.imd .spinner { width: 42px; height: 42px; border-radius: 50%; border: 4px solid rgba(43,123,232,.2); border-top-color: var(--accent, #2B7BE8); animation: spin .9s linear infinite; }
+.imd #ai-go.loading::before { content: ""; display: inline-block; width: 14px; height: 14px; margin-right: 8px; border-radius: 50%; border: 2px solid rgba(255,255,255,.45); border-top-color: #fff; animation: spin .9s linear infinite; vertical-align: -2px; }
+@keyframes spin { to { transform: rotate(360deg); } }
 .imd .draw-hint { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 32px; text-align: center; pointer-events: none; color: var(--muted, #5b6478); font-size: 15px; line-height: 1.6; }
 .imd .draw-hint b { font-size: 20px; color: var(--ink, #16335e); font-weight: 600; }
 .imd .draw-hint span { max-width: 460px; }

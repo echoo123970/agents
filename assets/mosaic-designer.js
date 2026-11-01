@@ -1952,7 +1952,7 @@ let freeAI = false;
 async function runFree(desc) {
   const status = $('#ai-status'), go = $('#ai-go');
   if (!desc) { status.textContent = 'Type what you would like first, for example: a compass rose with waves around it.'; $('#ai-prompt').focus(); return; }
-  go.disabled = $('#ai-new').disabled = true; busy(true, 'Drawing your design…');
+  aiLoading(true);
   status.textContent = window.IMOSAIC_AI_URL && aiEdit && inkUsed() ? 'Changing your design… this can take up to a minute.'
     : 'Drawing your design… this can take up to a minute. It replaces the current sketch; Undo brings it back.';
   if (window.IMOSAIC_AI_URL) return runOpenAI(desc, status, go);
@@ -1972,7 +1972,7 @@ async function runFree(desc) {
     await new Promise(r => setTimeout(r, 5000));
     img = await fetchDrawing(url.replace(/seed=\d+/, 'seed=' + Math.floor(Math.random() * 1e6)));
   }
-  busy(false); go.disabled = $('#ai-new').disabled = false;
+  aiLoading(false);
   if (!img) { status.textContent = 'Our drawing service is busy right now. Please try again in a minute, or upload or draw your design instead.'; return; }
   useDrawing(img, status);
 }
@@ -1989,22 +1989,47 @@ function aiButtons() {
 }
 // true when the canvas has any drawing on it
 function inkUsed() { const d = currentInk?.data; if (!d) return false; for (let i = 3; i < d.length; i += 64) if (d[i]) return true; return false; }
+// While a drawing is being made: a spinner and running timer on the canvas and on the button.
+let aiTimer = 0;
+function aiLoading(on, label = 'Drawing your design') {
+  const go = $('#ai-go'), wait = $('#ai-wait');
+  clearInterval(aiTimer);
+  go.disabled = $('#ai-new').disabled = on;
+  go.classList.toggle('loading', on); wait.hidden = !on;
+  if (!on) { aiButtons(); return; }
+  const t0 = Date.now(), tick = () => {
+    const s = Math.round((Date.now() - t0) / 1000), t = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+    go.textContent = `Drawing… ${t}`;
+    $('#ai-wait-text').textContent = `${label}… ${t}`;
+  };
+  tick(); aiTimer = setInterval(tick, 1000);
+  $('#slab').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
 async function runOpenAI(desc, status, go) {
   const r = W / H, size = r > 1.2 ? '1536x1024' : r < .83 ? '1024x1536' : '1024x1024';
-  go.disabled = $('#ai-new').disabled = true; busy(true, 'Drawing your design…');
-  status.textContent = 'Drawing your design… this can take up to a minute.';
+  busy(false);
   let img = null, msg = '';
   // "Change my current sketch": the sketch goes along, so new parts are drawn onto it
   const edit = aiEdit && inkUsed();
   const image = edit ? (() => { const c = mk(), x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, W, H); x.drawImage(ink, 0, 0); return c.toDataURL('image/png'); })() : undefined;
+  aiLoading(true, edit ? 'Changing your design' : 'Drawing your design');
+  status.textContent = 'This usually takes 20 to 60 seconds. Please keep this page open.';
   try {
-    const res = await fetch(window.IMOSAIC_AI_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: desc, size, image }) });
-    if (res.ok) img = await loadPhoto(URL.createObjectURL(await res.blob()));
-    else msg = (await res.json().catch(() => ({}))).error || '';
-  } catch (e) { console.error(e); }
-  busy(false); go.disabled = $('#ai-new').disabled = false;
+    const ctl = new AbortController(), stop = setTimeout(() => ctl.abort(), 150000);
+    const res = await fetch(window.IMOSAIC_AI_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: desc, size, image }), signal: ctl.signal });
+    clearTimeout(stop);
+    const type = res.headers.get('Content-Type') || '';
+    if (res.ok && type.startsWith('image/')) img = await loadPhoto(URL.createObjectURL(await res.blob()));
+    else if (res.ok) msg = 'the drawing helper is not set up yet (it answered without a drawing)';
+    else msg = (await res.json().catch(() => ({}))).error || `the drawing helper answered ${res.status}`;
+  } catch (e) {
+    console.error(e);
+    msg = e.name === 'AbortError' ? 'busy' : 'the drawing helper could not be reached';
+  }
+  aiLoading(false);
   if (!img) {
-    status.textContent = msg && msg !== 'busy' ? `Sorry, we could not draw that: ${msg}` : 'Our drawing service is busy right now. Please try again in a minute, or upload or draw your design instead.';
+    status.textContent = msg && msg !== 'busy' ? `Sorry, we could not draw that: ${msg}.` : 'Our drawing service is busy right now. Please try again in a minute, or upload or draw your design instead.';
+    toast(status.textContent);
     return;
   }
   useDrawing(img, status);
