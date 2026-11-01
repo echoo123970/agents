@@ -2159,7 +2159,10 @@ function showPending(img) { $('#draw-hint').hidden = true; pendingImg = img; set
 function clearPending() { if (pendingImg) { pendingImg = null; composite(); } }
 const UP_ACTIONS = {
   bw: [['lines', 'Color it with our stones', 'We keep your black lines. Then you fill each area with a stone and see it as a mosaic.']],
-  color: [['colors', 'Make it a mosaic in our stones', 'We match every part of your photo to our closest stones. Tap any area to change its stone, then see it as a hand-cut mosaic.']],
+  color: [
+    ['colors', 'Make it a mosaic in our stones', 'We match every part of your photo to our closest stones. Tap any area to change its stone, then see it as a hand-cut mosaic.'],
+    ['keep', 'It is already a mosaic: keep it', 'Your mosaic stays exactly as it is. Tap any area and pick a stone to change its color.'],
+  ],
 };
 // A design picked from our shop is already one of our mosaics: customers either change its colors
 // or clear them and repaint it themselves.
@@ -2205,6 +2208,8 @@ $('#up-done').addEventListener('click', () => { $('#upload-panel').hidden = true
 function runUpload(how) {
   pendingImg = null;
   state.sourceKind = upKind;
+  // a photo of a mosaic: keep the real piece and only change its colors (like our own designs)
+  if (how === 'keep') { state.sourceKind = 'mosaic'; how = 'colors'; }
   $('#trace-mode').value = how === 'picture' ? 'colors' : how;
   showTraceFields();
   if (how === 'picture') {
@@ -2341,7 +2346,8 @@ function traceColors() {
   const d = drawImported().data;
   const ch = [new Float32Array(N), new Float32Array(N), new Float32Array(N)];
   for (let i = 0; i < N; i++) { ch[0][i] = d[i * 4]; ch[1][i] = d[i * 4 + 1]; ch[2][i] = d[i * 4 + 2]; }
-  for (const c of ch) boxBlur(c, sourceData?.mosaic ? 5 : 2); // a mosaic photo's grout lines blur away
+  // a mosaic photo's grout lines blur away (about one tile across), so each area is one piece, not tile-sized bits
+  for (const c of ch) boxBlur(c, sourceData?.mosaic ? Math.max(5, Math.round(Math.min(W, H) / 64)) : 2);
   const lab = new Float32Array(N * 3);
   for (let i = 0; i < N; i++) { const v = srgbToLab(ch[0][i], ch[1][i], ch[2][i]); lab[i * 3] = v[0]; lab[i * 3 + 1] = v[1]; lab[i * 3 + 2] = v[2]; }
   const dist = (i, c) => (lab[i * 3] - c[0]) ** 2 + (lab[i * 3 + 1] - c[1]) ** 2 + (lab[i * 3 + 2] - c[2]) ** 2;
