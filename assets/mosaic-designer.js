@@ -1513,13 +1513,13 @@ $('#file-sketch').addEventListener('change', async e => {
 let upKind = 'color', pendingImg = null;
 function showPending(img) { $('#draw-hint').hidden = true; pendingImg = img; setMode('sketch'); composite(); }
 function clearPending() { if (pendingImg) { pendingImg = null; composite(); } }
-const UP_ACTIONS = {
-  bw: [['lines', 'Color it with our stones', 'We keep your black lines. Then you fill each area with a stone and see it as a mosaic.']],
-  color: [
-    ['outline', 'Make it black & white to color', 'We turn your photo into a black & white outline. You can change it, then color each area with our stones in step 2.'],
-    ['keep', 'It is already a mosaic: keep it', 'Your mosaic stays exactly as it is. Tap any area and pick a stone to change its color.'],
-  ],
-};
+// One question for every upload: what is the picture? Each answer sets up its journey.
+const UP_CHOICES = [
+  ['lines', 'bw', 'A black & white drawing', 'We keep your lines. You color each area with our stones.'],
+  ['outline', 'color', 'A colored picture or photo', 'We turn it into a black & white outline. You color each area with our stones.'],
+  ['keep', 'mosaic', 'A photo of a mosaic', 'It stays exactly as it is. Tap any area and pick a stone to change its color.'],
+];
+const UP_ACTIONS = { bw: [UP_CHOICES[0]], color: [UP_CHOICES[1]] }; // first choice for a detected kind
 // A design picked from our shop is already one of our mosaics: customers either change its colors
 // or clear them and repaint it themselves.
 const STORE_ACTIONS = [
@@ -1531,10 +1531,11 @@ let upAction = null; // the option shown on the canvas right now
 let upStore = false; // true while the picture is a design from our shop
 function renderUpload() {
   $$('.up-kind button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.kind === upKind)));
-  $('#up-kind-label').hidden = $('.up-kind').hidden = $('#up-act-num').hidden = upStore;
-  const acts = upStore ? STORE_ACTIONS : UP_ACTIONS[upKind];
-  $('#up-actions').classList.toggle('two', acts.length === 2); $('#up-actions').classList.toggle('one', acts.length === 1); $('#up-try').hidden = acts.length < 2;
-  $('#up-hint').textContent = upStore ? 'Change its colors, or clear them and paint it your way.' : "Tell us what it is and what you'd like, and we'll set it up.";
+  $('#up-kind-label').hidden = $('.up-kind').hidden = true; $('#up-act-num').hidden = true;
+  const acts = upStore ? STORE_ACTIONS : UP_CHOICES.map(([how, , title, text]) => [how, title, text]);
+  $('#up-actions').classList.toggle('two', acts.length === 2); $('#up-actions').classList.toggle('one', acts.length === 1); $('#up-try').hidden = true;
+  $('#up-act-q').textContent = upStore ? 'What would you like?' : 'What is this picture?';
+  $('#up-hint').textContent = upStore ? 'Change its colors, or clear them and paint it your way.' : "Choose what your picture is and we'll set it up. Try each one; the design changes as you click.";
   const box = $('#up-actions'); box.textContent = '';
   for (const [how, title, text] of acts) {
     const b = document.createElement('button'); b.type = 'button';
@@ -1547,7 +1548,9 @@ function renderUpload() {
 }
 // Every choice takes effect at once and the panel stays open, so customers can compare.
 function applyUpload(how) {
-  upAction = how; renderUpload();
+  upAction = how;
+  if (!upStore) { const c = UP_CHOICES.find(x => x[0] === how); if (c) upKind = c[1] === 'mosaic' ? 'color' : c[1]; }
+  renderUpload();
   const img = pendingImg || importedImg;
   heavy(() => {
     try { runUpload(how); }
