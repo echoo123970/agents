@@ -1439,6 +1439,7 @@ $('#file-sketch').addEventListener('change', async e => {
   importedImg = img; importedFile = f; lastSvg = null;
   $('#ai-redraw').hidden = !sampleFn || !imagesOk;
   showStart(false);
+  fitToPicture(img);
   $('#up-thumb').src = img.src;
   $('#up-title').textContent = 'Your picture'; $('#up-link').hidden = true;
   upKind = isColorful(img) ? 'color' : 'bw'; upAction = null; upStore = false;
@@ -1622,7 +1623,7 @@ function traceImage() {
   }
   for (let p = 0; p < N; p++) { dark[p] = joined[p] ? 1 : 0; light[p] = 1 - dark[p]; }
   // only shapes much wider than a drawn line (letters, silhouettes) get a fillable inside; bold lines stay lines
-  const inner = dilate(light, Math.max(4, Math.round(Math.min(W, H) / 110)));
+  const inner = dilate(light, Math.max(4, Math.round(Math.max(W, H) / 110)));
   for (let p = 0; p < N; p++) if (dark[p] && inner[p]) out.data[p * 4 + 3] = 255;
   ictx.putImageData(out, 0, 0);
 }
@@ -1789,6 +1790,11 @@ function renderGallery() {
     box.innerHTML = '<p class="hint">Our ready designs load on the iMosaicArt website. Please open this tool at imosaicart.com/pages/mosaic-designer, or upload a picture instead.</p>';
   });
 }
+// The mosaic takes the picture's proportions at the chosen width, so the whole picture shows uncropped.
+function fitToPicture(img) {
+  const h = Math.round(state.sizeW * img.naturalHeight / img.naturalWidth * 2) / 2;
+  if (h > 0 && h !== state.sizeH) { state.sizeH = h; $('#size-h').value = h; const [fw, fh] = frameFor(state.sizeW, h); resizeFrame(fw, fh); refresh(); }
+}
 async function pickDesign(p) {
   $('#gallery').hidden = true;
   busy(true);
@@ -1797,9 +1803,7 @@ async function pickDesign(p) {
   if (!img) return toast('That design could not be loaded. Please try another one.');
   importedImg = img; importedFile = null; lastSvg = null; sourceData = null;
   $('#ai-redraw').hidden = true;
-  // the mosaic takes the piece's proportions at the chosen width
-  const h = Math.round(state.sizeW * img.naturalHeight / img.naturalWidth * 2) / 2;
-  if (h > 0 && h !== state.sizeH) { state.sizeH = h; $('#size-h').value = h; const [fw, fh] = frameFor(state.sizeW, h); resizeFrame(fw, fh); refresh(); }
+  fitToPicture(img);
   // a piece from our shop opens with its areas already filled; customers can change the colors
   // or clear them and repaint
   $('#up-thumb').src = img.src;
