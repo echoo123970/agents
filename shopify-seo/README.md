@@ -2292,11 +2292,16 @@ correct, untouched" in §24.5 for exactly that reason, and it was not correct.
 
 The only thing that found it was a person looking at the picture.
 
-`MAR061` is the one remaining product in the `MAR055`–`MAR072` run that has
-never been checked against its image, and it is internally consistent in the
-same way `MAR059` was. It also carries the same 312-character body-dump meta
-description, which is a weak signal it came off the same conveyor. **Unverified,
-not verified-correct** — the distinction §18.2 and §21.7 keep insisting on.
+`MAR061` was the one remaining product in the `MAR055`–`MAR072` run never
+checked against its image, and it was internally consistent in the same way
+`MAR059` was. It also carried the same 312-character body-dump meta
+description, which was a weak signal it came off the same conveyor.
+**Unverified, not verified-correct** — the distinction §18.2 and §21.7 keep
+insisting on.
+
+The owner has since looked at it. It is Christ, which its title, handle and alt
+text all already said. **The weak signal was right about the meta description
+and wrong about the subject** — see §24.8.
 
 ### 24.7 Still open
 
@@ -2305,7 +2310,144 @@ not verified-correct** — the distinction §18.2 and §21.7 keep insisting on.
    crawlable at `/collections/all`, so the exposure is live, not hypothetical.
    Proposal: keep 20 canonical, noindex the rest, delete nothing. Gates item 2.
 2. **884 of 1,811 active titles render over 60 characters.** Blocked on item 1.
-3. **`MAR061`** — never checked against its image, and internally consistent
-   in the same way `MAR059` was (§24.6a).
-4. **Rich Results re-test** — the only item that cannot be done from this
+3. **Rich Results re-test** — the only item that cannot be done from this
    environment.
+
+### 24.8 Addendum: `MAR061` closed, and twelve meta descriptions rewritten
+
+Written after §24 was merged. The work below happened afterwards and belongs
+with it.
+
+**`MAR061` needed no correction to its subject.** The owner confirmed it is
+Christ; its title, handle and alt text already said so. §24.6a was right that
+internal consistency proves nothing, and in this instance the consistency
+happened to be correct.
+
+**But checking it found the defect it shared with `MAR059`.** Its meta
+description was 312 characters of dumped body copy, double the useful limit.
+Rewritten to 141.
+
+**That one check exposed eleven more.** A sweep of the whole
+`MAR055`–`MAR072` run showed most of the batch still carrying the same
+body-dump pattern at 360–540 characters, every one of them truncated in search
+results: `MAR056`, `MAR062`, `MAR063`, `MAR064`, `MAR065`, `MAR066`, `MAR067`,
+`MAR068`, `MAR069`, `MAR071`, `MAR072`. All eleven rewritten from their own
+body copy, 126–138 characters each.
+
+**Two carried broken quotation marks** that would have rendered as-is in a
+search result:
+
+| SKU | Opened with |
+|---|---|
+| `MAR067` | `St. Joseph and the Christ Child"` — a closing quote with no opening one |
+| `MAR071` | `'Queen of Heaven"` — an apostrophe paired with a double quote |
+
+Final state of the run, verified by a fresh read of all eighteen: titles,
+handles and alt text agree; every meta description is 111–141 characters; no
+quote defects; US spelling throughout.
+
+**The pattern worth keeping.** Three times in this run, checking one product
+because of a weak signal revealed a defect across a dozen more — the eleven
+here, the sixteen handles in §24.1, the eight live corrupted descriptions in
+§22.4. In each case the first product was found by accident and the rest by
+sweeping the batch it came from. **Sweep the cohort, not the symptom.**
+
+## 25. The repository consolidated (2026-11-01)
+
+Not store work. Eleven pull requests had been open against this branch since
+June, from sessions that each ended without merging. The owner confirmed the
+work in them was in use, so they were triaged and resolved rather than left.
+
+### 25.1 What the triage found
+
+Reading the branches locally against the current base was far cheaper than
+eleven API round-trips, and it changed the picture twice.
+
+**`shopify-live` is the active branch.** It moved twice *during* the triage,
+both times with Mosaic Designer commits. That single fact reclassified three
+pull requests: what looked like unmerged work was, in several cases, an earlier
+draft of something already shipped.
+
+**But "already shipped" is not the same as "redundant".** `tools/mosaic-designer`
+in #11 looked superseded by `assets/mosaic-designer.js` on `shopify-live`. It is
+not — it is the *source and build pipeline* the shipped file is generated from.
+Closing it would have thrown away the toolchain and kept only the output.
+
+### 25.2 Merged
+
+| PR | What landed |
+|---|---|
+| #7 | `SKU_LOGIC.md`, image upload script, settings |
+| #1 | Redesign blueprint and the Dawn delivery package |
+| #8 | `brochure/` — trade portfolio, price list, colour charts, build pipeline |
+| #12 | `imosaicart-journal-writer` agent |
+| #10 | `meta-post-scheduler` agent |
+| #5 | `instagram-publisher` agent |
+| #2 | `.mcp.json`, `SHOPIFY_SETUP.md` |
+| #11 | `tools/mosaic-designer` source and build pipeline |
+| #3 | The self-contained Shopify theme, 153 files |
+
+The repository went from three top-level entries to twelve. All five agents are
+now committed under `.claude/agents/`; three of them had existed only in session
+checkouts, which is why they worked but were not in the repository.
+
+### 25.3 A sequencing mistake of mine
+
+The merges were done in the order the pull requests were listed, not in an order
+chosen with any thought.
+
+**#3 was `clean` before #1 was merged and `dirty` afterwards.** #1 adds
+`theme/README.md` and three `theme/templates/*.json`; #3 adds the same four
+paths. Merging #3 first would have cost nothing. The conflict was created
+entirely by the order, and it then needed a resolution commit pushed to another
+session's branch.
+
+Order the merges by what they touch before starting, not by PR number.
+
+### 25.4 Two artifacts that claimed the same directory
+
+The conflict turned out not to be mechanical, and resolving it the obvious way
+would have destroyed a deliverable.
+
+| | #1's templates | #3's templates |
+|---|---|---|
+| `collection.json` | 826 bytes | 81 bytes |
+| Sections referenced | `main-collection-banner`, `main-collection-product-grid` | `main-collection` |
+| Do those sections exist here? | **No** | Yes, #3 ships them |
+| What it is | a package to paste into the Dawn draft theme | part of a self-contained theme |
+
+They are not two versions of one file. `theme/APPLY.md` tells the reader to
+paste #1's three JSON files into the Dawn draft theme; they reference standard
+Dawn section types that this repository does not contain and never will. #3 is a
+complete theme that brings its own sections.
+
+Taking either side would have been wrong. #1's package was moved intact to
+`theme/dawn-package/` with a `NOTE.md` explaining the split, and **all four
+files were verified byte-for-byte identical to the originals before the merge
+was allowed to proceed.** Nothing was altered.
+
+### 25.5 Closed, with branches left intact
+
+**#6, `seo-sem-optimizer`** — 164 lines, superseded by the 325-line
+`seo-aeo-geo-sem-optimizer.md` already on the base, which is the agent that did
+all of §18–§24. The owner confirmed the earlier version was never used. Merging
+would have put two similar agents under different names in `.claude/agents/`,
+making invocation ambiguous for no gain.
+
+**#4, "Shopify live"** — a pull request from `shopify-live` into this branch:
+582 commits, 201 files, `dirty`, open since June, and **deleting
+`.claude/agents/shopify-product-creator.md`**. A pull request between two
+long-lived branches that both keep moving can never complete; it is permanently
+behind itself. The direction was also backwards — `shopify-live` is the deploy
+*target*, as §13 and PR #16 used it.
+
+Closing a pull request does not delete or alter its head branch. `shopify-live`
+is untouched and theme deployment is unaffected.
+
+### 25.6 Still open
+
+1. **The generated duplicate farm** — ~350 active products from 20 artworks
+   crossed with 16 adjectives, one title live six times, all crawlable at
+   `/collections/all`. Gates item 2.
+2. **884 of 1,811 active titles render over 60 characters.**
+3. **Rich Results re-test.**
