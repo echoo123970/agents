@@ -1283,7 +1283,7 @@ function setMode(mode) {
   showAiBar();
   $('#color-tools').hidden = mode !== 'color';
   $('#mosaic-tools').hidden = mode !== 'mosaic';
-  $('#joint-group').hidden = mode !== 'mosaic';
+  $('#joint-group').hidden = mode !== 'mosaic' || photoFinal(); // our existing mosaics keep their own grout
   $('#slab').classList.toggle('mode-color', mode !== 'sketch');
   $('#status').innerHTML = {
     sketch: 'Draw or upload your design. Every closed shape becomes one piece you can fill with stone.',
@@ -1304,6 +1304,8 @@ function markFrom() {
   $('#mosaic-from-group').hidden = !sourceData || photoFinal();
   $$('#mosaic-from-group .seg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.from === state.mosaicFrom)));
   $('#mosaic-areas-hint').hidden = usePicture();
+  $('#mosaic-areas-hint').textContent = photoFinal() ? 'Your mosaic with its own tiles and grout, in the stones you chose. Tap an area to change its stone.'
+    : 'Each area is laid with hand-cut tiles of its stone, cut to fit the shape. Tap an area to change its stone.';
   if (state.mode === 'mosaic' && usePicture()) $('#status').textContent = 'Your picture as a hand-cut mosaic in our stones. Change the tile size or grout on the left.';
 }
 const TOOL_HINTS = {
