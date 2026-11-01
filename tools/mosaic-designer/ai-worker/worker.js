@@ -1,7 +1,7 @@
 // iMosaicArt Mosaic Designer: "Describe it" drawing helper (Cloudflare Worker).
 //
-// The website sends a customer's idea; this worker asks OpenAI's image model for black & white
-// coloring-page line art and returns the PNG. The OpenAI key lives only here, as a secret, never in
+// The website sends a customer's idea (and, to change an existing sketch, that sketch as a PNG);
+// this worker asks OpenAI's image model for black & white coloring-page line art and returns the PNG. The OpenAI key lives only here, as a secret, never in
 // the website's code. Only pages on imosaicart.com may call it.
 //
 // Settings (Cloudflare dashboard -> Worker -> Settings -> Variables and secrets):
@@ -34,15 +34,26 @@ export default {
     if (!idea) return fail(400, 'Describe the design first');
     const size = SIZES.includes(body.size) ? body.size : '1536x1024';
 
-    const prompt = `Simple coloring book page for a stone mosaic: ${idea}. `
-      + 'Thick bold continuous black outlines of even width, every shape fully closed, flat line art, large simple shapes, '
-      + 'no shading, no hatching, no fur or grass texture, no gray, no text or letters, pure white background, centered.';
+    const style = 'Thick bold continuous black outlines of even width, every shape fully closed, flat line art, large simple shapes, '
+      + 'no shading, no hatching, no fur or grass texture, no gray, no text or letters, pure white background.';
+    const model = env.OPENAI_IMAGE_MODEL || 'gpt-image-1', quality = env.OPENAI_IMAGE_QUALITY || 'low';
+    const sketch = typeof body.image === 'string' && body.image.startsWith('data:image/png;base64,') && body.image.length < 8e6 ? body.image : null;
 
-    const r = await fetch('https://api.openai.com/v1/images/generations', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: env.OPENAI_IMAGE_MODEL || 'gpt-image-1', prompt, size, quality: env.OPENAI_IMAGE_QUALITY || 'low', n: 1 }),
-    });
+    let r;
+    if (sketch) { // change the customer's own sketch
+      const form = new FormData();
+      form.append('model', model); form.append('size', size); form.append('quality', quality); form.append('n', '1');
+      form.append('prompt', `This is a black and white line drawing for a stone mosaic. Keep everything already drawn where it is, and change it as follows: ${idea}. Draw any new parts in the same style. ${style}`);
+      const bytes = Uint8Array.from(atob(sketch.split(',')[1]), c => c.charCodeAt(0));
+      form.append('image', new Blob([bytes], { type: 'image/png' }), 'sketch.png');
+      r = await fetch('https://api.openai.com/v1/images/edits', { method: 'POST', headers: { Authorization: `Bearer ${env.OPENAI_API_KEY}` }, body: form });
+    } else {
+      r = await fetch('https://api.openai.com/v1/images/generations', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model, prompt: `Simple coloring book page for a stone mosaic: ${idea}. ${style} Centered.`, size, quality, n: 1 }),
+      });
+    }
     if (!r.ok) {
       const detail = await r.json().catch(() => ({}));
       const busy = r.status === 429 || r.status >= 500;

@@ -111,6 +111,8 @@ button { cursor: pointer; }
 /* Stage */
 .stage { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 #sketch-tools.draw-only :is(#trace-photo, #trace-opts, #pic-label, #import-sketch, #trace-field, #ai-redraw) { display: none !important; }
+#ai-box .row { flex-wrap: wrap; }
+#ai-box .row .btn { flex: 1 1 100% !important; }
 .draw-hint { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 32px; text-align: center; pointer-events: none; color: var(--muted, #5b6478); font-size: 15px; line-height: 1.6; }
 .draw-hint b { font-size: 20px; color: var(--ink, #16335e); font-weight: 600; }
 .draw-hint span { max-width: 460px; }
@@ -365,9 +367,10 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
         <label class="field" for="ai-prompt"><span class="sr">What should we draw?</span>
           <textarea id="ai-prompt" rows="4" placeholder="Compass rose medallion with a wave border"></textarea>
         </label>
-        <label class="check" for="ai-edit"><input type="checkbox" id="ai-edit"> Change the current sketch instead</label>
+        <label class="check" for="ai-edit"><input type="checkbox" id="ai-edit"> Add to my current sketch (keep what I drew)</label>
         <div class="row">
           <button class="btn primary" id="ai-go" type="button" style="flex:1">Draw it</button>
+          <button class="btn" id="ai-new" type="button" hidden>Start from scratch</button>
           <button class="btn" id="ai-stop" type="button" hidden>Stop</button>
         </div>
         <p class="hint" id="ai-status">Claude draws black outlines you can edit, then color.</p>
@@ -2616,8 +2619,9 @@ let freeAI = false;
 async function runFree(desc) {
   const status = $('#ai-status'), go = $('#ai-go');
   if (!desc) { status.textContent = 'Type what you would like first, for example: a compass rose with waves around it.'; $('#ai-prompt').focus(); return; }
-  go.disabled = true; busy(true, 'Drawing your design…');
-  status.textContent = 'Drawing your design… this can take up to a minute. It replaces the current sketch; Undo brings it back.';
+  go.disabled = $('#ai-new').disabled = true; busy(true, 'Drawing your design…');
+  status.textContent = window.IMOSAIC_AI_URL && aiEdit && inkUsed() ? 'Changing your design… this can take up to a minute.'
+    : 'Drawing your design… this can take up to a minute. It replaces the current sketch; Undo brings it back.';
   if (window.IMOSAIC_AI_URL) return runOpenAI(desc, status, go);
   const prompt = `simple coloring book page, ${desc}. Thick bold continuous black outlines of even width, every shape fully closed, `
     + 'flat vector line art, large simple shapes, no shading, no hatching, no fur or grass texture, no sketch lines, no gray, no words, pure white background, centered';
@@ -2635,23 +2639,37 @@ async function runFree(desc) {
     await new Promise(r => setTimeout(r, 5000));
     img = await fetchDrawing(url.replace(/seed=\d+/, 'seed=' + Math.floor(Math.random() * 1e6)));
   }
-  busy(false); go.disabled = false;
+  busy(false); go.disabled = $('#ai-new').disabled = false;
   if (!img) { status.textContent = 'Our drawing service is busy right now. Please try again in a minute, or upload or draw your design instead.'; return; }
   useDrawing(img, status);
 }
 // With the store's drawing helper set up (ai-worker/worker.js, OpenAI behind it), the description is
 // drawn there; the key stays on the helper.
+// With the store's helper, a design on the canvas can be changed by description ("add a dog"),
+// or replaced with a new drawing ("Start from scratch").
+let aiEdit = false;
+function aiButtons() {
+  const can = freeAI && !!window.IMOSAIC_AI_URL && inkUsed();
+  $('#ai-go').textContent = can ? 'Change my design' : 'Draw it';
+  $('#ai-new').hidden = !can;
+  $('label[for="ai-edit"]').hidden = true;
+}
+// true when the canvas has any drawing on it
+function inkUsed() { const d = currentInk?.data; if (!d) return false; for (let i = 3; i < d.length; i += 64) if (d[i]) return true; return false; }
 async function runOpenAI(desc, status, go) {
   const r = W / H, size = r > 1.2 ? '1536x1024' : r < .83 ? '1024x1536' : '1024x1024';
-  go.disabled = true; busy(true, 'Drawing your design…');
+  go.disabled = $('#ai-new').disabled = true; busy(true, 'Drawing your design…');
   status.textContent = 'Drawing your design… this can take up to a minute.';
   let img = null, msg = '';
+  // "Change my current sketch": the sketch goes along, so new parts are drawn onto it
+  const edit = aiEdit && inkUsed();
+  const image = edit ? (() => { const c = mk(), x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, W, H); x.drawImage(ink, 0, 0); return c.toDataURL('image/png'); })() : undefined;
   try {
-    const res = await fetch(window.IMOSAIC_AI_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: desc, size }) });
+    const res = await fetch(window.IMOSAIC_AI_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: desc, size, image }) });
     if (res.ok) img = await loadPhoto(URL.createObjectURL(await res.blob()));
     else msg = (await res.json().catch(() => ({}))).error || '';
   } catch (e) { console.error(e); }
-  busy(false); go.disabled = false;
+  busy(false); go.disabled = $('#ai-new').disabled = false;
   if (!img) {
     status.textContent = msg && msg !== 'busy' ? `Sorry, we could not draw that: ${msg}` : 'Our drawing service is busy right now. Please try again in a minute, or upload or draw your design instead.';
     return;
@@ -2666,7 +2684,11 @@ function useDrawing(img, status) {
       $('#trace-mode').value = 'lines'; showTraceFields(); state.sourceKind = 'bw';
       $('#threshold').value = 72; $('#threshold-val').textContent = '72'; // keep the drawing's paler strokes too
       runTrace();
-      status.textContent = 'Done. Color it now, or go back to Design to fix lines. Not quite right? Press Draw it again for a new version.';
+      status.textContent = window.IMOSAIC_AI_URL ? 'Done. Describe a change (for example "add a dog") and press Change my design, or press Start from scratch for a new drawing.'
+        : 'Done. Fix lines with the drawing tools, or press Draw it again for a new version. Then press Next: Color it.';
+      // stay on Design so details can be changed by describing them, drawn by hand, or started again
+      setMode('sketch'); aiButtons();
+      toast('Your design is ready. Describe a change, draw on it, or press Next: Color it.');
     } catch (err) {
       console.error(err);
       status.textContent = 'That drawing could not be used. Please press Draw it again.';
@@ -2715,7 +2737,9 @@ async function runAI(kind) {
     go.disabled = redraw.disabled = false; $('#ai-stop').hidden = true; aiCtl = null;
   }
 }
-$('#ai-go').addEventListener('click', () => runAI('describe'));
+$('#ai-go').addEventListener('click', () => { aiEdit = true; runAI('describe'); });
+$('#ai-new').addEventListener('click', () => { aiEdit = false; runAI('describe'); });
+$('#ai-prompt').addEventListener('focus', () => { if (freeAI) aiButtons(); });
 $('#ai-redraw').addEventListener('click', () => runAI('redraw'));
 $('#ai-stop').addEventListener('click', () => aiCtl?.abort());
 
@@ -2803,7 +2827,7 @@ async function initCapabilities() {
   $('#ai-box').hidden = true;
   if (!window.claude?.use) { // on the website a free image service draws descriptions
     freeAI = true; $('#ai-box').hidden = false;
-    $('label[for="ai-edit"]').hidden = true;
+    aiButtons();
     $('#ai-status').textContent = 'We draw black & white outlines from your words. You then color them with our stones.';
     return;
   }
