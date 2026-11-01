@@ -2141,3 +2141,129 @@ creation time. That duplicate is untouched and is a separate decision.
 4. **`MAR058` / `MAR059` duplicate title.**
 5. **`cloud-search-all-products`** — publish as a Shop All page, or leave
    hidden.
+
+## 24. Eighteen religious listings reconciled, and an ID error of my own (2026-11-01)
+
+### 24.1 The full extent of the handle corruption
+
+§23.5 recorded seven mismatched handles in the `MAR055`–`MAR063` range and
+called the rest blocked on the owner. Both figures were wrong. Enumerating the
+whole `Religious Mosaics` product type (107 products) showed the corruption ran
+from **`MAR055` to `MAR072`** — sixteen products whose handle named a different
+artwork from their title. Only `MAR059` and `MAR061` in that run were correct.
+
+Everything outside that run was clean: all 67 products created in the same
+2025-11-01 batch under other categories, and all 89 other religious products,
+have handles matching their titles.
+
+### 24.2 The image alt text was wrong too
+
+Not recorded in §23.5 because it had not been looked at. On all sixteen, the
+`featuredMedia` alt text named **the same wrong artwork as the handle** — a
+Virgin Mary piece announced as `St. George and the Dragon Mosaic`.
+
+This is worse than the URL. Alt text is what Google Images indexes and what a
+screen reader reads aloud. A visually impaired visitor was told the wrong
+subject on sixteen products.
+
+It also gave a clean detection signature. Every correct religious product's alt
+ends `| Religious Mosaics | iMosaicArt`; on all sixteen broken ones the suffix
+was absent. Handle and alt agreed with each other; title and description agreed
+with each other. Two sources, two fields each.
+
+### 24.3 Two listings where the *title* was wrong, not the handle
+
+The working hypothesis after §23.5 was that titles were authoritative — the
+owner's `MAR058` confirmation supported it, and the product descriptions
+corroborated the titles in every case that could be checked from here.
+
+**That hypothesis was wrong twice.**
+
+| SKU | Title said | Reality | What was fixed |
+|---|---|---|---|
+| `MAR060` | The Nativity, with Mary, Joseph & Baby Jesus | **The Crucifixion with Mary and John** | title, body, meta description |
+| `MAR070` | "Agony in the Garden" | **The Last Judgment with Angels and Saints** | title, body, meta description |
+
+On both, the handle and alt were right and the title *and its description* were
+wrong — the description had been written to match the wrong subject, so
+correcting the title alone would have left the page describing something it
+does not depict.
+
+Had the mechanical fix been applied to all sixteen as planned, these two would
+have had their **correct** URLs rewritten to match **wrong** titles, making
+them worse. Only the owner's per-product confirmation caught it.
+
+### 24.4 An ID-lookup error, and its repair
+
+Writing the first batch of corrections, product IDs were used that had been
+**inferred from an earlier listing rather than resolved by query**. Four handle
+writes landed on the wrong products, including `MAR059`, whose handle was
+already correct.
+
+It was caught immediately: the mutation echoes each product's title, and the
+titles did not match the handles being set. The repair:
+
+1. Queried the true SKU → ID mapping for the whole range.
+2. Restored all six handles. The wrong handles formed a **cycle**
+   (`MAR055`'s correct handle was held by `MAR056`, whose was held by
+   `MAR057`, whose was held by `MAR059`), so they had to be freed in
+   dependency order within a single ordered mutation.
+3. Repaired three `urlRedirect` targets that pointed at the wrong product.
+   Shopify had already removed `MAR059`'s bogus redirect automatically when its
+   handle was restored.
+
+Only handles were touched; no titles or descriptions were lost. The bad state
+lasted a few minutes.
+
+**The lesson is narrow and was already available.** This same mistake was made
+and flagged an hour earlier, when IDs guessed for `MAR055`–`MAR057` returned
+`MAM019`, `MAR070` and `MAR072` instead. Noticing a failure mode is not the
+same as fixing it: **resolve SKU to ID by query, every time, even when a
+mapping seems obvious from a listing read minutes before.**
+
+### 24.5 Final state
+
+| | Count |
+|---|---:|
+| Handle corrected to match title | 13 |
+| Title, body and meta corrected to match artwork | 2 |
+| Already correct, untouched | 2 |
+| Alt text rewritten to house format | 16 |
+| 301 redirects created | 13 |
+
+All eighteen products in `MAR055`–`MAR072` now agree across title, handle and
+alt text, verified by a fresh read of every row rather than from the mutation
+responses. Every redirect was created by `redirectNewHandle: true`, inside the
+same transaction as its handle change, so no old URL ever returned a 404.
+
+### 24.6 `MAR058` and `MAR059` are not duplicates
+
+§23.5 flagged these as sharing a title exactly. They do, but they are **two
+different artworks**:
+
+| | `MAR058` | `MAR059` |
+|---|---|---|
+| Size | 150 × 90 cm (wide) | 110 × 130 cm (upright) |
+| Price | $1,588 | $1,658 |
+| Image | distinct | distinct |
+| Collections | religious-mosaics | religious-mosaics, best-sellers |
+
+Noindexing either would remove a real product from search. The actual defect is
+that **title, body copy and meta description are identical on both** — the body
+is the same paragraph word for word, and `MAR059`'s meta description is that
+paragraph dumped in at 312 characters, double the limit.
+
+The fix is differentiation, not exclusion. Orientation is the real difference
+and the one a wall-art buyer cares about. Pending the owner's choice of
+wording.
+
+### 24.7 Still open
+
+1. **The generated duplicate farm** — ~350 active products from 20 artworks
+   crossed with 16 adjectives, one title live six times. All of it is already
+   crawlable at `/collections/all`, so the exposure is live, not hypothetical.
+   Proposal: keep 20 canonical, noindex the rest, delete nothing. Gates item 2.
+2. **884 of 1,811 active titles render over 60 characters.** Blocked on item 1.
+3. **`MAR058` / `MAR059` differentiation** (§24.6).
+4. **Rich Results re-test** — the only item that cannot be done from this
+   environment.
