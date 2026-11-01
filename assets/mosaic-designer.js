@@ -236,9 +236,28 @@ let inkVer = 0;
 const FRAME = 1400;
 const frameFor = (w, h) => { const r = Math.max(.25, Math.min(4, h / w)); return r <= 1 ? [FRAME, Math.round(FRAME * r)] : [Math.round(FRAME / r), FRAME]; };
 // Changes the frame to a new shape, keeping the drawing and its colors centered and in proportion.
+// A point well inside area L (the one deepest from its edges), so it stays inside after rescaling.
+function interiorPoint(L) {
+  const lab = getLabels(), r = regions[L], step = Math.max(1, Math.round(Math.sqrt(r.area) / 40));
+  let best = r.seed, bestD = -1;
+  for (let y = r.y0; y <= r.y1; y += step) for (let x = r.x0; x <= r.x1; x += step) {
+    if (lab[y * W + x] !== L) continue;
+    let d = 0;
+    while (d < 40) {
+      const k = d + 1;
+      if (x - k < 0 || x + k >= W || y - k < 0 || y + k >= H) break;
+      if (lab[y * W + x - k] !== L || lab[y * W + x + k] !== L || lab[(y - k) * W + x] !== L || lab[(y + k) * W + x] !== L) break;
+      d = k;
+    }
+    if (d > bestD) { bestD = d; best = y * W + x; }
+  }
+  return { x: best % W, y: (best - best % W) / W };
+}
 function resizeFrame(newW, newH) {
   if (newW === W && newH === H) return;
   if (typeof sel !== 'undefined' && sel) finishSel(true);
+  // each colored area remembers a point well inside it, so its stone survives the rescale
+  state.fills = state.fills.map(f => { const L = labelOf(f); return L ? { ...f, ...interiorPoint(L) } : f; });
   const old = mk(); old.getContext('2d').drawImage(ink, 0, 0);
   const oW = W, oH = H;
   let s = Math.min(newW / oW, newH / oH), ox = (newW - oW * s) / 2, oy = (newH - oH * s) / 2;
@@ -1121,22 +1140,24 @@ function renderBom() {
   const body = $('#bom-body'), foot = $('#bom-foot');
   body.textContent = ''; foot.textContent = '';
   if (!groups.size) {
-    body.innerHTML = '<tr><td colspan="6" class="empty">No areas colored yet. Pick a color and tap the design.</td></tr>';
+    body.innerHTML = '<tr><td colspan="5" class="empty">No areas colored yet. Pick a color and tap the design.</td></tr>';
     return [];
   }
   const rows = [...groups].sort((a, b) => b[1].px - a[1].px).map(([id, g]) => ({ m: matById(id), ...g, area: toArea(g.px), share: g.px / total }));
   for (const r of rows) {
     const tr = document.createElement('tr');
     tr.innerHTML = `<td><div class="mat-cell"><canvas width="56" height="56"></canvas><div><div>${esc(r.m.name)}</div><div class="code">${esc(r.m.code || '')}</div></div></div></td>
-      <td>${TYPE_LABEL[r.m.type] || 'Marble'}</td><td class="num">${r.pieces ?? '—'}</td><td class="num">${r.tiles.toLocaleString()}</td><td class="num">${Math.round(r.share * 100)}%</td><td class="num">${r.area.toFixed(2)}</td>`;
+      <td>${TYPE_LABEL[r.m.type] || 'Marble'}</td><td class="num">${r.tiles.toLocaleString()}</td><td class="num">${pct(r.share)}</td><td class="num">${r.area.toFixed(2)}</td>`;
     drawThumb(tr.querySelector('canvas'), r.m);
     body.appendChild(tr);
   }
-  const tA = rows.reduce((s, r) => s + r.area, 0), pcs = rows[0].pieces == null ? '—' : rows.reduce((s, r) => s + r.pieces, 0), tls = rows.reduce((s, r) => s + r.tiles, 0);
-  foot.innerHTML = `<tr><td>Total</td><td></td><td class="num">${pcs}</td><td class="num">${tls.toLocaleString()}</td><td class="num">100%</td><td class="num">${tA.toFixed(2)}</td></tr>`;
+  const tA = rows.reduce((s, r) => s + r.area, 0), tls = rows.reduce((s, r) => s + r.tiles, 0);
+  foot.innerHTML = `<tr><td>Total</td><td></td><td class="num">${tls.toLocaleString()}</td><td class="num">100%</td><td class="num">${tA.toFixed(2)}</td></tr>`;
   return rows;
 }
 const fmt = n => (Math.round(n * 10) / 10).toString();
+// a share never reads 0%: small amounts show as "<1%"
+const pct = x => (x > 0 && x < .005 ? '<1%' : `${Math.max(x > 0 ? 1 : 0, Math.round(x * 100))}%`);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 /* ---------------- Chart UI ---------------- */
@@ -1266,7 +1287,7 @@ function setMode(mode) {
   }[mode];
   $('#step-title').textContent = { sketch: 'Step 1 of 3 · Design', color: 'Step 2 of 3 · Color', mosaic: 'Step 3 of 3 · Mosaic' }[mode];
   $('#prev-step').textContent = { sketch: '← Start options', color: '← Back to design', mosaic: '← Back to colors' }[mode];
-  $('#next-step').textContent = { sketch: 'Next: Color it →', color: 'Next: See the mosaic →', mosaic: '⬇ Download picture' }[mode];
+  $('#next-step').textContent = { sketch: 'Next: Color it →', color: 'Next: See the mosaic →', mosaic: 'Download' }[mode];
   renderChart(); selectMat(state.selected); renderBom();
   markFrom();
   if (mode === 'mosaic') heavy(() => { renderMosaic(); composite(); renderBom(); });
@@ -1956,7 +1977,7 @@ $('#export').addEventListener('click', () => heavy(() => {
       ctx.fillStyle = '#4A5468'; ctx.font = '12px "Hanken Grotesk", sans-serif';
       ctx.fillText(`${r.m.code || ''}  ${TYPE_LABEL[r.m.type] || 'Marble'}`, pad + 48, y + 32);
       ctx.textAlign = 'right'; ctx.fillStyle = '#16335E'; ctx.font = '14px "Hanken Grotesk", sans-serif';
-      ctx.fillText(`${r.pieces == null ? '' : r.pieces + ' pc   '}${r.tiles.toLocaleString()} tiles   ${Math.round(r.share * 100)}%   ${r.area.toFixed(2)} ${unit}`, W - pad, y + 22);
+      ctx.fillText(`${r.tiles.toLocaleString()} tiles   ${pct(r.share)}   ${r.area.toFixed(2)} ${unit}`, W - pad, y + 22);
       ctx.textAlign = 'left'; y += rowH;
     }
   }

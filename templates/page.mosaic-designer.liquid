@@ -22,7 +22,7 @@
     <button class="btn" id="undo" type="button" title="Undo (Ctrl+Z)">Undo</button>
     <button class="btn" id="redo" type="button" title="Redo (Ctrl+Shift+Z)">Redo</button>
     <button class="btn" id="save-design" type="button" title="Download a work file to reopen this design later and keep editing it">Save to continue later</button>
-    <button class="btn primary" id="export" type="button" title="Download a picture of your design with its list of stones">⬇ Download picture</button>
+    <button class="btn primary" id="export" type="button" title="Download a picture of your design with its list of stones">Download</button>
   </div>
 </header>
 
@@ -343,7 +343,7 @@
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Material</th><th>Type</th><th class="num">Pieces</th><th class="num" id="tiles-head">Tiles</th><th class="num">Share</th><th class="num" id="area-head">Area (ft²)</th></tr></thead>
+          <thead><tr><th>Material</th><th>Type</th><th class="num" id="tiles-head">Tiles</th><th class="num">Share</th><th class="num" id="area-head">Area (ft²)</th></tr></thead>
           <tbody id="bom-body"></tbody>
           <tfoot id="bom-foot"></tfoot>
         </table>
@@ -394,7 +394,7 @@
 <!-- Export -->
 <dialog id="export-dlg">
   <div class="dlg">
-    <h3>Export design</h3>
+    <h3>Download your design</h3>
     <img class="export-img" id="export-img" alt="Colored design with materials list">
     <p class="hint">The image includes the materials list. If the download button does nothing in your viewer, right-click or long-press the image to save it.</p>
     <div class="foot">
