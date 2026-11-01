@@ -458,7 +458,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
     </div>
 
     <div id="joint-group" class="group" hidden>
-      <p class="label">Lines &amp; grout</p>
+      <p class="label">Grout color</p>
       <div class="joints" role="group" aria-label="Line and grout color">
         <button class="joint" type="button" data-joint="#1b1a19" style="background:#1b1a19" title="Black" aria-label="Black joints"></button>
         <button class="joint" type="button" data-joint="#8a8782" style="background:#8a8782" title="Grey grout" aria-label="Grey joints"></button>
@@ -1999,7 +1999,7 @@ function setMode(mode) {
   showAiBar();
   $('#color-tools').hidden = mode !== 'color';
   $('#mosaic-tools').hidden = mode !== 'mosaic';
-  $('#joint-group').hidden = mode !== 'mosaic';
+  $('#joint-group').hidden = mode !== 'mosaic' || photoFinal(); // our existing mosaics keep their own grout
   $('#slab').classList.toggle('mode-color', mode !== 'sketch');
   $('#status').innerHTML = {
     sketch: 'Draw or upload your design. Every closed shape becomes one piece you can fill with stone.',
@@ -2020,6 +2020,8 @@ function markFrom() {
   $('#mosaic-from-group').hidden = !sourceData || photoFinal();
   $$('#mosaic-from-group .seg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.from === state.mosaicFrom)));
   $('#mosaic-areas-hint').hidden = usePicture();
+  $('#mosaic-areas-hint').textContent = photoFinal() ? 'Your mosaic with its own tiles and grout, in the stones you chose. Tap an area to change its stone.'
+    : 'Each area is laid with hand-cut tiles of its stone, cut to fit the shape. Tap an area to change its stone.';
   if (state.mode === 'mosaic' && usePicture()) $('#status').textContent = 'Your picture as a hand-cut mosaic in our stones. Change the tile size or grout on the left.';
 }
 const TOOL_HINTS = {
