@@ -80,6 +80,9 @@ button { cursor: pointer; }
 .bench.choosing { display: block; max-width: 920px; margin: 0 auto; }
 .bench.choosing > :not(.stage), .bench.choosing .stage > :not(#start) { display: none !important; }
 .topbar.picking { display: none; }
+/* "Describe your idea" before the first drawing: only the describe box shows */
+.bench.prompting { display: block; max-width: 980px; margin: 0 auto; }
+.bench.prompting > :not(.stage), .bench.prompting .stage > :not(#ai-box) { display: none !important; }
 .bench.picking { display: block; max-width: 1100px; margin: 0 auto; }
 .bench.picking > :not(.stage), .bench.picking .stage > :not(#gallery) { display: none !important; }
 .bench.choosing:not(.has-design) #start .start-close { display: none; } /* nothing to go back to yet */
@@ -458,7 +461,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
     </div>
 
     <div id="joint-group" class="group" hidden>
-      <p class="label">Lines &amp; grout</p>
+      <p class="label">Grout color</p>
       <div class="joints" role="group" aria-label="Line and grout color">
         <button class="joint" type="button" data-joint="#1b1a19" style="background:#1b1a19" title="Black" aria-label="Black joints"></button>
         <button class="joint" type="button" data-joint="#8a8782" style="background:#8a8782" title="Grey grout" aria-label="Grey joints"></button>
@@ -1989,7 +1992,17 @@ $('#m-delete').addEventListener('click', async () => {
 });
 
 /* ---------------- Mode & tools ---------------- */
+// Usage events for the store's analytics: published through Shopify's customer events (a custom
+// pixel forwards them to Google Analytics) and pushed to dataLayer when a page has one. Never blocks.
+function track(name, data = {}) {
+  let j = 'none'; try { j = journey || 'none'; } catch {}
+  const ev = 'mosaic_designer_' + name, d = { ...data, journey: j };
+  try { window.Shopify?.analytics?.publish?.(ev, d); } catch {}
+  try { if (Array.isArray(window.dataLayer)) window.dataLayer.push({ event: ev, ...d }); } catch {}
+}
+let lastTracked = '';
 function setMode(mode) {
+  if (mode !== lastTracked) { lastTracked = mode; if (mode !== 'sketch') track('step', { step: mode }); }
   if (mode === 'mosaic' && state.mode !== 'mosaic' && !usePicture() && !photoFinal()) fillRest();
   hoverL = 0;
   if (mode !== 'sketch') { if (sel) finishSel(true); if (pathPts) finishPath(); $('#draw-hint').hidden = true; }
@@ -1999,7 +2012,7 @@ function setMode(mode) {
   showAiBar();
   $('#color-tools').hidden = mode !== 'color';
   $('#mosaic-tools').hidden = mode !== 'mosaic';
-  $('#joint-group').hidden = mode !== 'mosaic';
+  $('#joint-group').hidden = mode !== 'mosaic' || photoFinal(); // our existing mosaics keep their own grout
   $('#slab').classList.toggle('mode-color', mode !== 'sketch');
   $('#status').innerHTML = {
     sketch: 'Draw or upload your design. Every closed shape becomes one piece you can fill with stone.',
@@ -2020,6 +2033,8 @@ function markFrom() {
   $('#mosaic-from-group').hidden = !sourceData || photoFinal();
   $$('#mosaic-from-group .seg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.from === state.mosaicFrom)));
   $('#mosaic-areas-hint').hidden = usePicture();
+  $('#mosaic-areas-hint').textContent = photoFinal() ? 'Your mosaic with its own tiles and grout, in the stones you chose. Tap an area to change its stone.'
+    : 'Each area is laid with hand-cut tiles of its stone, cut to fit the shape. Tap an area to change its stone.';
   if (state.mode === 'mosaic' && usePicture()) $('#status').textContent = 'Your picture as a hand-cut mosaic in our stones. Change the tile size or grout on the left.';
 }
 const TOOL_HINTS = {
@@ -2069,6 +2084,7 @@ $('#next-step').addEventListener('click', () => {
 
 /* ---------------- Start choices ---------------- */
 function showStart(on) {
+  if (on) setPrompting(false); else backToPrompt();
   $('#start').hidden = !on;
   $('.topbar').classList.toggle('choosing', on); $('.bench').classList.toggle('choosing', on);
   if (!on) { fitSlab(); applyView(); } // the canvas was hidden while choosing; size it now
@@ -2106,6 +2122,7 @@ $('#start-close').addEventListener('click', () => showStart(false));
 // Every start choice begins a fresh design: the old drawing, colors, picture and settings are cleared
 // (Undo still brings the previous design back).
 function resetDesign() {
+  setPrompting(false);
   $('#upload-panel').hidden = true; $('#gallery').hidden = true; $('#trace-field').hidden = true; $('#draw-hint').hidden = true;
   pendingImg = null; upStore = false; upAction = null; importedImg = null; importedFile = null; lastSvg = null; sourceData = null;
   state.mosaicFrom = 'areas'; state.sourceKind = null;
@@ -2119,10 +2136,12 @@ function resetDesign() {
 $$('#start [data-start]').forEach(b => b.addEventListener('click', () => {
   const how = b.dataset.start;
   journey = how;
+  track('start', { method: how });
   showStart(false);
   $('.bench').classList.add('has-design');
   aiBar = how === 'describe';
   resetDesign();
+  setPrompting(how === 'describe');
   $('#sketch-tools').classList.toggle('draw-only', how === 'draw' || how === 'describe'); // drawing from scratch needs no picture tools
   if (how === 'upload') { setMode('sketch'); $('#file-sketch').click(); }
   else if (how === 'describe') {
@@ -2247,12 +2266,14 @@ let upKind = 'color', pendingImg = null;
 function showPending(img) { $('#draw-hint').hidden = true; pendingImg = img; setMode('sketch'); composite(); }
 function clearPending() { if (pendingImg) { pendingImg = null; composite(); } }
 // One question for every upload: what is the picture? Each answer sets up its journey.
+// Two answers: a drawing, picture or photo becomes a black & white design to color (a black & white
+// drawing keeps its own lines, a colored picture is outlined; the tool tells them apart), or a photo of
+// a mosaic is kept as it is.
 const UP_CHOICES = [
-  ['lines', 'bw', 'A black & white drawing', 'We keep your lines. You color each area with our stones.'],
-  ['outline', 'color', 'A colored picture or photo', 'We turn it into a black & white outline. You color each area with our stones.'],
+  ['design', 'design', 'A drawing, picture or photo', 'We make it a black & white design. You color each area with our stones.'],
   ['keep', 'mosaic', 'A photo of a mosaic', 'It stays exactly as it is. Tap any area and pick a stone to change its color.'],
 ];
-const UP_ACTIONS = { bw: [UP_CHOICES[0]], color: [UP_CHOICES[1]] }; // first choice for a detected kind
+const UP_ACTIONS = { bw: [UP_CHOICES[0]], color: [UP_CHOICES[0]] }; // first choice for a detected kind
 // A design picked from our shop is already one of our mosaics: customers either change its colors
 // or clear them and repaint it themselves.
 const STORE_ACTIONS = [
@@ -2282,7 +2303,7 @@ function renderUpload() {
 // Every choice takes effect at once and the panel stays open, so customers can compare.
 function applyUpload(how) {
   upAction = how;
-  if (!upStore) { const c = UP_CHOICES.find(x => x[0] === how); if (c) upKind = c[1] === 'mosaic' ? 'color' : c[1]; }
+  if (!upStore && how === 'keep' && upKind === 'bw') upKind = 'color';
   renderUpload();
   const img = pendingImg || importedImg;
   heavy(() => {
@@ -2302,6 +2323,7 @@ function runUpload(how) {
   state.sourceKind = upKind;
   // a photo of a mosaic: keep the real piece and only change its colors (like our own designs)
   if (how === 'keep') { state.sourceKind = 'mosaic'; how = 'colors'; }
+  if (how === 'design') { upKind = isColorful(importedImg) ? 'color' : 'bw'; state.sourceKind = upKind; how = upKind === 'bw' ? 'lines' : 'outline'; } // keep a drawing's lines, outline a colored picture
   $('#trace-mode').value = how === 'picture' ? 'colors' : how;
   showTraceFields();
   if (how === 'picture') {
@@ -2588,6 +2610,7 @@ function fitToPicture(img) {
   if (h > 0 && h !== state.sizeH) { state.sizeH = h; $('#size-h').value = h; const [fw, fh] = frameFor(state.sizeW, h); resizeFrame(fw, fh); refresh(); }
 }
 async function pickDesign(p) {
+  track('pick_design', { design: p.t, category: designCat });
   $('#gallery').hidden = true;
   busy(true);
   const img = await loadPhoto(p.img);
@@ -2648,6 +2671,7 @@ async function applyDesign(d, withHistory) {
   $('#size-w').value = state.sizeW; $('#size-h').value = state.sizeH; $('#size-unit').value = state.unit; markJoint();
 }
 $('#save-design').addEventListener('click', () => {
+  track('save');
   showJSON('Save to continue later', 'Download this file and keep it. Next time, open the Mosaic Designer and choose "Continue a saved design" to carry on where you left off.', designJSON(), 'mosaic-design.json');
 });
 $('#open-design').addEventListener('click', () => $('#file-design').click());
@@ -2689,6 +2713,7 @@ $('#reset-chart').addEventListener('click', async () => {
   tileCache.clear(); renderChart(); selectMat(chart[0].id); heavy(() => refresh());
 });
 $('#export').addEventListener('click', () => heavy(() => {
+  track('download', { step: state.mode });
   const rows = renderBom();
   const rowH = 46, pad = 32, legendH = rows.length ? 70 + rows.length * rowH + 36 : 0;
   const c = document.createElement('canvas'); c.width = W; c.height = H + legendH;
@@ -2814,7 +2839,8 @@ async function runFree(desc) {
     img = await fetchDrawing(url.replace(/seed=\d+/, 'seed=' + Math.floor(Math.random() * 1e6)));
   }
   aiLoading(false);
-  if (!img) { status.textContent = 'Our drawing service is busy right now. Please try again in a minute, or upload or draw your design instead.'; return; }
+  if (!img) { status.textContent = 'Our drawing service is busy right now. Please try again in a minute, or upload or draw your design instead.'; backToPrompt(); return; }
+  track('ai_design', { mode: aiMode, result: 'ok' });
   useDrawing(img, status);
 }
 // With the store's drawing helper set up (ai-worker/worker.js, OpenAI behind it), the description is
@@ -2832,6 +2858,15 @@ function aiButtons() {
 function clearPrompt() { if (!window.IMOSAIC_AI_URL) return; $('#ai-prompt').value = ''; $('#ai-prompt').placeholder = 'Describe a change, for example: add a dog on the boat'; }
 // true when the canvas has any drawing on it
 function inkUsed() { const d = currentInk?.data; if (!d) return false; for (let i = 3; i < d.length; i += 64) if (d[i]) return true; return false; }
+// Until the first drawing arrives, "Describe your idea" shows only its box; the canvas appears for the
+// spinner and the result.
+// after a failed drawing with nothing on the canvas, go back to just the describe box
+function backToPrompt() { if (journey === 'describe' && state.mode === 'sketch' && !inkUsed() && !sourceData) setPrompting(true); }
+function setPrompting(on) {
+  const was = $('.bench').classList.contains('prompting');
+  $('.bench').classList.toggle('prompting', on);
+  if (was && !on) { fitSlab(); applyView(); }
+}
 // While a drawing is being made: a spinner and running timer on the canvas and on the button.
 let aiTimer = 0;
 function aiLoading(on, label = 'Drawing your design') {
@@ -2839,6 +2874,7 @@ function aiLoading(on, label = 'Drawing your design') {
   clearInterval(aiTimer);
   go.disabled = $('#ai-new').disabled = on;
   go.classList.toggle('loading', on); wait.hidden = !on;
+  if (on) setPrompting(false);
   if (!on) { aiButtons(); return; }
   const t0 = Date.now(), tick = () => {
     const s = Math.round((Date.now() - t0) / 1000), t = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
@@ -2877,9 +2913,10 @@ async function runOpenAI(desc, status, go) {
   aiLoading(false);
   if (!img) {
     status.textContent = msg && msg !== 'busy' ? `Sorry, we could not draw that: ${msg}.` : 'Our drawing service is busy right now. Please try again in a minute, or upload or draw your design instead.';
-    toast(status.textContent);
+    toast(status.textContent); backToPrompt(); track('ai_design', { mode: aiMode, result: msg === 'busy' || !msg ? 'busy' : 'error' });
     return;
   }
+  track('ai_design', { mode: aiMode, result: 'ok' });
   useDrawing(img, status);
 }
 // A drawing made from a description goes through the black & white drawing journey: lines kept, ready to color.
@@ -3116,6 +3153,7 @@ async function boot() {
 }
 boot();
 initCapabilities();
+track('open');
 })();
 </script>
 </body>
