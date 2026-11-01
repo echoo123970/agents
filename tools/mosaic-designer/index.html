@@ -122,7 +122,8 @@ button { cursor: pointer; }
 .prompt-bar .pb-main { display: flex; gap: 10px; align-items: stretch; }
 .prompt-bar textarea { flex: 1; min-width: 0; resize: vertical; font-size: 15px; line-height: 1.45; padding: 10px 12px; border: 1.5px solid var(--accent); border-radius: var(--radius); background: var(--bg); color: var(--ink); }
 .prompt-bar .pb-actions { display: flex; flex-direction: column; gap: 6px; width: 190px; }
-.prompt-bar .pb-actions .btn { width: 100%; padding: 9px 12px; }
+.prompt-bar .pb-actions .btn { width: 100%; padding: 9px 12px; flex: 1 1 0; } /* the buttons fill the text box's height */
+.prompt-bar textarea { min-height: 84px; }
 .prompt-bar .pb-ideas { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .prompt-bar .pb-ideas button { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 4px 11px; font-size: 12.5px; color: var(--ink); }
 .prompt-bar .pb-ideas button:hover { border-color: var(--accent); }
@@ -283,7 +284,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
     <button id="step-mosaic" type="button" aria-pressed="false"><span class="n">3</span>Mosaic</button>
   </div>
   <div class="actions">
-    <button class="btn" id="new-design" type="button">New design</button>
+    <button class="btn" id="new-design" type="button" title="Start a new design the same way, from step 1">New design</button>
     <button class="btn" id="undo" type="button" title="Undo (Ctrl+Z)">Undo</button>
     <button class="btn" id="redo" type="button" title="Redo (Ctrl+Shift+Z)">Redo</button>
     <button class="btn" id="open-design" type="button">Open design</button>
@@ -502,8 +503,8 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
         <span class="hint" id="pb-sub">Type what you'd like, then choose what we make.</span>
       </div>
       <div class="seg pb-mode" id="ai-mode" role="group" aria-label="What should we make?">
-        <button type="button" data-aimode="lines" aria-pressed="true"><b>Black &amp; white design</b><span>I color it myself with your stones</span></button>
-        <button type="button" data-aimode="color" aria-pressed="false"><b>Ready mosaic</b><span>Made in your stones; I can change any stone</span></button>
+        <button type="button" data-aimode="lines" aria-pressed="true"><b>Black &amp; white design</b><span>You color it with our stones</span></button>
+        <button type="button" data-aimode="color" aria-pressed="false"><b>Ready mosaic</b><span>Made in our stones; you can change any stone</span></button>
       </div>
       <div class="pb-main">
         <textarea id="ai-prompt" rows="2" placeholder="For example: a compass rose with waves around it"></textarea>
@@ -2015,7 +2016,14 @@ function showStart(on) {
   if (on) $('#start').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   else store.set('mosaic.started', true);
 }
-$('#new-design').addEventListener('click', () => { $('#gallery').hidden = true; $('#upload-panel').hidden = true; clearPending(); showStart(true); });
+// New design starts over the same way the customer began (a new description, a blank canvas, another
+// upload or another of our designs) and goes back to step 1; "Start options" offers the other ways.
+let journey = null;
+$('#new-design').addEventListener('click', () => {
+  $('#gallery').hidden = true; $('#upload-panel').hidden = true; clearPending();
+  const b = journey && $(`#start [data-start="${journey}"]`);
+  if (b) b.click(); else showStart(true);
+});
 // the ready-designs gallery's back link returns to the four ways to start
 $('#gallery-close').addEventListener('click', () => showStart(true));
 function showGallery() {
@@ -2039,6 +2047,7 @@ function resetDesign() {
 }
 $$('#start [data-start]').forEach(b => b.addEventListener('click', () => {
   const how = b.dataset.start;
+  journey = how;
   showStart(false);
   $('.bench').classList.add('has-design');
   aiBar = how === 'describe';
