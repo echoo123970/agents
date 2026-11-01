@@ -79,6 +79,12 @@ style = scope(style) + """
 .md-hero__eyebrow::before, .md-hero__eyebrow::after { content: ""; width: 38px; height: 1px; background: var(--color-blue); }
 .md-hero__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(38px, 5vw, 64px); line-height: 1.02; margin-bottom: 18px; color: var(--color-navy); }
 .md-hero__title em { font-style: italic; color: var(--color-blue); }
+.md-faq { max-width: 900px; margin: 0 auto; padding: 8px 24px 64px; }
+.md-faq__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(26px, 3vw, 34px); color: var(--color-navy); margin: 0 0 14px; }
+.md-faq__item { border-bottom: 1px solid rgba(22,51,94,.12); padding: 14px 0; }
+.md-faq__item summary { cursor: pointer; font-weight: 600; color: var(--color-navy); font-size: 16px; }
+.md-faq__item p { margin: 10px 0 0; color: var(--color-text-muted); line-height: 1.7; }
+.md-faq__more { margin-top: 18px; color: var(--color-text-muted); }
 .md-hero__text { font-size: 17px; line-height: 1.7; color: var(--color-text-muted); max-width: 880px; text-wrap: balance; margin: 0 auto; }
 @media (max-width: 600px) { .md-hero__crumb, .md-hero__inner { padding-left: 22px; padding-right: 22px; } }
 """
@@ -89,13 +95,27 @@ template = f"""{{{{ 'mosaic-designer.css' | asset_url | stylesheet_tag }}}}
 <section class="md-hero">
   <div class="md-hero__crumb"><a href="{{{{ routes.root_url }}}}">Home</a><span>/</span><span>{{{{ page.title }}}}</span></div>
   <div class="md-hero__inner">
-    <div class="md-hero__eyebrow">Create Your Own</div>
+    <div class="md-hero__eyebrow">Free Online Mosaic Designer</div>
     <h1 class="md-hero__title">Design Your <em>Mosaic</em></h1>
-    <p class="md-hero__text">Upload a photo or drawing, or draw and write your own design. Fill it with our natural marble and engineered stones, and see it as a hand-cut mosaic with a full list of materials.</p>
+    <p class="md-hero__text">Design your own marble mosaic online, free. Describe your idea, start from one of our designs, draw it or upload a picture, then color it with our 48 real stones and see it as a hand-cut mosaic.</p>
   </div>
 </section>
 <div class="imd">
 {body}</div>
+<section class="md-faq" aria-labelledby="md-faq-title">
+  <h2 id="md-faq-title" class="md-faq__title">Mosaic Designer: questions and answers</h2>
+  <details class="md-faq__item"><summary>What is the iMosaicArt Mosaic Designer?</summary><p>It is a free online tool for designing a custom marble mosaic. You create a design, color each area with iMosaicArt's 48 natural marble and engineered stones, and see it as a hand-cut mosaic with a list of the stones it needs.</p></details>
+  <details class="md-faq__item"><summary>How do I design my own mosaic online?</summary><p>Choose how to start: describe your idea and we draw it, pick one of our best-selling marble mosaics, draw on a blank canvas, or upload a drawing or photo. Then color each area with our stones in step 2 and see the finished mosaic in step 3.</p></details>
+  <details class="md-faq__item"><summary>Can I turn a photo or drawing into a mosaic?</summary><p>Yes. Upload it and choose what it is. A drawing or photo becomes a black and white design that you color with our stones. A photo of a mosaic keeps its tiles, and you change the color of any area.</p></details>
+  <details class="md-faq__item"><summary>Can AI draw a mosaic design for me?</summary><p>Yes. Type what you would like, for example &quot;a compass rose with waves&quot;, and choose a black and white design to color yourself or a ready mosaic in our stones. You can then describe changes, such as &quot;add a dolphin&quot;, or draw on the design.</p></details>
+  <details class="md-faq__item"><summary>Which stones can I use?</summary><p>The chart has the 48 stones from the iMosaicArt color palette: 42 natural marbles and 6 engineered stones, each shown with a photo of the real stone.</p></details>
+  <details class="md-faq__item"><summary>Can I change the size of my mosaic?</summary><p>Yes. Pick a standard size or enter your own width and height in inches or centimeters. The design and the materials list follow the size you choose.</p></details>
+  <details class="md-faq__item"><summary>How do I order the mosaic I designed?</summary><p>Download your design: the picture includes the list of stones. Send it to us through the contact page or book a free consultation, and we will make it by hand in natural stone.</p></details>
+  <details class="md-faq__item"><summary>Is the Mosaic Designer free?</summary><p>Yes, designing is free and needs no account. Use Save to continue later to keep a design file and reopen it another time.</p></details>
+  <p class="md-faq__more">Want help with your design? <a href="/pages/free-consultation">Book a free consultation</a> or <a href="/pages/contact-us">contact us</a>.</p>
+</section>
+<script type="application/ld+json">{{"@context": "https://schema.org", "@type": "WebApplication", "name": "iMosaicArt Mosaic Designer", "url": "{{{{ shop.url }}}}{{{{ page.url }}}}", "applicationCategory": "DesignApplication", "operatingSystem": "Any (web browser)", "description": "Free online tool to design a custom marble mosaic: describe an idea, start from a best-selling design, draw or upload a picture, color it with 48 natural marble and engineered stones and see it as a hand-cut mosaic with a materials list.", "offers": {{"@type": "Offer", "price": "0", "priceCurrency": "USD"}}, "provider": {{"@type": "Organization", "name": "iMosaicArt", "url": "{{{{ shop.url }}}}"}}}}</script>
+<script type="application/ld+json">{{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{{"@type": "Question", "name": "What is the iMosaicArt Mosaic Designer?", "acceptedAnswer": {{"@type": "Answer", "text": "It is a free online tool for designing a custom marble mosaic. You create a design, color each area with iMosaicArt's 48 natural marble and engineered stones, and see it as a hand-cut mosaic with a list of the stones it needs."}}}}, {{"@type": "Question", "name": "How do I design my own mosaic online?", "acceptedAnswer": {{"@type": "Answer", "text": "Choose how to start: describe your idea and we draw it, pick one of our best-selling marble mosaics, draw on a blank canvas, or upload a drawing or photo. Then color each area with our stones in step 2 and see the finished mosaic in step 3."}}}}, {{"@type": "Question", "name": "Can I turn a photo or drawing into a mosaic?", "acceptedAnswer": {{"@type": "Answer", "text": "Yes. Upload it and choose what it is. A drawing or photo becomes a black and white design that you color with our stones. A photo of a mosaic keeps its tiles, and you change the color of any area."}}}}, {{"@type": "Question", "name": "Can AI draw a mosaic design for me?", "acceptedAnswer": {{"@type": "Answer", "text": "Yes. Type what you would like, for example \\"a compass rose with waves\\", and choose a black and white design to color yourself or a ready mosaic in our stones. You can then describe changes, such as \\"add a dolphin\\", or draw on the design."}}}}, {{"@type": "Question", "name": "Which stones can I use?", "acceptedAnswer": {{"@type": "Answer", "text": "The chart has the 48 stones from the iMosaicArt color palette: 42 natural marbles and 6 engineered stones, each shown with a photo of the real stone."}}}}, {{"@type": "Question", "name": "Can I change the size of my mosaic?", "acceptedAnswer": {{"@type": "Answer", "text": "Yes. Pick a standard size or enter your own width and height in inches or centimeters. The design and the materials list follow the size you choose."}}}}, {{"@type": "Question", "name": "How do I order the mosaic I designed?", "acceptedAnswer": {{"@type": "Answer", "text": "Download your design: the picture includes the list of stones. Send it to us through the contact page or book a free consultation, and we will make it by hand in natural stone."}}}}, {{"@type": "Question", "name": "Is the Mosaic Designer free?", "acceptedAnswer": {{"@type": "Answer", "text": "Yes, designing is free and needs no account. Use Save to continue later to keep a design file and reopen it another time."}}}}]}}</script>
 <script>
   // iMosaicArt stone photos from this theme (sw-01 ... sw-48) and each stone's average color.
   window.IMOSAIC_SWATCHES = {{
