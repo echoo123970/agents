@@ -1,0 +1,275 @@
+From c3f96134c7df1619058b558a0e2fa66ee8fc5da7 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Sat, 31 Oct 2026 09:46:01 +0000
+Subject: [PATCH] Render stored image alt text instead of hardcoding titles
+
+Every <img> in the theme built its alt attribute from a title
+(product.title, article.title, collection.title, a section heading),
+so the alt text stored on each image in Shopify was never emitted.
+Each of these now reads the image's own alt and falls back to the
+previous title, so the stored text is used where it exists and
+nothing regresses where it doesn't:
+
+- templates/product.liquid, sections/main-product.liquid
+- snippets/card-product.liquid, card-collection.liquid, coll-card.liquid
+- sections/main-list-collections.liquid
+- sections/blog-posts.liquid, main-blog.liquid, main-article.liquid
+- sections/hero.liquid, custom-process.liquid, page-portfolio.liquid,
+  testimonials.liquid
+
+Also fill in three genuinely empty alt attributes:
+
+- sections/instagram-grid.liquid: each tile is a link wrapping only an
+  image, so alt="" left the link with no accessible name.
+- sections/page-installation.liquid: the hero and the per-step photos
+  are illustrative content, not decoration, so they now carry the
+  section heading and the step title respectively.
+
+Empty alt attributes that are correct are left alone: lightbox
+placeholders filled in by JS, gallery thumbnail buttons that duplicate
+the labelled main image, and the decorative login/register side panels.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_014gbv5pWj1PzVyiRKRiKPmK
+---
+ sections/blog-posts.liquid            | 2 +-
+ sections/custom-process.liquid        | 2 +-
+ sections/hero.liquid                  | 2 +-
+ sections/instagram-grid.liquid        | 6 +++---
+ sections/main-article.liquid          | 2 +-
+ sections/main-blog.liquid             | 2 +-
+ sections/main-list-collections.liquid | 2 +-
+ sections/main-product.liquid          | 2 +-
+ sections/page-installation.liquid     | 6 +++---
+ sections/page-portfolio.liquid        | 2 +-
+ sections/testimonials.liquid          | 4 ++--
+ snippets/card-collection.liquid       | 2 +-
+ snippets/card-product.liquid          | 2 +-
+ snippets/coll-card.liquid             | 2 +-
+ templates/product.liquid              | 2 +-
+ 15 files changed, 20 insertions(+), 20 deletions(-)
+
+diff --git a/sections/blog-posts.liquid b/sections/blog-posts.liquid
+index 64580d5..5856c69 100644
+--- a/sections/blog-posts.liquid
++++ b/sections/blog-posts.liquid
+@@ -47,7 +47,7 @@
+       <a href="{{ article.url }}" class="journal__card">
+         <div class="journal__media">
+           {%- if article.image != blank -%}
+-            <img src="{{ article.image | image_url: width: 700 }}" alt="{{ article.title | escape }}" width="700" height="770" class="cover-img" loading="lazy">
++            <img src="{{ article.image | image_url: width: 700 }}" alt="{{ article.image.alt | default: article.title | escape }}" width="700" height="770" class="cover-img" loading="lazy">
+           {%- else -%}
+             {{ 'image' | placeholder_svg_tag: 'cover-img' }}
+           {%- endif -%}
+diff --git a/sections/custom-process.liquid b/sections/custom-process.liquid
+index 7ba820c..20d65bf 100644
+--- a/sections/custom-process.liquid
++++ b/sections/custom-process.liquid
+@@ -55,7 +55,7 @@
+     </div>
+     <div class="process__media cm-zoom">
+       {%- if section.settings.image != blank -%}
+-        <img src="{{ section.settings.image | image_url: width: 1000 }}" alt="{{ section.settings.heading | escape }}" width="1000" height="1250" class="cover-img">
++        <img src="{{ section.settings.image | image_url: width: 1000 }}" alt="{{ section.settings.image.alt | default: section.settings.heading | escape }}" width="1000" height="1250" class="cover-img">
+       {%- else -%}
+         <img src="https://cdn.shopify.com/s/files/1/0754/6093/5978/files/task_01kj2wagj3fkprt5j15gw5w899_1771770855_img_1.webp?v=1783095603" alt="{{ section.settings.heading | escape }}" width="1000" height="1250" class="cover-img" referrerpolicy="no-referrer">
+       {%- endif -%}
+diff --git a/sections/hero.liquid b/sections/hero.liquid
+index c291955..f85ecc1 100644
+--- a/sections/hero.liquid
++++ b/sections/hero.liquid
+@@ -121,7 +121,7 @@
+     <div class="hero__media">
+       <div class="hero__frame" data-hero-zoom>
+         {%- if section.settings.image != blank -%}
+-          <img src="{{ section.settings.image | image_url: width: 1200 }}" alt="{{ section.settings.heading | strip_html | escape }}" width="1200" height="1400" class="cover-img">
++          <img src="{{ section.settings.image | image_url: width: 1200 }}" alt="{{ section.settings.image.alt | default: section.settings.heading | strip_html | escape }}" width="1200" height="1400" class="cover-img">
+         {%- elsif section.settings.image_url != blank -%}
+           <img src="{{ section.settings.image_url }}" alt="{{ section.settings.heading | strip_html | escape }}" width="1200" height="1400" class="cover-img" referrerpolicy="no-referrer">
+         {%- elsif section.settings.image_file != blank -%}
+diff --git a/sections/instagram-grid.liquid b/sections/instagram-grid.liquid
+index 9322c2b..0c9e7a1 100644
+--- a/sections/instagram-grid.liquid
++++ b/sections/instagram-grid.liquid
+@@ -36,7 +36,7 @@
+       {%- for block in section.blocks -%}
+         <a href="{{ block.settings.link | default: settings.social_instagram_link | default: '#' }}" target="_blank" rel="noopener" class="ig-tile{% if forloop.index0 >= 6 %} ig-tile--hidden{% endif %}" {{ block.shopify_attributes }}>
+           {%- if block.settings.image != blank -%}
+-            <img src="{{ block.settings.image | image_url: width: 400 }}" alt="" width="400" height="400" class="cover-img" loading="lazy">
++            <img src="{{ block.settings.image | image_url: width: 400 }}" alt="{{ block.settings.image.alt | default: 'iMosaicArt mosaic artwork on Instagram' | escape }}" width="400" height="400" class="cover-img" loading="lazy">
+           {%- else -%}
+             {{ 'image' | placeholder_svg_tag: 'cover-img' }}
+           {%- endif -%}
+@@ -53,9 +53,9 @@
+         {%- if tile_link == blank or tile_link == '#' -%}{%- assign tile_link = ig_link -%}{%- endif -%}
+         <a href="{{ tile_link }}" target="_blank" rel="noopener" class="ig-tile{% if forloop.index0 >= 6 %} ig-tile--hidden{% endif %}">
+           {%- if f contains '://' -%}
+-            <img src="{{ f }}" alt="" width="400" height="400" class="cover-img" loading="lazy" referrerpolicy="no-referrer">
++            <img src="{{ f }}" alt="iMosaicArt mosaic artwork on Instagram, post {{ forloop.index }}" width="400" height="400" class="cover-img" loading="lazy" referrerpolicy="no-referrer">
+           {%- else -%}
+-            <img src="{{ f | asset_url }}" alt="" width="400" height="400" class="cover-img" loading="lazy">
++            <img src="{{ f | asset_url }}" alt="iMosaicArt mosaic artwork on Instagram, post {{ forloop.index }}" width="400" height="400" class="cover-img" loading="lazy">
+           {%- endif -%}
+           <span class="ig-overlay"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="#fff" stroke="none"/></svg></span>
+         </a>
+diff --git a/sections/main-article.liquid b/sections/main-article.liquid
+index f6b1a86..79a747a 100644
+--- a/sections/main-article.liquid
++++ b/sections/main-article.liquid
+@@ -40,7 +40,7 @@
+     {%- if article.author != blank -%}<div class="article__author">By {{ article.author }}</div>{%- endif -%}
+   </div>
+   {%- if article.image != blank -%}
+-    <img src="{{ article.image | image_url: width: 1400 }}" alt="{{ article.title | escape }}" width="1400" height="788" class="article__image">
++    <img src="{{ article.image | image_url: width: 1400 }}" alt="{{ article.image.alt | default: article.title | escape }}" width="1400" height="788" class="article__image">
+   {%- endif -%}
+   <div class="article__body rte">{{ article.content }}</div>
+ </article>
+diff --git a/sections/main-blog.liquid b/sections/main-blog.liquid
+index 569bc27..b6f4621 100644
+--- a/sections/main-blog.liquid
++++ b/sections/main-blog.liquid
+@@ -164,7 +164,7 @@
+         <a class="bj-card post-card" data-bj-item data-bj-cat="{% for t in article.tags %}{{ t | handleize }}{% unless forloop.last %} {% endunless %}{% endfor %}"{% if show_featured and forloop.first %} data-bj-first style="display:none"{% endif %} href="{{ article.url }}">
+           <div class="bj-card__media">
+             {%- if article.image != blank -%}
+-              <img src="{{ article.image | image_url: width: 600 }}" alt="{{ article.title | escape }}" loading="lazy">
++              <img src="{{ article.image | image_url: width: 600 }}" alt="{{ article.image.alt | default: article.title | escape }}" loading="lazy">
+             {%- else -%}{{ 'image' | placeholder_svg_tag: 'bj-ph' }}{%- endif -%}
+           </div>
+           <div class="bj-meta">
+diff --git a/sections/main-list-collections.liquid b/sections/main-list-collections.liquid
+index e24e45f..51d278a 100644
+--- a/sections/main-list-collections.liquid
++++ b/sections/main-list-collections.liquid
+@@ -47,7 +47,7 @@
+         {%- assign shown = shown | plus: 1 -%}
+         <a href="{{ collection.url }}" class="lc-card{% if h == 'van-gogh-mosaics' %} lc-card--vg{% endif %}{% if h == 'flower-mosaics' %} lc-card--fl{% endif %}{% if h == 'abstract-mosaics' %} lc-card--ab{% endif %}">
+           {%- if collection.featured_image != blank -%}
+-            <img src="{{ collection.featured_image | image_url: width: 700 }}" alt="{{ collection.title | escape }}" width="700" height="933" class="lc-card__img" loading="lazy"{% if h == 'portrait-mosaics' %} style="object-position: center 8%;"{% endif %}>
++            <img src="{{ collection.featured_image | image_url: width: 700 }}" alt="{{ collection.featured_image.alt | default: collection.title | escape }}" width="700" height="933" class="lc-card__img" loading="lazy"{% if h == 'portrait-mosaics' %} style="object-position: center 8%;"{% endif %}>
+           {%- else -%}
+             {{ 'collection-1' | placeholder_svg_tag: 'lc-card__img' }}
+           {%- endif -%}
+diff --git a/sections/main-product.liquid b/sections/main-product.liquid
+index ef90b3e..7b760d4 100644
+--- a/sections/main-product.liquid
++++ b/sections/main-product.liquid
+@@ -126,7 +126,7 @@
+     <div class="pdp__gallery">
+       <div class="pdp-stage" data-zoom-stage>
+         {%- if product.featured_media -%}
+-          <img src="{{ product.featured_media | image_url: width: 1100 }}" alt="{{ product.title | escape }}" width="1100" height="1375" class="pdp-main" id="PdpMainImage">
++          <img src="{{ product.featured_media | image_url: width: 1100 }}" alt="{{ product.featured_media.alt | default: product.title | escape }}" width="1100" height="1375" class="pdp-main" id="PdpMainImage">
+         {%- else -%}
+           {{ 'product-1' | placeholder_svg_tag: 'pdp-main' }}
+         {%- endif -%}
+diff --git a/sections/page-installation.liquid b/sections/page-installation.liquid
+index 84aedc4..acb065c 100644
+--- a/sections/page-installation.liquid
++++ b/sections/page-installation.liquid
+@@ -98,8 +98,8 @@
+     </div>
+     <div class="cm-zoom ig-hero__media">
+       {%- if section.settings.image != blank -%}
+-        <img src="{{ section.settings.image | image_url: width: 900 }}" alt="" width="900" height="765" class="cover-img">
+-      {%- else -%}<img src="{{ 'install-hero-tree.png' | asset_url }}" alt="" width="900" height="765" class="cover-img">{%- endif -%}
++        <img src="{{ section.settings.image | image_url: width: 900 }}" alt="{{ section.settings.image.alt | default: section.settings.heading | strip_html | escape }}" width="900" height="765" class="cover-img">
++      {%- else -%}<img src="{{ 'install-hero-tree.png' | asset_url }}" alt="{{ section.settings.heading | strip_html | escape }}" width="900" height="765" class="cover-img">{%- endif -%}
+     </div>
+   </div>
+ </section>
+@@ -139,7 +139,7 @@
+           <h3 class="ig-step__title">{{ block.settings.title }}</h3>
+           {%- if block.settings.body != blank -%}<p class="ig-step__text">{{ block.settings.body }}</p>{%- endif -%}
+           {%- if block.settings.image != blank -%}
+-            <div class="ig-step__img"><img src="{{ block.settings.image | image_url: width: 600 }}" alt="" width="520" height="293" class="cover-img" loading="lazy"></div>
++            <div class="ig-step__img"><img src="{{ block.settings.image | image_url: width: 600 }}" alt="{{ block.settings.image.alt | default: block.settings.title | escape }}" width="520" height="293" class="cover-img" loading="lazy"></div>
+           {%- endif -%}
+           {%- if block.settings.tip != blank -%}
+             <div class="ig-step__tip">
+diff --git a/sections/page-portfolio.liquid b/sections/page-portfolio.liquid
+index ca0620f..b9fc894 100644
+--- a/sections/page-portfolio.liquid
++++ b/sections/page-portfolio.liquid
+@@ -89,7 +89,7 @@
+       {%- for block in items -%}
+         <figure class="pf-tile" data-pf-cat="{{ block.settings.category | handle }}" data-pf-full="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1400 }}{% endif %}" data-pf-title="{{ block.settings.title | escape }}" data-pf-catlabel="{{ block.settings.category | escape }}" {{ block.shopify_attributes }}>
+           {%- if block.settings.image != blank -%}
+-            <img src="{{ block.settings.image | image_url: width: 700 }}" alt="{{ block.settings.title | escape }}" width="700" height="900" class="pf-tile__img" loading="lazy">
++            <img src="{{ block.settings.image | image_url: width: 700 }}" alt="{{ block.settings.image.alt | default: block.settings.title | escape }}" width="700" height="900" class="pf-tile__img" loading="lazy">
+           {%- else -%}{{ 'image' | placeholder_svg_tag: 'pf-tile__img' }}{%- endif -%}
+           <figcaption class="pf-tile__cap">
+             {%- if block.settings.category != blank -%}<span class="pf-tile__cat">{{ block.settings.category }}</span>{%- endif -%}
+diff --git a/sections/testimonials.liquid b/sections/testimonials.liquid
+index c68a061..367bea5 100644
+--- a/sections/testimonials.liquid
++++ b/sections/testimonials.liquid
+@@ -36,9 +36,9 @@
+             <p class="testimonials__quote">“{{ block.settings.quote }}”</p>
+             <div class="testimonials__author">
+               {%- if block.settings.avatar != blank -%}
+-                <img src="{{ block.settings.avatar | image_url: width: 92 }}" alt="{{ block.settings.name | escape }}" width="46" height="46" class="testimonials__avatar">
++                <img src="{{ block.settings.avatar | image_url: width: 92 }}" alt="{{ block.settings.avatar.alt | default: block.settings.name | escape }}" width="46" height="46" class="testimonials__avatar">
+               {%- elsif block.settings.avatar_file != blank -%}
+-                <img src="{{ block.settings.avatar_file | asset_url }}" alt="{{ block.settings.name | escape }}" width="46" height="46" class="testimonials__avatar">
++                <img src="{{ block.settings.avatar_file | asset_url }}" alt="{{ block.settings.avatar.alt | default: block.settings.name | escape }}" width="46" height="46" class="testimonials__avatar">
+               {%- endif -%}
+               <div>
+                 <div class="testimonials__name">{{ block.settings.name }}</div>
+diff --git a/snippets/card-collection.liquid b/snippets/card-collection.liquid
+index 99f5325..e1395ec 100644
+--- a/snippets/card-collection.liquid
++++ b/snippets/card-collection.liquid
+@@ -3,7 +3,7 @@
+   <div class="cardc__media">
+     <a href="{{ product.url }}" class="cardc__img-link">
+       {%- if product.featured_media != blank -%}
+-        <img src="{{ product.featured_media | image_url: width: 600 }}" alt="{{ product.title | escape }}" width="600" height="750" class="prod-img cover-img" loading="lazy">
++        <img src="{{ product.featured_media | image_url: width: 600 }}" alt="{{ product.featured_media.alt | default: product.title | escape }}" width="600" height="750" class="prod-img cover-img" loading="lazy">
+       {%- else -%}
+         {{ 'product-1' | placeholder_svg_tag: 'prod-img cover-img' }}
+       {%- endif -%}
+diff --git a/snippets/card-product.liquid b/snippets/card-product.liquid
+index b3ad419..b5324f0 100644
+--- a/snippets/card-product.liquid
++++ b/snippets/card-product.liquid
+@@ -5,7 +5,7 @@
+ <a href="{{ product.url }}" class="prod-card">
+   <div class="prod-card__media">
+     {%- if product.featured_media != blank -%}
+-      <img src="{{ product.featured_media | image_url: width: 700 }}" alt="{{ product.title | escape }}" width="700" height="875" class="prod-img cover-img" loading="lazy">
++      <img src="{{ product.featured_media | image_url: width: 700 }}" alt="{{ product.featured_media.alt | default: product.title | escape }}" width="700" height="875" class="prod-img cover-img" loading="lazy">
+     {%- else -%}
+       {{ 'product-1' | placeholder_svg_tag: 'prod-img cover-img' }}
+     {%- endif -%}
+diff --git a/snippets/coll-card.liquid b/snippets/coll-card.liquid
+index d26c2de..ca80684 100644
+--- a/snippets/coll-card.liquid
++++ b/snippets/coll-card.liquid
+@@ -3,7 +3,7 @@
+   <div class="cardc__media">
+     <a href="{{ product.url }}" class="cardc__img-link">
+       {%- if product.featured_media != blank -%}
+-        <img src="{{ product.featured_media | image_url: width: 600 }}" alt="{{ product.title | escape }}" width="600" height="600" class="prod-img cover-img" loading="lazy">
++        <img src="{{ product.featured_media | image_url: width: 600 }}" alt="{{ product.featured_media.alt | default: product.title | escape }}" width="600" height="600" class="prod-img cover-img" loading="lazy">
+       {%- else -%}
+         {{ 'product-1' | placeholder_svg_tag: 'prod-img cover-img' }}
+       {%- endif -%}
+diff --git a/templates/product.liquid b/templates/product.liquid
+index 0029710..6771654 100644
+--- a/templates/product.liquid
++++ b/templates/product.liquid
+@@ -196,7 +196,7 @@
+     <div class="pdp__gallery">
+       <div class="pdp-stage" data-zoom-stage>
+         {%- if product.featured_media -%}
+-          <img src="{{ product.featured_media | image_url: width: 1100 }}" alt="{{ product.title | escape }}" width="1100" height="1375" class="pdp-main" id="PdpMainImage">
++          <img src="{{ product.featured_media | image_url: width: 1100 }}" alt="{{ product.featured_media.alt | default: product.title | escape }}" width="1100" height="1375" class="pdp-main" id="PdpMainImage">
+         {%- else -%}
+           {{ 'product-1' | placeholder_svg_tag: 'pdp-main' }}
+         {%- endif -%}
+-- 
+2.43.0
+
