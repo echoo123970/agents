@@ -111,7 +111,7 @@ template = f"""{{{{ 'mosaic-designer.css' | asset_url | stylesheet_tag }}}}
 # Marble pieces are the ones whose style filter, title or tags say marble; anything mentioning glass is left out.
 designs_view = '''{%- layout none -%}
 {%- comment -%} pieces kept out of the designer (glass labelled marble, or not wanted there) {%- endcomment -%}
-{%- assign hide = 'abstract-mosaics_abstract-gray-cascade-marble-mosaic-art,animal-mosaics_leopard-portrait-marble-mosaic-art' | split: ',' -%}
+{%- assign hide = 'abstract-mosaics_abstract-gray-cascade-marble-mosaic-art,animal-mosaics_leopard-portrait-marble-mosaic-art,religious-mosaics_christ-bearing-the-cross-mosaic' | split: ',' -%}
 {%- paginate collection.products by 250 -%}
 [{%- assign sep = '' -%}{%- assign n = 0 -%}
 {%- for p in collection.products -%}
