@@ -647,7 +647,7 @@ function composite(target = vctx, mode = state.mode) {
   tctx.globalCompositeOperation = 'source-over';
   target.drawImage(tint, 0, 0);
 }
-function busy(on, label = 'Working…') { $('#busy').textContent = label; $('#busy').hidden = !on; }
+function busy(on, label = 'Preparing your design…') { $('#busy').textContent = label; $('#busy').hidden = !on; }
 function refresh({ fills = true } = {}) {
   if (fills) renderFills();
   if (state.mode === 'mosaic') renderMosaic();
@@ -1369,6 +1369,9 @@ function showGallery() {
   $('#gallery').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 $('#gallery-close').addEventListener('click', () => { $('#gallery').hidden = true; });
+// while the designs list is open only the list shows; the tool appears once a design is picked
+new MutationObserver(() => { const on = !$('#gallery').hidden; $('.topbar').classList.toggle('picking', on); $('.bench').classList.toggle('picking', on); if (!on) { fitSlab(); applyView(); } })
+  .observe($('#gallery'), { attributes: true, attributeFilter: ['hidden'] });
 $('#start-close').addEventListener('click', () => showStart(false));
 // Every start choice begins a fresh design: the old drawing, colors, picture and settings are cleared
 // (Undo still brings the previous design back).
