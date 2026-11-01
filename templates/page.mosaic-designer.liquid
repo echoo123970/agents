@@ -133,11 +133,11 @@
     <div id="color-tools" class="group">
       <p class="label">Color</p>
       <div class="toolgrid" role="group" aria-label="Coloring tools">
-        <button class="tool" type="button" data-tool="fill" title="Fill (F)"><svg viewBox="0 0 24 24"><path d="M5 11l7-7 7 7-7 7z"/><path d="M19 15c1 2 2 3 2 4a2 2 0 0 1-4 0c0-1 1-2 2-4z"/></svg>Fill</button>
-        <button class="tool" type="button" data-tool="pick" title="Pick (I)"><svg viewBox="0 0 24 24"><path d="M14 4l6 6-9 9H5v-6z"/><path d="M12 6l6 6"/></svg>Pick</button>
-        <button class="tool" type="button" data-tool="remove" title="Remove (D)"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>Remove</button>
+        <button class="tool" type="button" data-tool="fill" title="Fill: tap an area to lay the chosen stone in it (F)"><svg viewBox="0 0 24 24"><path d="M5 11l7-7 7 7-7 7z"/><path d="M19 15c1 2 2 3 2 4a2 2 0 0 1-4 0c0-1 1-2 2-4z"/></svg>Fill</button>
+        <button class="tool" type="button" data-tool="pick" title="Copy stone: tap a colored area to choose its stone again (I)"><svg viewBox="0 0 24 24"><path d="M14 4l6 6-9 9H5v-6z"/><path d="M12 6l6 6"/></svg>Copy stone</button>
+        <button class="tool" type="button" data-tool="remove" title="Clear: tap an area to take its stone out (D)"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>Clear</button>
       </div>
-      <p class="hint">Pick a stone from the chart, then tap any area of your design.</p>
+      <p class="hint" id="color-hint">Choose a stone from the chart on the right, then tap any area to fill it.</p>
       <label class="field" for="any-color">Pick any color
         <span class="row"><input type="color" id="any-color" value="#c0603f"><span class="hint" id="any-color-match">We use the closest color in our chart.</span></span>
       </label>

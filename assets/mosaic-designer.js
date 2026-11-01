@@ -1270,6 +1270,11 @@ function setTool(t) {
   if (state.mode === 'sketch' && t !== 'select' && sel) finishSel(true);
   if (pathPts && t !== 'path') finishPath();
   state.tool[state.mode] = t;
+  if (state.mode === 'color') $('#color-hint').textContent = {
+    fill: 'Choose a stone from the chart on the right, then tap any area to fill it.',
+    pick: 'Tap a colored area to choose its stone again, then switch to Fill to use it elsewhere.',
+    remove: 'Tap a colored area to take its stone out.',
+  }[t] || '';
   if (state.mode === 'sketch') {
     $('#tool-hint').textContent = TOOL_HINTS[t] || '';
     $('#sides-field').hidden = !['polygon', 'star'].includes(t);
