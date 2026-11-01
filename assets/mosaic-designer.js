@@ -1231,8 +1231,7 @@ function setMode(mode) {
     mosaic: 'Your design as a hand-cut mosaic. Tap an area to change it to <b id="status-mat"></b>.',
   }[mode];
   $('#step-title').textContent = { sketch: 'Step 1 of 3 · Design', color: 'Step 2 of 3 · Color', mosaic: 'Step 3 of 3 · Mosaic' }[mode];
-  $('#prev-step').hidden = mode === 'sketch';
-  $('#prev-step').textContent = mode === 'mosaic' ? '← Back to colors' : '← Back to design';
+  $('#prev-step').textContent = { sketch: '← Start options', color: '← Back to design', mosaic: '← Back to colors' }[mode];
   $('#next-step').textContent = { sketch: 'Next: Color it →', color: 'Next: See the mosaic →', mosaic: 'Export my design' }[mode];
   renderChart(); selectMat(state.selected); renderBom();
   markFrom();
@@ -1272,7 +1271,12 @@ function setTool(t) {
 $('#step-sketch').addEventListener('click', () => setMode('sketch'));
 $('#step-color').addEventListener('click', () => setMode('color'));
 $('#step-mosaic').addEventListener('click', () => setMode('mosaic'));
-$('#prev-step').addEventListener('click', () => setMode(state.mode === 'mosaic' ? 'color' : 'sketch'));
+$('#prev-step').addEventListener('click', () => {
+  if (state.mode === 'sketch') { // step 1 goes back to the four ways to start; the design stays until one is chosen
+    $('#upload-panel').hidden = true; $('#gallery').hidden = true; clearPending(); showStart(true); return;
+  }
+  setMode(state.mode === 'mosaic' ? 'color' : 'sketch');
+});
 $('#next-step').addEventListener('click', () => {
   if (state.mode === 'sketch') setMode('color');
   else if (state.mode === 'color') setMode('mosaic');
@@ -1287,6 +1291,8 @@ function showStart(on) {
   else store.set('mosaic.started', true);
 }
 $('#new-design').addEventListener('click', () => { $('#gallery').hidden = true; $('#upload-panel').hidden = true; clearPending(); showStart(true); });
+// the ready-designs gallery's back link returns to the four ways to start
+$('#gallery-close').addEventListener('click', () => showStart(true));
 function showGallery() {
   renderGallery(); $('#gallery').hidden = false;
   $('#gallery').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -1475,7 +1481,7 @@ function applyUpload(how) {
   });
 }
 $$('.up-kind button').forEach(b => b.addEventListener('click', () => { upKind = b.dataset.kind; applyUpload(UP_ACTIONS[upKind][0][0]); }));
-$('#up-close').addEventListener('click', () => { $('#upload-panel').hidden = true; clearPending(); });
+$('#up-close').addEventListener('click', () => { $('#upload-panel').hidden = true; clearPending(); showStart(true); }); // cancel: back to the ways to start
 $('#up-done').addEventListener('click', () => { $('#upload-panel').hidden = true; $('#slab').scrollIntoView({ behavior: 'smooth', block: 'nearest' }); });
 function runUpload(how) {
   pendingImg = null;
@@ -1947,7 +1953,7 @@ async function runFree(desc) {
   const status = $('#ai-status'), go = $('#ai-go');
   if (!desc) { status.textContent = 'Type what you would like first, for example: a compass rose with waves around it.'; $('#ai-prompt').focus(); return; }
   go.disabled = true; busy(true, 'Drawing your design…');
-  status.textContent = 'Drawing your design… this can take up to a minute.';
+  status.textContent = 'Drawing your design… this can take up to a minute. It replaces the current sketch; Undo brings it back.';
   if (window.IMOSAIC_AI_URL) return runOpenAI(desc, status, go);
   const prompt = `simple coloring book page, ${desc}. Thick bold continuous black outlines of even width, every shape fully closed, `
     + 'flat vector line art, large simple shapes, no shading, no hatching, no fur or grass texture, no sketch lines, no gray, no words, pure white background, centered';
@@ -1956,13 +1962,13 @@ async function runFree(desc) {
   // When the free service is full it answers with a notice picture instead of a drawing; that notice
   // never has the size we asked for, so it is caught here and asked again once after a short wait.
   const fetchDrawing = async u => {
-    const im = await Promise.race([loadPhoto(u), new Promise(r => setTimeout(() => r(null), 120000))]);
+    const im = await Promise.race([loadPhoto(u), new Promise(r => setTimeout(() => r(null), 45000))]);
     return im && Math.abs(im.naturalWidth - w) <= 8 && Math.abs(im.naturalHeight - h) <= 8 ? im : null;
   };
   let img = await fetchDrawing(url);
   if (!img) {
     status.textContent = 'The drawing service is busy. Trying again in a few seconds…';
-    await new Promise(r => setTimeout(r, 12000));
+    await new Promise(r => setTimeout(r, 5000));
     img = await fetchDrawing(url.replace(/seed=\d+/, 'seed=' + Math.floor(Math.random() * 1e6)));
   }
   busy(false); go.disabled = false;
