@@ -2818,9 +2818,20 @@ it with "the smaller floral panels".
 | Sunflowers in a Vase Mosaic Art | 130 only | 130 / 169 / 195 / 234 / 260 |
 
 This is a commercial problem before it is an SEO one: the page hides four
-larger variants, the dearest of them 2.6× the base price. The two rewrites in
-27.4 list all five. **The five above are not fixed** — outside what was asked,
-so reported rather than changed.
+larger variants, the dearest of them 2.6× the base price.
+
+**Fixed at the owner's direction.** All five now list the full ladder, and the
+three prose claims that contradicted it are gone: `Tulip Field Landscape`'s
+"the largest of our floral panels", `Rose Bouquet`'s contrast with "the smaller
+floral panels", and the bare "A 130 cm square" openers on the rest.
+
+The rewrites were produced by assertion-guarded replacement against the
+live-fetched text, not retyped — each rule aborts if its target string is
+absent, so the change set is exactly the rules and the surrounding prose cannot
+drift. A second guard rejected any output where a stale size claim survived.
+Verified live afterwards: five size entries on each, opening paragraphs
+unchanged, `seo.description` and `seo.title` untouched (no `SEOInput` damage),
+all five still indexed.
 
 **Lesson.** §26 called these the best-written pages in the cohort on the
 strength of their prose. Prose quality was never evidence of factual accuracy,
@@ -2848,12 +2859,12 @@ Re-query with a wildcard on a shorter token before concluding anything.
 
 ### 27.8 Pending
 
-**Decisions:**
-1. **Five understated size lists** (27.5) — fix the copy, or leave.
+**Decisions:** none outstanding. The five size lists (27.5) were fixed on the
+owner's instruction.
 
 **Verification owed:**
-2. Re-test `/collections/glass-mosaic-art` — `ItemList` is live; expect 4 items.
-3. The two "non-critical issues" rows on the product Rich Results test.
+1. Re-test `/collections/glass-mosaic-art` — `ItemList` is live; expect 4 items.
+2. The two "non-critical issues" rows on the product Rich Results test.
 
 **Corrections to §26.** 26.9's "78 of them are unprotected" is closed (27.1),
 and its population figure of 262 should read **278** (27.2). 26.12's decision
