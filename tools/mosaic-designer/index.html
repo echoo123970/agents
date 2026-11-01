@@ -2249,12 +2249,14 @@ let upKind = 'color', pendingImg = null;
 function showPending(img) { $('#draw-hint').hidden = true; pendingImg = img; setMode('sketch'); composite(); }
 function clearPending() { if (pendingImg) { pendingImg = null; composite(); } }
 // One question for every upload: what is the picture? Each answer sets up its journey.
+// Two answers: a drawing, picture or photo becomes a black & white design to color (a black & white
+// drawing keeps its own lines, a colored picture is outlined; the tool tells them apart), or a photo of
+// a mosaic is kept as it is.
 const UP_CHOICES = [
-  ['lines', 'bw', 'A black & white drawing', 'We keep your lines. You color each area with our stones.'],
-  ['outline', 'color', 'A colored picture or photo', 'We turn it into a black & white outline. You color each area with our stones.'],
+  ['design', 'design', 'A drawing, picture or photo', 'We make it a black & white design. You color each area with our stones.'],
   ['keep', 'mosaic', 'A photo of a mosaic', 'It stays exactly as it is. Tap any area and pick a stone to change its color.'],
 ];
-const UP_ACTIONS = { bw: [UP_CHOICES[0]], color: [UP_CHOICES[1]] }; // first choice for a detected kind
+const UP_ACTIONS = { bw: [UP_CHOICES[0]], color: [UP_CHOICES[0]] }; // first choice for a detected kind
 // A design picked from our shop is already one of our mosaics: customers either change its colors
 // or clear them and repaint it themselves.
 const STORE_ACTIONS = [
@@ -2284,7 +2286,7 @@ function renderUpload() {
 // Every choice takes effect at once and the panel stays open, so customers can compare.
 function applyUpload(how) {
   upAction = how;
-  if (!upStore) { const c = UP_CHOICES.find(x => x[0] === how); if (c) upKind = c[1] === 'mosaic' ? 'color' : c[1]; }
+  if (!upStore && how === 'keep' && upKind === 'bw') upKind = 'color';
   renderUpload();
   const img = pendingImg || importedImg;
   heavy(() => {
@@ -2304,6 +2306,7 @@ function runUpload(how) {
   state.sourceKind = upKind;
   // a photo of a mosaic: keep the real piece and only change its colors (like our own designs)
   if (how === 'keep') { state.sourceKind = 'mosaic'; how = 'colors'; }
+  if (how === 'design') { upKind = isColorful(importedImg) ? 'color' : 'bw'; state.sourceKind = upKind; how = upKind === 'bw' ? 'lines' : 'outline'; } // keep a drawing's lines, outline a colored picture
   $('#trace-mode').value = how === 'picture' ? 'colors' : how;
   showTraceFields();
   if (how === 'picture') {
