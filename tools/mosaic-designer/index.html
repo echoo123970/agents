@@ -2074,6 +2074,7 @@ $('#next-step').addEventListener('click', () => {
 
 /* ---------------- Start choices ---------------- */
 function showStart(on) {
+  if (on) setPrompting(false); else backToPrompt();
   $('#start').hidden = !on;
   $('.topbar').classList.toggle('choosing', on); $('.bench').classList.toggle('choosing', on);
   if (!on) { fitSlab(); applyView(); } // the canvas was hidden while choosing; size it now
