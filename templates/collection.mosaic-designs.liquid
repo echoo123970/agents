@@ -1,6 +1,6 @@
 {%- layout none -%}
-{%- comment -%} pieces labelled marble that are really glass {%- endcomment -%}
-{%- assign hide = 'abstract-mosaics_abstract-gray-cascade-marble-mosaic-art' | split: ',' -%}
+{%- comment -%} pieces kept out of the designer (glass labelled marble, or not wanted there) {%- endcomment -%}
+{%- assign hide = 'abstract-mosaics_abstract-gray-cascade-marble-mosaic-art,animal-mosaics_leopard-portrait-marble-mosaic-art' | split: ',' -%}
 {%- paginate collection.products by 250 -%}
 [{%- assign sep = '' -%}{%- assign n = 0 -%}
 {%- for p in collection.products -%}
