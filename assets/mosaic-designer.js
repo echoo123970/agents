@@ -1374,6 +1374,15 @@ function showGallery() {
   $('#gallery').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 $('#gallery-close').addEventListener('click', () => { $('#gallery').hidden = true; });
+// the four ways to start are a screen of their own: whenever they show, the tool hides, and whenever a
+// design panel or the designs list opens, they close (holds for every path that shows either)
+new MutationObserver(() => {
+  const on = !$('#start').hidden;
+  $('.topbar').classList.toggle('choosing', on); $('.bench').classList.toggle('choosing', on);
+}).observe($('#start'), { attributes: true, attributeFilter: ['hidden'] });
+for (const id of ['#upload-panel', '#gallery'])
+  new MutationObserver(() => { if (!$(id).hidden && !$('#start').hidden) showStart(false); })
+    .observe($(id), { attributes: true, attributeFilter: ['hidden'] });
 // while the designs list is open only the list shows; the tool appears once a design is picked
 new MutationObserver(() => { const on = !$('#gallery').hidden; $('.topbar').classList.toggle('picking', on); $('.bench').classList.toggle('picking', on); if (!on) { fitSlab(); applyView(); } })
   .observe($('#gallery'), { attributes: true, attributeFilter: ['hidden'] });
