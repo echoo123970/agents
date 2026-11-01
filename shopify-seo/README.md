@@ -2451,3 +2451,271 @@ is untouched and theme deployment is unaffected.
    `/collections/all`. Gates item 2.
 2. **884 of 1,811 active titles render over 60 characters.**
 3. **Rich Results re-test.**
+
+---
+
+## 26. Four URLs, a LocalBusiness that was never there, and 733 titles (2026-11-01)
+
+§25 closed with three pending items and two numbers in them. Both numbers were
+wrong, in opposite directions, and finding that out was most of the work.
+
+### 26.1 The Rich Results checklist: 4 of 4, zero defects
+
+| URL | Items | Detail |
+|---|---|---|
+| `/` | 2 | Organisation, Local businesses |
+| `/collections/glass-mosaic-art` | 3 | + Breadcrumbs |
+| `/products/religious-mosaics_last-supper-…` | 5 | + Breadcrumbs, Product snippets, Merchant listings |
+| `/products/landscape-mosaics-hand-set-tuscan-…` | — | "URL is not available to Google" |
+
+Product and Merchant listings both validated, which settles a real doubt: the
+`@id` cross-references for `brand`, `seller` and `manufacturer` point at the
+`Organization` node in a *different* `<script>` block, and Google resolves them
+fine. No change needed. That had been the predicted failure point.
+
+### 26.2 The LocalBusiness that was never there
+
+The homepage test showed `Local businesses: 1 valid item`, and §15 says PR #16
+removed exactly that node. I told the user it was a real finding and mine. It
+was not.
+
+Every file the homepage renders was read: `layout/theme.liquid`, both section
+groups, `templates/index.liquid`, all fourteen homepage sections,
+`snippets/seo-breadcrumbs.liquid`, `snippets/limespot.liquid`,
+`config/settings_data.json` (one app embed — Shopify Inbox, no structured data)
+and `assets/theme.js`. The only JSON-LD on the page is `theme.liquid`'s
+`@graph`, and its `@type` is the plain string `"Organization"` — not an array,
+no `Store` sub-node.
+
+The arithmetic across the three pages proves it:
+
+```
+home       2 = Organisation + Local businesses
+collection 3 = those two + Breadcrumbs
+product    5 = those two + Breadcrumbs + Product snippets + Merchant listings
+```
+
+The same two rows on every page are **one** `Organization` node, which Google
+counts under both headings because it carries a `PostalAddress` and a
+`telephone`. PR #16 deployed correctly the whole time. Nothing to fix.
+
+**Lesson.** A testing tool's grouping is not the page's markup. "Local
+businesses: 1" names a *rich-result feature*, not a `@type`. Before believing a
+tool's label over the source, read the source.
+
+### 26.3 robots.txt ruled out, and the failure mode it avoids
+
+The noindexed product returned "URL is not available to Google" while still
+showing parsed structured data — so the page *was* fetched and rendered. That
+left two candidates: the `noindex` meta working, or a `robots.txt` Disallow.
+
+`templates/robots.txt.liquid` does not disallow `/products/`. This matters
+beyond the test: `seo-breadcrumbs.liquid`'s own comment warns that "a Disallow
+stops the crawl, not the listing", and a Disallow *plus* a noindex is
+self-defeating — Google can never crawl the page to see the noindex. The theme
+avoids that trap, and now it's verified rather than assumed.
+
+### 26.4 The duplicate cohort: ~350 was wrong, 184 was right
+
+§25's pending list said "~350 active products from 20 artworks crossed with 16
+adjectives". That came from multiplying, not counting. Measured:
+
+- 173 active titles end in `Stone Mosaic Wall Art`
+- 16 decorative adjectives, derived empirically from first words
+- grouping by subject: **12 subjects, 172 decorated listings, 1 genuine singleton**
+- plus 12 canonical `<Subject> Mosaic Art` listings = **184**
+
+Which is exactly what `seo-breadcrumbs.liquid`'s own comment had recorded all
+along. The theme was right and the pending list was my arithmetic.
+
+### 26.5 Ten holes in a policy that had already shipped
+
+The comment claims 172 carry `seo.noindex`. Only 162 did. Ten decorated
+duplicates — one each in ten of the twelve subjects — had never been set:
+
+| Subject | Unprotected |
+|---|---|
+| Mediterranean Seascape | Signature |
+| Tuscan Vineyard Sunset | Exclusive |
+| Snowy Mountain Vista | Signature |
+| Desert Oasis at Dawn | Heritage |
+| Venetian Canal View | Decorative |
+| Roman Labyrinth Design | Decorative |
+| Op Art Cube Pattern | Exclusive |
+| Abstract Tessellation Grid | Fine |
+| Moroccan Star Medallion | Luxury |
+| Art Deco Fan Motif | Bespoke |
+
+Five were unarguable: a **byte-identical title** already noindexed sat beside
+them. "Exclusive Tuscan Vineyard Sunset Stone Mosaic Wall Art" exists three
+times, two protected and one not.
+
+All ten written, then **re-read to verify** — which mattered, because for the
+five with identical twins the mutation echo shows a matching title either way
+and proves nothing. Zero nulls remain. 172/172 protected, 12 canonical indexed.
+
+**Lesson.** A policy that shipped is not a policy that holds. The regularity
+(one miss per subject, ten of twelve) says a batch skipped a row per group, not
+that someone made ten decisions.
+
+### 26.6 884 was right; 1,663 was mine
+
+§25 said "884 of 1,811 active titles render over 60 characters". Re-measuring
+from the cached catalogue scan gave 1,663, and the gap looked like a real
+finding: 1,352 products carried a `seo.title` of the form
+`<product title> | <Category> Mosaics | iMosaicArt`, 33 characters of
+boilerplate pushing them over.
+
+Before writing anything I checked one product live. `seo.title` was **null**.
+So were all 40 in a follow-up sample across two categories. The boilerplate had
+already been cleared store-wide; my scan was from 2026-10-31 16:41 and stale on
+precisely the field being measured.
+
+The live figure is `len(product.title) > 47` — 901 on current data, and 884 when
+§25 was written. **The original number was right and the "correction" was the
+error.**
+
+**Lesson.** A cached scan is evidence about the moment it was taken. Before
+measuring a field, read that field live for one row.
+
+### 26.7 733 titles, and three drafts that never shipped
+
+Budget: the theme appends ` - iMosaicArt` (13 chars) unless the title already
+contains the brand, so `seo.title` must be ≤ 47. Target set: 901 over-length
+titles minus 168 noindexed duplicates (whose titles are moot for search) = **733**.
+
+Written via `metafieldsSet` on `global.title_tag`, **not** `productUpdate(seo:)`
+— `SEOInput` is a whole-object replace and would have nulled every
+`seo.description` in the catalogue (§21). Verified after: descriptions intact.
+
+Three rules were rejected before one shipped:
+
+1. **Specificity scoring** picked the marketing tagline over the product:
+   `Mosaic Tile Backsplash - A Beautiful Addition To Your Kitchen` →
+   *"A Beautiful Addition To Your Kitchen"*. Every product word was in the
+   generic stoplist, so the tagline won on "specificity".
+2. **Position beats scoring for colons.** In `Name: Tagline` the name is simply
+   on the left. Scoring had produced *"A Sacred Tribute to Faith and Devotion"*
+   over **Guadalupe**, and dropped **Banksy**.
+3. **Word-squeezing before structure** mangled titles:
+   *"Mosaic Backsplash - A Addition To Your Kitchen"*, *"Where Meets
+   Imagination"*, *"Tranquil Beauty in"*. Reordering to colon → dash → squeeze →
+   truncate fixed all three.
+
+A fourth defect — *"Glass Mosaic Flower Arrangements Arrangements"* — came from
+the collision resolver appending a word already present, because punctuation
+defeated its duplicate check. Caught by reading the generated payload before
+sending it.
+
+Final: 733 titles, 0 over budget, 0 trailing stopwords, 0 duplicated words, 0
+collisions with existing titles, rendered median 55 / max 60.
+
+**Lesson.** Read the generated payload, not just the summary statistics. Every
+one of these passed the counters and failed the eye.
+
+### 26.8 495 underscore handles, and why the cache could not be trusted twice
+
+`religious-mosaics_last-supper-…` led somewhere: **495 active handles** use
+`<category>-mosaics_<slug>` — 27% of the live catalogue, across 15 categories,
+exactly one underscore each, and **0 collisions** with the hyphenated form.
+Google treats hyphens, not underscores, as word separators.
+
+The fix is mechanical (`handle.replace('_','-',1)` with `redirectNewHandle:
+true`, which mints the 301 in the same transaction). **All 495 were rewritten**,
+every target derived from a live read, zero `userErrors`.
+
+Two things nearly went wrong first.
+
+**`redirectNewHandle` is a field inside `ProductUpdateInput`, not an argument
+on `productUpdate`.** Passing it as an argument is rejected outright by API
+2026-10, which is the lucky outcome: had the wrong shape been accepted and
+ignored, all 495 live product URLs would have been renamed with **no redirects
+at all**. The working shape was confirmed on a single product, and the 301 was
+then verified by querying `urlRedirects` rather than trusting the mutation's
+echo.
+
+**The cache was wrong on fifteen of them.** A 39-product live sample found one
+drift; widening to the 100 at-risk products found **15**, every one in the
+MAR055–MAR072 batch reconciled in §24:
+
+```
+cache: religious-mosaics_the-nativity-scene-mosaic-with-three-kings
+live : religious-mosaics_last-supper-mosaic-with-twelve-apostles
+```
+
+Deriving targets from the cache would have renamed fifteen products **back to
+the wrong artwork** and minted 301s pointing at the wrong pieces — undoing §24
+precisely. This is §24.4's error wearing a different hat, and the only reason it
+did not land is that the field had been checked live first.
+
+A third, smaller error: a hand-count of one batch said 80 renames where 79 had
+been written. Reconciling the written ids against the source list after every
+round caught it. Counting several hundred items by eye does not hold; the
+reconciliation step is what makes a bulk rename safe.
+
+Verified three ways: per-round reconciliation (final `495/495, remaining: 0`),
+a 25-product sample spread across the range re-read live (all hyphenated, no
+underscores), and redirect spot-checks from three separate batches.
+
+**Lesson, and it is the same one as 26.6.** A cache is stale exactly where the
+work was done. The fields you edited are the fields most likely to have drifted,
+so they are the worst possible candidates for a cached read.
+
+**Second lesson.** Before a bulk write, prove the mutation shape on one row and
+verify its *side effect*, not its return value. A rename that silently skips its
+redirect looks identical in the response to one that does not.
+
+### 26.9 A second duplicate family, found the same way as the first
+
+Mid-batch, the title payload surfaced
+`<Adjective> <Subject> Floral Stone Mosaic Art` — the same 16 adjectives,
+**78 active products**, and **none carry `seo.noindex`**. "Lily Pond Medallion"
+has 11 live listings including two identical "Luxury" and two identical
+"Artisanal".
+
+The §21.7 sweep had matched the string `Stone Mosaic Wall Art`, so it could
+never have seen a family ending `Floral Stone Mosaic Art`. The duplicate
+population is **262**, not 184, and 78 of them are unprotected.
+
+**Lesson (fourth time).** Match the generator's pattern, not one of its outputs.
+
+### 26.10 Collection pages could not be enumerated
+
+The collection test returned Breadcrumbs, Organisation, Local businesses — and
+nothing describing the 412 products on the page. An answer engine could tell the
+page was *about* glass mosaics but could not list what was in it.
+
+PR #27 adds `CollectionPage` + `ItemList` to `snippets/seo-breadcrumbs.liquid`,
+mirroring the blog block already there. Deliberate choices: no `BreadcrumbList`
+(main-collection.liquid emits one); page 1 only (outside a paginate tag
+`collection.products` returns the first 50 whatever `?page=` says); skips
+`seo.noindex` products; counter-based commas rather than `forloop.last`, which
+the noindex filter makes unreliable and which would emit a trailing comma and
+invalid JSON.
+
+Not merged here. The snippet renders in `<head>` on every page, and a Liquid
+error there takes the storefront down. Tag balance was verified statically but
+it was not render-tested — the storefront is unreachable from the container, and
+compiling it by writing to an unrelated backup theme would have been a side
+effect on someone else's data.
+
+### 26.11 Repository
+
+PR #25 (Mosaic Designer) merged as `0459845`, pinned to the inspected SHA
+because another session was actively pushing to the branch. The repo runs no
+CI, so "mergeable and clean" is the whole signal available.
+
+### 26.12 Pending
+
+**Decisions:**
+1. **PR #27** — merge to deploy the collection `ItemList`.
+2. **78 unprotected duplicates** (26.9) — same call as the 184.
+
+**Open work:** none outstanding from this section.
+
+**Verification owed:**
+4. The two "non-critical issues" rows on the product Rich Results test.
+5. Re-test `/collections/glass-mosaic-art` after PR #27 deploys; expect 4 items.
+
+**Corrections to §25's pending list:** "~350 active products from 20 artworks"
+should read **184 from 12** (26.4). "884 of 1,811" was **correct** (26.6).
