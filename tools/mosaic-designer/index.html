@@ -284,6 +284,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
     <button id="step-mosaic" type="button" aria-pressed="false"><span class="n">3</span>Mosaic</button>
   </div>
   <div class="actions">
+    <button class="btn" id="to-start" type="button" title="See the four ways to start a design">☰ Start options</button>
     <button class="btn" id="new-design" type="button" title="Start a new design the same way, from step 1">New design</button>
     <button class="btn" id="undo" type="button" title="Undo (Ctrl+Z)">Undo</button>
     <button class="btn" id="redo" type="button" title="Redo (Ctrl+Shift+Z)">Redo</button>
@@ -1995,6 +1996,8 @@ function setTool(t) {
 $('#step-sketch').addEventListener('click', () => setMode('sketch'));
 $('#step-color').addEventListener('click', () => setMode('color'));
 $('#step-mosaic').addEventListener('click', () => setMode('mosaic'));
+// the four ways to start, from anywhere (the design stays until one is chosen)
+$('#to-start').addEventListener('click', () => { $('#upload-panel').hidden = true; $('#gallery').hidden = true; clearPending(); showStart(true); $('#start').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
 $('#prev-step').addEventListener('click', () => {
   if (state.mode === 'sketch') { // step 1 goes back to the four ways to start; the design stays until one is chosen
     $('#upload-panel').hidden = true; $('#gallery').hidden = true; clearPending(); showStart(true); return;
