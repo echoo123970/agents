@@ -1983,3 +1983,161 @@ reversible.
 5. **`MAR058`** — needs the image to settle Last Supper vs Nativity.
 6. **`cloud-search-all-products`** — publish as a Shop All page, or leave
    hidden.
+
+## 23. The glass rule, the material mislabels, and a handle batch that lies (2026-11-01)
+
+### 23.1 `glass-mosaic-art` is now rule-based
+
+§22.3 left it manual, with the note that a new glass product would not join on
+its own. It now does.
+
+The manual source was deleted and a conditions source created in a single
+`collectionUpdate`, with `matchType: ANY`:
+
+| Condition | Relation | Value |
+|---|---|---|
+| `productTitle` | `CONTAINS` | `glass` |
+| `custom.style_filter` | `INCLUDES` | `Tiled Glass Artistry` |
+
+This required enabling `smartCollectionCondition` on the `style_filter`
+definition — `useAsCollectionCondition` now reads `true`. That capability has
+to stay on; the rule depends on it. It is not the same flag as the
+`adminFilterable` capability of §22.6, which remains off.
+
+**Both arms were tested separately, because a matching count proves nothing
+about membership:**
+
+| Test | Product | Expected | Result |
+|---|---|---|---|
+| Title arm only (styled marble) | Coastal Cliff Mosaic — Vibrant *Glass* Art | in | in |
+| Metafield arm only (no "glass" in title) | Marilyn Monroe Mosaic Portrait | in | in |
+| Neither arm | Mona Lisa Mosaic Portrait | out | out |
+| Neither arm | iMosaicArt Gift Art Card | out | out |
+
+Membership came out at 414, identical to the manual set it replaced.
+
+### 23.2 Ten material mislabels corrected
+
+§22.3 listed 12 products whose title said "glass" while `style_filter` said
+`Handcrafted Marble Art`. The owner identified each. Ten were genuinely glass
+and the metafield was wrong:
+
+`MAS021`, `MAS024`, `MAS035`, `MAS039`, `MAS040`, `MAS042`, `MAS043`,
+`MAS055`, `MAS082`, `MAR029`.
+
+Nine of those ten are MAS-prefixed landscapes from one SKU run, which is
+consistent with a single bulk edit having set the whole run to marble.
+
+Products carrying the glass style went from 402 to 412. Collection membership
+did not move: all ten were already inside through the title arm. The storefront
+`Style` filter is now accurate for them.
+
+### 23.3 The two that were not mislabels
+
+**`MAD027` "Mosaic Wine Glass"** — the metafield was right. "Glass" was the
+*subject*, a wine glass depicted in marble, not a material claim. The title
+merely tripped a keyword match.
+
+**`MAP021` "Marilyn Monroe Portrait - High Quality Mosaic Glass Tile"** — the
+metafield was right and the *copy* was wrong, in two places. The title claimed
+glass, and the body said **"Made from premium-quality glass"** on a marble
+piece. The body was the more serious of the two: a title can be read as a style
+name, but that sentence is an unambiguous statement about what the buyer
+receives.
+
+Both were rewritten, and both now agree across all four surfaces — title, body,
+meta description and URL:
+
+| | Before | After |
+|---|---|---|
+| `MAP021` title | …High Quality Mosaic **Glass Tile** | **Marilyn Monroe Marble Mosaic Portrait** |
+| `MAP021` body | "Made from premium-quality **glass**" | "Made from premium-quality **marble**" |
+| `MAD027` title | Mosaic Wine **Glass**- Mosaic Tile Art | **Poured Red Wine Marble Mosaic Tile Art** |
+
+Two incidental defects were fixed in passing: the malformed `Glass- Mosaic`
+(missing space) and `glass.This` (missing space) in the `MAD027` body.
+Rendered `<title>` for `MAP021` fell from 70 characters to 50.
+
+Both dropped out of `glass-mosaic-art` on their own once the titles changed —
+414 to 412 — which is the clearest proof the rule of §23.1 is live. Smart
+collection membership is asynchronous; the count was wrong for about a minute
+after the write and right afterwards.
+
+**A trade-off worth recording:** `MAD027` no longer matches a search for
+"wine glass mosaic", which is a plausible query for it. Losing that keyword was
+accepted as the price of truthful collection membership, with the owner's
+agreement.
+
+### 23.4 Handle changes and redirects
+
+Three handles were changed. Each used `redirectNewHandle: true` on
+`productUpdate`, which creates the 301 inside the same transaction, so the old
+URL never 404s. All three redirects were confirmed by querying `urlRedirects`
+afterwards, not taken from the mutation response.
+
+| Old path | New path |
+|---|---|
+| `…marilyn-monroe-portrait-high-quality-mosaic-glass-tile` | `…marilyn-monroe-marble-mosaic-portrait` |
+| `food-mosaics-mosaic-wine-glass-mosaic-tile-art` | `food-mosaics-poured-red-wine-marble-mosaic-tile-art` |
+| `religious-mosaics_the-nativity-scene-mosaic-with-three-kings` | `religious-mosaics_last-supper-mosaic-with-twelve-apostles` |
+
+`seo` was deliberately omitted from these mutations. Sending it would have hit
+the §19.1 replace-not-merge trap and nulled the meta descriptions written
+minutes earlier. Read-back confirmed all three survived.
+
+### 23.5 `MAR058` closed, and what it exposed
+
+§21.6 recorded that `MAR058`'s handle said *Nativity Scene with Three Kings*
+while its title and body said *The Last Supper*, and that the artwork could not
+be identified from this environment. The owner confirmed: **it is the Last
+Supper.** The title and body were right; the handle was wrong, and has been
+corrected with a 301.
+
+Checking it exposed the real defect. **Seven of the nine religious products in
+that 2025-11-01 batch carry a handle naming a different artwork:**
+
+| SKU | Title | Handle says | Match |
+|---|---|---|:--:|
+| `MAR055` | Virgin of Guadalupe Handcrafted Religious Mosaic | The Holy Family with Golden Haloes | ✗ |
+| `MAR056` | Jesus Christ Sacred Handcrafted Mosaic | The Annunciation with Archangel Gabriel | ✗ |
+| `MAR057` | Our Lady of Guadalupe Sacred Mosaic Art | Madonna and Child with Blue Mantle | ✗ |
+| `MAR058` | The Last Supper Mosaic with Twelve Apostles | The Nativity Scene with Three Kings | ✗ (fixed) |
+| `MAR059` | The Last Supper Mosaic with Twelve Apostles | The Last Supper with Twelve Apostles | ✓ |
+| `MAR060` | The Nativity Mosaic With Mary, Joseph & Baby Jesus | The Crucifixion with Mary and John | ✗ |
+| `MAR061` | The Resurrection of Christ Mosaic | The Resurrection of Christ | ✓ |
+| `MAR062` | "Christ in Color" Handmade Abstract Mosaic Portrait | The Ascension of Christ with Apostles | ✗ |
+| `MAR063` | "Our Lady of the Miraculous Medal" Handmade Mosaic | St George and the Dragon | ✗ |
+
+Every other category created in that same batch — animals, birds, flowers,
+geometric, landscape, nautical, portrait, 67 products in all — has handles that
+match their titles exactly. **The corruption is confined to
+`religious-mosaics_*`.**
+
+The handles name a coherent set of religious subjects (Holy Family,
+Annunciation, Madonna and Child, Nativity, Crucifixion, Ascension, St George)
+that exist as *no product in the catalogue*. The most likely explanation is
+that one list of planned subjects produced the handles while a different list
+produced the titles.
+
+The SEO cost is direct: someone searching "crucifixion mosaic" can land on a
+URL promising it and be shown a Nativity. Six remain unfixed, pending the
+owner identifying each artwork — the same blocker as `MAR058`, which only the
+owner can clear.
+
+**`MAR058` and `MAR059` also share a title exactly**, two seconds apart in
+creation time. That duplicate is untouched and is a separate decision.
+
+### 23.6 Still open
+
+1. **The generated duplicate farm** — ~350 active products from **20
+   artworks** crossed with 16 adjectives. `Hand-Set Tuscan Vineyard Sunset
+   Stone Mosaic Wall Art` is live six times. Proposal: keep 20 canonical,
+   noindex the rest, delete nothing. Unanswered, and it gates item 2.
+2. **884 of 1,811 active titles render over 60 characters.** Mechanism agreed:
+   short `seo.title` overrides, never rewriting customer-visible product
+   titles. Blocked on item 1.
+3. **Six more mismatched religious handles** (§23.5) — needs the artworks
+   identified.
+4. **`MAR058` / `MAR059` duplicate title.**
+5. **`cloud-search-all-products`** — publish as a Shop All page, or leave
+   hidden.
