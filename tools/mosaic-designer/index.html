@@ -75,6 +75,11 @@ button { cursor: pointer; }
 /* Workbench */
 /* desktop: tools | canvas over materials list | chart. Phones: canvas, tools, chart, then the list */
 .bench { display: grid; grid-template-columns: 220px minmax(0, 1fr) 300px; gap: 16px; align-items: start; }
+/* choosing how to start: only the four ways to start show, centered */
+.topbar.choosing { display: none; }
+.bench.choosing { display: block; max-width: 920px; margin: 0 auto; }
+.bench.choosing > :not(.stage), .bench.choosing .stage > :not(#start) { display: none !important; }
+.bench.choosing:not(.has-design) #start .start-close { display: none; } /* nothing to go back to yet */
 .bench > .tools { grid-column: 1; grid-row: 1 / span 2; }
 .bench > .stage { grid-column: 2; grid-row: 1; }
 .bench > .bom-wrap { grid-column: 2; grid-row: 2; min-width: 0; }
@@ -270,11 +275,11 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
 </head>
 <body>
 
-<header class="topbar">
+<header class="topbar choosing">
   <h1 class="brand">iMosaicArt<small>Mosaic Designer</small></h1>
   <div class="steps" role="group" aria-label="Step">
-    <button id="step-sketch" type="button" aria-pressed="false"><span class="n">1</span>Design</button>
-    <button id="step-color" type="button" aria-pressed="true"><span class="n">2</span>Color</button>
+    <button id="step-sketch" type="button" aria-pressed="true"><span class="n">1</span>Design</button>
+    <button id="step-color" type="button" aria-pressed="false"><span class="n">2</span>Color</button>
     <button id="step-mosaic" type="button" aria-pressed="false"><span class="n">3</span>Mosaic</button>
   </div>
   <div class="actions">
@@ -287,10 +292,10 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
   </div>
 </header>
 
-<main class="bench">
+<main class="bench choosing">
   <!-- Tools -->
   <aside class="panel tools" aria-label="Tools">
-    <div id="sketch-tools" class="group" hidden>
+    <div id="sketch-tools" class="group">
       <button class="btn block ai-open" id="ai-open" type="button" hidden>✦ Describe it with AI</button>
       <p class="label">Draw</p>
       <div class="toolgrid" role="group" aria-label="Drawing tools">
@@ -391,7 +396,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
       </details>
     </div>
 
-    <div id="color-tools" class="group">
+    <div id="color-tools" class="group" hidden>
       <p class="label">Color</p>
       <div class="toolgrid" role="group" aria-label="Coloring tools">
         <button class="tool" type="button" data-tool="fill" title="Fill: tap an area to lay the chosen stone in it (F)"><svg viewBox="0 0 24 24"><path d="M5 11l7-7 7 7-7 7z"/><path d="M19 15c1 2 2 3 2 4a2 2 0 0 1-4 0c0-1 1-2 2-4z"/></svg>Fill</button>
@@ -443,7 +448,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
       <p class="hint" id="mosaic-areas-hint">Each area is laid with hand-cut tiles of its stone, cut to fit the shape. Tap an area to change its stone.</p>
     </div>
 
-    <div id="joint-group" class="group">
+    <div id="joint-group" class="group" hidden>
       <p class="label">Lines &amp; grout</p>
       <div class="joints" role="group" aria-label="Line and grout color">
         <button class="joint" type="button" data-joint="#1b1a19" style="background:#1b1a19" title="Black" aria-label="Black joints"></button>
@@ -457,14 +462,14 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
 
   <!-- Slab -->
   <section class="stage" aria-label="Design">
-    <div class="start" id="start" hidden>
+    <div class="start" id="start">
       <div class="start-head">
         <div><h2>Create your mosaic</h2><p class="hint">How would you like to start? You can change everything afterwards.</p></div>
         <button class="start-close" type="button" id="start-close" aria-label="Close">×</button>
       </div>
       <div class="start-grid">
         <button type="button" data-start="upload"><svg viewBox="0 0 24 24"><path d="M4 16v3h16v-3M12 4v11M7 9l5-5 5 5"/></svg><b>Upload a picture</b><span>A black &amp; white drawing or a colored photo. We'll ask what you'd like to do with it.</span></button>
-        <button type="button" data-start="describe"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg><b>Describe it</b><span>Type your idea and we draw a black &amp; white design for you to color.</span></button>
+        <button type="button" data-start="describe"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg><b>Describe it</b><span>Type your idea. We draw a black &amp; white design for you to color, or make it a ready mosaic.</span></button>
         <button type="button" data-start="draw"><svg viewBox="0 0 24 24"><path d="M4 20c4-1 6-4 9-8l4-5-3-2-5 5c-3 3-5 6-5 10z"/></svg><b>Draw it myself</b><span>Shapes, text, symmetry and freehand on a blank canvas.</span></button>
         <button type="button" data-start="gallery"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4l2 8-2 8-2-8z"/></svg><b>Start from one of our designs</b><span>Browse our best-selling mosaics by category, then make one your own.</span></button>
       </div>
@@ -520,7 +525,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
       <p class="hint" id="ai-status">We draw black outlines you can edit, then color.</p>
       <p class="hint" id="ai-off" hidden>Drawing from a description is not available right now.</p>
     </section>
-    <div class="slab-wrap mode-color" id="slab">
+    <div class="slab-wrap" id="slab">
       <div class="ai-wait" id="ai-wait" hidden><span class="spinner"></span><b id="ai-wait-text">Drawing your design…</b><span>This usually takes 20 to 60 seconds.</span></div>
       <div class="draw-hint" id="draw-hint" hidden><b>Your blank canvas</b><span>Pick a tool on the left (Pen, Line, Rectangle, Ellipse, Star, Heart, Text…) and drag here to draw. Closed shapes become areas you fill with our stones in step 2, and step 3 turns them into a hand-cut mosaic.</span></div>
       <div id="slab-inner">
@@ -535,9 +540,9 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
       </div>
     </div>
     <div class="stepnav">
-      <button class="btn" type="button" id="prev-step">← Back</button>
-      <p class="step-help"><b id="step-title">Step 2 of 3 · Color</b><span id="status">Tap an area to fill it with <b id="status-mat">—</b></span></p>
-      <button class="btn primary" type="button" id="next-step">Next: See the mosaic →</button>
+      <button class="btn" type="button" id="prev-step">← Start options</button>
+      <p class="step-help"><b id="step-title">Step 1 of 3 · Design</b><span id="status">Draw or upload your design. Every closed shape becomes one piece you can fill with stone.</span></p>
+      <button class="btn primary" type="button" id="next-step">Next: Color it →</button>
     </div>
     <div class="sizebar" role="group" aria-label="Mosaic size">
       <span class="label">Mosaic size</span>
@@ -2005,6 +2010,8 @@ $('#next-step').addEventListener('click', () => {
 /* ---------------- Start choices ---------------- */
 function showStart(on) {
   $('#start').hidden = !on;
+  $('.topbar').classList.toggle('choosing', on); $('.bench').classList.toggle('choosing', on);
+  if (!on) { fitSlab(); applyView(); } // the canvas was hidden while choosing; size it now
   if (on) $('#start').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   else store.set('mosaic.started', true);
 }
@@ -2033,6 +2040,7 @@ function resetDesign() {
 $$('#start [data-start]').forEach(b => b.addEventListener('click', () => {
   const how = b.dataset.start;
   showStart(false);
+  $('.bench').classList.add('has-design');
   aiBar = how === 'describe';
   resetDesign();
   $('#sketch-tools').classList.toggle('draw-only', how === 'draw' || how === 'describe'); // drawing from scratch needs no picture tools
