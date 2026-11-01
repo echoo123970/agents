@@ -75,6 +75,14 @@ button { cursor: pointer; }
 /* Workbench */
 /* desktop: tools | canvas over materials list | chart. Phones: canvas, tools, chart, then the list */
 .bench { display: grid; grid-template-columns: 220px minmax(0, 1fr) 300px; gap: 16px; align-items: start; }
+/* choosing how to start: only the four ways to start show, centered */
+.topbar.choosing { display: none; }
+.bench.choosing { display: block; max-width: 920px; margin: 0 auto; }
+.bench.choosing > :not(.stage), .bench.choosing .stage > :not(#start) { display: none !important; }
+.topbar.picking { display: none; }
+.bench.picking { display: block; max-width: 1100px; margin: 0 auto; }
+.bench.picking > :not(.stage), .bench.picking .stage > :not(#gallery) { display: none !important; }
+.bench.choosing:not(.has-design) #start .start-close { display: none; } /* nothing to go back to yet */
 .bench > .tools { grid-column: 1; grid-row: 1 / span 2; }
 .bench > .stage { grid-column: 2; grid-row: 1; }
 .bench > .bom-wrap { grid-column: 2; grid-row: 2; min-width: 0; }
@@ -114,10 +122,11 @@ button { cursor: pointer; }
 .prompt-bar { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 4px 14px rgba(22,51,94,.06); }
 .prompt-bar .pb-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
 .prompt-bar .pb-title { font-family: var(--font-display, inherit); font-size: 20px; color: var(--ink); font-weight: 600; }
-.prompt-bar .pb-main { display: flex; gap: 10px; align-items: stretch; }
+.prompt-bar .pb-main { display: flex; flex-direction: column; gap: 8px; }
 .prompt-bar textarea { flex: 1; min-width: 0; resize: vertical; font-size: 15px; line-height: 1.45; padding: 10px 12px; border: 1.5px solid var(--accent); border-radius: var(--radius); background: var(--bg); color: var(--ink); }
-.prompt-bar .pb-actions { display: flex; flex-direction: column; gap: 6px; width: 190px; }
-.prompt-bar .pb-actions .btn { width: 100%; padding: 9px 12px; }
+.prompt-bar .pb-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.prompt-bar .pb-actions .btn { padding: 9px 22px; min-width: 150px; }
+.prompt-bar textarea { min-height: 70px; }
 .prompt-bar .pb-ideas { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .prompt-bar .pb-ideas button { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 4px 11px; font-size: 12.5px; color: var(--ink); }
 .prompt-bar .pb-ideas button:hover { border-color: var(--accent); }
@@ -129,12 +138,14 @@ button { cursor: pointer; }
 .prompt-bar .pb-mode button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 1px var(--accent); }
 @media (max-width: 640px) { .prompt-bar .pb-mode { grid-template-columns: 1fr; } }
 .ai-open { border-color: var(--accent); color: var(--accent); font-weight: 600; }
-@media (max-width: 640px) { .prompt-bar .pb-main { flex-direction: column; } .prompt-bar .pb-actions { width: 100%; } }
+@media (max-width: 640px) { .prompt-bar .pb-actions .btn { flex: 1; } }
 .ai-wait { position: absolute; inset: 0; z-index: 4; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: rgba(255,255,255,.82); color: var(--muted, #5b6478); font-size: 14px; text-align: center; }
 .ai-wait b { font-size: 18px; color: var(--ink, #16335e); font-weight: 600; font-variant-numeric: tabular-nums; }
 .spinner { width: 42px; height: 42px; border-radius: 50%; border: 4px solid rgba(43,123,232,.2); border-top-color: var(--accent, #2B7BE8); animation: spin .9s linear infinite; }
 #ai-go.loading::before { content: ""; display: inline-block; width: 14px; height: 14px; margin-right: 8px; border-radius: 50%; border: 2px solid rgba(255,255,255,.45); border-top-color: #fff; animation: spin .9s linear infinite; vertical-align: -2px; }
 @keyframes spin { to { transform: rotate(360deg); } }
+.start-open { margin-top: 6px; }
+.linkish { background: none; border: 0; padding: 0; color: var(--accent); text-decoration: underline; font: inherit; cursor: pointer; }
 .draw-hint { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 32px; text-align: center; pointer-events: none; color: var(--muted, #5b6478); font-size: 15px; line-height: 1.6; }
 .draw-hint b { font-size: 20px; color: var(--ink, #16335e); font-weight: 600; }
 .draw-hint span { max-width: 460px; }
@@ -187,7 +198,7 @@ details.more > .group { margin-top: 10px; }
 .gallery-tabs button { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 5px 12px; font-size: 12.5px; }
 .gallery-tabs button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; max-height: 560px; overflow-y: auto; }
-.gallery-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 4px; background: #fff; }
+.gallery-grid img { width: 100%; aspect-ratio: 1; object-fit: contain; border-radius: 4px; background: #fff; } /* whole picture, not cropped */
 .gallery-grid span { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 12px !important; line-height: 1.3; }
 #up-link { color: var(--accent); text-decoration: underline; }
 .gallery-grid button { border: 1px solid var(--line); background: var(--bg); border-radius: 8px; padding: 8px; display: flex; flex-direction: column; gap: 6px; align-items: stretch; }
@@ -270,27 +281,27 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
 </head>
 <body>
 
-<header class="topbar">
+<header class="topbar choosing">
   <h1 class="brand">iMosaicArt<small>Mosaic Designer</small></h1>
   <div class="steps" role="group" aria-label="Step">
-    <button id="step-sketch" type="button" aria-pressed="false"><span class="n">1</span>Design</button>
-    <button id="step-color" type="button" aria-pressed="true"><span class="n">2</span>Color</button>
+    <button id="step-sketch" type="button" aria-pressed="true"><span class="n">1</span>Design</button>
+    <button id="step-color" type="button" aria-pressed="false"><span class="n">2</span>Color</button>
     <button id="step-mosaic" type="button" aria-pressed="false"><span class="n">3</span>Mosaic</button>
   </div>
   <div class="actions">
-    <button class="btn" id="new-design" type="button">New design</button>
+    <button class="btn" id="to-start" type="button" title="See the four ways to start a design">☰ Start options</button>
+    <button class="btn" id="new-design" type="button" title="Start a new design the same way, from step 1">New design</button>
     <button class="btn" id="undo" type="button" title="Undo (Ctrl+Z)">Undo</button>
     <button class="btn" id="redo" type="button" title="Redo (Ctrl+Shift+Z)">Redo</button>
-    <button class="btn" id="open-design" type="button">Open design</button>
-    <button class="btn" id="save-design" type="button">Save design</button>
-    <button class="btn primary" id="export" type="button">Export</button>
+    <button class="btn" id="save-design" type="button" title="Download a work file to reopen this design later and keep editing it">Save to continue later</button>
+    <button class="btn primary" id="export" type="button" title="Download a picture of your design with its list of stones">Download</button>
   </div>
 </header>
 
-<main class="bench">
+<main class="bench choosing">
   <!-- Tools -->
   <aside class="panel tools" aria-label="Tools">
-    <div id="sketch-tools" class="group" hidden>
+    <div id="sketch-tools" class="group">
       <button class="btn block ai-open" id="ai-open" type="button" hidden>✦ Describe it with AI</button>
       <p class="label">Draw</p>
       <div class="toolgrid" role="group" aria-label="Drawing tools">
@@ -305,11 +316,11 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
         <button class="tool" type="button" data-tool="heart" title="Heart (K)"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>Heart</button>
         <button class="tool" type="button" data-tool="text" title="Text (T)"><svg viewBox="0 0 24 24"><path d="M5 6V4h14v2M12 4v16M9 20h6"/></svg>Text</button>
         <button class="tool" type="button" data-tool="eraser" title="Eraser (X)"><svg viewBox="0 0 24 24"><path d="M8 20h12M5 15l8-9 6 6-7 8H9z"/></svg>Eraser</button>
-        <button class="tool" type="button" data-tool="hand" title="Move view (H)"><svg viewBox="0 0 24 24"><path d="M8 12V6a1.5 1.5 0 0 1 3 0v5V4.5a1.5 1.5 0 0 1 3 0V11V6a1.5 1.5 0 0 1 3 0v8c0 4-2.5 6-6 6s-5-2-6.5-4.5L4 13a1.4 1.4 0 0 1 2.3-1.6z"/></svg>Move view</button>
+        <button class="tool" type="button" data-tool="hand" title="Move view (H)" hidden><svg viewBox="0 0 24 24"><path d="M8 12V6a1.5 1.5 0 0 1 3 0v5V4.5a1.5 1.5 0 0 1 3 0V11V6a1.5 1.5 0 0 1 3 0v8c0 4-2.5 6-6 6s-5-2-6.5-4.5L4 13a1.4 1.4 0 0 1 2.3-1.6z"/></svg>Move view</button>
       </div>
       <p class="hint" id="tool-hint">Drag to draw. Hold Shift for straight angles, squares and circles.</p>
       <label class="field" for="weight">Line weight
-        <span class="row"><input id="weight" type="range" min="1" max="14" value="3"><span class="val" id="weight-val">3</span></span>
+        <span class="row"><input id="weight" type="range" min="1" max="14" value="4"><span class="val" id="weight-val">4</span></span>
       </label>
       <label class="field" for="sides" id="sides-field" hidden>Sides / points
         <span class="row"><input id="sides" type="range" min="3" max="12" value="6"><span class="val" id="sides-val">6</span></span>
@@ -382,7 +393,8 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
         </label>
       </div>
       <button class="btn block" id="ai-redraw" type="button" hidden>Redraw upload as clean lines (AI)</button>
-      <details class="more">
+      <!-- "Start over" is covered by New design and Start options in the top bar; kept hidden -->
+      <details class="more" hidden>
         <summary>Start over</summary>
         <div class="group">
           <button class="btn block" id="sample" type="button">Start from one of our designs</button>
@@ -391,7 +403,8 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
       </details>
     </div>
 
-    <div id="color-tools" class="group">
+    <div id="color-tools" class="group" hidden>
+      <button class="btn block ai-open" type="button" hidden>✦ Add or change something (AI)</button>
       <p class="label">Color</p>
       <div class="toolgrid" role="group" aria-label="Coloring tools">
         <button class="tool" type="button" data-tool="fill" title="Fill: tap an area to lay the chosen stone in it (F)"><svg viewBox="0 0 24 24"><path d="M5 11l7-7 7 7-7 7z"/><path d="M19 15c1 2 2 3 2 4a2 2 0 0 1-4 0c0-1 1-2 2-4z"/></svg>Fill</button>
@@ -420,6 +433,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
     </div>
 
     <div id="mosaic-tools" class="group" hidden>
+      <button class="btn block ai-open" type="button" hidden>✦ Add or change something (AI)</button>
       <p class="label">Mosaic</p>
       <!-- tile size is set automatically (½ in, smaller for photos); kept hidden for customers -->
       <label class="field" for="tile-size" hidden>Tile size
@@ -443,7 +457,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
       <p class="hint" id="mosaic-areas-hint">Each area is laid with hand-cut tiles of its stone, cut to fit the shape. Tap an area to change its stone.</p>
     </div>
 
-    <div id="joint-group" class="group">
+    <div id="joint-group" class="group" hidden>
       <p class="label">Lines &amp; grout</p>
       <div class="joints" role="group" aria-label="Line and grout color">
         <button class="joint" type="button" data-joint="#1b1a19" style="background:#1b1a19" title="Black" aria-label="Black joints"></button>
@@ -457,16 +471,17 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
 
   <!-- Slab -->
   <section class="stage" aria-label="Design">
-    <div class="start" id="start" hidden>
+    <div class="start" id="start">
       <div class="start-head">
-        <div><h2>Create your mosaic</h2><p class="hint">How would you like to start? You can change everything afterwards.</p></div>
+        <div><h2>Create your mosaic</h2><p class="hint">Choose how you'd like to begin. You can change the design, the stones and the size at any step.</p>
+          <p class="hint start-open">Saved a design before? <button type="button" class="linkish" id="open-design">Continue a saved design</button></p></div>
         <button class="start-close" type="button" id="start-close" aria-label="Close">×</button>
       </div>
       <div class="start-grid">
-        <button type="button" data-start="upload"><svg viewBox="0 0 24 24"><path d="M4 16v3h16v-3M12 4v11M7 9l5-5 5 5"/></svg><b>Upload a picture</b><span>A black &amp; white drawing or a colored photo. We'll ask what you'd like to do with it.</span></button>
-        <button type="button" data-start="describe"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg><b>Describe it</b><span>Type your idea and we draw a black &amp; white design for you to color.</span></button>
-        <button type="button" data-start="draw"><svg viewBox="0 0 24 24"><path d="M4 20c4-1 6-4 9-8l4-5-3-2-5 5c-3 3-5 6-5 10z"/></svg><b>Draw it myself</b><span>Shapes, text, symmetry and freehand on a blank canvas.</span></button>
-        <button type="button" data-start="gallery"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4l2 8-2 8-2-8z"/></svg><b>Start from one of our designs</b><span>Browse our best-selling mosaics by category, then make one your own.</span></button>
+        <button type="button" data-start="describe"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg><b>Describe your idea</b><span>Write what you'd like, for example "a compass rose with waves". We draw it for you as a black &amp; white design to color by yourself using our stones, or as a ready mosaic in our stones.</span></button>
+        <button type="button" data-start="gallery"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4l2 8-2 8-2-8z"/></svg><b>Start from one of our designs</b><span>Pick one of our best-selling marble mosaics, then change its colors or redesign it your way.</span></button>
+        <button type="button" data-start="draw"><svg viewBox="0 0 24 24"><path d="M4 20c4-1 6-4 9-8l4-5-3-2-5 5c-3 3-5 6-5 10z"/></svg><b>Start from a blank canvas</b><span>Draw your own design with shapes, text, symmetry and freehand, then color it with our stones.</span></button>
+        <button type="button" data-start="upload"><svg viewBox="0 0 24 24"><path d="M4 16v3h16v-3M12 4v11M7 9l5-5 5 5"/></svg><b>Upload a picture</b><span>Use your own drawing, photo or mosaic picture. We turn it into a design you can color with our stones.</span></button>
       </div>
     </div>
     <div class="start" id="gallery" hidden>
@@ -487,7 +502,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
         <button type="button" data-kind="bw">Black &amp; white drawing</button>
         <button type="button" data-kind="color">Colored picture or photo</button>
       </div>
-      <p class="label" id="up-act-label"><span id="up-act-num">2 · </span>What would you like? <span class="hint" id="up-try" style="text-transform:none;letter-spacing:0">Try each one; the design changes as you click.</span></p>
+      <p class="label" id="up-act-label"><span id="up-act-num" hidden></span><span id="up-act-q">What is this picture?</span> <span class="hint" id="up-try" style="text-transform:none;letter-spacing:0">Try each one; the design changes as you click.</span></p>
       <div class="start-grid up-actions" id="up-actions"></div>
       <div class="row" style="justify-content: flex-end"><button class="btn primary" type="button" id="up-done" hidden>Continue with this →</button></div>
     </div>
@@ -497,8 +512,8 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
         <span class="hint" id="pb-sub">Type what you'd like, then choose what we make.</span>
       </div>
       <div class="seg pb-mode" id="ai-mode" role="group" aria-label="What should we make?">
-        <button type="button" data-aimode="lines" aria-pressed="true"><b>Black &amp; white design</b><span>I color it myself with your stones</span></button>
-        <button type="button" data-aimode="color" aria-pressed="false"><b>Ready mosaic</b><span>Made in your stones; I can change any stone</span></button>
+        <button type="button" data-aimode="lines" aria-pressed="true"><b>Black &amp; white design</b><span>You color it with our stones</span></button>
+        <button type="button" data-aimode="color" aria-pressed="false"><b>Ready mosaic</b><span>Made in our stones; you can change any stone</span></button>
       </div>
       <div class="pb-main">
         <textarea id="ai-prompt" rows="2" placeholder="For example: a compass rose with waves around it"></textarea>
@@ -520,14 +535,14 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
       <p class="hint" id="ai-status">We draw black outlines you can edit, then color.</p>
       <p class="hint" id="ai-off" hidden>Drawing from a description is not available right now.</p>
     </section>
-    <div class="slab-wrap mode-color" id="slab">
+    <div class="slab-wrap" id="slab">
       <div class="ai-wait" id="ai-wait" hidden><span class="spinner"></span><b id="ai-wait-text">Drawing your design…</b><span>This usually takes 20 to 60 seconds.</span></div>
       <div class="draw-hint" id="draw-hint" hidden><b>Your blank canvas</b><span>Pick a tool on the left (Pen, Line, Rectangle, Ellipse, Star, Heart, Text…) and drag here to draw. Closed shapes become areas you fill with our stones in step 2, and step 3 turns them into a hand-cut mosaic.</span></div>
       <div id="slab-inner">
-        <canvas id="view" width="1000" height="750" aria-label="Design canvas"></canvas>
-        <canvas id="overlay" width="1000" height="750"></canvas>
+        <canvas id="view" width="1400" height="1050" aria-label="Design canvas"></canvas>
+        <canvas id="overlay" width="1400" height="1050"></canvas>
       </div>
-      <div class="busy" id="busy" hidden>Working…</div>
+      <div class="busy" id="busy" hidden>Preparing your design…</div>
       <div class="zoombar" role="group" aria-label="Zoom">
         <button type="button" id="zoom-out" title="Zoom out (−)" aria-label="Zoom out">−</button>
         <button type="button" id="zoom-fit" title="Fit (0)">100%</button>
@@ -535,9 +550,9 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
       </div>
     </div>
     <div class="stepnav">
-      <button class="btn" type="button" id="prev-step">← Back</button>
-      <p class="step-help"><b id="step-title">Step 2 of 3 · Color</b><span id="status">Tap an area to fill it with <b id="status-mat">—</b></span></p>
-      <button class="btn primary" type="button" id="next-step">Next: See the mosaic →</button>
+      <button class="btn" type="button" id="prev-step">← Start options</button>
+      <p class="step-help"><b id="step-title">Step 1 of 3 · Design</b><span id="status">Draw or upload your design. Every closed shape becomes one piece you can fill with stone.</span></p>
+      <button class="btn primary" type="button" id="next-step">Next: Color it →</button>
     </div>
     <div class="sizebar" role="group" aria-label="Mosaic size">
       <span class="label">Mosaic size</span>
@@ -600,7 +615,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Material</th><th>Type</th><th class="num">Pieces</th><th class="num" id="tiles-head">Tiles</th><th class="num">Share</th><th class="num" id="area-head">Area (ft²)</th></tr></thead>
+          <thead><tr><th>Material</th><th>Type</th><th class="num" id="tiles-head">Tiles</th><th class="num">Share</th><th class="num" id="area-head">Area (ft²)</th></tr></thead>
           <tbody id="bom-body"></tbody>
           <tfoot id="bom-foot"></tfoot>
         </table>
@@ -651,7 +666,7 @@ textarea.json { width: 100%; min-height: 180px; font-family: var(--font-mono); f
 <!-- Export -->
 <dialog id="export-dlg">
   <div class="dlg">
-    <h3>Export design</h3>
+    <h3>Download your design</h3>
     <img class="export-img" id="export-img" alt="Colored design with materials list">
     <p class="hint">The image includes the materials list. If the download button does nothing in your viewer, right-click or long-press the image to save it.</p>
     <div class="foot">
@@ -704,7 +719,7 @@ window.IMOSAIC_SWATCHES = {"m01":{"base":"#1a1a17","photo":"data:image/jpeg;base
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 // The design frame in pixels: the longer side is 1000, the other follows the mosaic's shape.
-let W = 1000, H = 750, N = W * H;
+let W = 1400, H = 1050, N = W * H;
 const TILE = 320;           // texture tile size in px
 const PATTERN_SCALE = 1.35; // how large the veining reads on the slab
 
@@ -923,7 +938,7 @@ const mosaicLayer = mk(), mosctx = mosaicLayer.getContext('2d');
 const state = {
   mode: 'color',
   tool: { sketch: 'pen', color: 'fill' },
-  weight: 3, gap: 2, joint: '#8a8782',
+  weight: 4, gap: 2, joint: '#8a8782',
   selected: 'm04', filter: 'marble', query: '',
   sizeW: 36, sizeH: 27, unit: 'in', // finished size of the mosaic
   look: 'stone', // how the Color step shows materials: stone textures or plain colors
@@ -933,16 +948,56 @@ const state = {
   fills: [], // immutable entries: { x, y, mat, rot }
 };
 let inkVer = 0;
-const frameFor = (w, h) => { const r = Math.max(.25, Math.min(4, h / w)); return r <= 1 ? [1000, Math.round(1000 * r)] : [Math.round(1000 / r), 1000]; };
+// the canvas's long side in pixels: high enough that large mosaics keep sharp tiles and lines
+const FRAME = 1400;
+const frameFor = (w, h) => { const r = Math.max(.25, Math.min(4, h / w)); return r <= 1 ? [FRAME, Math.round(FRAME * r)] : [Math.round(FRAME / r), FRAME]; };
 // Changes the frame to a new shape, keeping the drawing and its colors centered and in proportion.
+// A point well inside area L (the one deepest from its edges), so it stays inside after rescaling.
+function interiorPoint(L) {
+  const lab = getLabels(), r = regions[L], step = Math.max(1, Math.round(Math.sqrt(r.area) / 40));
+  let best = r.seed, bestD = -1;
+  for (let y = r.y0; y <= r.y1; y += step) for (let x = r.x0; x <= r.x1; x += step) {
+    if (lab[y * W + x] !== L) continue;
+    let d = 0;
+    while (d < 40) {
+      const k = d + 1;
+      if (x - k < 0 || x + k >= W || y - k < 0 || y + k >= H) break;
+      if (lab[y * W + x - k] !== L || lab[y * W + x + k] !== L || lab[(y - k) * W + x] !== L || lab[(y + k) * W + x] !== L) break;
+      d = k;
+    }
+    if (d > bestD) { bestD = d; best = y * W + x; }
+  }
+  return { x: best % W, y: (best - best % W) / W };
+}
 function resizeFrame(newW, newH) {
   if (newW === W && newH === H) return;
   if (typeof sel !== 'undefined' && sel) finishSel(true);
+  // each colored area remembers a point well inside it, so its stone survives the rescale
+  state.fills = state.fills.map(f => { const L = labelOf(f); return L ? { ...f, ...interiorPoint(L) } : f; });
   const old = mk(); old.getContext('2d').drawImage(ink, 0, 0);
-  const oW = W, oH = H, s = Math.min(newW / oW, newH / oH), ox = (newW - oW * s) / 2, oy = (newH - oH * s) / 2;
+  const oW = W, oH = H;
+  let s = Math.min(newW / oW, newH / oH), ox = (newW - oW * s) / 2, oy = (newH - oH * s) / 2;
+  // a drawn design grows with the mosaic: it is scaled to fill the new frame, not shrunk to fit
+  // the old one (a design from a picture keeps following the picture)
+  if (!sourceData && currentInk) {
+    const d = currentInk.data; let x0 = oW, y0 = oH, x1 = -1, y1 = -1;
+    for (let y = 0; y < oH; y += 2) for (let x = 0; x < oW; x += 2) if (d[(y * oW + x) * 4 + 3]) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+    if (x1 > x0 && y1 > y0) {
+      const bw = x1 - x0 + 1, bh = y1 - y0 + 1, m = .05; // the design fills the frame, 5% from the edge
+      const mm = m * Math.min(newW, newH);
+      s = Math.min((newW - 2 * mm) / bw, (newH - 2 * mm) / bh);
+      ox = (newW - bw * s) / 2 - x0 * s; oy = (newH - bh * s) / 2 - y0 * s;
+    }
+  }
   W = newW; H = newH; N = W * H; stack = new Int32Array(N);
   for (const c of [ink, fillsLayer, tint, maskC, work, mosaicLayer, view, overlay]) { c.width = W; c.height = H; }
+  ictx.imageSmoothingQuality = 'high';
   ictx.drawImage(old, ox, oy, oW * s, oH * s);
+  { // keep lines crisp: scaled lines become solid black again instead of soft gray edges
+    const id = ictx.getImageData(0, 0, W, H), a = id.data;
+    for (let i = 0; i < a.length; i += 4) { const on = a[i + 3] > 96; a[i] = a[i + 1] = a[i + 2] = 0; a[i + 3] = on ? 255 : 0; }
+    ictx.putImageData(id, 0, 0);
+  }
   state.fills = state.fills.map(f => ({ ...f, x: Math.min(W - 1, Math.round(ox + f.x * s)), y: Math.min(H - 1, Math.round(oy + f.y * s)) }));
   if (importedImg && sourceData) { const m = sourceData.mosaic, ph = sourceData.photo; sourceData = drawImported(); sourceData.mosaic = m; sourceData.photo = ph; }
   currentInk = ictx.getImageData(0, 0, W, H); inkVer++;
@@ -1104,7 +1159,9 @@ function hoverArea(e) {
 // step shows the real piece again with their stones (sourceData.photo === 'final').
 const photoLook = () => !!(sourceData && sourceData.photo === true);
 const photoFinal = () => !!(sourceData && sourceData.photo);
-function renderPhotoFills(ctx = fctx) {
+// fade: areas not given a stone yet show as pale gray (repainting one of our mosaics), so the real
+// piece stays visible while the customer colors it
+function renderPhotoFills(ctx = fctx, fade = false) {
   const lab = getLabels(), src = sourceData.data, n = regions.length;
   const want = new Int32Array(n).fill(-1), mats = [];
   for (const f of state.fills) {
@@ -1130,7 +1187,9 @@ function renderPhotoFills(ctx = fctx) {
   }
   const out = new ImageData(new Uint8ClampedArray(src), W, H), o = out.data;
   for (let p = 0; p < N; p++) {
-    const L = own[p]; if (!L || want[L] < 0) continue;
+    const L = own[p];
+    if (fade && (!L || want[L] < 0)) { const g = .299 * src[p * 4] + .587 * src[p * 4 + 1] + .114 * src[p * 4 + 2], v = 205 + g * .19; o[p * 4] = o[p * 4 + 1] = o[p * 4 + 2] = v; continue; }
+    if (!L || want[L] < 0) continue;
     const c = sum[L * 4 + 3], mL = sum[L * 4] / c, ma = sum[L * 4 + 1] / c, mb = sum[L * 4 + 2] / c;
     const t = matLab(mats[want[L]]);
     const l = pl[p * 3], a = pl[p * 3 + 1], b = pl[p * 3 + 2];
@@ -1144,6 +1203,7 @@ function renderPhotoFills(ctx = fctx) {
 function renderFills() {
   fctx.clearRect(0, 0, W, H);
   if (photoLook()) return renderPhotoFills();
+  if (photoFinal()) return renderPhotoFills(fctx, true); // repainting one of our mosaics: same piece, faded until colored
   getLabels();
   for (const f of state.fills) {
     const m = matById(f.mat), L = labelOf(f);
@@ -1196,9 +1256,10 @@ let freeAI = false;
 let aiBar = false;
 let aiMode = 'lines'; // what "Describe it" makes: 'lines' (black & white to color) or 'color' (a ready mosaic)
 function showAiBar() {
-  const can = !!(window.__imdSample || freeAI) && state.mode === 'sketch';
+  // available on every step, so a design can be refined ("add a dolphin") while coloring too
+  const can = !!(window.__imdSample || freeAI) && !usePicture();
   $('#ai-box').hidden = !(can && aiBar);
-  $('#ai-open').hidden = !(can && !aiBar);
+  $$('.ai-open').forEach(b => { b.hidden = !(can && !aiBar); });
   $('#ai-mode').hidden = !window.IMOSAIC_AI_URL; // only the store's helper can make a color design
 }
 let sourceData = null;        // the uploaded picture on the slab, as pixels
@@ -1298,7 +1359,7 @@ function composite(target = vctx, mode = state.mode) {
     }
     if (target === vctx) drawTrace(target); target.drawImage(ink, 0, 0); return;
   }
-  if (photoLook()) { const l = newLines('#1b1a19'); if (l) target.drawImage(l, 0, 0); return; }
+  if (photoFinal()) { const l = newLines('#1b1a19'); if (l) target.drawImage(l, 0, 0); return; }
   tctx.globalCompositeOperation = 'source-over';
   tctx.clearRect(0, 0, W, H);
   tctx.drawImage(ink, 0, 0);
@@ -1307,7 +1368,7 @@ function composite(target = vctx, mode = state.mode) {
   tctx.globalCompositeOperation = 'source-over';
   target.drawImage(tint, 0, 0);
 }
-function busy(on, label = 'Working…') { $('#busy').textContent = label; $('#busy').hidden = !on; }
+function busy(on, label = 'Preparing your design…') { $('#busy').textContent = label; $('#busy').hidden = !on; }
 function refresh({ fills = true } = {}) {
   if (fills) renderFills();
   if (state.mode === 'mosaic') renderMosaic();
@@ -1800,22 +1861,24 @@ function renderBom() {
   const body = $('#bom-body'), foot = $('#bom-foot');
   body.textContent = ''; foot.textContent = '';
   if (!groups.size) {
-    body.innerHTML = '<tr><td colspan="6" class="empty">No areas colored yet. Pick a color and tap the design.</td></tr>';
+    body.innerHTML = '<tr><td colspan="5" class="empty">No areas colored yet. Pick a color and tap the design.</td></tr>';
     return [];
   }
   const rows = [...groups].sort((a, b) => b[1].px - a[1].px).map(([id, g]) => ({ m: matById(id), ...g, area: toArea(g.px), share: g.px / total }));
   for (const r of rows) {
     const tr = document.createElement('tr');
     tr.innerHTML = `<td><div class="mat-cell"><canvas width="56" height="56"></canvas><div><div>${esc(r.m.name)}</div><div class="code">${esc(r.m.code || '')}</div></div></div></td>
-      <td>${TYPE_LABEL[r.m.type] || 'Marble'}</td><td class="num">${r.pieces ?? '—'}</td><td class="num">${r.tiles.toLocaleString()}</td><td class="num">${Math.round(r.share * 100)}%</td><td class="num">${r.area.toFixed(2)}</td>`;
+      <td>${TYPE_LABEL[r.m.type] || 'Marble'}</td><td class="num">${r.tiles.toLocaleString()}</td><td class="num">${pct(r.share)}</td><td class="num">${r.area.toFixed(2)}</td>`;
     drawThumb(tr.querySelector('canvas'), r.m);
     body.appendChild(tr);
   }
-  const tA = rows.reduce((s, r) => s + r.area, 0), pcs = rows[0].pieces == null ? '—' : rows.reduce((s, r) => s + r.pieces, 0), tls = rows.reduce((s, r) => s + r.tiles, 0);
-  foot.innerHTML = `<tr><td>Total</td><td></td><td class="num">${pcs}</td><td class="num">${tls.toLocaleString()}</td><td class="num">100%</td><td class="num">${tA.toFixed(2)}</td></tr>`;
+  const tA = rows.reduce((s, r) => s + r.area, 0), tls = rows.reduce((s, r) => s + r.tiles, 0);
+  foot.innerHTML = `<tr><td>Total</td><td></td><td class="num">${tls.toLocaleString()}</td><td class="num">100%</td><td class="num">${tA.toFixed(2)}</td></tr>`;
   return rows;
 }
 const fmt = n => (Math.round(n * 10) / 10).toString();
+// a share never reads 0%: small amounts show as "<1%"
+const pct = x => (x > 0 && x < .005 ? '<1%' : `${Math.max(x > 0 ? 1 : 0, Math.round(x * 100))}%`);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 /* ---------------- Chart UI ---------------- */
@@ -1945,7 +2008,7 @@ function setMode(mode) {
   }[mode];
   $('#step-title').textContent = { sketch: 'Step 1 of 3 · Design', color: 'Step 2 of 3 · Color', mosaic: 'Step 3 of 3 · Mosaic' }[mode];
   $('#prev-step').textContent = { sketch: '← Start options', color: '← Back to design', mosaic: '← Back to colors' }[mode];
-  $('#next-step').textContent = { sketch: 'Next: Color it →', color: 'Next: See the mosaic →', mosaic: 'Export my design' }[mode];
+  $('#next-step').textContent = { sketch: 'Next: Color it →', color: 'Next: See the mosaic →', mosaic: 'Download' }[mode];
   renderChart(); selectMat(state.selected); renderBom();
   markFrom();
   if (mode === 'mosaic') heavy(() => { renderMosaic(); composite(); renderBom(); });
@@ -1989,6 +2052,8 @@ function setTool(t) {
 $('#step-sketch').addEventListener('click', () => setMode('sketch'));
 $('#step-color').addEventListener('click', () => setMode('color'));
 $('#step-mosaic').addEventListener('click', () => setMode('mosaic'));
+// the four ways to start, from anywhere (the design stays until one is chosen)
+$('#to-start').addEventListener('click', () => { $('#upload-panel').hidden = true; $('#gallery').hidden = true; clearPending(); showStart(true); $('#start').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
 $('#prev-step').addEventListener('click', () => {
   if (state.mode === 'sketch') { // step 1 goes back to the four ways to start; the design stays until one is chosen
     $('#upload-panel').hidden = true; $('#gallery').hidden = true; clearPending(); showStart(true); return;
@@ -2005,10 +2070,19 @@ $('#next-step').addEventListener('click', () => {
 /* ---------------- Start choices ---------------- */
 function showStart(on) {
   $('#start').hidden = !on;
+  $('.topbar').classList.toggle('choosing', on); $('.bench').classList.toggle('choosing', on);
+  if (!on) { fitSlab(); applyView(); } // the canvas was hidden while choosing; size it now
   if (on) $('#start').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   else store.set('mosaic.started', true);
 }
-$('#new-design').addEventListener('click', () => { $('#gallery').hidden = true; $('#upload-panel').hidden = true; clearPending(); showStart(true); });
+// New design starts over the same way the customer began (a new description, a blank canvas, another
+// upload or another of our designs) and goes back to step 1; "Start options" offers the other ways.
+let journey = null;
+$('#new-design').addEventListener('click', () => {
+  $('#gallery').hidden = true; $('#upload-panel').hidden = true; clearPending();
+  const b = journey && $(`#start [data-start="${journey}"]`);
+  if (b) b.click(); else showStart(true);
+});
 // the ready-designs gallery's back link returns to the four ways to start
 $('#gallery-close').addEventListener('click', () => showStart(true));
 function showGallery() {
@@ -2016,6 +2090,18 @@ function showGallery() {
   $('#gallery').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 $('#gallery-close').addEventListener('click', () => { $('#gallery').hidden = true; });
+// the four ways to start are a screen of their own: whenever they show, the tool hides, and whenever a
+// design panel or the designs list opens, they close (holds for every path that shows either)
+new MutationObserver(() => {
+  const on = !$('#start').hidden;
+  $('.topbar').classList.toggle('choosing', on); $('.bench').classList.toggle('choosing', on);
+}).observe($('#start'), { attributes: true, attributeFilter: ['hidden'] });
+for (const id of ['#upload-panel', '#gallery'])
+  new MutationObserver(() => { if (!$(id).hidden && !$('#start').hidden) showStart(false); })
+    .observe($(id), { attributes: true, attributeFilter: ['hidden'] });
+// while the designs list is open only the list shows; the tool appears once a design is picked
+new MutationObserver(() => { const on = !$('#gallery').hidden; $('.topbar').classList.toggle('picking', on); $('.bench').classList.toggle('picking', on); if (!on) { fitSlab(); applyView(); } })
+  .observe($('#gallery'), { attributes: true, attributeFilter: ['hidden'] });
 $('#start-close').addEventListener('click', () => showStart(false));
 // Every start choice begins a fresh design: the old drawing, colors, picture and settings are cleared
 // (Undo still brings the previous design back).
@@ -2032,7 +2118,9 @@ function resetDesign() {
 }
 $$('#start [data-start]').forEach(b => b.addEventListener('click', () => {
   const how = b.dataset.start;
+  journey = how;
   showStart(false);
+  $('.bench').classList.add('has-design');
   aiBar = how === 'describe';
   resetDesign();
   $('#sketch-tools').classList.toggle('draw-only', how === 'draw' || how === 'describe'); // drawing from scratch needs no picture tools
@@ -2158,13 +2246,13 @@ $('#file-sketch').addEventListener('change', async e => {
 let upKind = 'color', pendingImg = null;
 function showPending(img) { $('#draw-hint').hidden = true; pendingImg = img; setMode('sketch'); composite(); }
 function clearPending() { if (pendingImg) { pendingImg = null; composite(); } }
-const UP_ACTIONS = {
-  bw: [['lines', 'Color it with our stones', 'We keep your black lines. Then you fill each area with a stone and see it as a mosaic.']],
-  color: [
-    ['outline', 'Make it black & white to color', 'We turn your photo into a black & white outline. You can change it, then color each area with our stones in step 2.'],
-    ['keep', 'It is already a mosaic: keep it', 'Your mosaic stays exactly as it is. Tap any area and pick a stone to change its color.'],
-  ],
-};
+// One question for every upload: what is the picture? Each answer sets up its journey.
+const UP_CHOICES = [
+  ['lines', 'bw', 'A black & white drawing', 'We keep your lines. You color each area with our stones.'],
+  ['outline', 'color', 'A colored picture or photo', 'We turn it into a black & white outline. You color each area with our stones.'],
+  ['keep', 'mosaic', 'A photo of a mosaic', 'It stays exactly as it is. Tap any area and pick a stone to change its color.'],
+];
+const UP_ACTIONS = { bw: [UP_CHOICES[0]], color: [UP_CHOICES[1]] }; // first choice for a detected kind
 // A design picked from our shop is already one of our mosaics: customers either change its colors
 // or clear them and repaint it themselves.
 const STORE_ACTIONS = [
@@ -2176,10 +2264,11 @@ let upAction = null; // the option shown on the canvas right now
 let upStore = false; // true while the picture is a design from our shop
 function renderUpload() {
   $$('.up-kind button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.kind === upKind)));
-  $('#up-kind-label').hidden = $('.up-kind').hidden = $('#up-act-num').hidden = upStore;
-  const acts = upStore ? STORE_ACTIONS : UP_ACTIONS[upKind];
-  $('#up-actions').classList.toggle('two', acts.length === 2); $('#up-actions').classList.toggle('one', acts.length === 1); $('#up-try').hidden = acts.length < 2;
-  $('#up-hint').textContent = upStore ? 'Change its colors, or clear them and paint it your way.' : "Tell us what it is and what you'd like, and we'll set it up.";
+  $('#up-kind-label').hidden = $('.up-kind').hidden = true; $('#up-act-num').hidden = true;
+  const acts = upStore ? STORE_ACTIONS : UP_CHOICES.map(([how, , title, text]) => [how, title, text]);
+  $('#up-actions').classList.toggle('two', acts.length === 2); $('#up-actions').classList.toggle('one', acts.length === 1); $('#up-try').hidden = true;
+  $('#up-act-q').textContent = upStore ? 'What would you like?' : 'What is this picture?';
+  $('#up-hint').textContent = upStore ? 'Change its colors, or clear them and paint it your way.' : "Choose what your picture is and we'll set it up. Try each one; the design changes as you click.";
   const box = $('#up-actions'); box.textContent = '';
   for (const [how, title, text] of acts) {
     const b = document.createElement('button'); b.type = 'button';
@@ -2192,7 +2281,9 @@ function renderUpload() {
 }
 // Every choice takes effect at once and the panel stays open, so customers can compare.
 function applyUpload(how) {
-  upAction = how; renderUpload();
+  upAction = how;
+  if (!upStore) { const c = UP_CHOICES.find(x => x[0] === how); if (c) upKind = c[1] === 'mosaic' ? 'color' : c[1]; }
+  renderUpload();
   const img = pendingImg || importedImg;
   heavy(() => {
     try { runUpload(how); }
@@ -2557,7 +2648,7 @@ async function applyDesign(d, withHistory) {
   $('#size-w').value = state.sizeW; $('#size-h').value = state.sizeH; $('#size-unit').value = state.unit; markJoint();
 }
 $('#save-design').addEventListener('click', () => {
-  showJSON('Save design', 'Keep this file to reopen the design later, or send it to a customer so they can color it. It includes the materials it uses.', designJSON(), 'mosaic-design.json');
+  showJSON('Save to continue later', 'Download this file and keep it. Next time, open the Mosaic Designer and choose "Continue a saved design" to carry on where you left off.', designJSON(), 'mosaic-design.json');
 });
 $('#open-design').addEventListener('click', () => $('#file-design').click());
 $('#file-design').addEventListener('change', async e => {
@@ -2565,8 +2656,9 @@ $('#file-design').addEventListener('change', async e => {
   if (!f) return;
   try {
     await applyDesign(JSON.parse(await f.text()), true);
+    showStart(false); $('.bench').classList.add('has-design');
     renderChart(); selectMat(state.selected); setMode('color');
-    heavy(() => refresh()); toast('Design opened');
+    heavy(() => refresh()); toast('Your saved design is open. Carry on where you left off.');
   } catch { toast('That file is not an iMosaicArt mosaic design file.'); }
 });
 $('#export-chart').addEventListener('click', () => showJSON('Export chart', 'Share this file with your team or load it on another device with Import chart.', { app: 'imosaicart-chart', version: 1, materials: chart }, 'material-chart.json'));
@@ -2621,7 +2713,7 @@ $('#export').addEventListener('click', () => heavy(() => {
       ctx.fillStyle = '#4A5468'; ctx.font = '12px "Hanken Grotesk", sans-serif';
       ctx.fillText(`${r.m.code || ''}  ${TYPE_LABEL[r.m.type] || 'Marble'}`, pad + 48, y + 32);
       ctx.textAlign = 'right'; ctx.fillStyle = '#16335E'; ctx.font = '14px "Hanken Grotesk", sans-serif';
-      ctx.fillText(`${r.pieces == null ? '' : r.pieces + ' pc   '}${r.tiles.toLocaleString()} tiles   ${Math.round(r.share * 100)}%   ${r.area.toFixed(2)} ${unit}`, W - pad, y + 22);
+      ctx.fillText(`${r.tiles.toLocaleString()} tiles   ${pct(r.share)}   ${r.area.toFixed(2)} ${unit}`, W - pad, y + 22);
       ctx.textAlign = 'left'; y += rowH;
     }
   }
@@ -2802,7 +2894,13 @@ function useDrawing(img, status) {
         // a ready mosaic: the picture's colors become areas filled with our closest stones
         $('#trace-mode').value = 'colors'; showTraceFields(); state.sourceKind = 'color';
         $('#colors').value = 10; $('#colors-val').textContent = '10';
+        const prevFills = aiEdit ? state.fills.slice() : [];
         runTrace(true);
+        // a change keeps the stones the customer already picked, wherever their areas still are
+        if (prevFills.length) {
+          const pick = new Map(); for (const f of prevFills) { const L = labelOf(f); if (L && f.mat !== f.orig) pick.set(L, f.mat); }
+          state.fills = state.fills.map(f => { const L = labelOf(f); return pick.has(L) ? { ...f, mat: pick.get(L) } : f; });
+        }
         setMode('mosaic'); refresh(); aiButtons(); clearPrompt();
         status.textContent = 'Done. Change any stone in step 2, or go back to step 1 to change the design or describe a change.';
         toast('Here is your design as a mosaic in our stones. Tap any area to change its stone.');
@@ -2820,11 +2918,15 @@ function useDrawing(img, status) {
       }
       $('#trace-mode').value = 'lines'; showTraceFields(); state.sourceKind = 'bw';
       $('#threshold').value = 72; $('#threshold-val').textContent = '72'; // keep the drawing's paler strokes too
+      // a change made while coloring keeps the stones already chosen (areas whose tap point is still inside)
+      const prevFills = state.fills.slice(), prevMode = state.mode;
       runTrace();
       status.textContent = window.IMOSAIC_AI_URL ? 'Done. Describe a change (for example "add a dog") and press Change my design, or press Start from scratch for a new drawing.'
         : 'Done. Fix lines with the drawing tools, or press Draw it again for a new version. Then press Next: Color it.';
       // stay on Design so details can be changed by describing them, drawn by hand, or started again
-      setMode('sketch'); aiButtons(); clearPrompt();
+      if (aiEdit && prevMode !== 'sketch' && prevFills.length) { state.fills = prevFills.filter(f => labelOf(f)); setMode(prevMode); refresh(); }
+      else setMode('sketch');
+      aiButtons(); clearPrompt();
       toast('Your design is ready. Describe a change, draw on it, or press Next: Color it.');
     } catch (err) {
       console.error(err);
@@ -2878,10 +2980,10 @@ $('#ai-go').addEventListener('click', () => { aiEdit = true; runAI('describe'); 
 $$('#ai-mode button').forEach(b => b.addEventListener('click', () => {
   aiMode = b.dataset.aimode;
   $$('#ai-mode button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
-  $('#ai-status').textContent = aiMode === 'color' ? 'We make a picture from your words and lay it as a mosaic in our stones. You can change any stone.'
-    : 'We draw black & white outlines from your words. You then color them with our stones.';
+  $('#ai-status').textContent = aiMode === 'color' ? 'We turn your words into a mosaic made in our stones. Then you can change any stone you like.'
+    : 'We turn your words into a black & white design. Then you color each part with our stones.';
 }));
-$('#ai-open').addEventListener('click', () => { aiBar = true; showAiBar(); $('#ai-box').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('#ai-prompt').focus({ preventScroll: true }); });
+$$('.ai-open').forEach(b => b.addEventListener('click', () => { aiBar = true; showAiBar(); $('#ai-box').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('#ai-prompt').focus({ preventScroll: true }); }));
 $$('#ai-ideas button').forEach(b => b.addEventListener('click', () => { $('#ai-prompt').value = b.textContent; $('#ai-prompt').focus(); }));
 $('#ai-prompt').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#ai-go').click(); } });
 $('#ai-new').addEventListener('click', () => { aiEdit = false; runAI('describe'); });
@@ -2973,7 +3075,7 @@ async function initCapabilities() {
   if (!window.claude?.use) { // on the website a free image service draws descriptions
     freeAI = true; showAiBar();
     aiButtons();
-    $('#ai-status').textContent = 'We draw black & white outlines from your words. You then color them with our stones.';
+    $('#ai-status').textContent = 'We turn your words into a black & white design. Then you color each part with our stones.';
     return;
   }
   const [s, d] = await Promise.all([claude.use('sample').catch(() => null), claude.use('downloads').catch(() => null)]);
