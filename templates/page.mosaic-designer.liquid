@@ -128,9 +128,10 @@
         <label class="field" for="ai-prompt"><span class="sr">What should we draw?</span>
           <textarea id="ai-prompt" rows="4" placeholder="Compass rose medallion with a wave border"></textarea>
         </label>
-        <label class="check" for="ai-edit"><input type="checkbox" id="ai-edit"> Change the current sketch instead</label>
+        <label class="check" for="ai-edit"><input type="checkbox" id="ai-edit"> Add to my current sketch (keep what I drew)</label>
         <div class="row">
           <button class="btn primary" id="ai-go" type="button" style="flex:1">Draw it</button>
+          <button class="btn" id="ai-new" type="button" hidden>Start from scratch</button>
           <button class="btn" id="ai-stop" type="button" hidden>Stop</button>
         </div>
         <p class="hint" id="ai-status">Claude draws black outlines you can edit, then color.</p>
