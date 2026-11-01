@@ -20,5 +20,5 @@ Until the helper is set up, the website falls back to a free public image servic
 
 ## Cost
 
-Each drawing is one OpenAI image at low quality, about 1–2 US cents (check OpenAI's pricing page).
+Each drawing is one OpenAI image at medium quality, about 4–6 US cents (check OpenAI's pricing page).
 Cloudflare's free plan covers 100,000 calls a day. Only pages on imosaicart.com can use the helper.

@@ -1,13 +1,14 @@
 // iMosaicArt Mosaic Designer: "Describe it" drawing helper (Cloudflare Worker).
 //
 // The website sends a customer's idea (and, to change an existing sketch, that sketch as a PNG);
-// this worker asks OpenAI's image model for black & white coloring-page line art and returns the PNG. The OpenAI key lives only here, as a secret, never in
+// this worker asks OpenAI's image model for black & white coloring-page line art and returns the PNG.
+// The OpenAI key lives only here, as a secret, never in
 // the website's code. Only pages on imosaicart.com may call it.
 //
 // Settings (Cloudflare dashboard -> Worker -> Settings -> Variables and secrets):
 //   OPENAI_API_KEY        secret, required
 //   OPENAI_IMAGE_MODEL    optional, default "gpt-image-1"
-//   OPENAI_IMAGE_QUALITY  optional, "low" (default, cheapest), "medium" or "high"
+//   OPENAI_IMAGE_QUALITY  optional, "medium" (default, clean closed outlines), "low" (cheaper) or "high"
 //   ALLOWED_ORIGINS       optional, default "https://www.imosaicart.com,https://imosaicart.com"
 
 const SIZES = ['1536x1024', '1024x1536', '1024x1024'];
@@ -36,7 +37,7 @@ export default {
 
     const style = 'Thick bold continuous black outlines of even width, every shape fully closed, flat line art, large simple shapes, '
       + 'no shading, no hatching, no fur or grass texture, no gray, no text or letters, pure white background.';
-    const model = env.OPENAI_IMAGE_MODEL || 'gpt-image-1', quality = env.OPENAI_IMAGE_QUALITY || 'low';
+    const model = env.OPENAI_IMAGE_MODEL || 'gpt-image-1', quality = env.OPENAI_IMAGE_QUALITY || 'medium';
     const sketch = typeof body.image === 'string' && body.image.startsWith('data:image/png;base64,') && body.image.length < 8e6 ? body.image : null;
 
     let r;
