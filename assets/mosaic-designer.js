@@ -1245,7 +1245,7 @@ function setMode(mode) {
   }[mode];
   $('#step-title').textContent = { sketch: 'Step 1 of 3 · Design', color: 'Step 2 of 3 · Color', mosaic: 'Step 3 of 3 · Mosaic' }[mode];
   $('#prev-step').textContent = { sketch: '← Start options', color: '← Back to design', mosaic: '← Back to colors' }[mode];
-  $('#next-step').textContent = { sketch: 'Next: Color it →', color: 'Next: See the mosaic →', mosaic: 'Export my design' }[mode];
+  $('#next-step').textContent = { sketch: 'Next: Color it →', color: 'Next: See the mosaic →', mosaic: '⬇ Download picture' }[mode];
   renderChart(); selectMat(state.selected); renderBom();
   markFrom();
   if (mode === 'mosaic') heavy(() => { renderMosaic(); composite(); renderBom(); });
@@ -1870,7 +1870,7 @@ async function applyDesign(d, withHistory) {
   $('#size-w').value = state.sizeW; $('#size-h').value = state.sizeH; $('#size-unit').value = state.unit; markJoint();
 }
 $('#save-design').addEventListener('click', () => {
-  showJSON('Save design', 'Keep this file to reopen the design later, or send it to a customer so they can color it. It includes the materials it uses.', designJSON(), 'mosaic-design.json');
+  showJSON('Save to continue later', 'Download this file and keep it. Next time, open the Mosaic Designer and choose "Continue a saved design" to carry on where you left off.', designJSON(), 'mosaic-design.json');
 });
 $('#open-design').addEventListener('click', () => $('#file-design').click());
 $('#file-design').addEventListener('change', async e => {
@@ -1878,8 +1878,9 @@ $('#file-design').addEventListener('change', async e => {
   if (!f) return;
   try {
     await applyDesign(JSON.parse(await f.text()), true);
+    showStart(false); $('.bench').classList.add('has-design');
     renderChart(); selectMat(state.selected); setMode('color');
-    heavy(() => refresh()); toast('Design opened');
+    heavy(() => refresh()); toast('Your saved design is open. Carry on where you left off.');
   } catch { toast('That file is not an iMosaicArt mosaic design file.'); }
 });
 $('#export-chart').addEventListener('click', () => showJSON('Export chart', 'Share this file with your team or load it on another device with Import chart.', { app: 'imosaicart-chart', version: 1, materials: chart }, 'material-chart.json'));

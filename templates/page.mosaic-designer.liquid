@@ -21,9 +21,8 @@
     <button class="btn" id="new-design" type="button" title="Start a new design the same way, from step 1">New design</button>
     <button class="btn" id="undo" type="button" title="Undo (Ctrl+Z)">Undo</button>
     <button class="btn" id="redo" type="button" title="Redo (Ctrl+Shift+Z)">Redo</button>
-    <button class="btn" id="open-design" type="button">Open design</button>
-    <button class="btn" id="save-design" type="button">Save design</button>
-    <button class="btn primary" id="export" type="button">Export</button>
+    <button class="btn" id="save-design" type="button" title="Download a work file to reopen this design later and keep editing it">Save to continue later</button>
+    <button class="btn primary" id="export" type="button" title="Download a picture of your design with its list of stones">⬇ Download picture</button>
   </div>
 </header>
 
@@ -201,7 +200,8 @@
   <section class="stage" aria-label="Design">
     <div class="start" id="start">
       <div class="start-head">
-        <div><h2>Create your mosaic</h2><p class="hint">Choose how you'd like to begin. You can change the design, the stones and the size at any step.</p></div>
+        <div><h2>Create your mosaic</h2><p class="hint">Choose how you'd like to begin. You can change the design, the stones and the size at any step.</p>
+          <p class="hint start-open">Saved a design before? <button type="button" class="linkish" id="open-design">Continue a saved design</button></p></div>
         <button class="start-close" type="button" id="start-close" aria-label="Close">×</button>
       </div>
       <div class="start-grid">
