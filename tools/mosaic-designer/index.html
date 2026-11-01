@@ -2898,8 +2898,8 @@ $('#ai-go').addEventListener('click', () => { aiEdit = true; runAI('describe'); 
 $$('#ai-mode button').forEach(b => b.addEventListener('click', () => {
   aiMode = b.dataset.aimode;
   $$('#ai-mode button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
-  $('#ai-status').textContent = aiMode === 'color' ? 'We make a picture from your words and lay it as a mosaic in our stones. You can change any stone.'
-    : 'We draw black & white outlines from your words. You then color them with our stones.';
+  $('#ai-status').textContent = aiMode === 'color' ? 'We turn your words into a mosaic made in our stones. Then you can change any stone you like.'
+    : 'We turn your words into a black & white design. Then you color each part with our stones.';
 }));
 $('#ai-open').addEventListener('click', () => { aiBar = true; showAiBar(); $('#ai-box').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('#ai-prompt').focus({ preventScroll: true }); });
 $$('#ai-ideas button').forEach(b => b.addEventListener('click', () => { $('#ai-prompt').value = b.textContent; $('#ai-prompt').focus(); }));
@@ -2993,7 +2993,7 @@ async function initCapabilities() {
   if (!window.claude?.use) { // on the website a free image service draws descriptions
     freeAI = true; showAiBar();
     aiButtons();
-    $('#ai-status').textContent = 'We draw black & white outlines from your words. You then color them with our stones.';
+    $('#ai-status').textContent = 'We turn your words into a black & white design. Then you color each part with our stones.';
     return;
   }
   const [s, d] = await Promise.all([claude.use('sample').catch(() => null), claude.use('downloads').catch(() => null)]);
