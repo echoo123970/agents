@@ -1273,7 +1273,17 @@ $('#m-delete').addEventListener('click', async () => {
 });
 
 /* ---------------- Mode & tools ---------------- */
+// Usage events for the store's analytics: published through Shopify's customer events (a custom
+// pixel forwards them to Google Analytics) and pushed to dataLayer when a page has one. Never blocks.
+function track(name, data = {}) {
+  let j = 'none'; try { j = journey || 'none'; } catch {}
+  const ev = 'mosaic_designer_' + name, d = { ...data, journey: j };
+  try { window.Shopify?.analytics?.publish?.(ev, d); } catch {}
+  try { if (Array.isArray(window.dataLayer)) window.dataLayer.push({ event: ev, ...d }); } catch {}
+}
+let lastTracked = '';
 function setMode(mode) {
+  if (mode !== lastTracked) { lastTracked = mode; if (mode !== 'sketch') track('step', { step: mode }); }
   if (mode === 'mosaic' && state.mode !== 'mosaic' && !usePicture() && !photoFinal()) fillRest();
   hoverL = 0;
   if (mode !== 'sketch') { if (sel) finishSel(true); if (pathPts) finishPath(); $('#draw-hint').hidden = true; }
@@ -1407,6 +1417,7 @@ function resetDesign() {
 $$('#start [data-start]').forEach(b => b.addEventListener('click', () => {
   const how = b.dataset.start;
   journey = how;
+  track('start', { method: how });
   showStart(false);
   $('.bench').classList.add('has-design');
   aiBar = how === 'describe';
@@ -1880,6 +1891,7 @@ function fitToPicture(img) {
   if (h > 0 && h !== state.sizeH) { state.sizeH = h; $('#size-h').value = h; const [fw, fh] = frameFor(state.sizeW, h); resizeFrame(fw, fh); refresh(); }
 }
 async function pickDesign(p) {
+  track('pick_design', { design: p.t, category: designCat });
   $('#gallery').hidden = true;
   busy(true);
   const img = await loadPhoto(p.img);
@@ -1940,6 +1952,7 @@ async function applyDesign(d, withHistory) {
   $('#size-w').value = state.sizeW; $('#size-h').value = state.sizeH; $('#size-unit').value = state.unit; markJoint();
 }
 $('#save-design').addEventListener('click', () => {
+  track('save');
   showJSON('Save to continue later', 'Download this file and keep it. Next time, open the Mosaic Designer and choose "Continue a saved design" to carry on where you left off.', designJSON(), 'mosaic-design.json');
 });
 $('#open-design').addEventListener('click', () => $('#file-design').click());
@@ -1981,6 +1994,7 @@ $('#reset-chart').addEventListener('click', async () => {
   tileCache.clear(); renderChart(); selectMat(chart[0].id); heavy(() => refresh());
 });
 $('#export').addEventListener('click', () => heavy(() => {
+  track('download', { step: state.mode });
   const rows = renderBom();
   const rowH = 46, pad = 32, legendH = rows.length ? 70 + rows.length * rowH + 36 : 0;
   const c = document.createElement('canvas'); c.width = W; c.height = H + legendH;
@@ -2107,6 +2121,7 @@ async function runFree(desc) {
   }
   aiLoading(false);
   if (!img) { status.textContent = 'Our drawing service is busy right now. Please try again in a minute, or upload or draw your design instead.'; backToPrompt(); return; }
+  track('ai_design', { mode: aiMode, result: 'ok' });
   useDrawing(img, status);
 }
 // With the store's drawing helper set up (ai-worker/worker.js, OpenAI behind it), the description is
@@ -2179,9 +2194,10 @@ async function runOpenAI(desc, status, go) {
   aiLoading(false);
   if (!img) {
     status.textContent = msg && msg !== 'busy' ? `Sorry, we could not draw that: ${msg}.` : 'Our drawing service is busy right now. Please try again in a minute, or upload or draw your design instead.';
-    toast(status.textContent); backToPrompt();
+    toast(status.textContent); backToPrompt(); track('ai_design', { mode: aiMode, result: msg === 'busy' || !msg ? 'busy' : 'error' });
     return;
   }
+  track('ai_design', { mode: aiMode, result: 'ok' });
   useDrawing(img, status);
 }
 // A drawing made from a description goes through the black & white drawing journey: lines kept, ready to color.
@@ -2418,4 +2434,5 @@ async function boot() {
 }
 boot();
 initCapabilities();
+track('open');
 })();

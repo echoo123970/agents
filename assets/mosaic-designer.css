@@ -273,5 +273,11 @@
 .md-hero__eyebrow::before, .md-hero__eyebrow::after { content: ""; width: 38px; height: 1px; background: var(--color-blue); }
 .md-hero__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(38px, 5vw, 64px); line-height: 1.02; margin-bottom: 18px; color: var(--color-navy); }
 .md-hero__title em { font-style: italic; color: var(--color-blue); }
+.md-faq { max-width: 900px; margin: 0 auto; padding: 8px 24px 64px; }
+.md-faq__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(26px, 3vw, 34px); color: var(--color-navy); margin: 0 0 14px; }
+.md-faq__item { border-bottom: 1px solid rgba(22,51,94,.12); padding: 14px 0; }
+.md-faq__item summary { cursor: pointer; font-weight: 600; color: var(--color-navy); font-size: 16px; }
+.md-faq__item p { margin: 10px 0 0; color: var(--color-text-muted); line-height: 1.7; }
+.md-faq__more { margin-top: 18px; color: var(--color-text-muted); }
 .md-hero__text { font-size: 17px; line-height: 1.7; color: var(--color-text-muted); max-width: 880px; text-wrap: balance; margin: 0 auto; }
 @media (max-width: 600px) { .md-hero__crumb, .md-hero__inner { padding-left: 22px; padding-right: 22px; } }
