@@ -2171,13 +2171,13 @@ ends `| Religious Mosaics | iMosaicArt`; on all sixteen broken ones the suffix
 was absent. Handle and alt agreed with each other; title and description agreed
 with each other. Two sources, two fields each.
 
-### 24.3 Two listings where the *title* was wrong, not the handle
+### 24.3 Listings where the *title* was wrong, not the handle
 
 The working hypothesis after §23.5 was that titles were authoritative — the
 owner's `MAR058` confirmation supported it, and the product descriptions
 corroborated the titles in every case that could be checked from here.
 
-**That hypothesis was wrong twice.**
+**That hypothesis was wrong twice here, and a third time in §24.6.**
 
 | SKU | Title said | Reality | What was fixed |
 |---|---|---|---|
@@ -2192,6 +2192,9 @@ does not depict.
 Had the mechanical fix been applied to all sixteen as planned, these two would
 have had their **correct** URLs rewritten to match **wrong** titles, making
 them worse. Only the owner's per-product confirmation caught it.
+
+A third reversal, `MAR059`, was found later and by different means — see
+§24.6. It is counted in the table below.
 
 ### 24.4 An ID-lookup error, and its repair
 
@@ -2226,36 +2229,74 @@ mapping seems obvious from a listing read minutes before.**
 | | Count |
 |---|---:|
 | Handle corrected to match title | 13 |
-| Title, body and meta corrected to match artwork | 2 |
-| Already correct, untouched | 2 |
-| Alt text rewritten to house format | 16 |
-| 301 redirects created | 13 |
+| Title, body and meta corrected to match artwork | 3 |
+| Already correct, untouched | 1 |
+| Alt text rewritten to house format | 17 |
+| 301 redirects created | 13, plus 1 repointed and 1 deleted |
+
+The single "already correct" row is `MAR061`, and it is correct only in the
+sense that nothing contradicts itself on it. See §24.6a.
 
 All eighteen products in `MAR055`–`MAR072` now agree across title, handle and
 alt text, verified by a fresh read of every row rather than from the mutation
 responses. Every redirect was created by `redirectNewHandle: true`, inside the
 same transaction as its handle change, so no old URL ever returned a 404.
 
-### 24.6 `MAR058` and `MAR059` are not duplicates
+### 24.6 `MAR058` and `MAR059`: a third title reversal, found by eye
 
-§23.5 flagged these as sharing a title exactly. They do, but they are **two
-different artworks**:
+§23.5 flagged these two as sharing a title exactly and called them duplicates
+needing differentiation. **That was wrong, and so was the first correction to
+it.**
 
-| | `MAR058` | `MAR059` |
+The first pass established they were two different artworks — 150 x 90 cm at
+$1,588 against 110 x 130 cm at $1,658, distinct images, `MAR059` also in
+best-sellers — and concluded the fix was to differentiate the wording, since
+noindexing either would remove a real product from search.
+
+Then the owner looked at `MAR059`'s image. **It is not a Last Supper at all.**
+It is the Holy Family: Saint Joseph holding his lily staff, the Virgin Mary
+veiled beside him, and the Christ Child at the center, each under a golden
+halo.
+
+| | Before | After |
 |---|---|---|
-| Size | 150 × 90 cm (wide) | 110 × 130 cm (upright) |
-| Price | $1,588 | $1,658 |
-| Image | distinct | distinct |
-| Collections | religious-mosaics | religious-mosaics, best-sellers |
+| Title | The Last Supper Mosaic with Twelve Apostles | The Holy Family Mosaic with Golden Haloes |
+| Handle | `…_the-last-supper-mosaic-with-twelve-apostles` | `…_the-holy-family-mosaic-with-golden-haloes` |
+| Meta description | 312 characters of duplicated body copy | 132 characters, written from the image |
+| Alt text | The Last Supper… | The Holy Family… |
+| Body | identical to `MAR058`'s, word for word | written from the artwork |
 
-Noindexing either would remove a real product from search. The actual defect is
-that **title, body copy and meta description are identical on both** — the body
-is the same paragraph word for word, and `MAR059`'s meta description is that
-paragraph dumped in at 312 characters, double the limit.
+Two redirect subtleties had to be handled. The handle `MAR059` needed was
+occupied by a **redirect left over from the §24.4 repair** (`MAR055`'s old path
+pointing at its new one), so that redirect was deleted before the handle could
+be taken. And `MAR059`'s old Last Supper URL would then have pointed at a Holy
+Family page, so it was repointed to **`MAR058`**, which is the real Last
+Supper. A visitor following an old link still arrives at the artwork they were
+looking for.
 
-The fix is differentiation, not exclusion. Orientation is the real difference
-and the one a wall-art buyer cares about. Pending the owner's choice of
-wording.
+This dissolves the "duplicate title" problem entirely. There was never a pair
+to differentiate — one is a Last Supper, the other a Holy Family.
+
+### 24.6a Why this one matters more than the other two
+
+On `MAR060` and `MAR070` the fields disagreed: handle and alt said one thing,
+title and description said another, and that disagreement is what exposed them.
+
+**On `MAR059`, title, handle and alt text all agreed with each other — and all
+three were wrong.**
+
+Every detection method used across §23 and §24 depends on two sources
+contradicting each other. None of them can see a product where the wrong answer
+is recorded consistently in every field. `MAR059` was classified as "already
+correct, untouched" in §24.5 for exactly that reason, and it was not correct.
+
+The only thing that found it was a person looking at the picture.
+
+`MAR061` is the one remaining product in the `MAR055`–`MAR072` run that has
+never been checked against its image, and it is internally consistent in the
+same way `MAR059` was. It also carries the same 312-character body-dump meta
+description, which is a weak signal it came off the same conveyor. **Unverified,
+not verified-correct** — the distinction §18.2 and §21.7 keep insisting on.
 
 ### 24.7 Still open
 
@@ -2264,6 +2305,7 @@ wording.
    crawlable at `/collections/all`, so the exposure is live, not hypothetical.
    Proposal: keep 20 canonical, noindex the rest, delete nothing. Gates item 2.
 2. **884 of 1,811 active titles render over 60 characters.** Blocked on item 1.
-3. **`MAR058` / `MAR059` differentiation** (§24.6).
+3. **`MAR061`** — never checked against its image, and internally consistent
+   in the same way `MAR059` was (§24.6a).
 4. **Rich Results re-test** — the only item that cannot be done from this
    environment.
