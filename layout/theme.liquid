@@ -238,5 +238,20 @@
     {% section 'floating-actions' %}
 
     <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+    
+        <!-- Google Customer Reviews badge -->
+    <script src="https://apis.google.com/js/platform.js?onload=renderBadge" async defer></script>
+    <script>
+      window.renderBadge = function() {
+        var ratingBadgeContainer = document.createElement("div");
+        document.body.appendChild(ratingBadgeContainer);
+        window.gapi.load('ratingbadge', function() {
+          window.gapi.ratingbadge.render(ratingBadgeContainer, {
+            "merchant_id": 771057532,
+            "position": "BOTTOM_LEFT"
+          });
+        });
+      }
+    </script>
   </body>
 </html>
