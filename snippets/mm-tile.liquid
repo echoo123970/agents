@@ -6,7 +6,10 @@
 {%- endcomment -%}
 {%- assign mm_img = nil -%}
 {%- assign mm_asset = nil -%}
-{%- if prod_handle != blank -%}
+{%- assign mm_src = nil -%}
+{%- if img_src != blank -%}
+  {%- assign mm_src = img_src -%}
+{%- elsif prod_handle != blank -%}
   {%- assign mm_img = all_products[prod_handle].featured_image -%}
 {%- elsif asset_file != blank -%}
   {%- assign mm_asset = asset_file -%}
@@ -14,9 +17,11 @@
   {%- assign mm_c = collections[handle] -%}
   {%- assign mm_img = mm_c.image | default: mm_c.products.first.featured_image -%}
 {%- endif -%}
-<button type="button" class="mm-tile{% if mm_img or mm_asset %} mm-tile--photo{% endif %}" data-mm-answer data-q="{{ q }}" data-v="{{ v }}" aria-pressed="false">
+<button type="button" class="mm-tile{% if mm_img or mm_asset or mm_src %} mm-tile--photo{% endif %}" data-mm-answer data-q="{{ q }}" data-v="{{ v }}" aria-pressed="false">
   {%- if mm_img -%}
     <span class="mm-tile__media">{{ mm_img | image_url: width: 520 | image_tag: loading: 'lazy', alt: '', class: 'mm-tile__img', sizes: '(max-width: 749px) 50vw, 22vw' }}</span>
+  {%- elsif mm_src -%}
+    <span class="mm-tile__media"><img src="{{ mm_src }}&width=520" srcset="{{ mm_src }}&width=360 360w, {{ mm_src }}&width=520 520w, {{ mm_src }}&width=800 800w" sizes="(max-width: 749px) 50vw, 22vw" alt="" loading="lazy" class="mm-tile__img" width="520" height="520"></span>
   {%- elsif mm_asset -%}
     <span class="mm-tile__media"><img src="{{ mm_asset | asset_img_url: '600x' }}" alt="" loading="lazy" class="mm-tile__img" width="600" height="450"></span>
   {%- elsif swatch != blank -%}

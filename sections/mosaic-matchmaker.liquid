@@ -96,6 +96,8 @@
   .mm-more-title { font-family: var(--font-display); font-size: 30px; color: var(--color-navy); margin-top: 64px; }
   .mm-cards--more { margin-top: 24px; }
   .mm-cards--more .mm-card__title { font-size: 20px; }
+  .mm-viewall { display: flex; justify-content: center; margin-top: 48px; }
+  .mm-viewall .mm-btn { min-width: 280px; }
   .mm-empty { margin-top: 40px; font-size: 16px; color: var(--color-text-muted); }
 
   .mm-lead-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-top: 72px; }
@@ -183,11 +185,13 @@
       </div>
       <div class="mm-collage" aria-hidden="true">
         {%- assign mm_c1 = section.settings.collage_1 | default: intro_col.products[0] -%}
-        {%- assign mm_c2 = section.settings.collage_2 | default: all_products['glass-mosaic-tile-underwater-mosaic-view-pool-mosaic-design'] -%}
+        {%- assign mm_c2 = section.settings.collage_2 -%}
         {%- assign mm_c3 = section.settings.collage_3 | default: intro_col.products[2] -%}
         {%- for p in (1..3) -%}
           {%- case p -%}{%- when 1 -%}{%- assign mm_cp = mm_c1 -%}{%- when 2 -%}{%- assign mm_cp = mm_c2 -%}{%- else -%}{%- assign mm_cp = mm_c3 -%}{%- endcase -%}
-          {%- if mm_cp.featured_image -%}
+          {%- if p == 2 and mm_cp == blank -%}
+            <div class="mm-collage__item"><img src="https://cdn.shopify.com/s/files/1/0754/6093/5978/products/MAG010_Underwater_Mosaic_View_-_Pool_Mosaic_Design.jpg?v=1739035566&width=900" alt="" width="900" height="620" loading="eager"></div>
+          {%- elsif mm_cp.featured_image -%}
             <div class="mm-collage__item">{{ mm_cp.featured_image | image_url: width: 900 | image_tag: loading: 'eager', alt: '' }}</div>
           {%- endif -%}
         {%- endfor -%}
@@ -203,11 +207,11 @@
       {% render 'mm-tile', q: 'placement', v: 'wall', label: 'On a wall', sub: 'Living room, hall, bedroom', handle: 'portrait-mosaics' %}
       {% render 'mm-tile', q: 'placement', v: 'floor', label: 'On the floor', sub: 'Medallions, rugs, entryways', handle: 'geometric-mosaics' %}
       {% render 'mm-tile', q: 'placement', v: 'backsplash', label: 'Kitchen backsplash', sub: 'Behind the stove or sink', handle: 'mosaic-tile-backsplash' %}
-      {% render 'mm-tile', q: 'placement', v: 'pool', label: 'Swimming pool', sub: 'Pool floors, walls & steps', prod_handle: 'nautical-mosaics-swimming-pool-mosaics-underwater-scene-design' %}
-      {% render 'mm-tile', q: 'placement', v: 'bathroom', label: 'Bathroom & shower', sub: 'Shower walls, tub surrounds', prod_handle: 'bird-mosaics-glass-penguin-mosaic-bathroom-wall-decor-idea' %}
+      {% render 'mm-tile', q: 'placement', v: 'pool', label: 'Swimming pool', sub: 'Pool floors, walls & steps', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/products/MAN050.jpg?v=1739034055' %}
+      {% render 'mm-tile', q: 'placement', v: 'bathroom', label: 'Bathroom & shower', sub: 'Shower walls, tub surrounds', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/files/MAB067_f66cf112-9e8b-4022-bff9-a02fe9cfb515.jpg?v=1739033508' %}
       {% render 'mm-tile', q: 'placement', v: 'table', label: 'Table top', sub: 'Dining, coffee & garden tables', handle: 'table-countertop-mosaics' %}
-      {% render 'mm-tile', q: 'placement', v: 'outdoor', label: 'Outdoor & garden', sub: 'Patios, courtyards, fountains', prod_handle: 'landscape-mosaics-tuscan-village-courtyard-mosaic-with-fountain' %}
-      {% render 'mm-tile', q: 'placement', v: 'stairs', label: 'Stairs & steps', sub: 'Risers, landings, garden steps', prod_handle: 'geometric-mosaics-eccentric-mosaic-for-stone-steps' %}
+      {% render 'mm-tile', q: 'placement', v: 'outdoor', label: 'Outdoor & garden', sub: 'Patios, courtyards, fountains', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/files/MAS129_f7652525-b8d5-44ee-b294-84a1f3b9ba29.jpg?v=1762022978' %}
+      {% render 'mm-tile', q: 'placement', v: 'stairs', label: 'Stairs & steps', sub: 'Risers, landings, garden steps', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/files/MAG090_e29aedd4-7d6f-4f58-b0c1-e8e69b5b8609.webp?v=1739033214' %}
     </div>
   </div>
 
@@ -236,9 +240,9 @@
         {% render 'mm-tile', q: 'subject', v: 'rug', label: 'Mosaic rugs', sub: 'Rectangular, carpet-style designs', handle: 'patterns-mosaics' %}
         {% render 'mm-tile', q: 'subject', v: 'roman', label: 'Roman & classical', sub: 'Ancient-style scenes', handle: 'roman-mosaics' %}
         {% render 'mm-tile', q: 'subject', v: 'flowers', label: 'Floral floors', sub: 'Flowers, vines & borders', handle: 'flower-mosaics' %}
-        {% render 'mm-tile', q: 'subject', v: 'geometric', label: 'Geometric & modern', sub: 'Clean lines & bold shapes', prod_handle: 'abstract-glass-white-and-black-mosaic-mural' %}
-        {% render 'mm-tile', q: 'subject', v: 'sea', label: 'Sea & nautical', sub: 'Waves, shells, anchors', prod_handle: 'nautical-mosaics-shell-handcrafted-mosaic-marble-mosaic' %}
-        {% render 'mm-tile', q: 'subject', v: 'nature', label: 'Nature & trees', sub: 'Tree of life, landscapes', prod_handle: 'landscape-mosaics-mosaic-tree-medallion-art' %}
+        {% render 'mm-tile', q: 'subject', v: 'geometric', label: 'Geometric & modern', sub: 'Clean lines & bold shapes', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/products/223.jpg?v=1739034964' %}
+        {% render 'mm-tile', q: 'subject', v: 'sea', label: 'Sea & nautical', sub: 'Waves, shells, anchors', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/products/MAN016_Shell_Handcrafted_Mosaic_-_Marble_Mosaic.jpg?v=1739035450' %}
+        {% render 'mm-tile', q: 'subject', v: 'nature', label: 'Nature & trees', sub: 'Tree of life, landscapes', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/products/MAS013_Mosaic_Tree_-_Medallion_Art.jpg?v=1739035312' %}
         {% render 'mm-tile', q: 'subject', v: 'animals', label: 'Birds & animals', handle: 'animal-mosaics' %}
       </div>
     </div>
@@ -250,7 +254,7 @@
         {% render 'mm-tile', q: 'subject', v: 'geometric', label: 'Patterns & tiles', handle: 'mosaic-tile-backsplash' %}
         {% render 'mm-tile', q: 'subject', v: 'food', label: 'Fruit & kitchen scenes', handle: 'food-mosaics' %}
         {% render 'mm-tile', q: 'subject', v: 'nature', label: 'Landscapes & trees', handle: 'landscape-mosaics' %}
-        {% render 'mm-tile', q: 'subject', v: 'sea', label: 'Coastal & sea', prod_handle: 'nautical-mosaics-sailboat-mosaic-nautical-scene' %}
+        {% render 'mm-tile', q: 'subject', v: 'sea', label: 'Coastal & sea', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/files/MAN065_2e434034-0436-447b-93e5-2d31ce9041f7.jpg?v=1739033408' %}
         {% render 'mm-tile', q: 'subject', v: 'animals', label: 'Birds & animals', handle: 'bird-mosaics' %}
         {% render 'mm-tile', q: 'subject', v: 'roman', label: 'Mediterranean & classical', handle: 'roman-mosaics' %}
         {% render 'mm-tile', q: 'subject', v: 'abstract', label: 'Abstract & modern', handle: 'abstract' %}
@@ -260,25 +264,25 @@
     <div data-for="pool" hidden>
       <h2 class="mm-q__title" tabindex="-1">What would you love to see in your pool?</h2>
       <div class="mm-grid">
-        {% render 'mm-tile', q: 'subject', v: 'sealife', label: 'Sea life', sub: 'Dolphins, turtles, fish', prod_handle: 'nautical-mosaics-playful-dolphins-blue-water-mosaic-tile-art' %}
-        {% render 'mm-tile', q: 'subject', v: 'poolmedallion', label: 'Pool medallions', sub: 'Compasses, anchors, emblems', prod_handle: 'nautical-mosaics-anchor-pool-mosaic-medallion' %}
-        {% render 'mm-tile', q: 'subject', v: 'underwater', label: 'Underwater scenes', sub: 'Reefs, coral & ocean floor', prod_handle: 'nautical-mosaics-swimming-pool-mosaics-underwater-scene-design' %}
-        {% render 'mm-tile', q: 'subject', v: 'geometric', label: 'Geometric & borders', sub: 'Modern pool designs', prod_handle: 'geometric-mosaics-swimming-pool-mosaics-medallion-design' %}
-        {% render 'mm-tile', q: 'subject', v: 'boats', label: 'Boats & lighthouses', prod_handle: 'nautical-mosaics-lightouse-mosaic-handcrafted-mosaics' %}
+        {% render 'mm-tile', q: 'subject', v: 'sealife', label: 'Sea life', sub: 'Dolphins, turtles, fish', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/files/MAN054_60882ecc-3361-4201-ade9-e2e2fbeee5ab.jpg?v=1739033666' %}
+        {% render 'mm-tile', q: 'subject', v: 'poolmedallion', label: 'Pool medallions', sub: 'Compasses, anchors, emblems', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/products/MAN022_Anchor_Pool_Mosaic_-_Mosaic_Medallion.jpg?v=1739035282' %}
+        {% render 'mm-tile', q: 'subject', v: 'underwater', label: 'Underwater scenes', sub: 'Reefs, coral & ocean floor', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/products/MAN050.jpg?v=1739034055' %}
+        {% render 'mm-tile', q: 'subject', v: 'geometric', label: 'Geometric & borders', sub: 'Modern pool designs', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/files/MAG112_7acaf96b-ee9e-4d4f-9999-02b5bc84572e.webp?v=1739033135' %}
+        {% render 'mm-tile', q: 'subject', v: 'boats', label: 'Boats & lighthouses', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/products/MAN018_Lighthouse_Mosaic_-_Handcrafted_Mosaics.jpg?v=1739035444' %}
         {% render 'mm-tile', q: 'subject', v: 'roman', label: 'Roman & classical', sub: 'Villa-style pools', handle: 'roman-mosaics' %}
-        {% render 'mm-tile', q: 'subject', v: 'nature', label: 'Tropical & landscapes', prod_handle: 'landscape-mosaics-seaside-villa-with-pool-and-mediterranean-view-mosaic' %}
-        {% render 'mm-tile', q: 'subject', v: 'abstract', label: 'Waves & abstract', prod_handle: 'ocean-wave-mosaic-pattern' %}
+        {% render 'mm-tile', q: 'subject', v: 'nature', label: 'Tropical & landscapes', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/files/MAS137_dbea3430-b151-479b-8ffa-099e7695f583.jpg?v=1762022990' %}
+        {% render 'mm-tile', q: 'subject', v: 'abstract', label: 'Waves & abstract', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/products/il_794xN.4497926512_a9sd.jpg?v=1739034956' %}
       </div>
     </div>
 
     <div data-for="bathroom" hidden>
       <h2 class="mm-q__title" tabindex="-1">What mood for your bathroom?</h2>
       <div class="mm-grid">
-        {% render 'mm-tile', q: 'subject', v: 'sea', label: 'Sea & shells', sub: 'Calm, coastal, fresh', prod_handle: 'nautical-mosaics-shell-handcrafted-mosaic-marble-mosaic' %}
-        {% render 'mm-tile', q: 'subject', v: 'sealife', label: 'Fish & sea life', sub: 'Koi, turtles, seahorses', prod_handle: 'seahorse-serenade-mosaic-whimsical-underwater-decor' %}
+        {% render 'mm-tile', q: 'subject', v: 'sea', label: 'Sea & shells', sub: 'Calm, coastal, fresh', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/products/MAN016_Shell_Handcrafted_Mosaic_-_Marble_Mosaic.jpg?v=1739035450' %}
+        {% render 'mm-tile', q: 'subject', v: 'sealife', label: 'Fish & sea life', sub: 'Koi, turtles, seahorses', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/products/54.jpg?v=1739034924' %}
         {% render 'mm-tile', q: 'subject', v: 'flowers', label: 'Flowers', sub: 'Soft & romantic', handle: 'flower-mosaics' %}
-        {% render 'mm-tile', q: 'subject', v: 'geometric', label: 'Geometric & patterns', sub: 'Spa-like & modern', prod_handle: 'geometric-mosaics-mosaic-art-medallion-for-bathroom' %}
-        {% render 'mm-tile', q: 'subject', v: 'animals', label: 'Birds & animals', sub: 'Playful & charming', prod_handle: 'bird-mosaics-glass-penguin-mosaic-bathroom-wall-decor-idea' %}
+        {% render 'mm-tile', q: 'subject', v: 'geometric', label: 'Geometric & patterns', sub: 'Spa-like & modern', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/files/MAG131_88e99616-7bc1-48e3-85b9-93af8a6d6994.webp?v=1739033067' %}
+        {% render 'mm-tile', q: 'subject', v: 'animals', label: 'Birds & animals', sub: 'Playful & charming', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/files/MAB067_f66cf112-9e8b-4022-bff9-a02fe9cfb515.jpg?v=1739033508' %}
         {% render 'mm-tile', q: 'subject', v: 'nature', label: 'Nature & trees', sub: 'Green & relaxing', handle: 'tree-mosaics' %}
         {% render 'mm-tile', q: 'subject', v: 'roman', label: 'Roman & classical', sub: 'Bath-house elegance', handle: 'roman-mosaics' %}
         {% render 'mm-tile', q: 'subject', v: 'abstract', label: 'Abstract & modern', handle: 'abstract' %}
@@ -291,10 +295,10 @@
         {% render 'mm-tile', q: 'subject', v: 'flowers', label: 'Flowers', handle: 'flower-mosaics' %}
         {% render 'mm-tile', q: 'subject', v: 'geometric', label: 'Geometric & patterns', handle: 'table-countertop-mosaics' %}
         {% render 'mm-tile', q: 'subject', v: 'food', label: 'Fruit & still life', handle: 'food-mosaics' %}
-        {% render 'mm-tile', q: 'subject', v: 'sea', label: 'Sea & koi', sub: 'For patios & outdoor tables', prod_handle: 'koi-fish-mosaic-a-symbol-of-good-luck-prosperity' %}
+        {% render 'mm-tile', q: 'subject', v: 'sea', label: 'Sea & koi', sub: 'For patios & outdoor tables', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/products/58.jpg?v=1739034930' %}
         {% render 'mm-tile', q: 'subject', v: 'medallion', label: 'Medallions & compasses', sub: 'Perfect for round tables', handle: 'geometric-mosaics' %}
         {% render 'mm-tile', q: 'subject', v: 'animals', label: 'Birds & animals', handle: 'bird-mosaics' %}
-        {% render 'mm-tile', q: 'subject', v: 'nature', label: 'Nature & trees', prod_handle: 'landscape-mosaics-mosaic-tree-medallion-art' %}
+        {% render 'mm-tile', q: 'subject', v: 'nature', label: 'Nature & trees', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/products/MAS013_Mosaic_Tree_-_Medallion_Art.jpg?v=1739035312' %}
         {% render 'mm-tile', q: 'subject', v: 'abstract', label: 'Abstract & modern', handle: 'abstract' %}
       </div>
     </div>
@@ -302,12 +306,12 @@
     <div data-for="stairs" hidden>
       <h2 class="mm-q__title" tabindex="-1">What design for your stairs?</h2>
       <div class="mm-grid">
-        {% render 'mm-tile', q: 'subject', v: 'geometric', label: 'Geometric & patterns', sub: 'Repeating risers', prod_handle: 'geometric-mosaics-stepping-stones-mosaic-flow-geometric-patterns' %}
+        {% render 'mm-tile', q: 'subject', v: 'geometric', label: 'Geometric & patterns', sub: 'Repeating risers', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/files/MAG124_775e8be0-e42e-44c0-881a-70615b7caaec.webp?v=1739033088' %}
         {% render 'mm-tile', q: 'subject', v: 'flowers', label: 'Flowers & vines', handle: 'flower-mosaics' %}
-        {% render 'mm-tile', q: 'subject', v: 'medallion', label: 'Compasses & medallions', sub: 'For landings', prod_handle: 'geometric-mosaics-stepping-mosaic-stone-art-mini-compass-art' %}
-        {% render 'mm-tile', q: 'subject', v: 'roman', label: 'Mediterranean & classical', prod_handle: 'landscape-mosaics-mediterranean-steps-mosaic-artwork-view' %}
+        {% render 'mm-tile', q: 'subject', v: 'medallion', label: 'Compasses & medallions', sub: 'For landings', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/files/MAG101_bb3c717a-cc11-4610-8438-32106d3c6bc8.webp?v=1739033175' %}
+        {% render 'mm-tile', q: 'subject', v: 'roman', label: 'Mediterranean & classical', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/files/image_4SBbJRhi_1746280444488_512_7eb7306d-6088-42de-85a5-358cbb19ea42.webp?v=1747569103' %}
         {% render 'mm-tile', q: 'subject', v: 'nature', label: 'Nature & trees', handle: 'tree-mosaics' %}
-        {% render 'mm-tile', q: 'subject', v: 'sea', label: 'Sea & coastal', prod_handle: 'landscape-mosaics-boat-by-coastal-villa-steps-mosaic-landscape' %}
+        {% render 'mm-tile', q: 'subject', v: 'sea', label: 'Sea & coastal', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/files/image_91GRRaTy_1746280612129_512_b7fddf98-a0e0-4769-96fa-7df4ea7a540f.webp?v=1747569100' %}
         {% render 'mm-tile', q: 'subject', v: 'animals', label: 'Birds & animals', handle: 'bird-mosaics' %}
         {% render 'mm-tile', q: 'subject', v: 'abstract', label: 'Abstract & modern', handle: 'abstract' %}
       </div>
@@ -317,8 +321,8 @@
       <h2 class="mm-q__title" tabindex="-1">What would you love in your garden or patio?</h2>
       <div class="mm-grid">
         {% render 'mm-tile', q: 'subject', v: 'nature', label: 'Landscapes & trees', handle: 'landscape-mosaics' %}
-        {% render 'mm-tile', q: 'subject', v: 'flowers', label: 'Flowers & gardens', prod_handle: 'gorgeous-mosaic-garden-of-eden' %}
-        {% render 'mm-tile', q: 'subject', v: 'animals', label: 'Birds & fountains', prod_handle: 'bird-mosaics-birds-at-the-fountain-mosaic-art' %}
+        {% render 'mm-tile', q: 'subject', v: 'flowers', label: 'Flowers & gardens', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/products/170.jpg?v=1739034388' %}
+        {% render 'mm-tile', q: 'subject', v: 'animals', label: 'Birds & fountains', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/files/WhatsApp_Image_2026-03-23_at_11.41.56_AM.jpg?v=1785695746' %}
         {% render 'mm-tile', q: 'subject', v: 'sea', label: 'Sea & nautical', handle: 'nautical-mosaics' %}
         {% render 'mm-tile', q: 'subject', v: 'roman', label: 'Roman & classical', handle: 'roman-mosaics' %}
         {% render 'mm-tile', q: 'subject', v: 'medallion', label: 'Medallions & compasses', handle: 'geometric-mosaics' %}
@@ -334,10 +338,10 @@
     <div class="mm-q__top"><button type="button" class="mm-back" data-mm-back>&larr; Back</button><span class="mm-count">Question 3 of 6</span></div>
     <h2 class="mm-q__title" tabindex="-1">Which colour mood suits your space?</h2>
     <div class="mm-grid">
-      {% render 'mm-tile', q: 'colour', v: 'warm', label: 'Warm golds & earth', sub: 'Gold, amber, terracotta', swatch: 'mm-sw--warm', prod_handle: 'glass-mosaic-tile-glass-mosaic-art-the-kiss-by-gustav-klimt' %}
-      {% render 'mm-tile', q: 'colour', v: 'cool', label: 'Cool blues & greens', sub: 'Sea, sky, sage', swatch: 'mm-sw--cool', prod_handle: 'glass-mosaic-tile-wall-art-glass-mosaic-ocean-mosaic-scene' %}
-      {% render 'mm-tile', q: 'colour', v: 'bright', label: 'Bright & colourful', sub: 'Bold, joyful, vivid', swatch: 'mm-sw--bright', prod_handle: 'abstract-mosaic-patterns-a-kaleidoscope-of-creativity' %}
-      {% render 'mm-tile', q: 'colour', v: 'neutral', label: 'Black, white & neutral', sub: 'Calm, classic, minimal', swatch: 'mm-sw--neutral', prod_handle: 'abstract-glass-white-and-black-mosaic-mural' %}
+      {% render 'mm-tile', q: 'colour', v: 'warm', label: 'Warm golds & earth', sub: 'Gold, amber, terracotta', swatch: 'mm-sw--warm', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/files/80x110cm-klimt.jpg?v=1739035588' %}
+      {% render 'mm-tile', q: 'colour', v: 'cool', label: 'Cool blues & greens', sub: 'Sea, sky, sage', swatch: 'mm-sw--cool', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/products/MAG009_Wall_Art_Glass_Mosaic_-_Ocean_Mosaic_Scene.png?v=1739035569' %}
+      {% render 'mm-tile', q: 'colour', v: 'bright', label: 'Bright & colourful', sub: 'Bold, joyful, vivid', swatch: 'mm-sw--bright', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/products/222.jpg?v=1739034992' %}
+      {% render 'mm-tile', q: 'colour', v: 'neutral', label: 'Black, white & neutral', sub: 'Calm, classic, minimal', swatch: 'mm-sw--neutral', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/products/223.jpg?v=1739034964' %}
     </div>
   </div>
 
@@ -358,9 +362,9 @@
       {%- capture i_m -%}<svg width="70" height="60" viewBox="0 0 70 60" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="21" y="14" width="28" height="28"/><line x1="4" y1="56" x2="66" y2="56"/></svg>{%- endcapture -%}
       {%- capture i_l -%}<svg width="70" height="60" viewBox="0 0 70 60" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="12" y="6" width="46" height="42"/><line x1="4" y1="56" x2="66" y2="56"/></svg>{%- endcapture -%}
       {%- capture i_c -%}<svg width="70" height="60" viewBox="0 0 70 60" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="14" y="10" width="42" height="36" stroke-dasharray="4 3"/><path d="M35 20v16M27 28h16"/><line x1="4" y1="56" x2="66" y2="56"/></svg>{%- endcapture -%}
-      {% render 'mm-tile', q: 'size', v: 'small', label: 'Small', sub: 'Under 70 cm / 28″', prod_handle: 'landscape-mosaics-mosaic-tree-medallion-art' %}
-      {% render 'mm-tile', q: 'size', v: 'medium', label: 'Medium', sub: '70–120 cm / 28–47″', prod_handle: 'van-goghs-cafe-terrace-glass-mosaic-reproduction' %}
-      {% render 'mm-tile', q: 'size', v: 'large', label: 'Large statement', sub: 'Over 120 cm / 47″', prod_handle: 'glass-mosaic-tile-glass-mosaic-scene-mosaic-garden-art' %}
+      {% render 'mm-tile', q: 'size', v: 'small', label: 'Small', sub: 'Under 70 cm / 28″', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/products/MAS013_Mosaic_Tree_-_Medallion_Art.jpg?v=1739035312' %}
+      {% render 'mm-tile', q: 'size', v: 'medium', label: 'Medium', sub: '70–120 cm / 28–47″', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/files/van-gogh_s-cafe-terrace-glass-mosaic-reproduction-mal014.jpg?v=1739035001' %}
+      {% render 'mm-tile', q: 'size', v: 'large', label: 'Large statement', sub: 'Over 120 cm / 47″', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/products/MAG003_Glass_Mosaic_Scene_-_Mosaic_Garden_Art.jpg?v=1739035583' %}
       {% render 'mm-tile', q: 'size', v: 'custom', label: 'I need a custom size', sub: 'Made to your exact measurements', asset_file: 'custom-flower-vase-room.jpg' %}
     </div>
   </div>
@@ -370,10 +374,10 @@
     <div class="mm-q__top"><button type="button" class="mm-back" data-mm-back>&larr; Back</button><span class="mm-count">Question 5 of 6</span></div>
     <h2 class="mm-q__title" tabindex="-1">What budget do you have in mind?</h2>
     <div class="mm-grid">
-      {% render 'mm-tile', q: 'budget', v: 'b1', label: 'Under $1,000', sub: 'Accent pieces & medallions', prod_handle: 'flower-mosaics-flower-mosaic-art-simple-flower-mosaic-design' %}
-      {% render 'mm-tile', q: 'budget', v: 'b2', label: '$1,000 – $2,000', sub: 'Feature walls & portraits', prod_handle: 'bird-mosaics-peacock-wall-art-handmade-mosaic-art' %}
-      {% render 'mm-tile', q: 'budget', v: 'b3', label: '$2,000 – $3,500', sub: 'Large statement murals', prod_handle: 'two-parrots-in-love-mosaic-glass-mural' %}
-      {% render 'mm-tile', q: 'budget', v: 'b4', label: '$3,500 and above', sub: 'Grand masterpieces', prod_handle: 'portrait-mosaics-mosaic-portrait-mona-lisa-by-leonardo-da-vinci-mosaic-reproduction' %}
+      {% render 'mm-tile', q: 'budget', v: 'b1', label: 'Under $1,000', sub: 'Accent pieces & medallions', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/products/MAF007_Flower_Mosaic_Art_-_Simple_Flower_Mosaic_Design.png?v=1739035415' %}
+      {% render 'mm-tile', q: 'budget', v: 'b2', label: '$1,000 – $2,000', sub: 'Feature walls & portraits', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/products/MAB018_Peacock_Wall_Art_-_Handmade_Mosaic_Art.jpg?v=1739035425' %}
+      {% render 'mm-tile', q: 'budget', v: 'b3', label: '$2,000 – $3,500', sub: 'Large statement murals', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/products/14.jpg?v=1739035049' %}
+      {% render 'mm-tile', q: 'budget', v: 'b4', label: '$3,500 and above', sub: 'Grand masterpieces', img_src: 'https://cdn.shopify.com/s/files/1/0754/6093/5978/files/MAO001_MosaicPortrait-MonaLisaByLeonardodaVinci-MosaicReproduction.jpg?v=1739035501' %}
     </div>
   </div>
 
@@ -409,6 +413,9 @@
     <div class="mm-cards" data-mm-top></div>
     <h3 class="mm-more-title" data-mm-more-title hidden>More you may love</h3>
     <div class="mm-cards mm-cards--more" data-mm-more></div>
+    <div class="mm-viewall">
+      <a class="mm-btn mm-btn--ghost" href="{{ section.settings.all_link | default: routes.all_products_collection_url }}">{{ section.settings.all_label }}</a>
+    </div>
 
     <div class="mm-lead-panel">
       <div class="mm-lead-panel__a">
@@ -467,6 +474,8 @@
     { "type": "product", "id": "collage_3", "label": "Intro photo 3 (bottom right)" },
     { "type": "header", "content": "Results" },
     { "type": "text", "id": "results_heading", "label": "Results heading", "default": "Your perfect matches" },
+    { "type": "text", "id": "all_label", "label": "View all button label", "default": "View all products" },
+    { "type": "url", "id": "all_link", "label": "View all button link", "info": "Defaults to all products" },
     { "type": "text", "id": "lead_heading", "label": "Designer help heading", "default": "Want a designer's opinion?" },
     { "type": "textarea", "id": "lead_text", "label": "Designer help text", "default": "Send us your matches and our design team will get back to you with personal advice, sizing help and a quote." },
     { "type": "text", "id": "lead_button", "label": "Designer help button", "default": "Send my matches" },
