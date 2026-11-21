@@ -5,7 +5,7 @@
 {%- assign ars_product = section.settings.product | default: all_products['glass-mosaic-tile-glass-mosaic-art-the-kiss-by-gustav-klimt'] -%}
 {%- if ars_product -%}
 <style>
-  .ars { padding-top: 110px; padding-bottom: 110px; }
+  .ars { padding-top: 30px; padding-bottom: 110px; }
   .ars__grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 72px; align-items: center; }
   .ars__text { font-size: 17px; line-height: 1.7; color: var(--color-text-muted); max-width: 470px; margin-top: 22px; }
   .ars__points { list-style: none; padding: 0; margin: 28px 0 0; display: grid; gap: 12px; }
@@ -50,7 +50,7 @@
   .ars__tap { position: absolute; right: 18px; bottom: 18px; z-index: 3; display: inline-flex; align-items: center; gap: 8px; background: var(--color-navy); color: #fff; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding: 10px 14px; }
   @media (prefers-reduced-motion: reduce) { .ars__art::after { animation: none; } }
   .ars .pdp-ar__btn { display: none !important; }
-  @media (max-width: 990px) { .ars { padding-top: 80px; padding-bottom: 80px; } .ars__grid { grid-template-columns: 1fr; gap: 44px; } .ars__media { order: -1; } }
+  @media (max-width: 990px) { .ars { padding-top: 24px; padding-bottom: 80px; } .ars__grid { grid-template-columns: 1fr; gap: 44px; } .ars__media { order: -1; } }
   @media (max-width: 600px) { .ars__cta { width: 100%; justify-content: center; } .ars__phone { border-width: 7px; border-radius: 30px; } .ars__screen { border-radius: 23px; } .ars__dim { font-size: 9px; top: -28px; } .ars__status { font-size: 8px; padding: 0 12px; } .ars__shutter { width: 30px; height: 30px; } .ars__shutter::after { width: 20px; height: 20px; } .ars__pill { font-size: 8px; padding: 4px 8px; } .ars__tag, .ars__tap { font-size: 9.5px; padding: 7px 9px; left: 10px; } .ars__tap { left: auto; right: 10px; } }
 </style>
 
