@@ -17,16 +17,41 @@
   .ars__quiz { font-size: 14.5px; color: var(--color-text-muted); }
   .ars__quiz a { color: var(--color-blue); font-weight: 600; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
   .ars__quiz a:hover { color: var(--color-navy); }
-  .ars__stage { position: relative; display: block; width: 100%; border: none; padding: 0; cursor: pointer; aspect-ratio: 5/4; background: linear-gradient(180deg, #EEE9E1 0%, #E4DDD2 78%, #CFC4B4 78%, #C6B9A6 100%); overflow: hidden; }
-  .ars__stage img { position: absolute; left: 50%; top: 9%; height: 62%; width: auto; transform: translateX(-50%); box-shadow: 0 22px 40px rgba(40,30,20,.28), 0 4px 10px rgba(40,30,20,.18); transition: transform .6s cubic-bezier(.2,.7,.2,1); }
-  .ars__stage:hover img { transform: translateX(-50%) scale(1.03); }
-  .ars__frame { position: absolute; inset: 5% 31%; border: 2px solid rgba(22,51,94,.55); border-radius: 26px; pointer-events: none; }
-  .ars__frame::before { content: ""; position: absolute; top: 9px; left: 50%; width: 46px; height: 5px; border-radius: 4px; background: rgba(22,51,94,.45); transform: translateX(-50%); }
-  .ars__tag { position: absolute; left: 18px; bottom: 18px; background: rgba(255,255,255,.94); color: var(--color-navy); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; padding: 9px 13px; }
-  .ars__tap { position: absolute; right: 18px; bottom: 18px; display: inline-flex; align-items: center; gap: 8px; background: var(--color-navy); color: #fff; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding: 10px 14px; }
+  .ars__stage { position: relative; display: block; width: 100%; border: none; padding: 0; cursor: pointer; aspect-ratio: 5/4; background: linear-gradient(180deg, #EFEAE2 0%, #E5DED3 76%, #CDBFAC 76%, #C2B39E 100%); overflow: hidden; }
+  .ars__stage::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 10%, rgba(255,255,255,.55), transparent 60%); pointer-events: none; }
+  .ars__art { position: absolute; left: 50%; top: 23%; height: 46%; transform: translateX(-50%); z-index: 1; }
+  .ars__art img { height: 100%; width: auto; max-width: none; display: block; box-shadow: 0 18px 32px rgba(40,30,20,.3), 0 3px 8px rgba(40,30,20,.2); }
+  .ars__art::after { content: ""; position: absolute; inset: -9px; pointer-events: none;
+    background:
+      linear-gradient(#fff,#fff) top left / 16px 2px no-repeat, linear-gradient(#fff,#fff) top left / 2px 16px no-repeat,
+      linear-gradient(#fff,#fff) top right / 16px 2px no-repeat, linear-gradient(#fff,#fff) top right / 2px 16px no-repeat,
+      linear-gradient(#fff,#fff) bottom left / 16px 2px no-repeat, linear-gradient(#fff,#fff) bottom left / 2px 16px no-repeat,
+      linear-gradient(#fff,#fff) bottom right / 16px 2px no-repeat, linear-gradient(#fff,#fff) bottom right / 2px 16px no-repeat;
+    filter: drop-shadow(0 0 3px rgba(43,123,232,.9)); animation: arsPulse 2.4s ease-in-out infinite; }
+  @keyframes arsPulse { 50% { inset: -5px; opacity: .75; } }
+  .ars__dim { position: absolute; left: 50%; top: -34px; transform: translateX(-50%); white-space: nowrap; background: rgba(14,30,56,.82); color: #fff; font-size: 10.5px; font-weight: 600; letter-spacing: .08em; padding: 5px 10px; border-radius: 20px; }
+  .ars__dim::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #4ADE80; margin-right: 7px; vertical-align: 1px; }
+  .ars__phone { position: absolute; left: 50%; top: 4%; height: 92%; aspect-ratio: 9 / 19; transform: translateX(-50%); z-index: 2; border-radius: 40px; border: 9px solid #0E1117; box-shadow: 0 0 0 1.5px #3A3F4A, 0 30px 60px rgba(14,20,35,.35), 0 8px 18px rgba(14,20,35,.25); pointer-events: none; transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+  .ars__stage:hover .ars__phone { transform: translateX(-50%) translateY(-6px); }
+  .ars__phone::before, .ars__phone::after { content: ""; position: absolute; width: 3px; background: #2A2E37; border-radius: 2px; }
+  .ars__phone::before { left: -13px; top: 18%; height: 9%; box-shadow: 0 46px 0 #2A2E37; }
+  .ars__phone::after { right: -13px; top: 24%; height: 13%; }
+  .ars__screen { position: absolute; inset: 0; border-radius: 31px; overflow: hidden; box-shadow: 0 0 0 2000px rgba(239,234,226,.62); }
+  .ars__screen::after { content: ""; position: absolute; inset: 0; background: linear-gradient(118deg, rgba(255,255,255,.22) 0%, rgba(255,255,255,0) 34%); pointer-events: none; }
+  .ars__island { position: absolute; top: 9px; left: 50%; width: 32%; height: 19px; transform: translateX(-50%); background: #0E1117; border-radius: 12px; }
+  .ars__status { position: absolute; top: 10px; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 18px; font-size: 10px; font-weight: 600; color: #1C2433; }
+  .ars__status i { display: inline-block; width: 16px; height: 8px; border: 1.2px solid #1C2433; border-radius: 2px; position: relative; }
+  .ars__status i::after { content: ""; position: absolute; inset: 1px 4px 1px 1px; background: #1C2433; border-radius: 1px; }
+  .ars__ui { position: absolute; left: 0; right: 0; bottom: 14px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .ars__pill { background: rgba(255,255,255,.92); color: #16335E; font-size: 9.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 6px 11px; border-radius: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.12); }
+  .ars__shutter { width: 40px; height: 40px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 10px rgba(0,0,0,.25); display: flex; align-items: center; justify-content: center; }
+  .ars__shutter::after { content: ""; width: 28px; height: 28px; border-radius: 50%; background: #fff; }
+  .ars__tag { position: absolute; left: 18px; bottom: 18px; z-index: 3; background: rgba(255,255,255,.94); color: var(--color-navy); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; padding: 9px 13px; }
+  .ars__tap { position: absolute; right: 18px; bottom: 18px; z-index: 3; display: inline-flex; align-items: center; gap: 8px; background: var(--color-navy); color: #fff; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding: 10px 14px; }
+  @media (prefers-reduced-motion: reduce) { .ars__art::after { animation: none; } }
   .ars .pdp-ar__btn { display: none !important; }
   @media (max-width: 990px) { .ars { padding-top: 80px; padding-bottom: 80px; } .ars__grid { grid-template-columns: 1fr; gap: 44px; } .ars__media { order: -1; } }
-  @media (max-width: 600px) { .ars__cta { width: 100%; justify-content: center; } .ars__frame { inset: 5% 24%; } .ars__tag, .ars__tap { font-size: 9.5px; padding: 7px 9px; left: 10px; } .ars__tap { left: auto; right: 10px; } }
+  @media (max-width: 600px) { .ars__cta { width: 100%; justify-content: center; } .ars__phone { border-width: 7px; border-radius: 30px; } .ars__screen { border-radius: 23px; } .ars__dim { font-size: 9px; top: -28px; } .ars__status { font-size: 8px; padding: 0 12px; } .ars__shutter { width: 30px; height: 30px; } .ars__shutter::after { width: 20px; height: 20px; } .ars__pill { font-size: 8px; padding: 4px 8px; } .ars__tag, .ars__tap { font-size: 9.5px; padding: 7px 9px; left: 10px; } .ars__tap { left: auto; right: 10px; } }
 </style>
 
 <section class="ars page-width">
@@ -52,10 +77,20 @@
     </div>
     <div class="ars__media">
       <button type="button" class="ars__stage" data-ar-open hidden aria-label="See {{ ars_product.title | escape }} on your wall">
-        {{ ars_product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', alt: ars_product.title }}
-        <span class="ars__frame" aria-hidden="true"></span>
         {%- assign ars_v = ars_product.variants.first.title | split: '(' -%}
-        <span class="ars__tag">{{ ars_product.title | split: ' - ' | last | split: ' by ' | first | truncate: 28 }} · {{ ars_v[0] | strip }}</span>
+        {%- assign ars_cm = ars_v[0] | strip | replace: 'cm x ', ' × ' | replace: 'cm', ' cm' -%}
+        <span class="ars__art">
+          {{ ars_product.featured_image | image_url: width: 700 | image_tag: loading: 'lazy', alt: ars_product.title }}
+          <span class="ars__dim">{{ ars_cm }}</span>
+        </span>
+        <span class="ars__phone" aria-hidden="true">
+          <span class="ars__screen">
+            <span class="ars__island"></span>
+            <span class="ars__status"><span>9:41</span><i></i></span>
+            <span class="ars__ui"><span class="ars__pill">Placed on your wall</span><span class="ars__shutter"></span></span>
+          </span>
+        </span>
+        <span class="ars__tag">{{ ars_product.title | split: ' - ' | last | split: ' by ' | first | truncate: 28 }} · True size</span>
         <span class="ars__tap">Tap to try</span>
       </button>
     </div>
