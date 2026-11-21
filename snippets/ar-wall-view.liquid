@@ -301,7 +301,7 @@
       }).catch(function () { loading.textContent = 'Preview unavailable'; });
     }
 
-    document.querySelectorAll('[data-ar-open]').forEach(function (b) { b.hidden = false; b.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); open(); }); });
+    document.querySelectorAll('[data-ar-open]').forEach(function (b) { b.hidden = false; b.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); if (mode !== 'wall') setMode('wall'); open(); }); });
     dialog.querySelector('[data-ar-close]').addEventListener('click', function () { dialog.close(); });
     dialog.addEventListener('click', function (e) { if (e.target === dialog) dialog.close(); });
     cta.addEventListener('click', function () { if (viewer) viewer.activateAR(); });
