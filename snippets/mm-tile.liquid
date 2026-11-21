@@ -1,0 +1,21 @@
+{%- comment -%}
+  Mosaic Matchmaker answer tile.
+  Params: q (question id), v (value), label, sub (optional), handle (collection for photo, optional), swatch (optional CSS class), icon (optional svg)
+{%- endcomment -%}
+<button type="button" class="mm-tile{% if handle != blank %} mm-tile--photo{% endif %}" data-mm-answer data-q="{{ q }}" data-v="{{ v }}" aria-pressed="false">
+  {%- if handle != blank -%}
+    {%- assign mm_c = collections[handle] -%}
+    {%- assign mm_img = mm_c.image | default: mm_c.products.first.featured_image -%}
+    <span class="mm-tile__media">
+      {%- if mm_img -%}{{ mm_img | image_url: width: 520 | image_tag: loading: 'lazy', alt: '', class: 'mm-tile__img', sizes: '(max-width: 749px) 50vw, 22vw' }}{%- endif -%}
+    </span>
+  {%- elsif swatch != blank -%}
+    <span class="mm-tile__swatch {{ swatch }}" aria-hidden="true"></span>
+  {%- elsif icon != blank -%}
+    <span class="mm-tile__icon" aria-hidden="true">{{ icon }}</span>
+  {%- endif -%}
+  <span class="mm-tile__text">
+    <span class="mm-tile__label">{{ label }}</span>
+    {%- if sub != blank -%}<span class="mm-tile__sub">{{ sub }}</span>{%- endif -%}
+  </span>
+</button>

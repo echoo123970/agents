@@ -10,6 +10,9 @@
   .hero__text { font-size: 17px; line-height: 1.7; color: var(--color-text-muted); max-width: 480px; margin-bottom: 38px; }
   .hero__ctas { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 46px; }
   .hero__btn { min-width: 286px; }
+  .hero__quiz { display: inline-flex; align-items: center; gap: 12px; margin: -26px 0 40px; font-size: 14.5px; color: var(--color-text-muted); flex-wrap: wrap; }
+  .hero__quiz a { display: inline-flex; align-items: center; gap: 8px; color: var(--color-blue); font-weight: 600; letter-spacing: .02em; border-bottom: 1px solid currentColor; padding-bottom: 2px; transition: color .2s ease, gap .2s ease; }
+  .hero__quiz a:hover { color: var(--color-navy); gap: 12px; }
   .hero__stats { display: flex; gap: 40px; flex-wrap: wrap; border-top: 1px solid rgba(22,51,94,.12); padding-top: 26px; }
   .hero__stat-value { font-family: var(--font-display); font-size: 32px; line-height: 1; color: var(--color-navy); }
   .hero__stat-label { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-soft); margin-top: 6px; }
@@ -85,6 +88,12 @@
           <a href="{{ section.settings.button_link_2 | default: '/pages/custom-mosaics' }}" class="btn btn--outline hero__btn">{{ section.settings.button_label_2 }}</a>
         {%- endif -%}
       </div>
+      {%- if section.settings.quiz_label != blank -%}
+        <p class="hero__quiz">
+          {%- if section.settings.quiz_intro != blank -%}<span>{{ section.settings.quiz_intro }}</span>{%- endif -%}
+          <a href="{{ section.settings.quiz_link | default: '/pages/find-your-mosaic' }}">{{ section.settings.quiz_label }}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </p>
+      {%- endif -%}
       <div class="hero__stats">
         {%- assign stat_blocks = section.blocks | where: 'type', 'stat' -%}
         {%- assign stat_count = stat_blocks | size -%}
@@ -152,6 +161,9 @@
     { "type": "url", "id": "button_link_1", "label": "Button 1 link" },
     { "type": "text", "id": "button_label_2", "label": "Button 2 label", "default": "Request a Custom Quote" },
     { "type": "url", "id": "button_link_2", "label": "Button 2 link" },
+    { "type": "text", "id": "quiz_intro", "label": "Quiz link intro", "default": "Not sure where to start?" },
+    { "type": "text", "id": "quiz_label", "label": "Quiz link label", "default": "Find your mosaic in 30 seconds" },
+    { "type": "url", "id": "quiz_link", "label": "Quiz link", "info": "Defaults to /pages/find-your-mosaic" },
     { "type": "image_picker", "id": "image", "label": "Hero image (upload — best quality)" },
     { "type": "text", "id": "image_url", "label": "Hero image URL (paste a horse mosaic link)", "default": "https://cdn.shopify.com/s/files/1/0754/6093/5978/files/MAA062_a2009f6f-c0f6-4f85-be56-344f79b78b71.jpg?v=1762022927" },
     { "type": "text", "id": "image_file", "label": "Bundled image filename (e.g. hero-horse.jpg)", "default": "hero-horse.jpg" },
