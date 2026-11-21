@@ -4,13 +4,16 @@
   builds a flat panel at that exact size with the product photo, and opens it in
   AR on phones (iOS Quick Look / Android WebXR) or as a 3D preview on desktop.
 {%- endcomment -%}
-{%- assign ar_label = 'View on your wall' -%}
-{%- assign ar_sub = 'See it at true size with your phone camera' -%}
-{%- assign ar_title = 'See it on your wall' -%}
+{%- assign ar_label = 'View in your space' -%}
+{%- assign ar_sub = 'See it at true size on your wall or floor' -%}
+{%- assign ar_title = 'See it in your space' -%}
 {%- assign ar_cta = 'Place it on my wall' -%}
+{%- assign ar_cta_floor = 'Place it on my floor' -%}
+{%- assign ar_stage_label = 'View in your space' -%}
+{%- assign ar_send = 'Send us your wall photo' -%}
+{%- assign ar_tip = 'Tip: while the mosaic is in place, take a screenshot. Then tap below to send it to us with your size and we will get back to you.' -%}
 {%- assign ar_desktop_note = 'Scan with your phone camera to see this mosaic on your own wall, at true size.' -%}
 {%- assign ar_unsupported_note = 'Your device does not support AR. You can still rotate and zoom the 3D preview.' -%}
-{%- assign ar_disclaimer = 'Preview only — natural stone and glass shimmer, texture and colour variation look richer in person.' -%}
 
 {%- assign ar_has_cm = false -%}
 {%- for v in product.variants -%}
@@ -41,11 +44,20 @@
     .pdp-ar__cta { width: 100%; background: var(--color-blue); color: #fff; border: none; padding: 16px; font-family: var(--font-body); font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; }
     .pdp-ar__cta[hidden], .pdp-ar__note[hidden] { display: none; }
     .pdp-ar__note { font-size: 13.5px; margin: 0; }
-    .pdp-ar__disclaimer { font-size: 12px; color: var(--color-text-soft); margin: 0; }
     .pdp-ar__qrrow { display: flex; align-items: center; gap: 18px; }
     .pdp-ar__qr { width: 128px; height: 128px; flex-shrink: 0; background: #fff; border: 1px solid var(--color-line); padding: 4px; }
     .pdp-ar__qr[hidden] { display: none; }
     .pdp-ar__qr svg { width: 100%; height: 100%; display: block; }
+    .pdp-ar__tip { font-size: 13px; line-height: 1.5; color: var(--color-text-soft); margin: 0; }
+    .pdp-ar__send { width: 100%; background: transparent; color: var(--color-navy); border: 1px solid var(--color-navy); padding: 14px; font-family: var(--font-body); font-size: 12.5px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; }
+    .pdp-ar__tip[hidden], .pdp-ar__send[hidden] { display: none; }
+    .pdp-ar__hl .form-control { border-color: var(--color-blue-light) !important; box-shadow: 0 0 0 2px rgba(43,123,232,.45) !important; }
+    .pdp-ar__modes { display: inline-flex; margin-top: 12px; border: 1px solid rgba(22,51,94,.25); }
+    .pdp-ar__mode { background: #fff; color: var(--color-navy); border: none; font-family: var(--font-body); font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; padding: 8px 14px; cursor: pointer; }
+    .pdp-ar__mode.is-active { background: var(--color-navy); color: #fff; }
+    .pdp-stage__ar { position: absolute; right: 16px; bottom: 16px; z-index: 2; display: flex; align-items: center; gap: 8px; background: var(--color-navy); color: #fff; border: none; font-family: var(--font-body); font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding: 10px 14px; cursor: pointer; box-shadow: 0 6px 18px rgba(14,30,56,.25); transition: background .2s ease; }
+    .pdp-stage__ar:hover { background: var(--color-blue); }
+    .pdp-stage__ar[hidden] { display: none; }
   </style>
 
   <button type="button" class="pdp-ar__btn" data-ar-open aria-haspopup="dialog">
@@ -61,6 +73,10 @@
       <div>
         <h2 class="pdp-ar__title" id="PdpArTitle">{{ ar_title }}</h2>
         <div class="pdp-ar__size" data-ar-size></div>
+        <div class="pdp-ar__modes" role="group" aria-label="Placement">
+          <button type="button" class="pdp-ar__mode is-active" data-ar-mode="wall" aria-pressed="true">On a wall</button>
+          <button type="button" class="pdp-ar__mode" data-ar-mode="floor" aria-pressed="false">On the floor</button>
+        </div>
       </div>
       <button type="button" class="pdp-ar__close" data-ar-close aria-label="Close">&times;</button>
     </div>
@@ -69,8 +85,9 @@
     </div>
     <div class="pdp-ar__foot">
       <button type="button" class="pdp-ar__cta" data-ar-activate hidden>{{ ar_cta }}</button>
+      <p class="pdp-ar__tip" data-ar-tip hidden>{{ ar_tip }}</p>
+      <button type="button" class="pdp-ar__send" data-ar-send hidden>{{ ar_send }}</button>
       <div class="pdp-ar__qrrow"><div class="pdp-ar__qr" data-ar-qr role="img" hidden></div><p class="pdp-ar__note" data-ar-note hidden></p></div>
-      <p class="pdp-ar__disclaimer">{{ ar_disclaimer }}</p>
     </div>
   </dialog>
 
@@ -85,6 +102,8 @@
           {{ v.id | append: '' | json }}: {{ v.title | json }}{% unless forloop.last %},{% endunless %}
         {%- endfor -%}
       },
+      "ctaWall": {{ ar_cta | json }},
+      "ctaFloor": {{ ar_cta_floor | json }},
       "desktopNote": {{ ar_desktop_note | json }},
       "unsupportedNote": {{ ar_unsupported_note | json }}
     }
@@ -104,10 +123,43 @@
     var MV_SRC = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js';
     var mvReady = null, viewer = null, lastUrl = null;
     var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    var mode = 'wall';
+    var modeBtns = dialog.querySelectorAll('[data-ar-mode]');
+    function setMode(m) {
+      mode = m;
+      modeBtns.forEach(function (b) { var on = b.getAttribute('data-ar-mode') === m; b.classList.toggle('is-active', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+      cta.textContent = m === 'floor' ? cfg.ctaFloor : cfg.ctaWall;
+      if (viewer) {
+        viewer.setAttribute('ar-placement', m);
+        viewer.setAttribute('camera-orbit', m === 'floor' ? '0deg 50deg auto' : '0deg 85deg auto');
+        var size = currentSize();
+        if (size) { loading.hidden = false; viewer.src = buildModel(size.w, size.h); }
+      }
+    }
+    modeBtns.forEach(function (b) { b.addEventListener('click', function () { setMode(b.getAttribute('data-ar-mode')); }); });
+    var tip = dialog.querySelector('[data-ar-tip]'), sendBtn = dialog.querySelector('[data-ar-send]');
+    // Hand off to the quote form (AAA Form Builder) with size + message prefilled, then open the photo picker.
+    function sendPhoto() {
+      var input = document.querySelector('[data-variant-input]');
+      var title = (input && cfg.variants[String(input.value)]) || '';
+      var form = document.querySelector('.aaaformbuilder_form');
+      dialog.close();
+      if (!form) { location.hash = 'quote-form'; return; }
+      var inch = /([\d.]+)\s*["″]\s*[x×]\s*([\d.]+)/.exec(title);
+      var wEl = form.querySelector('[name="width"]'), hEl = form.querySelector('[name="height"]');
+      var msg = form.querySelector('textarea'), file = form.querySelector('input[type="file"]');
+      if (inch && wEl && !wEl.value) wEl.value = inch[1];
+      if (inch && hEl && !hEl.value) hEl.value = inch[2];
+      if (msg && !msg.value) msg.value = 'I previewed "' + cfg.alt + '" in my space (' + mode + ') in size ' + title + '. My photo is attached.';
+      var sec = document.getElementById('quote-form');
+      if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (file) { var g = file.closest('.form-group'); if (g) g.classList.add('pdp-ar__hl'); file.click(); }
+    }
+    sendBtn.addEventListener('click', sendPhoto);
     var qrEl = dialog.querySelector('[data-ar-qr]'), qrLib = null;
     function showQR() {
       var input = document.querySelector('[data-variant-input]');
-      var url = location.origin + location.pathname + '?ar=wall' + (input ? '&variant=' + input.value : '');
+      var url = location.origin + location.pathname + '?ar=' + mode + (input ? '&variant=' + input.value : '');
       if (!qrLib) qrLib = new Promise(function (res, rej) {
         if (window.qrcode) return res();
         var s = document.createElement('script');
@@ -162,6 +214,14 @@
       quad([x0,y0,zb],[x1,y0,zb],[x1,y0,zf],[x0,y0,zf],[0,-1,0]);
       var I = [];
       for (var q = 0; q < 6; q++) { var b = q * 4; I.push(b, b + 1, b + 2, b, b + 2, b + 3); }
+      if (mode === 'floor') {
+        for (var t = 0; t < P.length; t += 3) {
+          var py = P[t + 1], pz = P[t + 2]; P[t + 1] = pz + d; P[t + 2] = -py + h / 2;
+          var ny = N[t + 1], nz = N[t + 2]; N[t + 1] = nz; N[t + 2] = -ny;
+        }
+      }
+      var mn = [Infinity, Infinity, Infinity], mx = [-Infinity, -Infinity, -Infinity];
+      for (var s = 0; s < P.length; s++) { var ax = s % 3; if (P[s] < mn[ax]) mn[ax] = P[s]; if (P[s] > mx[ax]) mx[ax] = P[s]; }
       var buf = new ArrayBuffer(840), dv = new DataView(buf);
       P.forEach(function (v, i) { dv.setFloat32(i * 4, v, true); });
       N.forEach(function (v, i) { dv.setFloat32(288 + i * 4, v, true); });
@@ -189,7 +249,7 @@
           { buffer: 0, byteOffset: 768, byteLength: 72, target: 34963 }
         ],
         accessors: [
-          { bufferView: 0, componentType: 5126, count: 24, type: 'VEC3', min: [x0, y0, zb], max: [x1, y1, zf] },
+          { bufferView: 0, componentType: 5126, count: 24, type: 'VEC3', min: mn, max: mx },
           { bufferView: 1, componentType: 5126, count: 24, type: 'VEC3' },
           { bufferView: 2, componentType: 5126, count: 24, type: 'VEC2' },
           { bufferView: 3, byteOffset: 0, componentType: 5123, count: 6, type: 'SCALAR' },
@@ -205,20 +265,20 @@
       var size = currentSize();
       if (!size) return;
       sizeEl.textContent = size.label;
-      cta.hidden = true; note.hidden = true; qrEl.hidden = true; loading.hidden = false; loading.textContent = 'Loading preview…';
+      cta.hidden = true; note.hidden = true; qrEl.hidden = true; tip.hidden = true; sendBtn.hidden = true; loading.hidden = false; loading.textContent = 'Loading preview…';
       if (typeof dialog.showModal === 'function') dialog.showModal(); else dialog.setAttribute('open', '');
       loadModelViewer().then(function () {
         if (!viewer) {
           viewer = document.createElement('model-viewer');
           viewer.setAttribute('ar', '');
           viewer.setAttribute('ar-modes', 'webxr quick-look');
-          viewer.setAttribute('ar-placement', 'wall');
+          viewer.setAttribute('ar-placement', mode);
           viewer.setAttribute('ar-scale', 'fixed');
           viewer.setAttribute('camera-controls', '');
           viewer.setAttribute('touch-action', 'pan-y');
           viewer.setAttribute('shadow-intensity', '0.6');
           viewer.setAttribute('environment-image', 'neutral');
-          viewer.setAttribute('camera-orbit', '0deg 85deg auto');
+          viewer.setAttribute('camera-orbit', mode === 'floor' ? '0deg 50deg auto' : '0deg 85deg auto');
           viewer.setAttribute('interaction-prompt', 'none');
           viewer.setAttribute('alt', cfg.alt + ' — 3D preview');
           var hiddenBtn = document.createElement('span');
@@ -226,7 +286,7 @@
           viewer.appendChild(hiddenBtn);
           viewer.addEventListener('load', function () {
             loading.hidden = true;
-            if (viewer.canActivateAR) { cta.hidden = false; note.hidden = true; }
+            if (viewer.canActivateAR) { cta.hidden = false; note.hidden = true; tip.hidden = false; sendBtn.hidden = false; }
             else { note.textContent = isMobile ? cfg.unsupportedNote : cfg.desktopNote; note.hidden = false; if (!isMobile) showQR(); }
           });
           viewer.addEventListener('error', function () { loading.textContent = 'Preview unavailable'; });
@@ -236,11 +296,12 @@
       }).catch(function () { loading.textContent = 'Preview unavailable'; });
     }
 
-    document.querySelector('[data-ar-open]').addEventListener('click', open);
+    document.querySelectorAll('[data-ar-open]').forEach(function (b) { b.hidden = false; b.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); open(); }); });
     dialog.querySelector('[data-ar-close]').addEventListener('click', function () { dialog.close(); });
     dialog.addEventListener('click', function (e) { if (e.target === dialog) dialog.close(); });
     cta.addEventListener('click', function () { if (viewer) viewer.activateAR(); });
-    if (new URLSearchParams(location.search).get('ar') === 'wall') open();
+    var arParam = new URLSearchParams(location.search).get('ar');
+    if (arParam === 'wall' || arParam === 'floor') { setMode(arParam); open(); }
   })();
   </script>
 {%- endif -%}
