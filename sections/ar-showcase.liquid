@@ -1,0 +1,84 @@
+{%- comment -%}
+  Homepage "See it on your wall" band. Reuses snippets/ar-wall-view.liquid for the
+  3D preview, wall/floor AR and desktop QR code, using the chosen product.
+{%- endcomment -%}
+{%- assign ars_product = section.settings.product | default: all_products['glass-mosaic-tile-glass-mosaic-art-the-kiss-by-gustav-klimt'] -%}
+{%- if ars_product -%}
+<style>
+  .ars { padding-top: 110px; padding-bottom: 110px; }
+  .ars__grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 72px; align-items: center; }
+  .ars__text { font-size: 17px; line-height: 1.7; color: var(--color-text-muted); max-width: 470px; margin-top: 22px; }
+  .ars__points { list-style: none; padding: 0; margin: 28px 0 0; display: grid; gap: 12px; }
+  .ars__points li { display: flex; align-items: center; gap: 12px; font-size: 15px; color: var(--color-navy); }
+  .ars__points li::before { content: ""; width: 7px; height: 7px; background: var(--color-blue); transform: rotate(45deg); flex-shrink: 0; }
+  .ars__ctas { display: flex; align-items: center; gap: 26px; flex-wrap: wrap; margin-top: 38px; }
+  .ars__cta { display: inline-flex; align-items: center; gap: 12px; background: var(--color-navy); color: #fff; border: none; font-family: var(--font-body); font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding: 19px 32px; cursor: pointer; transition: background .25s ease; }
+  .ars__cta:hover { background: var(--color-blue); }
+  .ars__quiz { font-size: 14.5px; color: var(--color-text-muted); }
+  .ars__quiz a { color: var(--color-blue); font-weight: 600; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+  .ars__quiz a:hover { color: var(--color-navy); }
+  .ars__stage { position: relative; display: block; width: 100%; border: none; padding: 0; cursor: pointer; aspect-ratio: 5/4; background: linear-gradient(180deg, #EEE9E1 0%, #E4DDD2 78%, #CFC4B4 78%, #C6B9A6 100%); overflow: hidden; }
+  .ars__stage img { position: absolute; left: 50%; top: 9%; height: 62%; width: auto; transform: translateX(-50%); box-shadow: 0 22px 40px rgba(40,30,20,.28), 0 4px 10px rgba(40,30,20,.18); transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+  .ars__stage:hover img { transform: translateX(-50%) scale(1.03); }
+  .ars__frame { position: absolute; inset: 5% 31%; border: 2px solid rgba(22,51,94,.55); border-radius: 26px; pointer-events: none; }
+  .ars__frame::before { content: ""; position: absolute; top: 9px; left: 50%; width: 46px; height: 5px; border-radius: 4px; background: rgba(22,51,94,.45); transform: translateX(-50%); }
+  .ars__tag { position: absolute; left: 18px; bottom: 18px; background: rgba(255,255,255,.94); color: var(--color-navy); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; padding: 9px 13px; }
+  .ars__tap { position: absolute; right: 18px; bottom: 18px; display: inline-flex; align-items: center; gap: 8px; background: var(--color-navy); color: #fff; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding: 10px 14px; }
+  .ars .pdp-ar__btn { display: none !important; }
+  @media (max-width: 990px) { .ars { padding-top: 80px; padding-bottom: 80px; } .ars__grid { grid-template-columns: 1fr; gap: 44px; } .ars__media { order: -1; } }
+  @media (max-width: 600px) { .ars__cta { width: 100%; justify-content: center; } .ars__frame { inset: 5% 24%; } .ars__tag, .ars__tap { font-size: 9.5px; padding: 7px 9px; left: 10px; } .ars__tap { left: auto; right: 10px; } }
+</style>
+
+<section class="ars page-width">
+  <div class="ars__grid">
+    <div class="ars__copy">
+      {%- if section.settings.eyebrow != blank -%}<div class="eyebrow">{{ section.settings.eyebrow }}</div>{%- endif -%}
+      <h2 class="section-title">{{ section.settings.heading }}</h2>
+      {%- if section.settings.text != blank -%}<p class="ars__text">{{ section.settings.text }}</p>{%- endif -%}
+      <ul class="ars__points">
+        {%- if section.settings.point_1 != blank -%}<li>{{ section.settings.point_1 }}</li>{%- endif -%}
+        {%- if section.settings.point_2 != blank -%}<li>{{ section.settings.point_2 }}</li>{%- endif -%}
+        {%- if section.settings.point_3 != blank -%}<li>{{ section.settings.point_3 }}</li>{%- endif -%}
+      </ul>
+      <div class="ars__ctas">
+        <button type="button" class="ars__cta" data-ar-open hidden>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V4.5A1.5 1.5 0 0 1 4.5 3H7"/><path d="M17 3h2.5A1.5 1.5 0 0 1 21 4.5V7"/><path d="M21 17v2.5a1.5 1.5 0 0 1-1.5 1.5H17"/><path d="M7 21H4.5A1.5 1.5 0 0 1 3 19.5V17"/><rect x="7.5" y="7" width="9" height="10" rx=".5"/></svg>
+          {{ section.settings.button_label }}
+        </button>
+        {%- if section.settings.quiz_label != blank -%}
+          <span class="ars__quiz">{{ section.settings.quiz_intro }} <a href="{{ section.settings.quiz_link | default: '/pages/find-your-mosaic' }}">{{ section.settings.quiz_label }}</a></span>
+        {%- endif -%}
+      </div>
+    </div>
+    <div class="ars__media">
+      <button type="button" class="ars__stage" data-ar-open hidden aria-label="See {{ ars_product.title | escape }} on your wall">
+        {{ ars_product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', alt: ars_product.title }}
+        <span class="ars__frame" aria-hidden="true"></span>
+        {%- assign ars_v = ars_product.variants.first.title | split: '(' -%}
+        <span class="ars__tag">{{ ars_product.title | split: ' - ' | last | split: ' by ' | first | truncate: 28 }} · {{ ars_v[0] | strip }}</span>
+        <span class="ars__tap">Tap to try</span>
+      </button>
+    </div>
+  </div>
+  {% render 'ar-wall-view', product: ars_product %}
+</section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "See it on your wall",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Demo mosaic", "info": "Defaults to The Kiss" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "View in your space" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "See it on your wall before you buy" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Place any of our mosaics on your own wall or floor, at its true size, using your phone's camera. No app needed." },
+    { "type": "text", "id": "point_1", "label": "Point 1", "default": "True size for every size option" },
+    { "type": "text", "id": "point_2", "label": "Point 2", "default": "Works on walls and floors" },
+    { "type": "text", "id": "point_3", "label": "Point 3", "default": "Send us a screenshot for a personal quote" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Try it on your wall" },
+    { "type": "text", "id": "quiz_intro", "label": "Quiz link intro", "default": "Not sure which one?" },
+    { "type": "text", "id": "quiz_label", "label": "Quiz link label", "default": "Take the quiz" },
+    { "type": "url", "id": "quiz_link", "label": "Quiz link" }
+  ]
+}
+{% endschema %}
