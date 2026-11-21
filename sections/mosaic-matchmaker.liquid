@@ -38,6 +38,7 @@
   .mm-q__hint { font-size: 15px; color: var(--color-text-muted); margin-top: 12px; }
   .mm-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 38px; }
   .mm-grid--5 { grid-template-columns: repeat(5, 1fr); }
+  [data-for][hidden] { display: none !important; }
   .mm-grid--6 { grid-template-columns: repeat(6, 1fr); gap: 14px; }
   .mm-grid--text { grid-template-columns: repeat(4, 1fr); }
   .mm-grid--3 { grid-template-columns: repeat(3, 1fr); }
@@ -208,19 +209,72 @@
     </div>
   </div>
 
-  <!-- Q2 SUBJECT -->
+  <!-- Q2 SUBJECT — the choices change with the answer to Q1 -->
   <div class="mm__screen page-width" data-step="subject">
     <div class="mm-q__top"><button type="button" class="mm-back" data-mm-back>&larr; Back</button><span class="mm-count">Question 2 of 6</span></div>
-    <h2 class="mm-q__title" tabindex="-1">What speaks to you?</h2>
-    <div class="mm-grid">
-      {% render 'mm-tile', q: 'subject', v: 'nature', label: 'Nature & trees', handle: 'tree-mosaics' %}
-      {% render 'mm-tile', q: 'subject', v: 'flowers', label: 'Flowers', handle: 'flower-mosaics' %}
-      {% render 'mm-tile', q: 'subject', v: 'animals', label: 'Birds & animals', handle: 'bird-mosaics' %}
-      {% render 'mm-tile', q: 'subject', v: 'sea', label: 'Sea & nautical', handle: 'nautical-mosaics' %}
-      {% render 'mm-tile', q: 'subject', v: 'religious', label: 'Religious', handle: 'religious-mosaics' %}
-      {% render 'mm-tile', q: 'subject', v: 'art', label: 'Famous art & portraits', sub: 'Klimt, Van Gogh, Roman', handle: 'van-gogh-mosaics' %}
-      {% render 'mm-tile', q: 'subject', v: 'geometric', label: 'Geometric & patterns', handle: 'patterns-mosaics' %}
-      {% render 'mm-tile', q: 'subject', v: 'abstract', label: 'Abstract & modern', handle: 'abstract' %}
+
+    <div data-for="wall">
+      <h2 class="mm-q__title" tabindex="-1">What would you love to see on your wall?</h2>
+      <div class="mm-grid">
+        {% render 'mm-tile', q: 'subject', v: 'nature', label: 'Nature & trees', handle: 'tree-mosaics' %}
+        {% render 'mm-tile', q: 'subject', v: 'flowers', label: 'Flowers', handle: 'flower-mosaics' %}
+        {% render 'mm-tile', q: 'subject', v: 'animals', label: 'Birds & animals', handle: 'bird-mosaics' %}
+        {% render 'mm-tile', q: 'subject', v: 'sea', label: 'Sea & nautical', handle: 'nautical-mosaics' %}
+        {% render 'mm-tile', q: 'subject', v: 'religious', label: 'Religious', handle: 'religious-mosaics' %}
+        {% render 'mm-tile', q: 'subject', v: 'art', label: 'Famous art & portraits', sub: 'Klimt, Van Gogh, Roman', handle: 'van-gogh-mosaics' %}
+        {% render 'mm-tile', q: 'subject', v: 'geometric', label: 'Geometric & patterns', handle: 'patterns-mosaics' %}
+        {% render 'mm-tile', q: 'subject', v: 'abstract', label: 'Abstract & modern', handle: 'abstract' %}
+      </div>
+    </div>
+
+    <div data-for="floor" hidden>
+      <h2 class="mm-q__title" tabindex="-1">Which floor design suits your space?</h2>
+      <div class="mm-grid">
+        {% render 'mm-tile', q: 'subject', v: 'medallion', label: 'Medallions & compasses', sub: 'Round centrepieces for entries & halls', handle: 'geometric-mosaics' %}
+        {% render 'mm-tile', q: 'subject', v: 'rug', label: 'Mosaic rugs & patterns', sub: 'Rectangular, carpet-style designs', handle: 'patterns-mosaics' %}
+        {% render 'mm-tile', q: 'subject', v: 'roman', label: 'Roman & classical', sub: 'Ancient-style scenes', handle: 'roman-mosaics' %}
+        {% render 'mm-tile', q: 'subject', v: 'flowers', label: 'Floral floors', sub: 'Flowers, vines & borders', handle: 'flower-mosaics' %}
+      </div>
+    </div>
+
+    <div data-for="backsplash" hidden>
+      <h2 class="mm-q__title" tabindex="-1">What style for your kitchen backsplash?</h2>
+      <div class="mm-grid">
+        {% render 'mm-tile', q: 'subject', v: 'flowers', label: 'Flowers & vines', handle: 'flower-mosaics' %}
+        {% render 'mm-tile', q: 'subject', v: 'geometric', label: 'Patterns & tiles', handle: 'mosaic-tile-backsplash' %}
+        {% render 'mm-tile', q: 'subject', v: 'food', label: 'Fruit & kitchen scenes', handle: 'food-mosaics' %}
+        {% render 'mm-tile', q: 'subject', v: 'nature', label: 'Landscapes & trees', handle: 'landscape-mosaics' %}
+      </div>
+    </div>
+
+    <div data-for="pool" hidden>
+      <h2 class="mm-q__title" tabindex="-1">What would you love to see in your pool?</h2>
+      <div class="mm-grid">
+        {% render 'mm-tile', q: 'subject', v: 'sealife', label: 'Sea life', sub: 'Dolphins, turtles, fish', prod_handle: 'nautical-mosaics-playful-dolphins-blue-water-mosaic-tile-art' %}
+        {% render 'mm-tile', q: 'subject', v: 'poolmedallion', label: 'Pool medallions', sub: 'Compasses, anchors, emblems', prod_handle: 'nautical-mosaics-anchor-pool-mosaic-medallion' %}
+        {% render 'mm-tile', q: 'subject', v: 'underwater', label: 'Underwater scenes', sub: 'Reefs, coral & ocean floor', prod_handle: 'nautical-mosaics-swimming-pool-mosaics-underwater-scene-design' %}
+        {% render 'mm-tile', q: 'subject', v: 'geometric', label: 'Geometric & patterns', sub: 'Borders & modern designs', handle: 'geometric-mosaics' %}
+      </div>
+    </div>
+
+    <div data-for="bathroom" hidden>
+      <h2 class="mm-q__title" tabindex="-1">What mood for your bathroom?</h2>
+      <div class="mm-grid">
+        {% render 'mm-tile', q: 'subject', v: 'sea', label: 'Sea & shells', sub: 'Calm, coastal, fresh', prod_handle: 'nautical-mosaics-shell-handcrafted-mosaic-marble-mosaic' %}
+        {% render 'mm-tile', q: 'subject', v: 'flowers', label: 'Flowers', sub: 'Soft & romantic', handle: 'flower-mosaics' %}
+        {% render 'mm-tile', q: 'subject', v: 'geometric', label: 'Geometric & patterns', sub: 'Spa-like & modern', prod_handle: 'geometric-mosaics-mosaic-art-medallion-for-bathroom' %}
+        {% render 'mm-tile', q: 'subject', v: 'animals', label: 'Birds & animals', sub: 'Playful & charming', prod_handle: 'bird-mosaics-glass-penguin-mosaic-bathroom-wall-decor-idea' %}
+      </div>
+    </div>
+
+    <div data-for="table" hidden>
+      <h2 class="mm-q__title" tabindex="-1">What design for your table top?</h2>
+      <div class="mm-grid">
+        {% render 'mm-tile', q: 'subject', v: 'flowers', label: 'Flowers', handle: 'flower-mosaics' %}
+        {% render 'mm-tile', q: 'subject', v: 'geometric', label: 'Geometric & patterns', handle: 'table-countertop-mosaics' %}
+        {% render 'mm-tile', q: 'subject', v: 'food', label: 'Fruit & still life', handle: 'food-mosaics' %}
+        {% render 'mm-tile', q: 'subject', v: 'sea', label: 'Sea & garden', sub: 'For patios & outdoor tables', prod_handle: 'koi-fish-mosaic-a-symbol-of-good-luck-prosperity' %}
+      </div>
     </div>
   </div>
 
@@ -240,7 +294,12 @@
   <div class="mm__screen page-width" data-step="size">
     <div class="mm-q__top"><button type="button" class="mm-back" data-mm-back>&larr; Back</button><span class="mm-count">Question 4 of 6</span></div>
     <h2 class="mm-q__title" tabindex="-1">How big is the space?</h2>
-    <p class="mm-q__hint">Think of the longest side of the mosaic.</p>
+    <p class="mm-q__hint" data-for="wall">Think of the longest side of the mosaic.</p>
+    <p class="mm-q__hint" data-for="floor" hidden>Medallions are usually 70–150 cm across; rugs can be larger.</p>
+    <p class="mm-q__hint" data-for="backsplash" hidden>Measure the width between your counter and the cabinets.</p>
+    <p class="mm-q__hint" data-for="pool" hidden>Pool medallions and scenes are often 1–3 m. Choose large or custom for bigger pools.</p>
+    <p class="mm-q__hint" data-for="bathroom" hidden>Measure the shower wall or tub surround you want to cover.</p>
+    <p class="mm-q__hint" data-for="table" hidden>Measure your table top: its diameter or longest side.</p>
     <div class="mm-grid">
       {%- capture i_s -%}<svg width="70" height="60" viewBox="0 0 70 60" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="27" y="22" width="16" height="16"/><line x1="4" y1="56" x2="66" y2="56"/></svg>{%- endcapture -%}
       {%- capture i_m -%}<svg width="70" height="60" viewBox="0 0 70 60" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="21" y="14" width="28" height="28"/><line x1="4" y1="56" x2="66" y2="56"/></svg>{%- endcapture -%}
@@ -331,7 +390,7 @@
     "locale": {{ request.locale.iso_code | json }},
     "labels": {
       "placement": { "wall": "On a wall", "floor": "On the floor", "backsplash": "Kitchen backsplash", "pool": "Swimming pool", "bathroom": "Bathroom & shower", "table": "Table top" },
-      "subject": { "nature": "Nature & trees", "flowers": "Flowers", "animals": "Birds & animals", "sea": "Sea & nautical", "religious": "Religious", "art": "Famous art & portraits", "geometric": "Geometric & patterns", "abstract": "Abstract & modern" },
+      "subject": { "medallion": "Medallions & compasses", "rug": "Mosaic rugs & patterns", "roman": "Roman & classical", "food": "Fruit & kitchen scenes", "sealife": "Sea life", "poolmedallion": "Pool medallions", "underwater": "Underwater scenes", "nature": "Nature & trees", "flowers": "Flowers", "animals": "Birds & animals", "sea": "Sea & nautical", "religious": "Religious", "art": "Famous art & portraits", "geometric": "Geometric & patterns", "abstract": "Abstract & modern" },
       "colour": { "warm": "Warm golds & earth", "cool": "Cool blues & greens", "bright": "Bright & colourful", "neutral": "Black, white & neutral" },
       "size": { "small": "Small", "medium": "Medium", "large": "Large", "custom": "Custom size" },
       "budget": { "b1": "Under $1,000", "b2": "$1,000–$2,000", "b3": "$2,000–$3,500", "b4": "$3,500+" },

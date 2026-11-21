@@ -18,7 +18,22 @@
     religious: ['religious-mosaics'],
     art: ['portrait-mosaics', 'van-gogh-mosaics', 'roman-mosaics', 'landmark-mosaics'],
     geometric: ['geometric-mosaics', 'patterns-mosaics'],
-    abstract: ['abstract']
+    abstract: ['abstract'],
+    medallion: ['geometric-mosaics', 'nautical-mosaics'],
+    rug: ['geometric-mosaics', 'patterns-mosaics'],
+    roman: ['roman-mosaics'],
+    food: ['food-mosaics'],
+    sealife: ['nautical-mosaics'],
+    poolmedallion: ['nautical-mosaics', 'geometric-mosaics'],
+    underwater: ['nautical-mosaics']
+  };
+  // Extra boost when a product's title matches the chosen design
+  var SUBJECT_KEYWORDS = {
+    medallion: [/medallion|compass|round|circle/, 'a floor medallion'],
+    rug: [/rug|carpet|pattern|border/, 'a mosaic rug design'],
+    sealife: [/fish|koi|turtle|dolphin|seahorse|octopus|mermaid|whale|lionfish|shark/, 'sea life'],
+    poolmedallion: [/medallion|compass|anchor|emblem/, 'a pool medallion'],
+    underwater: [/underwater|reef|coral|ocean|sea/, 'an underwater scene']
   };
   var BUDGETS = { b1: [0, 1000], b2: [1000, 2000], b3: [2000, 3500], b4: [3500, Infinity] };
 
@@ -37,7 +52,7 @@
     var pct = step === 'intro' ? 0 : (qi >= 0 ? (qi / QUESTIONS.length) * 100 : 100);
     if (bar) bar.style.width = pct + '%';
     var screen = root.querySelector('.mm__screen[data-step="' + step + '"]');
-    var title = screen && screen.querySelector('.mm-q__title');
+    var title = screen && Array.prototype.filter.call(screen.querySelectorAll('.mm-q__title'), function (h) { return !h.closest('[hidden]'); })[0];
     if (title) title.focus({ preventScroll: true });
     var top = root.getBoundingClientRect().top + window.pageYOffset - 20;
     if (window.pageYOffset > top) window.scrollTo({ top: top, behavior: 'smooth' });
@@ -63,6 +78,10 @@
         t.setAttribute('aria-pressed', t === tile ? 'true' : 'false');
       });
       if (q === 'subject') prefetch(SUBJECT_COLLECTIONS[v] || []);
+      if (q === 'placement') {
+        root.querySelectorAll('[data-for]').forEach(function (el) { el.hidden = el.getAttribute('data-for') !== v; });
+        if (answers.subject) { delete answers.subject; root.querySelectorAll('[data-mm-answer][data-q="subject"]').forEach(function (t) { t.setAttribute('aria-pressed', 'false'); }); }
+      }
       var next = STEPS[STEPS.indexOf(q) + 1];
       setTimeout(function () {
         if (next === 'loading') { show('loading'); run(); } else { show(next); }
@@ -207,6 +226,8 @@
 
     var t = (p.title + ' ' + (p.product_type || '')).toLowerCase();
     var place = answers.placement;
+    var kw = SUBJECT_KEYWORDS[answers.subject];
+    if (kw && kw[0].test(t)) { sc += 3; reasons.unshift(kw[1]); }
     if (place === 'floor') {
       if (/floor|rug|medallion|compass/.test(t)) { sc += 4; reasons.unshift('designed for floors'); }
       else if (/geometric|pattern|roman/.test(t)) sc += 1.5;

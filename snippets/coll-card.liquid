@@ -11,6 +11,14 @@
     <button type="button" class="cardc__fav" data-wish-add data-product-handle="{{ product.handle }}" data-wish-title="{{ product.title | escape }}" data-wish-url="{{ product.url }}" data-wish-image="{% if product.featured_media %}{{ product.featured_media | image_url: width: 600 }}{% endif %}" data-wish-price="{% if product.price_varies %}From {{ product.price_min | money }}{% else %}{{ product.price | money }}{% endif %}" data-wish-sub="{{ product.type | default: product.vendor | escape }}" aria-label="Add to wishlist">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#16335E" stroke-width="1.6"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>
     </button>
+    {%- assign cc_ar = false -%}
+    {%- for v in product.variants -%}{%- assign cc_vt = v.title | downcase -%}{%- if cc_vt contains 'cm x' -%}{%- assign cc_ar = true -%}{%- break -%}{%- endif -%}{%- endfor -%}
+    {%- if cc_ar and product.featured_media != blank -%}
+      <a href="{{ product.url }}?ar=wall" class="cardc__ar" aria-label="View {{ product.title | escape }} in your space">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V4.5A1.5 1.5 0 0 1 4.5 3H7"/><path d="M17 3h2.5A1.5 1.5 0 0 1 21 4.5V7"/><path d="M21 17v2.5a1.5 1.5 0 0 1-1.5 1.5H17"/><path d="M7 21H4.5A1.5 1.5 0 0 1 3 19.5V17"/><rect x="7.5" y="7" width="9" height="10" rx=".5"/></svg>
+        <span class="cardc__ar-full">View in your space</span><span class="cardc__ar-short">In your space</span>
+      </a>
+    {%- endif -%}
     {%- if product.variants.size > 1 and product.available -%}
       <div class="cardc__vpanel" data-variants>
         <div class="cardc__vpanel-cap">Select a size</div>
