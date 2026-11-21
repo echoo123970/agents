@@ -25,7 +25,8 @@
     food: ['food-mosaics'],
     sealife: ['nautical-mosaics'],
     poolmedallion: ['nautical-mosaics', 'geometric-mosaics'],
-    underwater: ['nautical-mosaics']
+    underwater: ['nautical-mosaics'],
+    boats: ['nautical-mosaics', 'landscape-mosaics']
   };
   // Extra boost when a product's title matches the chosen design
   var SUBJECT_KEYWORDS = {
@@ -33,7 +34,8 @@
     rug: [/rug|carpet|pattern|border/, 'a mosaic rug design'],
     sealife: [/fish|koi|turtle|dolphin|seahorse|octopus|mermaid|whale|lionfish|shark/, 'sea life'],
     poolmedallion: [/medallion|compass|anchor|emblem/, 'a pool medallion'],
-    underwater: [/underwater|reef|coral|ocean|sea/, 'an underwater scene']
+    underwater: [/underwater|reef|coral|ocean|sea/, 'an underwater scene'],
+    boats: [/boat|ship|sail|lighthouse|anchor|port|harbou?r/, 'boats & the sea']
   };
   var BUDGETS = { b1: [0, 1000], b2: [1000, 2000], b3: [2000, 3500], b4: [3500, Infinity] };
 
@@ -245,6 +247,12 @@
       if (/bath|shower/.test(t)) { sc += 4; reasons.unshift('made for bathrooms'); }
       else if (backsplash[p.id] || /backsplash/.test(t)) { sc += 2.5; reasons.unshift('great for wet walls'); }
       else if (/sea|ocean|fish|koi|dolphin|turtle|wave|nautical|seahorse|shell|flower/.test(t)) sc += 1;
+    } else if (place === 'outdoor') {
+      if (/garden|outdoor|patio|fountain|courtyard|villa/.test(t)) { sc += 3; reasons.unshift('made for outdoor spaces'); }
+      if (/marble|stone/.test(t)) sc += 1;
+    } else if (place === 'fireplace') {
+      if (/fireplace|hearth/.test(t)) { sc += 4; reasons.unshift('designed for fireplaces'); }
+      else if (!/rug|table|floor/.test(t)) sc += 1;
     } else if (place === 'wall') {
       if (!/rug|table|floor/.test(t) && !table[p.id]) sc += 1;
     }
