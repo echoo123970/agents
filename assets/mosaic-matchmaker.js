@@ -214,7 +214,7 @@
     }).filter(function (v) { return v.size; });
     if (!variants.length || !p.images || !p.images.length) return null;
     // Never suggest sacred images for surfaces people walk on, swim over or eat from
-    if (/^(floor|pool|table)$/.test(answers.placement || '') &&
+    if (/^(floor|pool|table|stairs)$/.test(answers.placement || '') &&
         (/religious/i.test(p.product_type || '') || /jesus|christ|virgin|\bmary\b|madonna|saint|\bicon\b|\bangels?\b|crucifix|last supper|holy|archangel|pantocrator|guadalupe/i.test(p.title))) return null;
 
     var pick = null, fit = 0;
@@ -250,6 +250,9 @@
     } else if (place === 'outdoor') {
       if (/garden|outdoor|patio|fountain|courtyard|villa/.test(t)) { sc += 3; reasons.unshift('made for outdoor spaces'); }
       if (/marble|stone/.test(t)) sc += 1;
+    } else if (place === 'stairs') {
+      if (/stair|step|riser/.test(t)) { sc += 4; reasons.unshift('made for stairs & steps'); }
+      else if (/geometric|pattern|tile|compass/.test(t)) sc += 1.5;
     } else if (place === 'fireplace') {
       if (/fireplace|hearth/.test(t)) { sc += 4; reasons.unshift('designed for fireplaces'); }
       else if (!/rug|table|floor/.test(t)) sc += 1;
