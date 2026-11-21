@@ -211,6 +211,9 @@
       return { id: v.id, price: parseFloat(v.price), size: parseSize(v.title), title: v.title };
     }).filter(function (v) { return v.size; });
     if (!variants.length || !p.images || !p.images.length) return null;
+    // Never suggest sacred images for surfaces people walk on, swim over or eat from
+    if (/^(floor|pool|table)$/.test(answers.placement || '') &&
+        (/religious/i.test(p.product_type || '') || /jesus|christ|virgin|\bmary\b|madonna|saint|\bicon\b|\bangels?\b|crucifix|last supper|holy|archangel|pantocrator|guadalupe/i.test(p.title))) return null;
 
     var pick = null, fit = 0;
     variants.forEach(function (v) {
