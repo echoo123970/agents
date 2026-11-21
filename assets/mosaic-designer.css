@@ -279,5 +279,7 @@
 .md-faq__item summary { cursor: pointer; font-weight: 600; color: var(--color-navy); font-size: 16px; }
 .md-faq__item p { margin: 10px 0 0; color: var(--color-text-muted); line-height: 1.7; }
 .md-faq__more { margin-top: 18px; color: var(--color-text-muted); }
+.md-faq__more a { color: var(--color-blue); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.md-faq__more a:hover { color: var(--color-navy); }
 .md-hero__text { font-size: 17px; line-height: 1.7; color: var(--color-text-muted); max-width: 880px; text-wrap: balance; margin: 0 auto; }
 @media (max-width: 600px) { .md-hero__crumb, .md-hero__inner { padding-left: 22px; padding-right: 22px; } }
