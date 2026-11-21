@@ -8,7 +8,7 @@
 {%- assign ar_sub = 'See it at true size with your phone camera' -%}
 {%- assign ar_title = 'See it on your wall' -%}
 {%- assign ar_cta = 'Place it on my wall' -%}
-{%- assign ar_desktop_note = 'Open this page on your phone to place this mosaic on your own wall at true size.' -%}
+{%- assign ar_desktop_note = 'Scan with your phone camera to see this mosaic on your own wall, at true size.' -%}
 {%- assign ar_unsupported_note = 'Your device does not support AR. You can still rotate and zoom the 3D preview.' -%}
 {%- assign ar_disclaimer = 'Preview only — natural stone and glass shimmer, texture and colour variation look richer in person.' -%}
 
@@ -42,6 +42,10 @@
     .pdp-ar__cta[hidden], .pdp-ar__note[hidden] { display: none; }
     .pdp-ar__note { font-size: 13.5px; margin: 0; }
     .pdp-ar__disclaimer { font-size: 12px; color: var(--color-text-soft); margin: 0; }
+    .pdp-ar__qrrow { display: flex; align-items: center; gap: 18px; }
+    .pdp-ar__qr { width: 128px; height: 128px; flex-shrink: 0; background: #fff; border: 1px solid var(--color-line); padding: 4px; }
+    .pdp-ar__qr[hidden] { display: none; }
+    .pdp-ar__qr svg { width: 100%; height: 100%; display: block; }
   </style>
 
   <button type="button" class="pdp-ar__btn" data-ar-open aria-haspopup="dialog">
@@ -65,7 +69,7 @@
     </div>
     <div class="pdp-ar__foot">
       <button type="button" class="pdp-ar__cta" data-ar-activate hidden>{{ ar_cta }}</button>
-      <p class="pdp-ar__note" data-ar-note hidden></p>
+      <div class="pdp-ar__qrrow"><div class="pdp-ar__qr" data-ar-qr role="img" hidden></div><p class="pdp-ar__note" data-ar-note hidden></p></div>
       <p class="pdp-ar__disclaimer">{{ ar_disclaimer }}</p>
     </div>
   </dialog>
@@ -100,6 +104,24 @@
     var MV_SRC = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js';
     var mvReady = null, viewer = null, lastUrl = null;
     var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    var qrEl = dialog.querySelector('[data-ar-qr]'), qrLib = null;
+    function showQR() {
+      var input = document.querySelector('[data-variant-input]');
+      var url = location.origin + location.pathname + '?ar=wall' + (input ? '&variant=' + input.value : '');
+      if (!qrLib) qrLib = new Promise(function (res, rej) {
+        if (window.qrcode) return res();
+        var s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js';
+        s.onload = res; s.onerror = rej;
+        document.head.appendChild(s);
+      });
+      qrLib.then(function () {
+        var q = qrcode(0, 'M'); q.addData(url); q.make();
+        qrEl.innerHTML = q.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
+        qrEl.setAttribute('aria-label', 'QR code to open this mosaic on your phone');
+        qrEl.hidden = false;
+      }).catch(function () {});
+    }
 
     function loadModelViewer() {
       if (mvReady) return mvReady;
@@ -183,7 +205,7 @@
       var size = currentSize();
       if (!size) return;
       sizeEl.textContent = size.label;
-      cta.hidden = true; note.hidden = true; loading.hidden = false; loading.textContent = 'Loading preview…';
+      cta.hidden = true; note.hidden = true; qrEl.hidden = true; loading.hidden = false; loading.textContent = 'Loading preview…';
       if (typeof dialog.showModal === 'function') dialog.showModal(); else dialog.setAttribute('open', '');
       loadModelViewer().then(function () {
         if (!viewer) {
@@ -205,7 +227,7 @@
           viewer.addEventListener('load', function () {
             loading.hidden = true;
             if (viewer.canActivateAR) { cta.hidden = false; note.hidden = true; }
-            else { note.textContent = isMobile ? cfg.unsupportedNote : cfg.desktopNote; note.hidden = false; }
+            else { note.textContent = isMobile ? cfg.unsupportedNote : cfg.desktopNote; note.hidden = false; if (!isMobile) showQR(); }
           });
           viewer.addEventListener('error', function () { loading.textContent = 'Preview unavailable'; });
           stage.appendChild(viewer);
@@ -218,6 +240,7 @@
     dialog.querySelector('[data-ar-close]').addEventListener('click', function () { dialog.close(); });
     dialog.addEventListener('click', function (e) { if (e.target === dialog) dialog.close(); });
     cta.addEventListener('click', function () { if (viewer) viewer.activateAR(); });
+    if (new URLSearchParams(location.search).get('ar') === 'wall') open();
   })();
   </script>
 {%- endif -%}
