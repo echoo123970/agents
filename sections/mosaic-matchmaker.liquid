@@ -26,9 +26,9 @@
   .mm-intro { display: grid; grid-template-columns: 1fr 1.05fr; gap: 64px; align-items: center; min-height: calc(100vh - 260px); }
   .mm-intro__cta { margin-top: 38px; display: flex; gap: 14px; flex-wrap: wrap; }
   .mm-collage { display: grid; grid-template-columns: 1.15fr 1fr; grid-template-rows: 1fr 1fr; gap: 14px; height: min(68vh, 620px); }
-  .mm-collage__item { overflow: hidden; background: #fff; }
+  .mm-collage__item { overflow: hidden; background: #fff; display: flex; align-items: center; justify-content: center; }
   .mm-collage__item:first-child { grid-row: 1 / 3; }
-  .mm-collage__item img { width: 100%; height: 100%; object-fit: cover; }
+  .mm-collage__item img { width: 100%; height: 100%; object-fit: contain; padding: 14px; }
 
   .mm-q__top { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 26px; }
   .mm-back { background: none; border: none; padding: 6px 0; cursor: pointer; font-family: var(--font-body); font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--color-text-soft); display: inline-flex; align-items: center; gap: 8px; }
@@ -46,8 +46,8 @@
   .mm-tile:focus { outline: none; }
   .mm-tile:focus-visible { outline: 2px solid var(--color-navy); outline-offset: 3px; }
   .mm-tile[aria-pressed="true"] { border-color: var(--color-navy); box-shadow: inset 0 0 0 2px var(--color-navy); }
-  .mm-tile__media { display: block; aspect-ratio: 4/3; overflow: hidden; background: var(--color-panel); }
-  .mm-tile__img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+  .mm-tile__media { display: block; aspect-ratio: 1/1; overflow: hidden; background: #fff; border-bottom: 1px solid var(--color-line); }
+  .mm-tile__img { width: 100%; height: 100%; object-fit: contain; padding: 12px; transition: transform .6s cubic-bezier(.2,.7,.2,1); }
   .mm-tile:hover .mm-tile__img { transform: scale(1.06); }
   .mm-tile__text { display: flex; flex-direction: column; gap: 4px; padding: 16px 18px 18px; }
   .mm-tile__label { font-size: 15.5px; font-weight: 600; line-height: 1.3; }
@@ -221,10 +221,10 @@
     <div class="mm-q__top"><button type="button" class="mm-back" data-mm-back>&larr; Back</button><span class="mm-count">Question 3 of 6</span></div>
     <h2 class="mm-q__title" tabindex="-1">Which colour mood suits your space?</h2>
     <div class="mm-grid">
-      {% render 'mm-tile', q: 'colour', v: 'warm', label: 'Warm golds & earth', sub: 'Gold, amber, terracotta', swatch: 'mm-sw--warm' %}
-      {% render 'mm-tile', q: 'colour', v: 'cool', label: 'Cool blues & greens', sub: 'Sea, sky, sage', swatch: 'mm-sw--cool' %}
-      {% render 'mm-tile', q: 'colour', v: 'bright', label: 'Bright & colourful', sub: 'Bold, joyful, vivid', swatch: 'mm-sw--bright' %}
-      {% render 'mm-tile', q: 'colour', v: 'neutral', label: 'Black, white & neutral', sub: 'Calm, classic, minimal', swatch: 'mm-sw--neutral' %}
+      {% render 'mm-tile', q: 'colour', v: 'warm', label: 'Warm golds & earth', sub: 'Gold, amber, terracotta', swatch: 'mm-sw--warm', prod_handle: 'glass-mosaic-tile-glass-mosaic-art-the-kiss-by-gustav-klimt' %}
+      {% render 'mm-tile', q: 'colour', v: 'cool', label: 'Cool blues & greens', sub: 'Sea, sky, sage', swatch: 'mm-sw--cool', prod_handle: 'glass-mosaic-tile-wall-art-glass-mosaic-ocean-mosaic-scene' %}
+      {% render 'mm-tile', q: 'colour', v: 'bright', label: 'Bright & colourful', sub: 'Bold, joyful, vivid', swatch: 'mm-sw--bright', prod_handle: 'watercolor-peacock-feather-wall-art-modern-mosaic-creation' %}
+      {% render 'mm-tile', q: 'colour', v: 'neutral', label: 'Black, white & neutral', sub: 'Calm, classic, minimal', swatch: 'mm-sw--neutral', prod_handle: 'abstract-glass-white-and-black-mosaic-mural' %}
     </div>
   </div>
 
@@ -238,10 +238,10 @@
       {%- capture i_m -%}<svg width="70" height="60" viewBox="0 0 70 60" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="21" y="14" width="28" height="28"/><line x1="4" y1="56" x2="66" y2="56"/></svg>{%- endcapture -%}
       {%- capture i_l -%}<svg width="70" height="60" viewBox="0 0 70 60" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="12" y="6" width="46" height="42"/><line x1="4" y1="56" x2="66" y2="56"/></svg>{%- endcapture -%}
       {%- capture i_c -%}<svg width="70" height="60" viewBox="0 0 70 60" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="14" y="10" width="42" height="36" stroke-dasharray="4 3"/><path d="M35 20v16M27 28h16"/><line x1="4" y1="56" x2="66" y2="56"/></svg>{%- endcapture -%}
-      {% render 'mm-tile', q: 'size', v: 'small', label: 'Small', sub: 'Under 70 cm / 28″', icon: i_s %}
-      {% render 'mm-tile', q: 'size', v: 'medium', label: 'Medium', sub: '70–120 cm / 28–47″', icon: i_m %}
-      {% render 'mm-tile', q: 'size', v: 'large', label: 'Large statement', sub: 'Over 120 cm / 47″', icon: i_l %}
-      {% render 'mm-tile', q: 'size', v: 'custom', label: 'I need a custom size', sub: 'Made to your exact measurements', icon: i_c %}
+      {% render 'mm-tile', q: 'size', v: 'small', label: 'Small', sub: 'Under 70 cm / 28″', prod_handle: 'landscape-mosaics-mosaic-tree-medallion-art' %}
+      {% render 'mm-tile', q: 'size', v: 'medium', label: 'Medium', sub: '70–120 cm / 28–47″', prod_handle: 'religious-mosaics-virgin-mary-jesus-mosaic-art' %}
+      {% render 'mm-tile', q: 'size', v: 'large', label: 'Large statement', sub: 'Over 120 cm / 47″', prod_handle: 'religious-mosaics-last-supper-mosaic-leonardo-da-vinci-reproduction' %}
+      {% render 'mm-tile', q: 'size', v: 'custom', label: 'I need a custom size', sub: 'Made to your exact measurements', asset_file: 'custom-flower-vase-room.jpg' %}
     </div>
   </div>
 
@@ -250,10 +250,10 @@
     <div class="mm-q__top"><button type="button" class="mm-back" data-mm-back>&larr; Back</button><span class="mm-count">Question 5 of 6</span></div>
     <h2 class="mm-q__title" tabindex="-1">What budget do you have in mind?</h2>
     <div class="mm-grid">
-      {% render 'mm-tile', q: 'budget', v: 'b1', label: 'Under $1,000', icon: '<span style="font-family:var(--font-display);font-size:34px">$</span>' %}
-      {% render 'mm-tile', q: 'budget', v: 'b2', label: '$1,000 – $2,000', icon: '<span style="font-family:var(--font-display);font-size:34px">$$</span>' %}
-      {% render 'mm-tile', q: 'budget', v: 'b3', label: '$2,000 – $3,500', icon: '<span style="font-family:var(--font-display);font-size:34px">$$$</span>' %}
-      {% render 'mm-tile', q: 'budget', v: 'b4', label: '$3,500 and above', icon: '<span style="font-family:var(--font-display);font-size:34px">$$$$</span>' %}
+      {% render 'mm-tile', q: 'budget', v: 'b1', label: 'Under $1,000', sub: 'Accent pieces & medallions', prod_handle: 'flower-mosaics-flower-mosaic-art-simple-flower-mosaic-design' %}
+      {% render 'mm-tile', q: 'budget', v: 'b2', label: '$1,000 – $2,000', sub: 'Feature walls & portraits', prod_handle: 'bird-mosaics-peacock-wall-art-handmade-mosaic-art' %}
+      {% render 'mm-tile', q: 'budget', v: 'b3', label: '$2,000 – $3,500', sub: 'Large statement murals', prod_handle: 'two-parrots-in-love-mosaic-glass-mural' %}
+      {% render 'mm-tile', q: 'budget', v: 'b4', label: '$3,500 and above', sub: 'Grand masterpieces', prod_handle: 'portrait-mosaics-mosaic-portrait-mona-lisa-by-leonardo-da-vinci-mosaic-reproduction' %}
     </div>
   </div>
 
@@ -264,7 +264,7 @@
     <div class="mm-grid mm-grid--3">
       {% render 'mm-tile', q: 'material', v: 'glass', label: 'Glass', sub: 'Luminous, vivid colour', handle: 'glass-mosaic-art' %}
       {% render 'mm-tile', q: 'material', v: 'stone', label: 'Natural stone & marble', sub: 'Timeless, earthy texture', handle: 'roman-mosaics' %}
-      {% render 'mm-tile', q: 'material', v: 'any', label: 'No preference', sub: 'Show me the best of both', handle: 'featured-mosaics' %}
+      {% render 'mm-tile', q: 'material', v: 'any', label: 'No preference', sub: 'Show me the best of both', handle: 'best-sellers' %}
     </div>
   </div>
 
@@ -302,8 +302,8 @@
           <input type="text" id="MmName" name="contact[name]" placeholder="Your name" autocomplete="name">
           <label class="visually-hidden" for="MmEmail">Email</label>
           <input type="email" id="MmEmail" name="contact[email]" placeholder="Your email" autocomplete="email" required>
-          <label class="visually-hidden" for="MmPhone">Phone or WhatsApp (optional)</label>
-          <input type="tel" id="MmPhone" class="mm-form__full" name="contact[phone]" placeholder="Phone or WhatsApp (optional)" autocomplete="tel">
+          <label class="visually-hidden" for="MmPhone">Phone (optional)</label>
+          <input type="tel" id="MmPhone" class="mm-form__full" name="contact[phone]" placeholder="Phone (optional)" autocomplete="tel">
           <button type="submit">{{ section.settings.lead_button }}</button>
         {%- endform -%}
       </div>

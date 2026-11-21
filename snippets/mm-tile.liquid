@@ -1,14 +1,24 @@
 {%- comment -%}
   Mosaic Matchmaker answer tile.
-  Params: q (question id), v (value), label, sub (optional), handle (collection for photo, optional), swatch (optional CSS class), icon (optional svg)
+  Params: q (question id), v (value), label, sub (optional),
+  handle (collection photo) | prod_handle (product photo) | asset_file (theme asset image),
+  swatch (optional colour strip class), icon (optional svg, used when there is no photo)
 {%- endcomment -%}
-<button type="button" class="mm-tile{% if handle != blank %} mm-tile--photo{% endif %}" data-mm-answer data-q="{{ q }}" data-v="{{ v }}" aria-pressed="false">
-  {%- if handle != blank -%}
-    {%- assign mm_c = collections[handle] -%}
-    {%- assign mm_img = mm_c.image | default: mm_c.products.first.featured_image -%}
-    <span class="mm-tile__media">
-      {%- if mm_img -%}{{ mm_img | image_url: width: 520 | image_tag: loading: 'lazy', alt: '', class: 'mm-tile__img', sizes: '(max-width: 749px) 50vw, 22vw' }}{%- endif -%}
-    </span>
+{%- assign mm_img = nil -%}
+{%- assign mm_asset = nil -%}
+{%- if prod_handle != blank -%}
+  {%- assign mm_img = all_products[prod_handle].featured_image -%}
+{%- elsif asset_file != blank -%}
+  {%- assign mm_asset = asset_file -%}
+{%- elsif handle != blank -%}
+  {%- assign mm_c = collections[handle] -%}
+  {%- assign mm_img = mm_c.image | default: mm_c.products.first.featured_image -%}
+{%- endif -%}
+<button type="button" class="mm-tile{% if mm_img or mm_asset %} mm-tile--photo{% endif %}" data-mm-answer data-q="{{ q }}" data-v="{{ v }}" aria-pressed="false">
+  {%- if mm_img -%}
+    <span class="mm-tile__media">{{ mm_img | image_url: width: 520 | image_tag: loading: 'lazy', alt: '', class: 'mm-tile__img', sizes: '(max-width: 749px) 50vw, 22vw' }}</span>
+  {%- elsif mm_asset -%}
+    <span class="mm-tile__media"><img src="{{ mm_asset | asset_img_url: '600x' }}" alt="" loading="lazy" class="mm-tile__img" width="600" height="450"></span>
   {%- elsif swatch != blank -%}
     <span class="mm-tile__swatch {{ swatch }}" aria-hidden="true"></span>
   {%- elsif icon != blank -%}
