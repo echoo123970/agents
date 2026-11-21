@@ -1,0 +1,223 @@
+{%- comment -%}
+  "View on your wall" — true-scale AR preview for mosaic products.
+  Reads the selected size from the variant title (e.g. "117cm x 156cm (47" x 62")"),
+  builds a flat panel at that exact size with the product photo, and opens it in
+  AR on phones (iOS Quick Look / Android WebXR) or as a 3D preview on desktop.
+{%- endcomment -%}
+{%- assign ar_label = 'View on your wall' -%}
+{%- assign ar_sub = 'See it at true size with your phone camera' -%}
+{%- assign ar_title = 'See it on your wall' -%}
+{%- assign ar_cta = 'Place it on my wall' -%}
+{%- assign ar_desktop_note = 'Open this page on your phone to place this mosaic on your own wall at true size.' -%}
+{%- assign ar_unsupported_note = 'Your device does not support AR. You can still rotate and zoom the 3D preview.' -%}
+{%- assign ar_disclaimer = 'Preview only — natural stone and glass shimmer, texture and colour variation look richer in person.' -%}
+
+{%- assign ar_has_cm = false -%}
+{%- for v in product.variants -%}
+  {%- assign vt = v.title | downcase -%}
+  {%- if vt contains 'cm x' or vt contains 'cm ×' -%}{%- assign ar_has_cm = true -%}{%- endif -%}
+{%- endfor -%}
+
+{%- if ar_has_cm and product.featured_media.preview_image -%}
+  {%- assign ar_img = product.featured_media.preview_image -%}
+  <style>
+    .pdp-ar__btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; background: var(--color-navy); color: #fff; border: 1px solid var(--color-navy); font-family: var(--font-body); padding: 13px 18px; cursor: pointer; margin: 0 0 12px; transition: background .2s ease; text-align: left; }
+    .pdp-ar__btn:hover { background: var(--color-blue); border-color: var(--color-blue); }
+    .pdp-ar__btn svg { flex-shrink: 0; }
+    .pdp-ar__btn-text { display: flex; flex-direction: column; gap: 2px; }
+    .pdp-ar__btn-label { font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase; font-weight: 600; }
+    .pdp-ar__btn-sub { font-size: 12px; opacity: .75; letter-spacing: .02em; }
+    .pdp-ar__dialog { border: none; padding: 0; width: min(760px, 94vw); max-height: 92vh; background: #fff; color: var(--color-navy); }
+    .pdp-ar__dialog::backdrop { background: rgba(14, 30, 56, .6); }
+    .pdp-ar__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 20px 22px 12px; }
+    .pdp-ar__title { font-family: var(--font-display); font-size: 26px; line-height: 1.15; margin: 0; }
+    .pdp-ar__size { font-size: 13px; color: var(--color-text-soft); margin-top: 4px; }
+    .pdp-ar__close { background: none; border: none; font-size: 28px; line-height: 1; cursor: pointer; color: var(--color-navy); padding: 4px 8px; }
+    .pdp-ar__stage { position: relative; height: min(58vh, 480px); background: var(--color-panel); }
+    .pdp-ar__stage model-viewer { width: 100%; height: 100%; }
+    .pdp-ar__loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--color-text-soft); pointer-events: none; }
+    .pdp-ar__loading[hidden] { display: none; }
+    .pdp-ar__foot { padding: 16px 22px 22px; display: flex; flex-direction: column; gap: 10px; }
+    .pdp-ar__cta { width: 100%; background: var(--color-blue); color: #fff; border: none; padding: 16px; font-family: var(--font-body); font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; }
+    .pdp-ar__cta[hidden], .pdp-ar__note[hidden] { display: none; }
+    .pdp-ar__note { font-size: 13.5px; margin: 0; }
+    .pdp-ar__disclaimer { font-size: 12px; color: var(--color-text-soft); margin: 0; }
+  </style>
+
+  <button type="button" class="pdp-ar__btn" data-ar-open aria-haspopup="dialog">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V4.5A1.5 1.5 0 0 1 4.5 3H7"/><path d="M17 3h2.5A1.5 1.5 0 0 1 21 4.5V7"/><path d="M21 17v2.5a1.5 1.5 0 0 1-1.5 1.5H17"/><path d="M7 21H4.5A1.5 1.5 0 0 1 3 19.5V17"/><rect x="7.5" y="7" width="9" height="10" rx=".5"/><path d="M7.5 14l2.6-2.6 2.2 2.2 1.6-1.6 2.6 2.6"/></svg>
+    <span class="pdp-ar__btn-text">
+      <span class="pdp-ar__btn-label">{{ ar_label }}</span>
+      <span class="pdp-ar__btn-sub">{{ ar_sub }}</span>
+    </span>
+  </button>
+
+  <dialog class="pdp-ar__dialog" data-ar-dialog aria-labelledby="PdpArTitle">
+    <div class="pdp-ar__head">
+      <div>
+        <h2 class="pdp-ar__title" id="PdpArTitle">{{ ar_title }}</h2>
+        <div class="pdp-ar__size" data-ar-size></div>
+      </div>
+      <button type="button" class="pdp-ar__close" data-ar-close aria-label="Close">&times;</button>
+    </div>
+    <div class="pdp-ar__stage" data-ar-stage>
+      <div class="pdp-ar__loading" data-ar-loading>Loading preview…</div>
+    </div>
+    <div class="pdp-ar__foot">
+      <button type="button" class="pdp-ar__cta" data-ar-activate hidden>{{ ar_cta }}</button>
+      <p class="pdp-ar__note" data-ar-note hidden></p>
+      <p class="pdp-ar__disclaimer">{{ ar_disclaimer }}</p>
+    </div>
+  </dialog>
+
+  <script type="application/json" data-ar-config>
+    {
+      "image": {{ ar_img | image_url: width: 2048 | prepend: 'https:' | json }},
+      "imageWidth": {{ ar_img.width | json }},
+      "imageHeight": {{ ar_img.height | json }},
+      "alt": {{ product.title | json }},
+      "variants": {
+        {%- for v in product.variants -%}
+          {{ v.id | append: '' | json }}: {{ v.title | json }}{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      },
+      "desktopNote": {{ ar_desktop_note | json }},
+      "unsupportedNote": {{ ar_unsupported_note | json }}
+    }
+  </script>
+
+  <script>
+  (function () {
+    var cfgEl = document.querySelector('[data-ar-config]');
+    if (!cfgEl) return;
+    var cfg = JSON.parse(cfgEl.textContent);
+    var dialog = document.querySelector('[data-ar-dialog]');
+    var stage = dialog.querySelector('[data-ar-stage]');
+    var loading = dialog.querySelector('[data-ar-loading]');
+    var sizeEl = dialog.querySelector('[data-ar-size]');
+    var cta = dialog.querySelector('[data-ar-activate]');
+    var note = dialog.querySelector('[data-ar-note]');
+    var MV_SRC = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js';
+    var mvReady = null, viewer = null, lastUrl = null;
+    var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+    function loadModelViewer() {
+      if (mvReady) return mvReady;
+      mvReady = new Promise(function (resolve, reject) {
+        if (window.customElements && customElements.get('model-viewer')) return resolve();
+        var s = document.createElement('script');
+        s.type = 'module'; s.src = MV_SRC;
+        s.onload = function () { customElements.whenDefined('model-viewer').then(resolve); };
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+      return mvReady;
+    }
+
+    function currentSize() {
+      var input = document.querySelector('[data-variant-input]');
+      var title = input ? cfg.variants[String(input.value)] : null;
+      if (!title) { for (var key in cfg.variants) { title = cfg.variants[key]; break; } }
+      var m = /([\d.]+)\s*cm\s*[x×]\s*([\d.]+)\s*cm/i.exec(title || '');
+      if (!m) return null;
+      var inch = /\(([^)]*)\)/.exec(title);
+      return { w: parseFloat(m[1]) / 100, h: parseFloat(m[2]) / 100, label: (inch ? inch[1] + ' — ' : '') + m[1] + ' × ' + m[2] + ' cm' };
+    }
+
+    // True-scale mosaic panel (1.5 cm deep) as glTF; photo cropped to the panel's proportions.
+    function buildModel(w, h) {
+      var d = 0.015, x0 = -w / 2, x1 = w / 2, y0 = 0, y1 = h, zf = 0, zb = -d;
+      var imgA = cfg.imageWidth / cfg.imageHeight, panA = w / h, u0 = 0, u1 = 1, v0 = 0, v1 = 1;
+      if (imgA > panA) { var cu = panA / imgA; u0 = (1 - cu) / 2; u1 = u0 + cu; }
+      else { var cv = imgA / panA; v0 = (1 - cv) / 2; v1 = v0 + cv; }
+      var P = [], N = [], T = [];
+      function quad(a, b, c, e, n, uv) { [a, b, c, e].forEach(function (p, i) { P.push(p[0], p[1], p[2]); N.push(n[0], n[1], n[2]); T.push(uv ? uv[i][0] : 0, uv ? uv[i][1] : 0); }); }
+      quad([x0,y0,zf],[x1,y0,zf],[x1,y1,zf],[x0,y1,zf],[0,0,1],[[u0,v1],[u1,v1],[u1,v0],[u0,v0]]);
+      quad([x1,y0,zb],[x0,y0,zb],[x0,y1,zb],[x1,y1,zb],[0,0,-1]);
+      quad([x1,y0,zf],[x1,y0,zb],[x1,y1,zb],[x1,y1,zf],[1,0,0]);
+      quad([x0,y0,zb],[x0,y0,zf],[x0,y1,zf],[x0,y1,zb],[-1,0,0]);
+      quad([x0,y1,zf],[x1,y1,zf],[x1,y1,zb],[x0,y1,zb],[0,1,0]);
+      quad([x0,y0,zb],[x1,y0,zb],[x1,y0,zf],[x0,y0,zf],[0,-1,0]);
+      var I = [];
+      for (var q = 0; q < 6; q++) { var b = q * 4; I.push(b, b + 1, b + 2, b, b + 2, b + 3); }
+      var buf = new ArrayBuffer(840), dv = new DataView(buf);
+      P.forEach(function (v, i) { dv.setFloat32(i * 4, v, true); });
+      N.forEach(function (v, i) { dv.setFloat32(288 + i * 4, v, true); });
+      T.forEach(function (v, i) { dv.setFloat32(576 + i * 4, v, true); });
+      I.forEach(function (v, i) { dv.setUint16(768 + i * 2, v, true); });
+      var bytes = new Uint8Array(buf), bin = '';
+      for (var k = 0; k < bytes.length; k++) bin += String.fromCharCode(bytes[k]);
+      var attrs = { POSITION: 0, NORMAL: 1, TEXCOORD_0: 2 };
+      var gltf = {
+        asset: { version: '2.0', generator: 'iMosaicArt AR' },
+        scene: 0, scenes: [{ nodes: [0] }], nodes: [{ mesh: 0, name: 'Mosaic' }],
+        meshes: [{ primitives: [{ attributes: attrs, indices: 3, material: 0 }, { attributes: attrs, indices: 4, material: 1 }] }],
+        materials: [
+          { name: 'Mosaic', pbrMetallicRoughness: { baseColorTexture: { index: 0 }, metallicFactor: 0, roughnessFactor: 0.55 } },
+          { name: 'Edge', pbrMetallicRoughness: { baseColorFactor: [0.80, 0.78, 0.74, 1], metallicFactor: 0, roughnessFactor: 0.9 } }
+        ],
+        textures: [{ source: 0, sampler: 0 }],
+        samplers: [{ magFilter: 9729, minFilter: 9987, wrapS: 33071, wrapT: 33071 }],
+        images: [{ uri: cfg.image }],
+        buffers: [{ byteLength: 840, uri: 'data:application/octet-stream;base64,' + btoa(bin) }],
+        bufferViews: [
+          { buffer: 0, byteOffset: 0, byteLength: 288, target: 34962 },
+          { buffer: 0, byteOffset: 288, byteLength: 288, target: 34962 },
+          { buffer: 0, byteOffset: 576, byteLength: 192, target: 34962 },
+          { buffer: 0, byteOffset: 768, byteLength: 72, target: 34963 }
+        ],
+        accessors: [
+          { bufferView: 0, componentType: 5126, count: 24, type: 'VEC3', min: [x0, y0, zb], max: [x1, y1, zf] },
+          { bufferView: 1, componentType: 5126, count: 24, type: 'VEC3' },
+          { bufferView: 2, componentType: 5126, count: 24, type: 'VEC2' },
+          { bufferView: 3, byteOffset: 0, componentType: 5123, count: 6, type: 'SCALAR' },
+          { bufferView: 3, byteOffset: 12, componentType: 5123, count: 30, type: 'SCALAR' }
+        ]
+      };
+      if (lastUrl) URL.revokeObjectURL(lastUrl);
+      lastUrl = URL.createObjectURL(new Blob([JSON.stringify(gltf)], { type: 'model/gltf+json' }));
+      return lastUrl;
+    }
+
+    function open() {
+      var size = currentSize();
+      if (!size) return;
+      sizeEl.textContent = size.label;
+      cta.hidden = true; note.hidden = true; loading.hidden = false; loading.textContent = 'Loading preview…';
+      if (typeof dialog.showModal === 'function') dialog.showModal(); else dialog.setAttribute('open', '');
+      loadModelViewer().then(function () {
+        if (!viewer) {
+          viewer = document.createElement('model-viewer');
+          viewer.setAttribute('ar', '');
+          viewer.setAttribute('ar-modes', 'webxr quick-look');
+          viewer.setAttribute('ar-placement', 'wall');
+          viewer.setAttribute('ar-scale', 'fixed');
+          viewer.setAttribute('camera-controls', '');
+          viewer.setAttribute('touch-action', 'pan-y');
+          viewer.setAttribute('shadow-intensity', '0.6');
+          viewer.setAttribute('environment-image', 'neutral');
+          viewer.setAttribute('camera-orbit', '0deg 85deg auto');
+          viewer.setAttribute('interaction-prompt', 'none');
+          viewer.setAttribute('alt', cfg.alt + ' — 3D preview');
+          var hiddenBtn = document.createElement('span');
+          hiddenBtn.slot = 'ar-button'; hiddenBtn.style.display = 'none';
+          viewer.appendChild(hiddenBtn);
+          viewer.addEventListener('load', function () {
+            loading.hidden = true;
+            if (viewer.canActivateAR) { cta.hidden = false; note.hidden = true; }
+            else { note.textContent = isMobile ? cfg.unsupportedNote : cfg.desktopNote; note.hidden = false; }
+          });
+          viewer.addEventListener('error', function () { loading.textContent = 'Preview unavailable'; });
+          stage.appendChild(viewer);
+        }
+        viewer.src = buildModel(size.w, size.h);
+      }).catch(function () { loading.textContent = 'Preview unavailable'; });
+    }
+
+    document.querySelector('[data-ar-open]').addEventListener('click', open);
+    dialog.querySelector('[data-ar-close]').addEventListener('click', function () { dialog.close(); });
+    dialog.addEventListener('click', function (e) { if (e.target === dialog) dialog.close(); });
+    cta.addEventListener('click', function () { if (viewer) viewer.activateAR(); });
+  })();
+  </script>
+{%- endif -%}
