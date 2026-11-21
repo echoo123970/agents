@@ -26,9 +26,9 @@
   .mm-intro { display: grid; grid-template-columns: 1fr 1.05fr; gap: 64px; align-items: center; min-height: calc(100vh - 260px); }
   .mm-intro__cta { margin-top: 38px; display: flex; gap: 14px; flex-wrap: wrap; }
   .mm-collage { display: grid; grid-template-columns: 1.15fr 1fr; grid-template-rows: 1fr 1fr; gap: 14px; height: min(68vh, 620px); }
-  .mm-collage__item { overflow: hidden; background: #fff; display: flex; align-items: center; justify-content: center; }
+  .mm-collage__item { overflow: hidden; background: #fff; }
   .mm-collage__item:first-child { grid-row: 1 / 3; }
-  .mm-collage__item img { width: 100%; height: 100%; object-fit: contain; padding: 14px; }
+  .mm-collage__item img { width: 100%; height: 100%; object-fit: cover; }
 
   .mm-q__top { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 26px; }
   .mm-back { background: none; border: none; padding: 6px 0; cursor: pointer; font-family: var(--font-body); font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--color-text-soft); display: inline-flex; align-items: center; gap: 8px; }
@@ -38,6 +38,7 @@
   .mm-q__hint { font-size: 15px; color: var(--color-text-muted); margin-top: 12px; }
   .mm-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 38px; }
   .mm-grid--5 { grid-template-columns: repeat(5, 1fr); }
+  .mm-grid--6 { grid-template-columns: repeat(6, 1fr); gap: 14px; }
   .mm-grid--text { grid-template-columns: repeat(4, 1fr); }
   .mm-grid--3 { grid-template-columns: repeat(3, 1fr); }
 
@@ -120,14 +121,14 @@
   @media (max-width: 990px) {
     .mm-intro { grid-template-columns: 1fr; gap: 40px; min-height: 0; }
     .mm-collage { height: 420px; }
-    .mm-grid, .mm-grid--5, .mm-grid--text { grid-template-columns: repeat(3, 1fr); }
+    .mm-grid, .mm-grid--5, .mm-grid--6, .mm-grid--text { grid-template-columns: repeat(3, 1fr); }
     .mm-cards { grid-template-columns: repeat(2, 1fr); }
     .mm-lead-panel { grid-template-columns: 1fr; }
   }
   @media (max-width: 600px) {
     .mm__screen { padding-top: 32px; padding-bottom: 56px; }
     .mm-collage { height: 300px; gap: 8px; }
-    .mm-grid, .mm-grid--5, .mm-grid--text, .mm-grid--3 { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 26px; }
+    .mm-grid, .mm-grid--5, .mm-grid--6, .mm-grid--text, .mm-grid--3 { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 26px; }
     .mm-tile__text { padding: 12px 12px 14px; }
     .mm-tile__label { font-size: 14px; }
     .mm-tile__sub { font-size: 12px; }
@@ -191,11 +192,12 @@
   <div class="mm__screen page-width" data-step="placement">
     <div class="mm-q__top"><button type="button" class="mm-back" data-mm-back>&larr; Back</button><span class="mm-count">Question 1 of 6</span></div>
     <h2 class="mm-q__title" tabindex="-1">Where will your mosaic live?</h2>
-    <div class="mm-grid mm-grid--5">
+    <div class="mm-grid mm-grid--6">
       {% render 'mm-tile', q: 'placement', v: 'wall', label: 'On a wall', sub: 'Living room, hall, bedroom', handle: 'portrait-mosaics' %}
       {% render 'mm-tile', q: 'placement', v: 'floor', label: 'On the floor', sub: 'Medallions, rugs, entryways', handle: 'geometric-mosaics' %}
       {% render 'mm-tile', q: 'placement', v: 'backsplash', label: 'Kitchen backsplash', sub: 'Behind the stove or sink', handle: 'mosaic-tile-backsplash' %}
-      {% render 'mm-tile', q: 'placement', v: 'pool', label: 'Pool or bathroom', sub: 'Wet areas & outdoors', handle: 'nautical-mosaics' %}
+      {% render 'mm-tile', q: 'placement', v: 'pool', label: 'Swimming pool', sub: 'Pool floors, walls & steps', prod_handle: 'nautical-mosaics-swimming-pool-mosaics-underwater-scene-design' %}
+      {% render 'mm-tile', q: 'placement', v: 'bathroom', label: 'Bathroom & shower', sub: 'Shower walls, tub surrounds', prod_handle: 'bird-mosaics-glass-penguin-mosaic-bathroom-wall-decor-idea' %}
       {% render 'mm-tile', q: 'placement', v: 'table', label: 'Table top', sub: 'Dining, coffee & garden tables', handle: 'table-countertop-mosaics' %}
     </div>
   </div>
@@ -322,7 +324,7 @@
     "currency": {{ cart.currency.iso_code | json }},
     "locale": {{ request.locale.iso_code | json }},
     "labels": {
-      "placement": { "wall": "On a wall", "floor": "On the floor", "backsplash": "Kitchen backsplash", "pool": "Pool or bathroom", "table": "Table top" },
+      "placement": { "wall": "On a wall", "floor": "On the floor", "backsplash": "Kitchen backsplash", "pool": "Swimming pool", "bathroom": "Bathroom & shower", "table": "Table top" },
       "subject": { "nature": "Nature & trees", "flowers": "Flowers", "animals": "Birds & animals", "sea": "Sea & nautical", "religious": "Religious", "art": "Famous art & portraits", "geometric": "Geometric & patterns", "abstract": "Abstract & modern" },
       "colour": { "warm": "Warm golds & earth", "cool": "Cool blues & greens", "bright": "Bright & colourful", "neutral": "Black, white & neutral" },
       "size": { "small": "Small", "medium": "Medium", "large": "Large", "custom": "Custom size" },

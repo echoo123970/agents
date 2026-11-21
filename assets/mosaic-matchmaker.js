@@ -215,8 +215,12 @@
     } else if (place === 'table') {
       if (table[p.id] || /table/.test(t)) { sc += 4; reasons.unshift('made for table tops'); }
     } else if (place === 'pool') {
-      if (/pool|bath|shower/.test(t)) { sc += 4; reasons.unshift('suits pools & wet areas'); }
+      if (/pool/.test(t)) { sc += 4; reasons.unshift('designed for pools'); }
       else if (/sea|ocean|fish|koi|dolphin|turtle|wave|nautical|anchor|seahorse|mermaid/.test(t)) sc += 2;
+    } else if (place === 'bathroom') {
+      if (/bath|shower/.test(t)) { sc += 4; reasons.unshift('made for bathrooms'); }
+      else if (backsplash[p.id] || /backsplash/.test(t)) { sc += 2.5; reasons.unshift('great for wet walls'); }
+      else if (/sea|ocean|fish|koi|dolphin|turtle|wave|nautical|seahorse|shell|flower/.test(t)) sc += 1;
     } else if (place === 'wall') {
       if (!/rug|table|floor/.test(t) && !table[p.id]) sc += 1;
     }
