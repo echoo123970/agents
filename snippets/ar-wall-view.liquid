@@ -11,6 +11,7 @@
 {%- assign ar_cta_floor = 'Place it on my floor' -%}
 {%- assign ar_stage_label = 'View in your space' -%}
 {%- assign ar_send = 'Send us your wall photo' -%}
+{%- assign ar_send_floor = 'Send us your floor photo' -%}
 {%- assign ar_tip = 'Tip: while the mosaic is in place, take a screenshot. Then tap below to send it to us with your size and we will get back to you.' -%}
 {%- assign ar_desktop_note = 'Scan with your phone camera to see this mosaic on your own wall or floor, at true size.' -%}
 {%- assign ar_unsupported_note = 'Your device does not support AR. You can still rotate and zoom the 3D preview.' -%}
@@ -104,6 +105,8 @@
       },
       "ctaWall": {{ ar_cta | json }},
       "ctaFloor": {{ ar_cta_floor | json }},
+      "sendWall": {{ ar_send | json }},
+      "sendFloor": {{ ar_send_floor | json }},
       "desktopNote": {{ ar_desktop_note | json }},
       "unsupportedNote": {{ ar_unsupported_note | json }}
     }
@@ -128,7 +131,7 @@
     function setMode(m) {
       mode = m;
       modeBtns.forEach(function (b) { var on = b.getAttribute('data-ar-mode') === m; b.classList.toggle('is-active', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
-      cta.textContent = m === 'floor' ? cfg.ctaFloor : cfg.ctaWall;
+      cta.textContent = m === 'floor' ? cfg.ctaFloor : cfg.ctaWall; if (sendBtn) sendBtn.textContent = m === 'floor' ? cfg.sendFloor : cfg.sendWall;
       if (viewer) {
         viewer.setAttribute('ar-placement', m);
         viewer.setAttribute('camera-orbit', m === 'floor' ? '0deg 50deg auto' : '0deg 85deg auto');
