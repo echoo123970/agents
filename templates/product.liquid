@@ -266,6 +266,10 @@
         {%- assign svp = product.selected_or_first_available_variant.title | split: '(' -%}
         <span class="pdp__size-label" data-size-label>{%- if svp.size > 1 -%}{{ svp[1] | remove: ')' | strip }} ({{ svp[0] | strip }}){%- else -%}{{ product.selected_or_first_available_variant.title }}{%- endif -%}</span>
       </div>
+      {%- form 'product', product, class: 'pdp__installments', id: 'ProductInstallmentsForm' -%}
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-installments-variant-input>
+        {{ form | payment_terms }}
+      {%- endform -%}
       <p class="pdp__status"><span class="pdp__status-dot"></span>{{ availability_note }}</p>
 
       <a href="#quote-form" class="pdp__quote-banner">

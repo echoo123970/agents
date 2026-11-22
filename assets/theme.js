@@ -74,6 +74,8 @@
         root.querySelectorAll('[data-variant-picker] .size-btn').forEach(function (b) { b.classList.remove('is-active'); });
         btn.classList.add('is-active');
         if (variantInput) variantInput.value = btn.dataset.variantId;
+        var termsInput = root.querySelector('[data-installments-variant-input]');
+        if (termsInput) { termsInput.value = btn.dataset.variantId; termsInput.dispatchEvent(new Event('change', { bubbles: true })); }
         if (priceEl) priceEl.textContent = btn.dataset.variantPrice;
         if (sizeLabelEl) sizeLabelEl.textContent = btn.dataset.variantTitle;
       });
