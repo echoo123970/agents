@@ -10,6 +10,10 @@
   .hero__text { font-size: 17px; line-height: 1.7; color: var(--color-text-muted); max-width: 480px; margin-bottom: 38px; }
   .hero__ctas { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 46px; }
   .hero__btn { min-width: 286px; }
+  .hero__bf-eyebrow { margin-bottom: 26px; }
+  .hero__bf-tag { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 5px; padding: 10px 16px 11px; background: var(--color-navy-darker); color: #fff; line-height: 1; outline: 1px solid rgba(156,192,245,.45); outline-offset: -4px; -webkit-font-smoothing: antialiased; }
+  .hero__bf-tag small { font-size: 10px; font-weight: 600; letter-spacing: .26em; text-transform: uppercase; color: var(--color-blue-lighter); }
+  .hero__bf-tag b { font-family: var(--font-display); font-weight: 500; font-size: 22px; letter-spacing: .02em; }
   .hero__quiz { display: inline-flex; align-items: center; gap: 12px; margin: -26px 0 40px; font-size: 14.5px; color: var(--color-text-muted); flex-wrap: wrap; }
   .hero__quiz a { display: inline-flex; align-items: center; gap: 8px; color: var(--color-blue); font-weight: 600; letter-spacing: .02em; border-bottom: 1px solid currentColor; padding-bottom: 2px; transition: color .2s ease, gap .2s ease; }
   .hero__quiz a:hover { color: var(--color-navy); }
@@ -48,6 +52,7 @@
     .hero__media { order: 1; }
     .hero__stats { order: 2; }
     .hero__ctas { order: 3; }
+    .hero__bf-tag b { font-size: 18px; }
     .hero__quiz { order: 4; margin: 18px 0 0; justify-content: center; text-align: center; width: 100%; }
     .hero__frame .cover-img { object-position: center 8%; }
 
@@ -68,8 +73,9 @@
 <section class="hero page-width">
   <div class="hero__grid">
     <div class="hero__content">
+      <div class="hero__eyebrow hero__bf-eyebrow bf-only"><span class="hero__bf-tag"><small>{{ section.settings.bf_tag_small }}</small><b>{{ section.settings.bf_tag }}</b></span></div>
       {%- if section.settings.eyebrow != blank -%}
-        <div class="hero__eyebrow">
+        <div class="hero__eyebrow bf-hide">
           <span class="hero__eyebrow-rule"></span>
           <span class="hero__eyebrow-text">{{ section.settings.eyebrow }}</span>
         </div>
@@ -79,11 +85,12 @@
         <h1 class="hero__heading">{{ hero_heading }}</h1>
       {%- endif -%}
       {%- if section.settings.text != blank -%}
-        <p class="hero__text">{{ section.settings.text }}</p>
+        <p class="hero__text bf-hide">{{ section.settings.text }}</p>
+        <p class="hero__text bf-only">{{ section.settings.bf_text }}</p>
       {%- endif -%}
       <div class="hero__ctas">
         {%- if section.settings.button_label_1 != blank -%}
-          <a href="{{ section.settings.button_link_1 | default: routes.all_products_collection_url }}" class="btn btn--dark hero__btn">{{ section.settings.button_label_1 }}</a>
+          <a href="{{ section.settings.button_link_1 | default: routes.all_products_collection_url }}" class="btn btn--dark hero__btn"><span class="bf-hide">{{ section.settings.button_label_1 }}</span><span class="bf-inline">{{ section.settings.bf_button_label }}</span></a>
         {%- endif -%}
         {%- if section.settings.button_label_2 != blank -%}
           <a href="{{ section.settings.button_link_2 | default: '/pages/custom-mosaics' }}" class="btn btn--outline hero__btn">{{ section.settings.button_label_2 }}</a>
@@ -156,6 +163,11 @@
   "name": "Hero",
   "settings": [
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Mosaic Art Studio · Est. New York" },
+    { "type": "header", "content": "Black Friday (shows only during the sale)" },
+    { "type": "text", "id": "bf_tag_small", "label": "Sale tag small line", "default": "Black Friday" },
+    { "type": "text", "id": "bf_tag", "label": "Sale tag", "default": "25% Off Every Mosaic" },
+    { "type": "textarea", "id": "bf_text", "label": "Sale text", "default": "For one week only, every handcrafted piece is 25% off — bespoke designs, tailored to your space, with complimentary worldwide shipping." },
+    { "type": "text", "id": "bf_button_label", "label": "Sale button label", "default": "Shop the Sale" },
     { "type": "richtext", "id": "heading", "label": "Heading", "default": "<p>Handcrafted Natural Marble &amp; Glass Mosaics for <em>Luxury Interiors &amp; Outdoors.</em></p>" },
     { "type": "textarea", "id": "text", "label": "Text", "default": "Timeless, artisanal tile art hand-cut by master artisans — bespoke designs, tailored to your space, delivered worldwide with complimentary shipping." },
     { "type": "text", "id": "button_label_1", "label": "Button 1 label", "default": "Shop All Mosaics" },
