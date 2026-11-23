@@ -45,7 +45,7 @@
     {%- render 'article-countdown', end: section.settings.countdown_end, heading: section.settings.countdown_heading, note: section.settings.countdown_note, ended_text: section.settings.countdown_ended -%}
   {%- endif -%}
   {%- if article.image != blank -%}
-    <img src="{{ article.image | image_url: width: 1400 }}" alt="{{ article.image.alt | default: article.title | escape }}" width="1400" height="788" class="article__image">
+    <img src="{{ article.image | image_url: width: 1400 }}" alt="{{ article.image.alt | default: article.title | escape }}" width="1400" height="788" class="article__image"{% if article.metafields.custom.image_position != blank %} style="object-position: {{ article.metafields.custom.image_position | escape }};"{% endif %}>
   {%- endif -%}
   <div class="article__body rte">{{ article.content }}</div>
 </article>

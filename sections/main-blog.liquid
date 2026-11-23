@@ -141,7 +141,7 @@
       <a class="bj-feat post-card" href="{{ feat.url }}">
         <div class="bj-feat__media">
           {%- if feat.image != blank -%}
-            <img src="{{ feat.image | image_url: width: 900 }}" alt="{{ feat.title | escape }}" loading="lazy">
+            <img src="{{ feat.image | image_url: width: 900 }}" alt="{{ feat.title | escape }}" loading="lazy"{% if feat.metafields.custom.image_position != blank %} style="object-position: {{ feat.metafields.custom.image_position | escape }};"{% endif %}>
           {%- else -%}{{ 'image' | placeholder_svg_tag: 'bj-ph' }}{%- endif -%}
         </div>
         <div class="bj-feat__body">
@@ -164,7 +164,7 @@
         <a class="bj-card post-card" data-bj-item data-bj-cat="{% for t in article.tags %}{{ t | handleize }}{% unless forloop.last %} {% endunless %}{% endfor %}"{% if show_featured and forloop.first %} data-bj-first style="display:none"{% endif %} href="{{ article.url }}">
           <div class="bj-card__media">
             {%- if article.image != blank -%}
-              <img src="{{ article.image | image_url: width: 600 }}" alt="{{ article.image.alt | default: article.title | escape }}" loading="lazy">
+              <img src="{{ article.image | image_url: width: 600 }}" alt="{{ article.image.alt | default: article.title | escape }}" loading="lazy"{% if article.metafields.custom.image_position != blank %} style="object-position: {{ article.metafields.custom.image_position | escape }};"{% endif %}>
             {%- else -%}{{ 'image' | placeholder_svg_tag: 'bj-ph' }}{%- endif -%}
           </div>
           <div class="bj-meta">
