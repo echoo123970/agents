@@ -1,0 +1,55 @@
+{%- comment -%}
+  Black Friday 2026 schedule + countdown clock for the announcement bar.
+  Sale window: Mon Nov 23 12:01 AM ET → Mon Nov 30 11:59 PM ET, matching the BLACKFRIDAY25 automatic discount.
+  Outside the window nothing changes. Preview with ?bf=live, ?bf=last (last-day message), ?bf=off, ?bf=reset.
+{%- endcomment -%}
+<script>
+  (function () {
+    var START = Date.parse('2026-11-23T00:01:00-05:00');
+    var END = Date.parse('2026-12-01T00:00:00-05:00');
+    var mode = null;
+    try {
+      var q = new URLSearchParams(window.location.search).get('bf');
+      if (q === 'live' || q === 'last' || q === 'off') sessionStorage.setItem('bf2026', q);
+      if (q === 'reset') sessionStorage.removeItem('bf2026');
+      mode = sessionStorage.getItem('bf2026');
+    } catch (e) {}
+
+    function inWindow(t) { return t >= START && t < END; }
+    function active() {
+      if (mode === 'off') return false;
+      if (mode === 'live' || mode === 'last') return true;
+      return inWindow(Date.now());
+    }
+    function etDay() {
+      if (mode === 'last') return 30;
+      var t = Date.now();
+      if (!inWindow(t)) return 27;
+      return Math.max(27, new Date(t - 5 * 3600 * 1000).getUTCDate());
+    }
+    function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+    function render() {
+      var on = active();
+      document.documentElement.classList.toggle('bf-on', on);
+      if (!on) return;
+      var left = Math.max(0, END - Date.now());
+      var s = Math.floor(left / 1000);
+      var parts = { d: Math.floor(s / 86400), h: Math.floor(s % 86400 / 3600), m: Math.floor(s % 3600 / 60), s: s % 60 };
+      var els = document.querySelectorAll('[data-bf-unit]');
+      for (var i = 0; i < els.length; i++) els[i].textContent = pad(parts[els[i].getAttribute('data-bf-unit')]);
+      var day = '' + etDay();
+      els = document.querySelectorAll('[data-bf-days]');
+      for (i = 0; i < els.length; i++) els[i].hidden = (' ' + els[i].getAttribute('data-bf-days') + ' ').indexOf(' ' + day + ' ') === -1;
+    }
+
+    render();
+    document.addEventListener('DOMContentLoaded', render);
+    setInterval(render, 1000);
+  })();
+</script>
+<style>
+  .bf-only { display: none !important; }
+  html.bf-on .bf-only { display: block !important; }
+  html.bf-on .bf-hide { display: none !important; }
+</style>

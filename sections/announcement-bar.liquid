@@ -13,19 +13,56 @@
     gap: 10px;
   }
   .announcement-bar__star { color: var(--color-blue-light); }
+  .bf-bar { background: var(--color-navy-darker); color: #fff; padding: 10px 16px; gap: 10px 20px; }
+  html.bf-on .bf-bar { display: flex !important; flex-wrap: wrap; }
+  .bf-bar__msg strong { font-weight: 700; }
+  .bf-bar__msg[hidden] { display: none !important; }
+  .bf-bar__count { display: inline-flex; align-items: center; gap: 6px; }
+  .bf-bar__ends { font-size: 11px; letter-spacing: .16em; color: #C7CFDD; margin-right: 2px; }
+  .bf-bar__seg { display: inline-flex; align-items: baseline; gap: 2px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); padding: 3px 8px; min-width: 46px; justify-content: center; }
+  .bf-bar__seg span { font-size: 19px; font-weight: 700; letter-spacing: .02em; line-height: 1.1; color: var(--color-blue-lighter); font-variant-numeric: tabular-nums; }
+  .bf-bar__seg small { font-size: 10.5px; letter-spacing: .06em; color: #C7CFDD; }
+  .bf-bar__btn { display: inline-block; background: #fff; color: var(--color-navy-darker); font-size: 11.5px; font-weight: 700; letter-spacing: .16em; text-decoration: none; padding: 8px 20px; border-radius: 2px; transition: background .2s ease; }
+  .bf-bar__btn:hover { background: var(--color-blue-lighter); }
+  .bf-bar__perks { font-size: 11.5px; letter-spacing: .12em; color: #C7CFDD; border-left: 1px solid rgba(255,255,255,.25); padding-left: 20px; }
   @media (max-width: 750px) {
     .announcement-bar { font-size: 11px; gap: 8px; }
     .announcement-bar__star { font-size: 10px; }
+    .bf-bar { gap: 8px 10px; padding: 9px 10px; font-size: 11px; letter-spacing: .1em; }
+    .bf-bar__msg { flex: 1 1 100%; }
+    .bf-bar__ends { display: none; }
+    .bf-bar__count { gap: 4px; }
+    .bf-bar__seg { min-width: 38px; padding: 2px 5px; }
+    .bf-bar__seg span { font-size: 16px; }
+    .bf-bar__btn { padding: 7px 14px; font-size: 10.5px; }
+    .bf-bar__perks { flex: 1 1 100%; border-left: 0; padding-left: 0; font-size: 10px; }
+    .bf-bar .announcement-bar__star { display: none; }
   }
 </style>
 
 {%- if section.settings.show_announcement and section.settings.text != blank -%}
-  <div class="announcement-bar">
+  <div class="announcement-bar bf-hide">
     <span class="announcement-bar__star">✦</span>
     <span class="announcement-bar__text">{{ section.settings.text }}</span>
     <span class="announcement-bar__star">✦</span>
   </div>
 {%- endif -%}
+
+<div class="announcement-bar bf-bar bf-only" role="region" aria-label="Black Friday sale">
+  <span class="announcement-bar__star" aria-hidden="true">✦</span>
+  <span class="bf-bar__msg" data-bf-days="27 28 29"><strong>Black Friday</strong> &middot; 25% off every mosaic</span>
+  <span class="bf-bar__msg" data-bf-days="30" hidden><strong>Last day</strong> &middot; 25% off every mosaic</span>
+  <span class="bf-bar__count" role="timer" aria-label="Time left in the sale">
+    <span class="bf-bar__ends">Ends in</span>
+    <span class="bf-bar__seg"><span data-bf-unit="d">--</span><small>d</small></span>
+    <span class="bf-bar__seg"><span data-bf-unit="h">--</span><small>h</small></span>
+    <span class="bf-bar__seg"><span data-bf-unit="m">--</span><small>m</small></span>
+    <span class="bf-bar__seg"><span data-bf-unit="s">--</span><small>s</small></span>
+  </span>
+  <a class="bf-bar__btn" href="{{ routes.all_products_collection_url }}">Shop now</a>
+  <span class="bf-bar__perks">Free worldwide shipping &middot; Lifetime warranty</span>
+  <span class="announcement-bar__star" aria-hidden="true">✦</span>
+</div>
 
 
 {% schema %}

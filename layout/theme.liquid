@@ -187,6 +187,7 @@
     {{ content_for_header }}
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
+    {% render 'bf-2026-clock' %}
 
     <style>
       :root {
