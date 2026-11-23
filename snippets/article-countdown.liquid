@@ -1,0 +1,47 @@
+{%- comment -%}
+  Sale countdown on blog posts. Shows on articles tagged with the tag set in the Article section settings.
+  The end time is set in the section settings (New York time, -05:00 in winter).
+{%- endcomment -%}
+<div class="art-cd" data-art-cd data-end="{{ end | escape }}" role="timer" aria-live="off">
+  <div class="art-cd__heading" data-art-cd-heading>{{ heading }}</div>
+  <div class="art-cd__units" data-art-cd-units>
+    <div class="art-cd__unit"><span class="art-cd__num" data-art-cd-d>0</span><span class="art-cd__lbl">Days</span></div>
+    <div class="art-cd__unit"><span class="art-cd__num" data-art-cd-h>00</span><span class="art-cd__lbl">Hours</span></div>
+    <div class="art-cd__unit"><span class="art-cd__num" data-art-cd-m>00</span><span class="art-cd__lbl">Minutes</span></div>
+    <div class="art-cd__unit"><span class="art-cd__num" data-art-cd-s>00</span><span class="art-cd__lbl">Seconds</span></div>
+  </div>
+  {%- if note != blank -%}<div class="art-cd__note">{{ note }}</div>{%- endif -%}
+</div>
+<style>
+  .art-cd { background: var(--color-navy); color: #fff; text-align: center; padding: 26px 20px 22px; margin: 0 0 40px; }
+  .art-cd__heading { font-size: 12.5px; letter-spacing: .16em; text-transform: uppercase; font-weight: 600; margin-bottom: 14px; opacity: .9; }
+  .art-cd__units { display: flex; justify-content: center; gap: clamp(14px, 4vw, 36px); }
+  .art-cd__unit { display: flex; flex-direction: column; align-items: center; min-width: 56px; }
+  .art-cd__num { font-family: var(--font-display); font-size: clamp(34px, 6vw, 52px); line-height: 1; font-variant-numeric: tabular-nums; }
+  .art-cd__lbl { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; margin-top: 8px; opacity: .75; }
+  .art-cd__note { font-size: 13px; margin-top: 14px; opacity: .8; }
+  .art-cd.is-ended .art-cd__units { display: none; }
+</style>
+<script>
+  (function () {
+    document.querySelectorAll('[data-art-cd]').forEach(function (el) {
+      var end = Date.parse(el.dataset.end);
+      if (isNaN(end)) { el.hidden = true; return; }
+      var d = el.querySelector('[data-art-cd-d]'), h = el.querySelector('[data-art-cd-h]'),
+          m = el.querySelector('[data-art-cd-m]'), s = el.querySelector('[data-art-cd-s]');
+      var heading = el.querySelector('[data-art-cd-heading]');
+      var ended = {{ ended_text | json }};
+      function pad(n) { return (n < 10 ? '0' : '') + n; }
+      function tick() {
+        var left = Math.max(0, Math.floor((end - Date.now()) / 1000));
+        if (left <= 0) { el.classList.add('is-ended'); heading.textContent = ended; clearInterval(t); return; }
+        d.textContent = Math.floor(left / 86400);
+        h.textContent = pad(Math.floor(left % 86400 / 3600));
+        m.textContent = pad(Math.floor(left % 3600 / 60));
+        s.textContent = pad(left % 60);
+      }
+      var t = setInterval(tick, 1000);
+      tick();
+    });
+  })();
+</script>

@@ -39,6 +39,9 @@
     <h1 class="article__title">{{ article.title }}</h1>
     {%- if article.author != blank -%}<div class="article__author">By {{ article.author }}</div>{%- endif -%}
   </div>
+  {%- if section.settings.countdown_tag != blank and article.tags contains section.settings.countdown_tag and section.settings.countdown_end != blank -%}
+    {%- render 'article-countdown', end: section.settings.countdown_end, heading: section.settings.countdown_heading, note: section.settings.countdown_note, ended_text: section.settings.countdown_ended -%}
+  {%- endif -%}
   {%- if article.image != blank -%}
     <img src="{{ article.image | image_url: width: 1400 }}" alt="{{ article.image.alt | default: article.title | escape }}" width="1400" height="788" class="article__image">
   {%- endif -%}
@@ -47,5 +50,15 @@
 
 
 {% schema %}
-{ "name": "Article", "settings": [] }
+{
+  "name": "Article",
+  "settings": [
+    { "type": "header", "content": "Sale countdown" },
+    { "type": "text", "id": "countdown_tag", "label": "Show on posts with this tag", "default": "Black Friday" },
+    { "type": "text", "id": "countdown_end", "label": "Sale ends (date, time, New York offset)", "info": "Format: 2026-11-30T23:59:59-05:00", "default": "2026-11-30T23:59:59-05:00" },
+    { "type": "text", "id": "countdown_heading", "label": "Heading", "default": "Black Friday sale ends in" },
+    { "type": "text", "id": "countdown_note", "label": "Note", "default": "25% off every mosaic · Ends Cyber Monday, Nov 30 at midnight (New York time)" },
+    { "type": "text", "id": "countdown_ended", "label": "Text after the sale ends", "default": "The Black Friday sale has ended" }
+  ]
+}
 {% endschema %}
