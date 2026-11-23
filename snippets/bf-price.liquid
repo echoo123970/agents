@@ -1,0 +1,7 @@
+{%- comment -%}
+  Black Friday 2026 price: regular price normally; during the sale window (html.bf-on) the regular price
+  struck through next to the 25%-off price, matching the BLACKFRIDAY25 automatic discount at checkout.
+  Accepts: price (cents), prefix (optional, e.g. "From ")
+{%- endcomment -%}
+{%- assign bf_sale_price = price | times: 75 | divided_by: 100.0 | round -%}
+<span class="bf-reg">{{ prefix }}{{ price | money_without_trailing_zeros }}</span><span class="bf-sale">{{ prefix }}<s class="bf-was">{{ price | money_without_trailing_zeros }}</s><span class="bf-now">{{ bf_sale_price | money_without_trailing_zeros }}</span></span>

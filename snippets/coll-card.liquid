@@ -39,7 +39,7 @@
   <a href="{{ product.url }}" class="prod-title cardc__title">{{ product.title }}</a>
   <div class="cardc__price">
     {%- if product.price > 0 -%}
-      {%- if product.price_varies -%}From {{ product.price_min | money_without_trailing_zeros }}{%- else -%}{{ product.price | money_without_trailing_zeros }}{%- endif -%}
+      {%- if product.price_varies -%}{% render 'bf-price', price: product.price_min, prefix: 'From ' %}{%- else -%}{% render 'bf-price', price: product.price %}{%- endif -%}
     {%- else -%}
       Price on request
     {%- endif -%}

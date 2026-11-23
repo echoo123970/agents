@@ -1,0 +1,2 @@
+{%- comment -%} Product page main price with Black Friday sale display. Accepts: variant {%- endcomment -%}
+<span class="bf-reg" data-price>{{ variant.price | money_without_trailing_zeros }}</span><span class="bf-sale"><s class="bf-was" data-price-was>{{ variant.price | money_without_trailing_zeros }}</s><span class="bf-now" data-price-now>{{ variant.price | times: 75 | divided_by: 100.0 | round | money_without_trailing_zeros }}</span></span>
