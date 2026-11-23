@@ -13,12 +13,12 @@
   {%- if note != blank -%}<div class="art-cd__note">{{ note }}</div>{%- endif -%}
 </div>
 <style>
-  .art-cd { background: var(--color-navy); color: #fff; text-align: center; padding: 26px 20px 22px; margin: 0 0 40px; }
-  .art-cd__heading { font-size: 12.5px; letter-spacing: .16em; text-transform: uppercase; font-weight: 600; margin-bottom: 14px; opacity: .9; }
-  .art-cd__units { display: flex; justify-content: center; gap: clamp(14px, 4vw, 36px); }
+  .art-cd { background: var(--color-navy); color: #fff; text-align: center; padding: 30px 20px 26px; margin: 0 0 40px; }
+  .art-cd__heading { font-size: 12.5px; letter-spacing: .16em; text-transform: uppercase; font-weight: 600; margin-bottom: 18px; opacity: .9; }
+  .art-cd__units { display: flex; justify-content: center; gap: clamp(10px, 2.6vw, 22px); }
   .art-cd__unit { display: flex; flex-direction: column; align-items: center; min-width: 56px; }
-  .art-cd__num { font-family: var(--font-display); font-size: clamp(34px, 6vw, 52px); line-height: 1; font-variant-numeric: tabular-nums; }
-  .art-cd__lbl { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; margin-top: 8px; opacity: .75; }
+  .art-cd__num { display: flex; align-items: center; justify-content: center; width: clamp(64px, 16vw, 96px); height: clamp(64px, 16vw, 92px); background: rgba(255,255,255,.06); border: 1px solid rgba(156,192,245,.35); outline: 1px solid rgba(156,192,245,.18); outline-offset: -6px; font-family: var(--font-display); font-size: clamp(30px, 6vw, 48px); line-height: 1; font-variant-numeric: tabular-nums; color: #fff; -webkit-font-smoothing: antialiased; }
+  .art-cd__lbl { font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; margin-top: 10px; color: var(--color-blue-lighter); }
   .art-cd__note { font-size: 13px; margin-top: 14px; opacity: .8; }
   .art-cd.is-ended .art-cd__units { display: none; }
 </style>
@@ -35,7 +35,7 @@
       function tick() {
         var left = Math.max(0, Math.floor((end - Date.now()) / 1000));
         if (left <= 0) { el.classList.add('is-ended'); heading.textContent = ended; clearInterval(t); return; }
-        d.textContent = Math.floor(left / 86400);
+        d.textContent = pad(Math.floor(left / 86400));
         h.textContent = pad(Math.floor(left % 86400 / 3600));
         m.textContent = pad(Math.floor(left % 3600 / 60));
         s.textContent = pad(left % 60);
