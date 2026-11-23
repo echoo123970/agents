@@ -26,6 +26,8 @@
   .article__body { font-size: 17px; line-height: 1.8; color: var(--color-text-muted); }
   .article__body :is(h2,h3) { font-family: var(--font-display); color: var(--color-navy); margin: 32px 0 12px; }
   .article__body img { margin: 24px 0; }
+  .article__body a:not([style]) { color: var(--color-blue); text-decoration: underline; text-underline-offset: 3px; }
+  .article__body a:not([style]):hover { color: var(--color-navy); }
   @media (max-width: 600px) {
     .article { padding-top: 40px; padding-bottom: 64px; }
     .article__body { font-size: 16px; overflow-wrap: break-word; }
@@ -57,7 +59,7 @@
     { "type": "text", "id": "countdown_tag", "label": "Show on posts with this tag", "default": "Black Friday" },
     { "type": "text", "id": "countdown_end", "label": "Sale ends (date, time, New York offset)", "info": "Format: 2026-11-30T23:59:59-05:00", "default": "2026-11-30T23:59:59-05:00" },
     { "type": "text", "id": "countdown_heading", "label": "Heading", "default": "Black Friday sale ends in" },
-    { "type": "text", "id": "countdown_note", "label": "Note", "default": "25% off every mosaic · Ends Cyber Monday, Nov 30 at midnight (New York time)" },
+    { "type": "text", "id": "countdown_note", "label": "Note", "default": "25% off every mosaic · Ends Cyber Monday, Nov 30 at midnight" },
     { "type": "text", "id": "countdown_ended", "label": "Text after the sale ends", "default": "The Black Friday sale has ended" }
   ]
 }
