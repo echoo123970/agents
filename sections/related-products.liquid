@@ -33,7 +33,7 @@
           </div>
           {%- if item.type != blank -%}<div class="rel-card__sub">{{ item.type }}</div>{%- endif -%}
           <div class="rel-card__title">{{ item.title }}</div>
-          <div class="rel-card__price">{%- if item.price > 0 -%}{% if item.price_varies %}From {% endif %}{{ item.price | money }}{%- else -%}Price on request{%- endif -%}</div>
+          <div class="rel-card__price">{%- if item.price > 0 -%}{% if item.price_varies %}From {% endif %}{{ item.price | money_without_trailing_zeros }}{%- else -%}Price on request{%- endif -%}</div>
         </a>
         {%- assign shown = shown | plus: 1 -%}
       {%- endif -%}
