@@ -24,6 +24,7 @@
       {%- if item.id != product.id and shown < section.settings.limit -%}
         <a href="{{ item.url }}" class="rel-card">
           <div class="rel-card__media">
+            {% render 'bf-sticker' %}
             {%- if item.featured_media != blank -%}
               <img src="{{ item.featured_media | image_url: width: 500 }}" alt="{{ item.title | escape }}" width="500" height="625" loading="lazy">
             {%- else -%}

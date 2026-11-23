@@ -53,3 +53,22 @@
   html.bf-on .bf-only { display: block !important; }
   html.bf-on .bf-hide { display: none !important; }
 </style>
+<style>
+  .bf-inline { display: none !important; }
+  html.bf-on .bf-inline { display: inline-flex !important; }
+  .bf-sticker { position: absolute; top: 14px; left: 14px; z-index: 3; align-items: center; justify-content: center; flex-direction: column; width: 62px; height: 62px; border-radius: 50%; background: #B3261E; color: #fff; font-weight: 700; line-height: 1; text-align: center; box-shadow: 0 6px 16px rgba(179,38,30,.35); transform: rotate(-8deg); pointer-events: none; }
+  .bf-sticker b { font-size: 19px; letter-spacing: -.01em; }
+  .bf-sticker small { font-size: 9.5px; letter-spacing: .16em; margin-top: 3px; }
+  .bf-sticker--pdp { top: 18px; left: auto; right: 18px; width: 84px; height: 84px; }
+  .bf-sticker--pdp b { font-size: 26px; }
+  .bf-sticker--pdp small { font-size: 11px; }
+  .bf-note { align-items: center; gap: 10px; margin: 4px 0 14px; padding: 10px 14px; background: #FBEDEC; border-left: 3px solid #B3261E; color: #7A1A14; font-size: 13.5px; line-height: 1.4; }
+  .bf-note strong { font-weight: 700; }
+  @media (max-width: 750px) {
+    .bf-sticker { width: 50px; height: 50px; top: 10px; left: 10px; }
+    .bf-sticker b { font-size: 15px; }
+    .bf-sticker small { font-size: 8px; }
+    .bf-sticker--pdp { width: 66px; height: 66px; left: auto; right: 12px; }
+    .bf-sticker--pdp b { font-size: 20px; }
+  }
+</style>

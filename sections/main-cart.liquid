@@ -39,6 +39,12 @@
   .cart__summary-row { display: flex; align-items: center; justify-content: space-between; padding: 11px 0; font-size: 15px; color: #C7CFDD; }
   .cart__summary-row--border { border-bottom: 1px solid rgba(220,230,245,.16); }
   .cart__summary-val { color: #fff; }
+  .cart__was { display: block; font-size: 15px; opacity: .5; }
+  .cart__disc { display: flex; align-items: center; gap: 8px; margin: 6px 0 2px; font-size: 13px; color: #B3261E; font-weight: 600; }
+  .cart__disc-tag, .cart__bf-badge { background: #B3261E; color: #fff; font-size: 10px; font-weight: 700; letter-spacing: .1em; padding: 3px 7px; border-radius: 2px; white-space: nowrap; }
+  .cart__summary-disc { color: #FF9A92; font-weight: 600; }
+  .cart__summary-row--disc { color: #FF9A92; }
+  .cart__bf { align-items: center; gap: 10px; margin: 0 0 16px; padding: 12px 14px; background: rgba(179,38,30,.18); border: 1px solid rgba(255,154,146,.45); color: #fff; font-size: 13px; line-height: 1.4; }
   .cart__summary-free { color: var(--color-blue-light); }
   .cart__summary-total { display: flex; align-items: center; justify-content: space-between; padding: 20px 0 24px; color: #fff; }
   .cart__summary-total-label { font-family: var(--font-accent); letter-spacing: .06em; font-size: 16px; }
@@ -118,6 +124,7 @@
               <a href="{{ item.url }}" class="cart__line-title">{{ item.product.title }}</a>
               {%- unless item.product.has_only_default_variant -%}<div class="cart__line-variant">{{ item.variant.title }}</div>{%- endunless -%}
               <div class="cart__line-price">{{ item.original_price | money }}</div>
+              {%- for alloc in item.line_level_discount_allocations -%}<div class="cart__disc">{%- assign bf_t = alloc.discount_application.title | upcase -%}{%- if bf_t contains "BLACKFRIDAY" -%}<span class="cart__disc-tag">25% OFF</span>Black Friday{%- else -%}{{ alloc.discount_application.title }}{%- endif -%} · −{{ alloc.amount | money }}</div>{%- endfor -%}
               <div class="cart__line-controls">
                 <div class="cart__qty">
                   <a href="{{ routes.cart_change_url }}?id={{ item.key }}&quantity={{ item.quantity | minus: 1 }}" class="cart__qty-btn" aria-label="Decrease">−</a>
@@ -127,7 +134,7 @@
                 <a href="{{ routes.cart_change_url }}?id={{ item.key }}&quantity=0" class="cart__remove">Remove</a>
               </div>
             </div>
-            <div class="cart__line-total">{{ item.original_line_price | money }}</div>
+            <div class="cart__line-total">{%- if item.original_line_price > item.final_line_price -%}<s class="cart__was">{{ item.original_line_price | money }}</s>{{ item.final_line_price | money }}{%- else -%}{{ item.original_line_price | money }}{%- endif -%}</div>
           </div>
         {%- endfor -%}
 
@@ -140,9 +147,15 @@
       <!-- SUMMARY -->
       <div class="cart__summary">
         <h2 class="cart__summary-title">Order Summary</h2>
+        <div class="cart__bf bf-inline"><span class="cart__bf-badge">25% OFF</span><span><strong>Black Friday sale</strong> — 25% off every mosaic, applied automatically.</span></div>
         <div class="cart__summary-row">
-          <span>Subtotal</span><span class="cart__summary-val">{{ cart.total_price | money }}</span>
+          <span>Subtotal</span><span class="cart__summary-val">{{ cart.original_total_price | money }}</span>
         </div>
+        {%- if cart.total_discount > 0 -%}
+        <div class="cart__summary-row cart__summary-row--disc">
+          <span>You save</span><span class="cart__summary-disc">−{{ cart.total_discount | money }}</span>
+        </div>
+        {%- endif -%}
         <div class="cart__summary-row cart__summary-row--border">
           <span>Shipping</span><span class="cart__summary-free">Free</span>
         </div>
