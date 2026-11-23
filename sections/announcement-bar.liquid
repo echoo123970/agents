@@ -15,6 +15,9 @@
   .announcement-bar__star { color: var(--color-blue-light); }
   .bf-bar { background: var(--color-navy); color: #fff; padding: 10px 16px; gap: 10px 20px; }
   html.bf-on .bf-bar { display: flex !important; flex-wrap: wrap; }
+  html.bf-on .shopify-section:has(> .bf-bar) { position: sticky; top: 0; z-index: 60; }
+  html.bf-on .bf-bar { box-shadow: 0 1px 0 rgba(255,255,255,.06), 0 6px 18px rgba(11,28,53,.18); }
+  html.bf-on .site-header { top: var(--bf-bar-h, 0px); }
   .bf-bar__msg strong { font-weight: 700; }
   .bf-bar__msg[hidden] { display: none !important; }
   .bf-bar__count { display: inline-flex; align-items: center; gap: 6px; }

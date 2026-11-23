@@ -38,9 +38,11 @@
       var parts = { d: Math.floor(s / 86400), h: Math.floor(s % 86400 / 3600), m: Math.floor(s % 3600 / 60), s: s % 60 };
       var els = document.querySelectorAll('[data-bf-unit]');
       for (var i = 0; i < els.length; i++) els[i].textContent = pad(parts[els[i].getAttribute('data-bf-unit')]);
-      var compact = (parts.d > 0 ? parts.d + 'd ' : '') + pad(parts.h) + 'h ' + pad(parts.m) + 'm';
+      var compact = (parts.d > 0 ? parts.d + 'd ' : '') + pad(parts.h) + 'h ' + pad(parts.m) + 'm ' + pad(parts.s) + 's';
       els = document.querySelectorAll('[data-bf-compact]');
       for (i = 0; i < els.length; i++) els[i].textContent = compact;
+      var bar = document.querySelector('.bf-bar');
+      if (bar && bar.offsetHeight) document.documentElement.style.setProperty('--bf-bar-h', bar.offsetHeight + 'px');
       var day = '' + etDay();
       els = document.querySelectorAll('[data-bf-days]');
       for (i = 0; i < els.length; i++) els[i].hidden = (' ' + els[i].getAttribute('data-bf-days') + ' ').indexOf(' ' + day + ' ') === -1;
