@@ -271,7 +271,7 @@
         <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-installments-variant-input>
         {{ form | payment_terms }}
       {%- endform -%}
-      <div class="bf-note bf-inline"><strong>Black Friday: 25% off</strong> is applied automatically in your cart and at checkout.</div>
+      <div class="bf-note bf-inline"><span class="bf-note__light" aria-hidden="true"></span><span><strong>Black Friday: 25% off</strong> is applied automatically in your cart and at checkout.</span></div>
       <p class="pdp__status"><span class="pdp__status-dot"></span>{{ availability_note }}</p>
 
       <a href="#quote-form" class="pdp__quote-banner">
