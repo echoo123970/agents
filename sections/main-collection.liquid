@@ -195,9 +195,10 @@
 
   .coll__filter-toggle { display: none; }
   @media (max-width: 990px) {
-    .coll__layout { grid-template-columns: 1fr; gap: 28px; }
+    .coll__layout { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    .coll__main { min-width: 0; }
     .coll__sidebar { position: static; display: none; }
-    .coll__grid { grid-template-columns: repeat(2, 1fr) !important; }
+    .coll__grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
     .coll__filter-toggle { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px; margin-bottom: 22px; border: 1px solid rgba(22,51,94,.2); background: #fff; font-family: var(--font-body); font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--color-navy); cursor: pointer; }
     .coll__layout.is-filters-open .coll__sidebar { display: block; margin-bottom: 8px; }
   }
@@ -212,7 +213,7 @@
     .coll { padding-top: 16px; }
     .coll__toolbar { padding-bottom: 12px; margin-bottom: 16px; }
     .coll__filter-toggle { margin-bottom: 14px; }
-    .coll__grid { grid-template-columns: repeat(2, 1fr) !important; gap: 20px 12px !important; }
+    .coll__grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 20px 12px !important; }
     .coll__grid .cardc { padding: 0 12px 16px; }
     .coll__grid .cardc__media { margin: 0 -12px; }
     .coll__grid .cardc__media .prod-img { padding: 8px; }
@@ -458,7 +459,7 @@
           {%- if is_tile_art -%}
             {%- assign tile_src = 'mosaic-tile-backsplash,table-countertop-mosaics,van-gogh-mosaics,glass-mosaic-art' | split: ',' -%}
             {%- assign tile_seen = ',' -%}
-            <div class="coll__grid" style="grid-template-columns: repeat(4, 1fr);">
+            <div class="coll__grid" style="grid-template-columns: repeat(4, minmax(0, 1fr));">
               {%- for th in tile_src -%}
                 {%- assign tcoll = collections[th] -%}
                 {%- for product in tcoll.products -%}
@@ -471,7 +472,7 @@
               {%- endfor -%}
             </div>
           {%- elsif collection.products.size > 0 -%}
-            <div class="coll__grid" style="grid-template-columns: repeat({{ section.settings.columns }}, 1fr);">
+            <div class="coll__grid" style="grid-template-columns: repeat({{ section.settings.columns }}, minmax(0, 1fr));">
               {%- for product in collection.products -%}
                 {% render 'coll-card', product: product %}
               {%- endfor -%}
