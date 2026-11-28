@@ -47,6 +47,8 @@
   .cart__bf-badge b { font-family: var(--font-display); font-size: 17px; font-weight: 500; letter-spacing: .02em; }
   .cart__summary-disc { color: var(--color-blue-lighter); font-weight: 600; }
   .cart__summary-row--disc { color: var(--color-blue-lighter); }
+  .cart__save-label { display: inline-flex; align-items: center; gap: 9px; }
+  .cart__save-tag { display: inline-block; padding: 6px 11px; background: var(--color-blue); color: #fff; font-family: var(--font-accent); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; line-height: 1; border-radius: 2px; white-space: nowrap; }
   .cart__bf-text { font-size: 13px; line-height: 1.5; color: #C7CFDD; }
   .cart__bf { align-items: center; gap: 14px; margin: 0 0 16px; padding: 14px 0; background: transparent; border-top: 1px solid rgba(255,255,255,.12); border-bottom: 1px solid rgba(255,255,255,.12); color: #fff; font-size: 13px; line-height: 1.4; }
   .cart__summary-free { color: var(--color-blue-light); }
@@ -163,7 +165,7 @@
         </div>
         {%- endif -%}
         <div class="bf-only"><div class="cart__summary-row cart__summary-row--disc">
-          <span>You save <span class="cart__disc-tag" style="padding:3px 7px 2px;font-size:11px;">Black Friday 25% Off</span></span><span class="cart__summary-disc">−{{ bf_save | money }}</span>
+          <span class="cart__save-label">You save <span class="cart__save-tag">Black&nbsp;Friday&nbsp;25%&nbsp;Off</span></span><span class="cart__summary-disc">−{{ bf_save | money }}</span>
         </div></div>
         <div class="cart__summary-row cart__summary-row--border">
           <span>Shipping</span><span class="cart__summary-free">Free</span>
